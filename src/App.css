@@ -1,0 +1,168 @@
+* {
+  font-family: "Poppins", sans-serif;
+  font-style: normal;
+  scrollbar-width: none;
+  scroll-behavior: smooth !important;
+}
+body {
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+main {
+  inline-size: 75vw;
+  background-color: white;
+}
+
+.main_container {
+  background-color: white;
+}
+
+.checking {
+  margin: 40px;
+  padding: 10px;
+}
+
+.p-button-label {
+  padding: 5px 15px;
+}
+
+.navbar {
+  display: flex;
+  font-size: 1.2rem;
+  background-color: white;
+  padding: 10px 30px;
+  justify-content: space-between;
+}
+
+.mainContents {
+  block-size: 100vh;
+  background-color: #d0d3d47a;
+}
+
+.primaryNav {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 20px;
+  background-color: white;
+  position: sticky !important;
+  inset-inline-start: 0;
+  inset-block-start: 0;
+  align-items: center;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.p-last-edit {
+  font-size: 14px;
+  border: 1px solid black;
+  padding: 5px 10px;
+  border-radius: 7px;
+}
+
+.contents {
+  block-size: 100%;
+  background: #f7f9fc;
+  padding: 20px 25px;
+}
+
+.p-fieldset-legend-text {
+  padding: 10px 20px;
+}
+
+.p-fieldset-content {
+  padding: 10px 20px;
+}
+
+.p-fieldset-legend {
+  margin-inline-start: 20px;
+}
+
+.p-fieldset-content {
+  block-size: 8rem;
+}
+
+.p-button-icon {
+  margin-block-start: 25px;
+}
+
+.p-button.p-component.p-button-icon-only.p-button-rounded {
+  display: flex;
+  flex-direction: column;
+}
+
+.p-datatable-header {
+  padding: 7px 20px !important;
+}
+
+.p-fieldset-legend .p-fieldset-legend-text {
+  padding: 0px !important;
+}
+
+.headerPrimary {
+  margin: 0;
+  inset-block-start: 0;
+  position: sticky;
+  inset-inline-end: 0;
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  border-block-end: 1px solid rgba(0, 0, 0, 0.223);
+  justify-content: space-between;
+  z-index: 100;
+  padding: 10px 30px;
+}
+
+.headerPrimary .quickAcces {
+  display: flex;
+  align-items: center;
+}
+
+.headerPrimary .quickAcces .p-link i {
+  border-radius: 50%;
+  border: 1px solid black;
+  padding: 10px;
+}
+
+.orgChart {
+  padding: 50px 10px;
+}
+
+.p-organizationchart .p-organizationchart-node-content {
+  border: 1px solid #dee2e6;
+  background: #ffffff;
+  color: #212529;
+  padding: 1.25rem;
+}
+
+.p-sortable-column .p-sortable-column-icon {
+  display: none;
+}
+
+/* Show the sortable icon on hover */
+.p-sortable-column:hover .p-sortable-column-icon {
+  display: inline-block;
+}
+
+.p-column-header-content,
+.p-icon.p-sortable-column-icon {
+  color: black;
+}
+
+.p-datatable .p-datatable-tbody > tr.p-highlight {
+  background: none;
+  color: black;
+}
+
+.p-dropdown-item {
+  text-transform: capitalize;
+}
+
+/* .p-dropdown.p-component.p-inputwrapper.p-inputwrapper-filled {
+  inline-size: 100%;
+} */
