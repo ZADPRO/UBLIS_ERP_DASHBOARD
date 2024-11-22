@@ -1277,7 +1277,8 @@ const Profile: React.FC = () => {
                               { value: "single", label: "Single" },
                               { value: "married", label: "Married" },
                             ]}
-                            disabled={!edits.personal}
+
+                            disabled={!edits.personal && inputs.age > '18'? false : true}
                             required
                           />
                         </div>
@@ -1312,6 +1313,7 @@ const Profile: React.FC = () => {
                             name="qualification"
                             id="qualification"
                             type="text"
+                            disabled={inputs.age > '18'? false : true}
                             onChange={handleInputVal}
                             value={inputs.qualification}
                             readonly={!edits.personal}
@@ -1327,6 +1329,7 @@ const Profile: React.FC = () => {
                               name="occupation"
                               id="Occupation"
                               type="text"
+                              disabled={inputs.age > '18'? false : true}
                               onChange={handleInputVal}
                               value={inputs.occupation}
                               readonly={!edits.personal}
@@ -1973,7 +1976,7 @@ const Profile: React.FC = () => {
                           </div>
                           <div className="w-[100%] lg:w-[48%]">
                             <TextInput
-                              label="Medication Details"
+                              label="Current Medicines"
                               name="pastmedicaldetails"
                               id="medicaldetails"
                               type="text"

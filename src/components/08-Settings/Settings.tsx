@@ -6,7 +6,11 @@ import { FaMoneyCheckDollar } from "react-icons/fa6";
 import { BiSolidOffer } from "react-icons/bi";
 import { Sidebar } from "primereact/sidebar";
 import FeesStructure from "../../pages/FeesStructure/FeesStructure";
+import { SiGoogleclassroom } from "react-icons/si";
 import Offers from "../../pages/Offers/Offers";
+import session from "../../pages/Session/Session"
+import Session from "../../pages/Session/Session";
+import { FaUserClock } from "react-icons/fa6";
 
 type DecryptResult = any;
 
@@ -81,7 +85,10 @@ const Settings: React.FC = () => {
 
   const [feesStructure, setFeesStructure] = useState(false);
 
+
   const [offers, setOffers] = useState(false);
+
+  const [session, setSession] = useState(false);
 
   return (
     <>
@@ -169,6 +176,21 @@ const Settings: React.FC = () => {
                   <BiSolidOffer />
                 </div>
               </div>
+
+              
+              <div
+                className="w-[250px] h-[100px] rounded-[5px] flex flex-col justify-center bg-[#fff] shadow-lg p-3 cursor-pointer"
+                onClick={() => {
+                  setSession(true);
+                }}
+              >
+                <div className="text-[20px] font-bold font-serif">
+                  Session
+                </div>
+                <div className="text-[#f95005] text-[40px] text-end">
+                <FaUserClock />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -193,6 +215,17 @@ const Settings: React.FC = () => {
         <h2>Offers</h2>
         <Offers />
       </Sidebar>
+
+      <Sidebar
+        style={{ width: "70%" }}
+        visible={session}
+        position="right"
+        onHide={() => setSession(false)}
+      >
+        
+        <Session />
+      </Sidebar>
+
     </>
   );
 };

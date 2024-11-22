@@ -9,6 +9,8 @@ import { InputNumber } from "primereact/inputnumber";
 import { Calendar } from "primereact/calendar";
 import { InputText } from "primereact/inputtext";
 import { FaRegCopy } from "react-icons/fa6";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 type DecryptResult = any;
 
@@ -64,7 +66,7 @@ const Offers: React.FC = () => {
       import.meta.env.VITE_API_URL + "/director/offerStructure",
       {
         refOfferId: branch,
-        refBranchId:branch1
+        refBranchId: branch1,
       },
       {
         headers: {
@@ -80,7 +82,6 @@ const Offers: React.FC = () => {
       );
 
       console.log("Offers Data -----------", data);
-
 
       const options = data.offerName.map((branch: any) => ({
         label: branch.refOfferName,
@@ -115,7 +116,7 @@ const Offers: React.FC = () => {
       import.meta.env.VITE_API_URL + "/director/offerStructure",
       {
         refOfferId: e,
-        refBranchId:branch1
+        refBranchId: branch1,
       },
       {
         headers: {
@@ -143,7 +144,7 @@ const Offers: React.FC = () => {
       import.meta.env.VITE_API_URL + "/director/offerStructure",
       {
         refBranchId: e,
-        refOfferId:branch
+        refOfferId: branch,
       },
       {
         headers: {
@@ -179,7 +180,7 @@ const Offers: React.FC = () => {
           setWorkSpaceData({
             refOfferId: rowData.refOfId,
             description: rowData.refContent,
-            coupon: rowData.CouponCode,
+            coupon: rowData.refCoupon,
             minimumval: rowData.refMin,
             offers: rowData.refOffer,
             startingDate: rowData.refStartAt,
@@ -222,6 +223,17 @@ const Offers: React.FC = () => {
       );
 
       branchChange(branch);
+      toast.error("Deleted Successfully", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        // transition: Bounce,
+      });
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
     });
@@ -277,6 +289,17 @@ const Offers: React.FC = () => {
         );
 
         console.log("Edited Data ----------", data);
+        toast.success("Updated Successfully", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          // transition: Bounce,
+        });
 
         if (data.success) {
           setWorkSpaceData({
@@ -311,7 +334,7 @@ const Offers: React.FC = () => {
           refStartAt: formatDateToYYYYMMDD(workSpaceData.startingDate),
           refEndAt: formatDateToYYYYMMDD(workSpaceData.endingDate),
           refCouponCode: workSpaceData.coupon,
-          refBranchId:branch1
+          refBranchId: branch1,
         },
         {
           headers: {
@@ -327,6 +350,7 @@ const Offers: React.FC = () => {
         );
 
         console.log(data);
+       
 
         if (data.success) {
           setWorkSpaceData({
@@ -337,6 +361,17 @@ const Offers: React.FC = () => {
             offers: null,
             startingDate: "",
             endingDate: "",
+          });
+          toast.success("New Fees Added Successfully", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            // transition: Bounce,
           });
 
           setWorkSpace(false);
@@ -398,6 +433,7 @@ const Offers: React.FC = () => {
 
   return (
     <>
+      <ToastContainer />
       <div className="flex justify-between items-center">
         <Dropdown
           value={branch}
@@ -414,11 +450,11 @@ const Offers: React.FC = () => {
           highlightOnSelect={false}
         />
 
-<Dropdown
+        <Dropdown
           value={branch1}
           onChange={(e: any) => {
             console.log(e.value);
-            
+
             setBranch1(e.value);
             branchChange1(e.value);
           }}
@@ -528,65 +564,73 @@ const Offers: React.FC = () => {
                   />
                 </div>
               </div>
-              <div className="flex justify-between mt-3">
+              <div className="flex justify-start gap-5 mt-3">
                 <div className="flex flex-column gap-2 w-[48%]">
                   <label htmlFor="username">Coupon</label>
                   <InputText
-                    value={workSpaceData.coupon}
-                    onChange={(e: any) => {
-                      setWorkSpaceData({
-                        ...workSpaceData,
-                        coupon: e.target.value,
-                      });
+  value={workSpaceData.coupon}
+  onChange={(e: any) => {
+    const couponValue = e.target.value;
+    setWorkSpaceData({
+      ...workSpaceData,
+      coupon: couponValue,
+    });
 
-                      Axios.post(
-                        import.meta.env.VITE_API_URL +
-                          "/director/validateCouponCode",
-                        {
-                          CouponCode: e.target.value,
-                        },
-                        {
-                          headers: {
-                            Authorization: localStorage.getItem("JWTtoken"),
-                            "Content-Type": "application/json",
-                          },
-                        }
-                      )
-                        .then((res) => {
-                          const data = decrypt(
-                            res.data[1],
-                            res.data[0],
-                            import.meta.env.VITE_ENCRYPTION_KEY
-                          );
+    Axios.post(
+      `${import.meta.env.VITE_API_URL}/director/validateCouponCode`,
+      {
+        CouponCode: couponValue,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("JWTtoken"),
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then((res) => {
+        const data = decrypt(
+          res.data[1],
+          res.data[0],
+          import.meta.env.VITE_ENCRYPTION_KEY
+        );
 
-                          if (data.success) {
-                            setVerifyCoupon(true);
-                          } else {
-                            setVerifyCoupon(false);
-                          }
-                        })
-                        .catch((err) => {
-                          console.error("Error: ", err);
-                        });
-                    }}
-                    required
-                  />
-
-{workSpaceData.coupon.length === 0 ? (
-  <></>
-) : workSpaceData.coupon.length < 8 ? (
-  <div>Coupon Code Should be Above 8 Characters</div>
-) : !verifycoupon ? (
-  <div>Already Exists Coupon</div>
-) : (
-  <div>Valid</div>
-)}
+        if (data.success) {
+          setVerifyCoupon(true);
+        } else {
+          setVerifyCoupon(false);
+        }
+      })
+      .catch((err) => {
+        console.error("Error: ", err);
+      });
+  }}
+  required
+  readOnly={!updateStructure ? false:true} 
+/>
 
 
-
-
+                  {updateStructure ? (
+                    <></>
+                  ) : (
+                    <>
+                      {workSpaceData.coupon.length === 0 ? (
+                        <></>
+                      ) : workSpaceData.coupon.length < 8 ? (
+                        <div className="text-red-700">Coupon Code Should be Above 8 Characters</div>
+                      ) : !verifycoupon ? (
+                        <div className="text-red-700" >Already Exists Coupon</div>
+                      ) : (
+                        <div className="text-green-600">Valid</div>
+                      )}
+                    </>
+                  )}
                 </div>
-                <Button
+                {updateStructure ? (
+                    <></>
+                  ) : (
+                  
+                      <Button
                   severity="success"
                   type="button"
                   className="h-[35px] w-[20%] mt-[27px]"
@@ -602,12 +646,11 @@ const Offers: React.FC = () => {
                       );
                       couponCode += characters[randomIndex];
                     }
-
+                 
                     setWorkSpaceData({
                       ...workSpaceData,
                       coupon: couponCode,
                     });
-
 
                     Axios.post(
                       import.meta.env.VITE_API_URL +
@@ -640,6 +683,8 @@ const Offers: React.FC = () => {
                       });
                   }}
                 />
+                  )}
+               
                 <button
                   type="button"
                   className=" h-[35px] w-[20%] mt-[30px] text-xl p-1"
@@ -674,6 +719,8 @@ const Offers: React.FC = () => {
                   <Button severity="warning" type="submit" label="Update" />
                 ) : (
                   <Button severity="success" type="submit" label="Save" />
+                  
+                  
                 )}
                 &nbsp;&nbsp;
                 <Button

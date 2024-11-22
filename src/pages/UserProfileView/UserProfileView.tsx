@@ -1856,7 +1856,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                         </div>
                         <div className="w-[100%] md:w-[48%]">
                           <TextInput
-                            label="Medication Details"
+                            label="Current Medicines"
                             name="pastmedicaldetails"
                             id="medicaldetails"
                             type="text"

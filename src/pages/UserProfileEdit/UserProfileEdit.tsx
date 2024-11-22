@@ -908,9 +908,10 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                             { value: "single", label: "Single" },
                             { value: "married", label: "Married" },
                           ]}
-                          disabled={!edits.personal}
+                          disabled={!edits.personal && inputs.age > '18' ? false:true}
                           required
                         />
+
                       </div>
                       <div className="w-[100%] md:w-[48%] lg:w-[48%]">
                         <TextInput
@@ -937,6 +938,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                           id="qualification"
                           type="text"
                           onChange={handleInputVal}
+                          disabled={inputs.age > '18'? false : true}
                           value={inputs.qualification}
                           readonly={!edits.personal}
                           required
@@ -949,6 +951,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                           id="Occupation"
                           type="text"
                           onChange={handleInputVal}
+                          disabled={inputs.age > '18'? false : true}
                           value={inputs.occupation}
                           readonly={!edits.personal}
                           required
@@ -1588,7 +1591,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                     </div>
                     <div className="w-[100%] md:w-[48%]">
                       <TextInput
-                        label="Medication Details"
+                        label="Current Medicines"
                         name="pastmedicaldetails"
                         id="medicaldetails"
                         type="text"

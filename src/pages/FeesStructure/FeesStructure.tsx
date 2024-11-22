@@ -6,6 +6,8 @@ import { Button } from "primereact/button";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputNumber } from "primereact/inputnumber";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 type DecryptResult = any;
 
@@ -119,16 +121,20 @@ const FeesStructure: React.FC = () => {
           setUpdateStructure(true);
 
           getAddStructure();
+          
 
           setWorkSpaceData({
             refFeId: rowData.refFeId,
             memberlist: rowData.refMemberList,
             sessionType: rowData.refSessionType,
+            perday: rowData.refAmtPerDay,
             fees: rowData.refFees,
             gstfees: rowData.refGst,
             totalfees: rowData.refFeTotal,
           });
         }}
+       
+
       />
     );
   };
@@ -164,6 +170,19 @@ const FeesStructure: React.FC = () => {
         import.meta.env.VITE_ENCRYPTION_KEY
       );
 
+      toast.error("Deleted Successfully", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        // transition: Bounce,
+      });
+
+
       branchChange(branch);
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
@@ -174,11 +193,11 @@ const FeesStructure: React.FC = () => {
 
   const [memeberlistOption, setMemberListOption] = useState([]);
   const [sessionTypeOption, setsessionTypeOption] = useState([]);
-
   const [workSpaceData, setWorkSpaceData] = useState({
     refFeId: "",
     memberlist: "",
     sessionType: "",
+    perday: 0,
     fees: 0,
     gstfees: 0,
     totalfees: 0,
@@ -229,6 +248,7 @@ const FeesStructure: React.FC = () => {
         import.meta.env.VITE_API_URL + "/director/editFeesStructure",
         {
           refFeId: workSpaceData.refFeId,
+          refAmtPerDay: workSpaceData.perday,
           refFees: workSpaceData.fees,
           refGst: workSpaceData.gstfees,
           refTotal: workSpaceData.totalfees,
@@ -253,6 +273,7 @@ const FeesStructure: React.FC = () => {
             refFeId: "",
             memberlist: "",
             sessionType: "",
+            perday: 0,
             fees: 0,
             gstfees: 0,
             totalfees: 0,
@@ -266,7 +287,17 @@ const FeesStructure: React.FC = () => {
         } else {
           setUpdateStructure(true);
         }
-
+        toast.success("Updated Successfully", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          // transition: Bounce,
+        });
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
       });
     } else {
@@ -279,6 +310,7 @@ const FeesStructure: React.FC = () => {
           refFees: workSpaceData.fees,
           refGst: workSpaceData.gstfees,
           refTotal: workSpaceData.totalfees,
+          refAmtPerDay: workSpaceData.perday,
         },
         {
           headers: {
@@ -295,11 +327,24 @@ const FeesStructure: React.FC = () => {
 
         console.log(data);
 
+        toast.success("New Fees Added Successfully", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          // transition: Bounce,
+        });
+
         if (data.success) {
           setWorkSpaceData({
             refFeId: "",
             memberlist: "",
             sessionType: "",
+            perday: 0,
             fees: 0,
             gstfees: 0,
             totalfees: 0,
@@ -321,8 +366,10 @@ const FeesStructure: React.FC = () => {
     }
   };
 
+
   return (
     <>
+      <ToastContainer />
       <div className="flex justify-between items-center">
         <Dropdown
           value={branch}
@@ -380,6 +427,7 @@ const FeesStructure: React.FC = () => {
                     disabled={updateStructure}
                   />
                 </div>
+
                 <div className="flex flex-column gap-2 w-[48%]">
                   <label htmlFor="username">Session Type</label>
                   <Dropdown
@@ -403,7 +451,7 @@ const FeesStructure: React.FC = () => {
                 </div>
               </div>
               <div className="flex justify-between mt-4">
-                <div className="flex flex-column gap-2 w-[30%]">
+                <div className="flex flex-column gap-2 w-[48%]">
                   <label htmlFor="username">Fees</label>
                   <InputNumber
                     value={workSpaceData.fees}
@@ -424,7 +472,23 @@ const FeesStructure: React.FC = () => {
                     required
                   />
                 </div>
-                <div className="flex flex-column gap-2 w-[30%]">
+                <div className="flex flex-column gap-2 w-[48%]">
+                  <label htmlFor="username">Fees per day</label>
+                  <InputNumber
+                    value={workSpaceData.perday}
+                    onChange={(e: any) => {
+                      setWorkSpaceData({
+                        ...workSpaceData,
+                        perday: e.value,
+                      });
+                    }}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-row w-[100%] justify-between mt-4">
+                <div className="flex flex-column gap-2 w-[48%]">
                   <label htmlFor="username">GST Fees</label>
                   <InputNumber
                     value={workSpaceData.gstfees}
@@ -432,7 +496,7 @@ const FeesStructure: React.FC = () => {
                     required
                   />
                 </div>
-                <div className="flex flex-column gap-2 w-[30%]">
+                <div className="flex flex-column gap-2 w-[48%]">
                   <label htmlFor="username">Total Fees</label>
                   <InputNumber
                     value={workSpaceData.totalfees}
@@ -463,6 +527,7 @@ const FeesStructure: React.FC = () => {
                       sessionType: "",
                       fees: 0,
                       gstfees: 0,
+                      perday: 0,
                       totalfees: 0,
                     });
                   }}
@@ -477,6 +542,7 @@ const FeesStructure: React.FC = () => {
       <DataTable value={tableData} className="mt-10">
         <Column field="MemberListName" header="Member List"></Column>
         <Column field="SessionTypeName" header="Session Type"></Column>
+        <Column field="refAmtPerDay" header="Fees Per Day"></Column>
         <Column field="refFees" header="Fees"></Column>
         <Column field="refGst" header="GST"></Column>
         <Column field="refFeTotal" header="Total Fees"></Column>
