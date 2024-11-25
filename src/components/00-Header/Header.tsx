@@ -209,7 +209,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     },
     {
       path: "/therapist/approve",
-      name: "Therapist Users",
+      name: "Therapy Users",
       icon: <HiOutlineUserGroup />,
     },
     {
@@ -339,7 +339,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     // },
     {
       path: "/therapist/approve",
-      name: "Therapist Users",
+      name: "Therapy Users",
       icon: <HiOutlineUserGroup />,
     },
     // {

@@ -312,7 +312,7 @@ const OverallDashboard: React.FC = () => {
                 <div className="cardOutline card">
                   <div className="header">
                     <i className="pi pi-user-plus"></i>
-                    <h3>Therapist Users</h3>
+                    <h3>Therapy User</h3>
                   </div>
                   <div className="counts">
                     <div className="countOne">

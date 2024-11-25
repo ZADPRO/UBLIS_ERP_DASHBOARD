@@ -350,7 +350,6 @@ const Offers: React.FC = () => {
         );
 
         console.log(data);
-       
 
         if (data.success) {
           setWorkSpaceData({
@@ -568,123 +567,121 @@ const Offers: React.FC = () => {
                 <div className="flex flex-column gap-2 w-[48%]">
                   <label htmlFor="username">Coupon</label>
                   <InputText
-  value={workSpaceData.coupon}
-  onChange={(e: any) => {
-    const couponValue = e.target.value;
-    setWorkSpaceData({
-      ...workSpaceData,
-      coupon: couponValue,
-    });
+                    value={workSpaceData.coupon}
+                    onChange={(e: any) => {
+                      const couponValue = e.target.value;
+                      setWorkSpaceData({
+                        ...workSpaceData,
+                        coupon: couponValue,
+                      });
 
-    Axios.post(
-      `${import.meta.env.VITE_API_URL}/director/validateCouponCode`,
-      {
-        CouponCode: couponValue,
-      },
-      {
-        headers: {
-          Authorization: localStorage.getItem("JWTtoken"),
-          "Content-Type": "application/json",
-        },
-      }
-    )
-      .then((res) => {
-        const data = decrypt(
-          res.data[1],
-          res.data[0],
-          import.meta.env.VITE_ENCRYPTION_KEY
-        );
+                      Axios.post(
+                        `${
+                          import.meta.env.VITE_API_URL
+                        }/director/validateCouponCode`,
+                        {
+                          CouponCode: couponValue,
+                        },
+                        {
+                          headers: {
+                            Authorization: localStorage.getItem("JWTtoken"),
+                            "Content-Type": "application/json",
+                          },
+                        }
+                      )
+                        .then((res) => {
+                          const data = decrypt(
+                            res.data[1],
+                            res.data[0],
+                            import.meta.env.VITE_ENCRYPTION_KEY
+                          );
 
-        if (data.success) {
-          setVerifyCoupon(true);
-        } else {
-          setVerifyCoupon(false);
-        }
-      })
-      .catch((err) => {
-        console.error("Error: ", err);
-      });
-  }}
-  required
-  readOnly={!updateStructure ? false:true} 
-/>
+                          if (data.success) {
+                            setVerifyCoupon(true);
+                          } else {
+                            setVerifyCoupon(false);
+                          }
+                        })
+                        .catch((err) => {
+                          console.error("Error: ", err);
+                        });
+                    }}
+                    required
+                    readOnly={!updateStructure ? false : true}
+                  />
 
-
-                  {updateStructure ? (
-                    <></>
-                  ) : (
-                    <>
-                      {workSpaceData.coupon.length === 0 ? (
-                        <></>
-                      ) : workSpaceData.coupon.length < 8 ? (
-                        <div className="text-red-700">Coupon Code Should be Above 8 Characters</div>
-                      ) : !verifycoupon ? (
-                        <div className="text-red-700" >Already Exists Coupon</div>
-                      ) : (
-                        <div className="text-green-600">Valid</div>
-                      )}
+{!updateStructure && (
+        <>
+          {workSpaceData.coupon.length === 0 ? (
+            <></>
+          ) : workSpaceData.coupon.length < 8 ? (
+            <div className="text-red-700">Coupon Code Should be Above 8 Characters</div>
+          ) : !verifycoupon ? (
+            <div className="text-red-700">Already Expired Coupon</div>
+          ) : (
+            <div className="text-green-600">Valid</div>
+          )}
                     </>
                   )}
                 </div>
                 {updateStructure ? (
-                    <></>
-                  ) : (
-                  
-                      <Button
-                  severity="success"
-                  type="button"
-                  className="h-[35px] w-[20%] mt-[27px]"
-                  label="Generate"
-                  onClick={() => {
-                    const characters =
-                      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-                    let couponCode = "";
+                  <></>
+                ) : (
+                  <Button
+                    severity="success"
+                    type="button"
+                    className="h-[35px] w-[20%] mt-[27px]"
+                    label="Generate"
+                    onClick={() => {
+                      const characters =
+                        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+                      let couponCode = "";
 
-                    for (let i = 0; i < 8; i++) {
-                      const randomIndex = Math.floor(
-                        Math.random() * characters.length
-                      );
-                      couponCode += characters[randomIndex];
-                    }
-                 
-                    setWorkSpaceData({
-                      ...workSpaceData,
-                      coupon: couponCode,
-                    });
-
-                    Axios.post(
-                      import.meta.env.VITE_API_URL +
-                        "/director/validateCouponCode",
-                      {
-                        CouponCode: couponCode,
-                      },
-                      {
-                        headers: {
-                          Authorization: localStorage.getItem("JWTtoken"),
-                          "Content-Type": "application/json",
-                        },
-                      }
-                    )
-                      .then((res) => {
-                        const data = decrypt(
-                          res.data[1],
-                          res.data[0],
-                          import.meta.env.VITE_ENCRYPTION_KEY
+                      for (let i = 0; i < 8; i++) {
+                        const randomIndex = Math.floor(
+                          Math.random() * characters.length
                         );
+                        couponCode += characters[randomIndex];
+                      }
 
-                        if (data.success) {
-                          setVerifyCoupon(true);
-                        } else {
-                          setVerifyCoupon(false);
-                        }
-                      })
-                      .catch((err) => {
-                        console.error("Error: ", err);
+                      setWorkSpaceData({
+                        ...workSpaceData,
+                        coupon: couponCode,
                       });
-                  }}
-                />
-                  )}
-               
+
+                      Axios.post(
+                        import.meta.env.VITE_API_URL +
+                          "/director/validateCouponCode",
+                        {
+                          CouponCode: couponCode,
+                        },
+                        {
+                          headers: {
+                            Authorization: localStorage.getItem("JWTtoken"),
+                            "Content-Type": "application/json",
+                          },
+                        }
+                      )
+                        .then((res) => {
+                          const data = decrypt(
+                            res.data[1],
+                            res.data[0],
+                            import.meta.env.VITE_ENCRYPTION_KEY
+                          );
+
+                          if (data.success) {
+                            setVerifyCoupon(true);
+                          } else {
+                            setVerifyCoupon(false);
+                          }
+                        })
+                        .catch((err) => {
+                          console.error("Error: ", err);
+                        });
+                    }}
+                  />
+                )}
+
                 <button
                   type="button"
                   className=" h-[35px] w-[20%] mt-[30px] text-xl p-1"
@@ -719,8 +716,6 @@ const Offers: React.FC = () => {
                   <Button severity="warning" type="submit" label="Update" />
                 ) : (
                   <Button severity="success" type="submit" label="Save" />
-                  
-                  
                 )}
                 &nbsp;&nbsp;
                 <Button

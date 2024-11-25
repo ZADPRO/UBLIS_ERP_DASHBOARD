@@ -10,6 +10,7 @@ import { Calendar } from "primereact/calendar";
 import moment from "moment";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { InputText } from "primereact/inputtext";
 
 type DecryptResult = any;
 
@@ -43,6 +44,8 @@ const Session: React.FC = () => {
   const [branch, setBranch] = useState([]);
   const [branchOptions, setBranchOptions] = useState([]);
   const [sectionData, setSectionData] = useState([]);
+  const [classData, setClassData] = useState([]);
+  const [customClassData, setCustomClassDataData] = useState([]);
   const sessionModeOptions = [
     {
       value: "Online",
@@ -60,6 +63,7 @@ const Session: React.FC = () => {
   const [sessionMemberTypeOptions, setSessionMemberTypeOptions] = useState([]);
 
   const [sessionEditId, setSessionEditId] = useState(0);
+  const [customClassEditId, setCustomClassEditId] = useState(0);
 
   const fetchBranchData = () => {
     Axios.get(import.meta.env.VITE_API_URL + "/settings/Section/branch", {
@@ -87,6 +91,9 @@ const Session: React.FC = () => {
     });
   };
 
+
+
+
   const fetchsessionData = () => {
     Axios.post(
       import.meta.env.VITE_API_URL + "/settings/Section",
@@ -111,6 +118,36 @@ const Session: React.FC = () => {
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
     });
   };
+
+
+
+  const fetchclassData = () => {
+    Axios.post(
+      import.meta.env.VITE_API_URL + "/settings/Section/customClassData",
+      {
+        branchId: branch,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("JWTtoken"),
+          "Content-Type": "application/json",
+        },
+      }
+    ).then((res) => {
+      const data = decrypt(
+        res.data[1],
+        res.data[0],
+        import.meta.env.VITE_ENCRYPTION_KEY
+      );
+
+      setClassData(data.customClass);
+
+      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+    });
+  };
+
+
+
 
   const fetchsessionOption = () => {
     Axios.get(
@@ -154,6 +191,7 @@ const Session: React.FC = () => {
 
   useEffect(() => {
     fetchsessionData();
+    fetchclassData();
   }, [branch]);
 
   const sessionEdit = (rowData: any) => {
@@ -187,7 +225,6 @@ const Session: React.FC = () => {
             (item: any) => item.label == rowData.refTimeMembers
           );
 
-          console.log("adddddddddddddddddd", selectedItem);
 
           setSessionEditId(rowData.refTimeId);
 
@@ -203,6 +240,40 @@ const Session: React.FC = () => {
       />
     );
   };
+
+  const  customClassEdit= (rowData: any) => {
+    return (
+      <Button
+        severity="success"
+        onClick={() => {
+          setClassAdd(true);
+          setClassUpdate(true);
+
+         
+
+
+
+          setCustomClassEditId(rowData.refCustTimeId);
+
+          setClassWorkSpaceData({
+            custClass:rowData.refCustTimeData
+           
+          });
+        }}
+        
+        label="Edit"
+      />
+    );
+  };
+
+
+
+
+
+
+
+
+
 
   const sessionDelete = (rowData: any) => {
     return (
@@ -247,7 +318,64 @@ const Session: React.FC = () => {
     );
   };
 
+  const customClassDelete = (rowData: any) => {
+    return (
+      <Button
+        severity="danger"
+        label="Delete"
+        onClick={() => {
+          Axios.post(
+            import.meta.env.VITE_API_URL +
+              "/settings/Section/deleteCustomClassData",
+            {
+              refCustTimeId: rowData.refCustTimeId,
+            },
+            {
+              headers: {
+                Authorization: localStorage.getItem("JWTtoken"),
+                "Content-Type": "application/json",
+              },
+            }
+          ).then((res) => {
+            const data = decrypt(
+              res.data[1],
+              res.data[0],
+              import.meta.env.VITE_ENCRYPTION_KEY
+            );
+            console.log('data', data)
+            localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+            toast.error("Custom class Deleted Successfully", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              // transition: Bounce,
+            });
+            fetchclassData();
+          });
+        }}
+      />
+    );
+  };
+
+
+
+
+
+
+
+
+
+
+
+
   const [sessionadd, setSessionAdd] = useState(false);
+  const [classadd, setClassAdd] = useState(false);
+
 
   const [sessionWorkSpaceData, setSessionWorkSpaceData] = useState<{
     fromdate: Date | null | undefined;
@@ -263,7 +391,20 @@ const Session: React.FC = () => {
     membertype: null,
   });
 
+
+
+  const [classWorkSpaceData, setClassWorkSpaceData] = useState<{
+    
+    custClass:null,
+
+  }>({
+    custClass:null
+  });
+
+
   const [sessionUpdate, setSessionUpdate] = useState(false);
+  const [classUpdate, setClassUpdate] = useState(false);
+
 
   return (
     <>
@@ -288,7 +429,7 @@ const Session: React.FC = () => {
           <h2>Session</h2>
         </div>
         <TabView>
-          <TabPanel header="Session">
+          <TabPanel header="Custom Session">
             {sessionadd ? (
               <></>
             ) : (
@@ -329,6 +470,7 @@ const Session: React.FC = () => {
                         refTimeDays: sessionWorkSpaceData.sessiondays,
                         refTimeMembersID: sessionWorkSpaceData.membertype,
                         refTimeId: sessionUpdate ? sessionEditId : null,
+                        refBranchId:branch
                       },
                       {
                         headers: {
@@ -416,7 +558,7 @@ const Session: React.FC = () => {
                         </div>
                       </div>
                       <div className="flex flex-column gap-2 w-[48%]">
-                        <label htmlFor="username">Sessoin Mode</label>
+                        <label htmlFor="username">Session Mode</label>
                         <Dropdown
                           value={sessionWorkSpaceData.sessionmode}
                           onChange={(e) => {
@@ -440,7 +582,8 @@ const Session: React.FC = () => {
                     <div className="flex justify-between mt-4">
                       <div className="flex flex-row gap-2 w-[50%]">
                         <div className="flex flex-column gap-2 w-[100%]">
-                          <label htmlFor="username">Sessoin Days</label>
+                          <label htmlFor="username">Session
+                             Days</label>
                           <Dropdown
                             value={sessionWorkSpaceData.sessiondays}
                             onChange={(e) => {
@@ -517,8 +660,141 @@ const Session: React.FC = () => {
               <Column header="Delete" body={sessionDelete}></Column>
             </DataTable>
           </TabPanel>
-          <TabPanel header="Audit">
-            <p className="m-0">Audit</p>
+
+
+
+
+
+
+
+          {/* ***************************************************************************** */}
+
+          <TabPanel header="Custom Class">
+          {classadd ? (
+              <></>
+            ) : (
+              <div className="flex justify-end">
+                <Button
+                  onClick={() => {
+                    setClassAdd(true);
+                  }}
+                  severity="success"
+                  label="Add Session"
+                />
+              </div>
+            )}
+
+            {classadd ? (
+              <>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+
+                    let url = "/settings/Section/addCustomClassData";
+
+                    if (classUpdate) {
+                      url = "/settings/Section/editCustomClassData";
+                    }
+
+                    Axios.post(
+                      import.meta.env.VITE_API_URL + url,
+                      {
+                        
+                        refCustTimeId: classUpdate ? customClassEditId : null,
+                        refCustTimeData:classWorkSpaceData.custClass,
+                        refBranchId:branch,
+                        
+                      },
+                      {
+                        headers: {
+                          Authorization: localStorage.getItem("JWTtoken"),
+                          "Content-Type": "application/json",
+                        },
+                      }
+                    ).then((res) => {
+                      const data = decrypt(
+                        res.data[1],
+                        res.data[0],
+                        import.meta.env.VITE_ENCRYPTION_KEY
+                      );
+                      fetchclassData();
+
+                      toast.success(
+                        sessionUpdate
+                          ? "Custom Class  Updated Successfully!"
+                          : "New Custom Class Added Successfully!",
+                        {
+                          position: "top-right",
+                          autoClose: 5000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          theme: "light",
+                          // transition: Bounce,
+                        }
+                      );
+
+                      setClassAdd(false);
+
+                      if (classUpdate) {
+                        setClassUpdate(false);
+                      }
+                      setClassWorkSpaceData({
+                        custClass:null,
+                      });
+
+                      localStorage.setItem(
+                        "JWTtoken",
+                        "Bearer " + data.token + ""
+                      );
+                    });
+                  }}
+                >
+                   <div className="flex flex-column gap-2 w-[100%]">
+                  <label htmlFor="username">Custom class name</label>
+                  <InputText
+                    value={classWorkSpaceData.custClass}
+                    onChange={(e: any) => {
+                      setClassWorkSpaceData({
+                        ...classWorkSpaceData,
+                        custClass: e.target.value,
+                      });
+                    }}
+                    required
+                  />
+                </div>
+                  <div className="flex justify-end gap-3 mt-5">
+                    <Button
+                      severity="info"
+                      label="Close"
+                      type="button"
+                      onClick={() => {
+                        setClassAdd(false);
+                        setClassWorkSpaceData({
+                          custClass:null
+                        });
+                      }}
+                    />
+                    {classUpdate ? (
+                      <Button severity="warning" label="Update" type="submit" />
+                    ) : (
+                      <Button severity="success" label="Save" type="submit" />
+                    )}
+                  </div>
+                </form>
+              </>
+            ) : null}
+          <DataTable value={classData} className="mt-10">
+              <Column  header="S.No" body={(data, options) => options.rowIndex + 1}></Column>
+              <Column field="refCustTimeData" header="Custom Class"></Column>
+              <Column field="refBranchName" header="Branch"></Column>
+             
+              <Column header="Edit" body={customClassEdit}></Column>
+              <Column header="Delete" body={customClassDelete}></Column>
+              
+            </DataTable>
           </TabPanel>
         </TabView>
       </div>
