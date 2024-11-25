@@ -162,9 +162,7 @@ const UserDirData: React.FC = () => {
       setUserDetails(userDetails);
       setUserDetailss(userData);
 
-
-      console.log("Testing Data---------------",data);
-      
+      console.log("Testing Data---------------", data);
     } catch (error) {
       console.error("Error fetching user details:", error);
     }
@@ -381,7 +379,7 @@ const UserDirData: React.FC = () => {
                 >
                   <Column
                     header="S.No"
-                    body={(options) => options.rowIndex + 1}
+                    body={(data, options) => options.rowIndex + 1}
                   />{" "}
                   <Column
                     field="transData"

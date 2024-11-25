@@ -59,6 +59,8 @@ const Session: React.FC = () => {
 
   const [sessionMemberTypeOptions, setSessionMemberTypeOptions] = useState([]);
 
+  const [sessionEditId, setSessionEditId] = useState(0);
+
   const fetchBranchData = () => {
     Axios.get(import.meta.env.VITE_API_URL + "/settings/Section/branch", {
       headers: {
@@ -126,8 +128,6 @@ const Session: React.FC = () => {
         import.meta.env.VITE_ENCRYPTION_KEY
       );
 
-      console.log("--------------------", data);
-
       const options = data.MemberList.map((sessionMemberTypeOptions: any) => ({
         label: sessionMemberTypeOptions.refTimeMembers,
         value: sessionMemberTypeOptions.refTimeMembersID,
@@ -189,6 +189,8 @@ const Session: React.FC = () => {
 
           console.log("adddddddddddddddddd", selectedItem);
 
+          setSessionEditId(rowData.refTimeId);
+
           setSessionWorkSpaceData({
             fromdate: parseTimeToDate(startTime.trim()),
             todate: parseTimeToDate(endTime.trim()),
@@ -202,8 +204,47 @@ const Session: React.FC = () => {
     );
   };
 
-  const sessionDelete = () => {
-    return <Button severity="danger" label="Delete" />;
+  const sessionDelete = (rowData: any) => {
+    return (
+      <Button
+        severity="danger"
+        label="Delete"
+        onClick={() => {
+          Axios.post(
+            import.meta.env.VITE_API_URL +
+              "/settings/Section/deleteSectionData",
+            {
+              refTimeId: rowData.refTimeId,
+            },
+            {
+              headers: {
+                Authorization: localStorage.getItem("JWTtoken"),
+                "Content-Type": "application/json",
+              },
+            }
+          ).then((res) => {
+            const data = decrypt(
+              res.data[1],
+              res.data[0],
+              import.meta.env.VITE_ENCRYPTION_KEY
+            );
+            localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+            toast.error("The Section Is Deleted Successfully", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              // transition: Bounce,
+            });
+            fetchsessionData();
+          });
+        }}
+      />
+    );
   };
 
   const [sessionadd, setSessionAdd] = useState(false);
@@ -287,7 +328,7 @@ const Session: React.FC = () => {
                         refTimeMode: sessionWorkSpaceData.sessionmode,
                         refTimeDays: sessionWorkSpaceData.sessiondays,
                         refTimeMembersID: sessionWorkSpaceData.membertype,
-                        refbranchId: branch,
+                        refTimeId: sessionUpdate ? sessionEditId : null,
                       },
                       {
                         headers: {

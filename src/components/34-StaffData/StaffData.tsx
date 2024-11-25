@@ -177,7 +177,7 @@ const StaffData: React.FC = () => {
   //   }
   // };
 
-  const [changes,setChnages] = useState(false);
+  const [changes, setChnages] = useState(false);
 
   const handleAddStaff = async () => {
     try {
@@ -224,7 +224,7 @@ const StaffData: React.FC = () => {
       setPanCard("");
       setAadharCard("");
 
-      setChnages(!changes)
+      setChnages(!changes);
 
       toast.success("New Staff Added", {
         position: "top-right",
@@ -310,7 +310,7 @@ const StaffData: React.FC = () => {
                 <div className="flex justify-end">
                   <Button
                     severity="success"
-                    label="Add New Staff"
+                    label="Add New Employee"
                     onClick={() => {
                       setVisibleRight(true);
                     }}
@@ -322,141 +322,158 @@ const StaffData: React.FC = () => {
               <StaffDatas changes={changes} />
             </div>
           </div>
-
           <Sidebar
             visible={visibleRight}
             onHide={() => setVisibleRight(false)}
             position="right"
             style={{ width: "60vw" }}
           >
-            <h2>Add New Staff</h2>
+            <h2>Add New Employee</h2>
 
             {/* Form content starts here */}
-            <div className="p-fluid grid" style={{ justifyContent: "center" }}>
-              {/* First Name and Last Name */}
-              <div className="field col-5">
-                <span className="p-float-label">
-                  <InputText
-                    id="firstName"
-                    value={staffName}
-                    onChange={(e) => setStaffName(e.target.value)}
-                  />
-                  <label htmlFor="firstName">First Name</label>
-                </span>
-              </div>
-              <div className="field col-5">
-                <span className="p-float-label">
-                  <InputText
-                    id="lastName"
-                    value={staffRole}
-                    onChange={(e) => setStaffRole(e.target.value)}
-                  />
-                  <label htmlFor="lastName">Last Name</label>
-                </span>
-              </div>
-
-              {/* Date of Birth and Dropdown */}
-              <div className="field col-5">
-                <span className="p-float-label">
-                  <Calendar
-                    id="dob"
-                    value={dob}
-                    onChange={(e) => setDob(e.value as Date)}
-                    dateFormat="dd/mm/yy"
-                  />
-                  <label htmlFor="dob">Date of Birth</label>
-                </span>
-              </div>
-              <div className="field col-5">
-                <span className="p-float-label">
-                  <Dropdown
-                    id="dropdown"
-                    value={dropdownValue}
-                    options={dropdownOptions}
-                    optionLabel="label"
-                    optionValue="value"
-                    onChange={(e) => setDropdownValue(e.value)}
-                    placeholder="Select Option"
-                  />
-                  <label htmlFor="dropdown">Select Role</label>
-                </span>
-              </div>
-
-              {/* Email and Mobile */}
-              <div className="field col-5">
-                <span className="p-float-label">
-                  <InputText
-                    id="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                  <label htmlFor="email">Email</label>
-                </span>
-              </div>
-              <div className="field col-5">
-                <span className="p-float-label">
-                  <InputText
-                    id="mobile"
-                    value={mobile}
-                    onChange={(e) => setMobile(e.target.value)}
-                  />
-                  <label htmlFor="mobile">Mobile</label>
-                </span>
-              </div>
-
-              {/* PAN Card and Aadhar Card */}
-              <div className="field col-5">
-                <span className="p-float-label">
-                  <InputText
-                    id="panCard"
-                    value={panCard}
-                    onChange={(e) => setPanCard(e.target.value)}
-                  />
-                  <label htmlFor="panCard">PAN Card</label>
-                </span>
-              </div>
-              <div className="field col-5">
-                <span className="p-float-label">
-                  <InputText
-                    id="aadharCard"
-                    value={aadharCard}
-                    onChange={(e) => setAadharCard(e.target.value)}
-                  />
-                  <label htmlFor="aadharCard">Aadhar Card</label>
-                </span>
-              </div>
-
-              <div className="field col-5">
-                <span className="p-float-label">
-                  <Dropdown
-                    id="dropdownbranch"
-                    value={dropdownValueBranch}
-                    options={dropdownOptionsBranch}
-                    optionLabel="label"
-                    optionValue="value"
-                    onChange={(e) => setDropdownValueBranch(e.value)}
-                    placeholder="Select Branch"
-                  />
-                  <label htmlFor="dropdown">Select Branch</label>
-                </span>
-              </div>
-            </div>
-            <div
-              className="buttons"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+            <form
+              onSubmit={(e) => {
+                e.preventDefault(); // Prevent default form submission
+                handleAddStaff(); // Call your submit function if validation passes
               }}
             >
-              <Button
-                label="Success"
-                severity="success"
-                raised
-                onClick={handleAddStaff}
-              />
-            </div>
+              <div
+                className="p-fluid grid"
+                style={{ justifyContent: "center" }}
+              >
+                {/* First Name and Last Name */}
+                <div className="field col-5">
+                  <span className="p-float-label">
+                    <InputText
+                      id="firstName"
+                      value={staffName}
+                      onChange={(e) => setStaffName(e.target.value)}
+                      required
+                    />
+                    <label htmlFor="firstName">First Name</label>
+                  </span>
+                </div>
+                <div className="field col-5">
+                  <span className="p-float-label">
+                    <InputText
+                      id="lastName"
+                      value={staffRole}
+                      onChange={(e) => setStaffRole(e.target.value)}
+                      required
+                    />
+                    <label htmlFor="lastName">Last Name</label>
+                  </span>
+                </div>
+
+                {/* Date of Birth and Dropdown */}
+                <div className="field col-5">
+                  <span className="p-float-label">
+                    <Calendar
+                      id="dob"
+                      value={dob}
+                      onChange={(e) => setDob(e.value as Date)}
+                      dateFormat="dd/mm/yy"
+                      required
+                    />
+                    <label htmlFor="dob">Date of Birth</label>
+                  </span>
+                </div>
+                <div className="field col-5">
+                  <span className="p-float-label">
+                    <Dropdown
+                      id="dropdown"
+                      value={dropdownValue}
+                      options={dropdownOptions}
+                      optionLabel="label"
+                      optionValue="value"
+                      onChange={(e) => setDropdownValue(e.value)}
+                      placeholder="Select Option"
+                      required
+                    />
+                    <label htmlFor="dropdown">Select Role</label>
+                  </span>
+                </div>
+
+                {/* Email and Mobile */}
+                <div className="field col-5">
+                  <span className="p-float-label">
+                    <InputText
+                      id="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                    <label htmlFor="email">Email</label>
+                  </span>
+                </div>
+                <div className="field col-5">
+                  <span className="p-float-label">
+                    <InputText
+                      id="mobile"
+                      value={mobile}
+                      onChange={(e) => setMobile(e.target.value)}
+                      required
+                    />
+                    <label htmlFor="mobile">Mobile</label>
+                  </span>
+                </div>
+
+                {/* PAN Card and Aadhar Card */}
+                <div className="field col-5">
+                  <span className="p-float-label">
+                    <InputText
+                      id="panCard"
+                      value={panCard}
+                      onChange={(e) => setPanCard(e.target.value)}
+                    />
+                    <label htmlFor="panCard">PAN Card</label>
+                  </span>
+                </div>
+                <div className="field col-5">
+                  <span className="p-float-label">
+                    <InputText
+                      id="aadharCard"
+                      value={aadharCard}
+                      onChange={(e) => setAadharCard(e.target.value)}
+                    />
+                    <label htmlFor="aadharCard">Aadhar Card</label>
+                  </span>
+                </div>
+
+                {/* Branch Dropdown */}
+                <div className="field col-5">
+                  <span className="p-float-label">
+                    <Dropdown
+                      id="dropdownbranch"
+                      value={dropdownValueBranch}
+                      options={dropdownOptionsBranch}
+                      optionLabel="label"
+                      optionValue="value"
+                      onChange={(e) => setDropdownValueBranch(e.value)}
+                      placeholder="Select Branch"
+                      required
+                    />
+                    <label htmlFor="dropdownbranch">Select Branch</label>
+                  </span>
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <div
+                className="buttons"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <button type="submit" className="p-button p-component">
+                  Submit
+                </button>
+              </div>
+            </form>
           </Sidebar>
+          ;
         </div>
       )}
     </>
