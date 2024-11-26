@@ -217,11 +217,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
       name: "Trial & Fee Due",
       icon: <HiOutlineUsers />,
     },
-    {
-      path: "/staff/registeredUsers",
-      name: "Payment",
-      icon: <HiOutlineUsers />,
-    },
+    
     {
       path: "/staff/signedupUsers",
       name: "Future Clients",
