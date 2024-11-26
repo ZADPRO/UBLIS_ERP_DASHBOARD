@@ -1004,7 +1004,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                   <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
                     <div className="w-[100%] md:w-[48%]">
                       <TextInput
-                        label="Residental Address *"
+                        label="Residential  Address *"
                         name="peraddress"
                         id="peraddress"
                         type="text"
@@ -1094,7 +1094,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                   <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
                     <div className="w-[100%] md:w-[48%]">
                       <TextInput
-                        label="Residental Address *"
+                        label="Residential  Address *"
                         name="tempaddress"
                         id="tempaddress"
                         type="text"
@@ -1212,7 +1212,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                   <div className="w-[100%] md:w-[56%] flex justify-between">
                     <div className="w-[65%] md:w-[75%]">
                       <TextInput
-                        label="Whatsapp Number *"
+                        label="WhatsApp Number *"
                         name="whatsappno"
                         id="whatsappno"
                         type="number"
@@ -1275,7 +1275,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
             <div className="basicProfileCont p-10 shadow-lg mt-10">
               <div className="w-[100%] flex justify-between items-center mb-5">
                 <div className="text-[1.2rem] lg:text-[25px] font-bold">
-                  Genderal Health
+                General Health
                 </div>
                 {edits.gendrel ? (
                   <button
@@ -1605,7 +1605,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                   <div className="w-[100%] flex flex-col gap-y-[20px] md:flex-row justify-between">
                     <div className="w-[100%] md:w-[48%]">
                       <label className="w-[100%] text-[#f95005] font-bold text-[1rem] lg:text-[20px] text-start">
-                        Under Physicians Care *
+                        Under Physician's Care *
                       </label>
                       <div className="w-[100%] flex justify-start mt-[10px]">
                         <div className="mr-10">

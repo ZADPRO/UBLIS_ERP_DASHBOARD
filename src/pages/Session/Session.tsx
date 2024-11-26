@@ -45,7 +45,7 @@ const Session: React.FC = () => {
   const [branchOptions, setBranchOptions] = useState([]);
   const [sectionData, setSectionData] = useState([]);
   const [classData, setClassData] = useState([]);
-  const [customClassData, setCustomClassDataData] = useState([]);
+  // const [customClassData, setCustomClassDataData] = useState([]);
   const sessionModeOptions = [
     {
       value: "Online",
@@ -221,9 +221,9 @@ const Session: React.FC = () => {
 
           const [startTime, endTime] = rowData.refTime.split(" to ");
 
-          const selectedItem = sessionMemberTypeOptions.find(
-            (item: any) => item.label == rowData.refTimeMembers
-          );
+          // const selectedItem = sessionMemberTypeOptions.find(
+          //   (item: any) => item.label == rowData.refTimeMembers
+          // );
 
 
           setSessionEditId(rowData.refTimeId);
@@ -787,7 +787,7 @@ const Session: React.FC = () => {
               </>
             ) : null}
           <DataTable value={classData} className="mt-10">
-              <Column  header="S.No" body={(data, options) => options.rowIndex + 1}></Column>
+              <Column  header="S.No" body={(_data, options) => options.rowIndex + 1}></Column>
               <Column field="refCustTimeData" header="Custom Class"></Column>
               <Column field="refBranchName" header="Branch"></Column>
              

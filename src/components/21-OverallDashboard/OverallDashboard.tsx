@@ -312,7 +312,7 @@ const OverallDashboard: React.FC = () => {
                 <div className="cardOutline card">
                   <div className="header">
                     <i className="pi pi-user-plus"></i>
-                    <h3>Therapy User</h3>
+                    <h3>Registered Users</h3>
                   </div>
                   <div className="counts">
                     <div className="countOne">
@@ -581,7 +581,7 @@ const OverallDashboard: React.FC = () => {
                                   {element.user_type_label}
                                 </span>
                                 <div className="mt-1 text-600">
-                                  Count : {element.count}
+                                   {element.count}
                                 </div>
                               </div>
                               <div className="mt-2 md:mt-0 flex align-items-center">
@@ -814,7 +814,7 @@ const OverallDashboard: React.FC = () => {
                                   {element.user_type_label}
                                 </span>
                                 <div className="mt-1 text-600">
-                                  Count : {element.count}
+                                  {element.count}
                                 </div>
                               </div>
                               <div className="mt-2 md:mt-0 flex align-items-center">

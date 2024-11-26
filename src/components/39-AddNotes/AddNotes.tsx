@@ -258,7 +258,7 @@ const AddNotes: React.FC = () => {
         //   </Sidebar>
         // </div>
         <div className="flex justify-center items-center w-[100%] h-screen">
-          <h1>Add Notes - Comming Soon</h1>
+          <h1>Add Notes - Coming Soon</h1>
         </div>
       )}
     </>

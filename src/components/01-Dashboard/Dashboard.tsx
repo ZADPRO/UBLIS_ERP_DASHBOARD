@@ -93,7 +93,7 @@ const Dashboard = () => {
 
   return (
     <div className="flex justify-center items-center w-[100%] h-screen">
-      <h1>Dashboard - Comming Soon</h1>
+      <h1>Dashboard - Coming Soon</h1>
     </div>
   );
 };

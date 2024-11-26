@@ -209,12 +209,17 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     },
     {
       path: "/therapist/approve",
-      name: "Therapy Users",
+      name: "Registered Users",
       icon: <HiOutlineUserGroup />,
     },
     {
       path: "/staff/registeredUsers",
       name: "Trial & Fee Due",
+      icon: <HiOutlineUsers />,
+    },
+    {
+      path: "/staff/registeredUsers",
+      name: "Payment",
       icon: <HiOutlineUsers />,
     },
     {
@@ -339,7 +344,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     // },
     {
       path: "/therapist/approve",
-      name: "Therapy Users",
+      name: "Registered Users",
       icon: <HiOutlineUserGroup />,
     },
     // {
@@ -389,7 +394,6 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
   ];
 
   useEffect(() => {
-
     const parsedUtId = utId ? parseInt(utId, 10) : null;
 
     if (parsedUtId === 5 || parsedUtId === 6) {

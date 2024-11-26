@@ -379,7 +379,7 @@ const UserDirData: React.FC = () => {
                 >
                   <Column
                     header="S.No"
-                    body={(data, options) => options.rowIndex + 1}
+                    body={(_data, options) => options.rowIndex + 1}
                   />{" "}
                   <Column
                     field="transData"

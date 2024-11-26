@@ -6,9 +6,9 @@ import { FaMoneyCheckDollar } from "react-icons/fa6";
 import { BiSolidOffer } from "react-icons/bi";
 import { Sidebar } from "primereact/sidebar";
 import FeesStructure from "../../pages/FeesStructure/FeesStructure";
-import { SiGoogleclassroom } from "react-icons/si";
+// import { SiGoogleclassroom } from "react-icons/si";
 import Offers from "../../pages/Offers/Offers";
-import session from "../../pages/Session/Session"
+// import session from "../../pages/Session/Session"
 import Session from "../../pages/Session/Session";
 import { FaUserClock } from "react-icons/fa6";
 

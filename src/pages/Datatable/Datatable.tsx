@@ -36,10 +36,10 @@ interface UserDetails {
   refComments: string;
 }
 
-interface Option {
-  label: string | unknown;
-  value: string | unknown;
-}
+// interface Option {
+//   label: string | unknown;
+//   value: string | unknown;
+// }
 
 type DecryptResult = any;
 
@@ -80,7 +80,7 @@ export default function Datatables() {
 
   const [visibleLeft, setVisibleLeft] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [refid, setRefId] = useState<string>("");
+  // const [refid, setRefId] = useState<string>("");
   const [UserDetails, setUserDetails] = useState<UserDetails[]>([]);
 
   const [Comments, setComments] = useState<string>("");
@@ -100,62 +100,62 @@ export default function Datatables() {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
+  const fetchCustomers = async () => {
+    const response = await Axios.get(
+      import.meta.env.VITE_API_URL + `/futureClients/data`,
+      {
+        headers: {
+          Authorization: localStorage.getItem("JWTtoken"),
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
+    const data = decrypt(
+      response.data[1],
+      response.data[0],
+      import.meta.env.VITE_ENCRYPTION_KEY
+    );
+
+    console.log("Data", data);
+
+    localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+
+    // const statusLabels = data.label.refStatusLabel;
+    // const statusOptionsFormatted = Object.entries(statusLabels).map(
+    //   ([key, value]) => ({
+    //     label: value,
+    //     value: key,
+    //   })
+    // );
+
+    // setStatusOptions(statusOptionsFormatted);
+    // // Extract follow-up options
+    // const followUpLabels = data.label.refFollowUpLabel;
+    // const followUpOptionsFormatted = Object.entries(followUpLabels).map(
+    //   ([key, value]) => ({
+    //     label: value,
+    //     value: key,
+    //   })
+    // );
+    // setFollowUpOptions(followUpOptionsFormatted);
+
+    const fetchedCustomers: Customer[] = data.data.map((customer: any) => ({
+      id: customer.refStId,
+      userId: customer.refSCustId,
+      fname: customer.refStFName + " " + customer.refStLName,
+      lname: customer.refStLName,
+      email: customer.refCtEmail || "",
+      date: customer.transTime || "",
+      mobile: customer.refCtMobile,
+      status1: customer.refStatusType || "N/A",
+      status2: customer.refFollowUpType || "N/A",
+      comments: customer.refComments || "N/A",
+    }));
+    setCustomers(fetchedCustomers);
+  };
   useEffect(() => {
-    const fetchCustomers = async () => {
-      const response = await Axios.get(
-        import.meta.env.VITE_API_URL + `/futureClients/data`,
-        {
-          headers: {
-            Authorization: localStorage.getItem("JWTtoken"),
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const data = decrypt(
-        response.data[1],
-        response.data[0],
-        import.meta.env.VITE_ENCRYPTION_KEY
-      );
-
-      console.log("Data", data);
-
-      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
-
-      // const statusLabels = data.label.refStatusLabel;
-      // const statusOptionsFormatted = Object.entries(statusLabels).map(
-      //   ([key, value]) => ({
-      //     label: value,
-      //     value: key,
-      //   })
-      // );
-
-      // setStatusOptions(statusOptionsFormatted);
-      // // Extract follow-up options
-      // const followUpLabels = data.label.refFollowUpLabel;
-      // const followUpOptionsFormatted = Object.entries(followUpLabels).map(
-      //   ([key, value]) => ({
-      //     label: value,
-      //     value: key,
-      //   })
-      // );
-      // setFollowUpOptions(followUpOptionsFormatted);
-
-      const fetchedCustomers: Customer[] = data.data.map((customer: any) => ({
-        id: customer.refStId,
-        userId: customer.refSCustId,
-        fname: customer.refStFName + " " + customer.refStLName,
-        lname: customer.refStLName,
-        email: customer.refCtEmail || "",
-        date: customer.transTime || "",
-        mobile: customer.refCtMobile,
-        status1: customer.refStatusType || "N/A",
-        status2: customer.refFollowUpType || "N/A",
-        comments: customer.refComments || "N/A",
-      }));
-      setCustomers(fetchedCustomers);
-    };
+   
 
     fetchCustomers();
   }, []);
@@ -205,7 +205,7 @@ export default function Datatables() {
     });
   };
 
-  const handClientAction = async (id: string) => {
+  const handClientAction = async () => {
     try {
       const payload = {
         refStId: Id,
@@ -236,6 +236,7 @@ export default function Datatables() {
       console.log("data", data);
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+      fetchCustomers();
       toast.success("Future Client Followup Action is Stored Successfully", {
         position: "top-right",
         autoClose: 5000,
@@ -367,7 +368,7 @@ export default function Datatables() {
     fetchUserAuditData(id);
     fetchUserDetails(id);
 
-    setRefId(id);
+    // setRefId(id);
 
     console.log("user ID ----", id);
 
@@ -624,7 +625,7 @@ export default function Datatables() {
               <form
                 onSubmit={(e) => {
                   e.preventDefault(); // Prevent default form submission
-                  handClientAction("3"); // Call your submit function if validation passes
+                  handClientAction(); // Call your submit function if validation passes
                 }}
               >
                 <div
@@ -713,7 +714,7 @@ export default function Datatables() {
                 >
                   <Column
                     header="S.No"
-                    body={(data, options) => options.rowIndex + 1}
+                    body={(_data, options) => options.rowIndex + 1}
                   />{" "}
                   <Column
                     field="refTime"

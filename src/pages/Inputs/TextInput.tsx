@@ -34,7 +34,7 @@ const TextInput: React.FC<TextInputProps> = ({
         type={type}
         name={name}
         placeholder={placeholder}
-        className={`relative w-full h-10 px-3 placeholder-transparent transition-all border-2 rounded outline-none focus-visible:outline-none peer border-[#b3b4b6] text-[#4c4c4e] bg-[#fff] autofill:bg-white ${
+        className={`relative w-full h-10  px-3 placeholder-transparent transition-all border-2 rounded outline-none focus-visible:outline-none peer border-[#b3b4b6] text-[#4c4c4e] bg-[#fff] autofill:bg-white ${
           isInvalid
             ? "invalid:border-pink-500 invalid:text-pink-500 focus:invalid:border-pink-500"
             : "focus:border-[#ff5001]"
@@ -47,7 +47,7 @@ const TextInput: React.FC<TextInputProps> = ({
       />
       <label
         htmlFor={id}
-        className={`cursor-text peer-focus:cursor-default -top-2 absolute left-2 z-[1] px-2 text-[14px] text-[#ff5001] transition-all before:absolute before:top-0 before:left-0 before:z-[-1] bg-[#fff] before:block before:h-full before:w-full before:bg-white before:transition-all ${
+        className={`cursor-text peer-focus:cursor-default  absolute left-2 z-[1] -top-2 px-2 text-[1rem] text-[#ff5001] transition-all before:absolute before:top-0 before:left-0 before:z-[-1] bg-[#fff] before:block before:h-full before:w-full before:bg-white before:transition-all ${
           isInvalid ? "peer-invalid:text-pink-500" : "peer-focus:text-[#ff5001]"
         } peer-placeholder-shown:text-bold ${required ? "peer-required:after:content-[]" : ""
         } peer-focus:-top-2 peer-focus:text-[14px] peer-disabled:cursor-not-allowed peer-disabled:text-slate-400 peer-disabled:before:bg-slate-50`}

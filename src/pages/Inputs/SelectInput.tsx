@@ -52,9 +52,9 @@ const SelectInput: React.FC<SelectInputProps> = ({
       </select>
       <label
         htmlFor={id}
-        className={`pointer-events-none bg-[#fff] capitalize absolute left-2 z-[1] -top-2 px-2 text-[14px] text-[#ff5001] transition-all before:absolute before:left-0 before:z-[-1] before:block before:h-full before:w-full before:bg-white before:transition-all ${
+        className={`pointer-events-none bg-[#fff] capitalize absolute left-2 z-[1] -top-2 px-2 text-[1rem] text-[#ff5001] transition-all before:absolute before:left-0 before:z-[-1] before:block before:h-full before:w-full before:bg-white before:transition-all ${
           isInvalid ? "text-pink-500" : "peer-focus:text-[#ff5001]"
-        } peer-required:after:text-[#000000] peer-valid:text-[14px] peer-focus:text-[14px] peer-disabled:cursor-not-allowed peer-disabled:text-slate-400 peer-disabled:before:bg-white`}
+        } peer-required:after:text-[#000000] peer-valid:text-[1rem] peer-focus:text-[1rem] peer-disabled:cursor-not-allowed peer-disabled:text-slate-400 peer-disabled:before:bg-white`}
       >
         {label}
       </label>
