@@ -11,7 +11,10 @@ import moment from "moment";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { InputText } from "primereact/inputtext";
-
+import { GrEdit } from "react-icons/gr";
+import { MdDelete } from "react-icons/md";
+import { MdOutlineAddchart } from "react-icons/md";
+import { ImUpload2 } from "react-icons/im";
 type DecryptResult = any;
 
 const Session: React.FC = () => {
@@ -164,6 +167,7 @@ const Session: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      console.log('data', data)
 
       const options = data.MemberList.map((sessionMemberTypeOptions: any) => ({
         label: sessionMemberTypeOptions.refTimeMembers,
@@ -196,8 +200,8 @@ const Session: React.FC = () => {
 
   const sessionEdit = (rowData: any) => {
     return (
-      <Button
-        severity="success"
+      <GrEdit 
+      style={{ cursor: "pointer", color: "green", fontSize: "1.5rem" }}
         onClick={() => {
           fetchsessionOption();
           setSessionAdd(true);
@@ -221,9 +225,9 @@ const Session: React.FC = () => {
 
           const [startTime, endTime] = rowData.refTime.split(" to ");
 
-          // const selectedItem = sessionMemberTypeOptions.find(
-          //   (item: any) => item.label == rowData.refTimeMembers
-          // );
+          const selectedItem = sessionMemberTypeOptions.find(
+            (item: any) => item.label == rowData.refTimeMembers
+          );
 
 
           setSessionEditId(rowData.refTimeId);
@@ -236,15 +240,15 @@ const Session: React.FC = () => {
             membertype: rowData.refTimeMembersID,
           });
         }}
-        label="Edit"
+       
       />
     );
   };
 
   const  customClassEdit= (rowData: any) => {
     return (
-      <Button
-        severity="success"
+      <GrEdit 
+      style={{ cursor: "pointer", color: "green", fontSize: "1.5rem" }}
         onClick={() => {
           setClassAdd(true);
           setClassUpdate(true);
@@ -261,7 +265,7 @@ const Session: React.FC = () => {
           });
         }}
         
-        label="Edit"
+        
       />
     );
   };
@@ -277,9 +281,8 @@ const Session: React.FC = () => {
 
   const sessionDelete = (rowData: any) => {
     return (
-      <Button
-        severity="danger"
-        label="Delete"
+      <MdDelete  
+  style={{ cursor: "pointer", color: "red", fontSize: "2rem" }}
         onClick={() => {
           Axios.post(
             import.meta.env.VITE_API_URL +
@@ -320,9 +323,8 @@ const Session: React.FC = () => {
 
   const customClassDelete = (rowData: any) => {
     return (
-      <Button
-        severity="danger"
-        label="Delete"
+      <MdDelete  
+      style={{ cursor: "pointer", color: "red", fontSize: "2rem" }}
         onClick={() => {
           Axios.post(
             import.meta.env.VITE_API_URL +
@@ -434,14 +436,14 @@ const Session: React.FC = () => {
               <></>
             ) : (
               <div className="flex justify-end">
-                <Button
-                  onClick={() => {
+               
+
+
+<button className="bg-green-500 border-none rounded-lg p-2  "  onClick={() => {
                     setSessionAdd(true);
                     fetchsessionOption();
-                  }}
-                  severity="success"
-                  label="Add Session"
-                />
+                  }}><MdOutlineAddchart className="text-3xl text-white" />
+</button>
               </div>
             )}
 
@@ -674,13 +676,12 @@ const Session: React.FC = () => {
               <></>
             ) : (
               <div className="flex justify-end">
-                <Button
-                  onClick={() => {
+                
+                <button className="bg-green-500 border-none rounded-lg p-2  "  onClick={() => {
                     setClassAdd(true);
-                  }}
-                  severity="success"
-                  label="Add Session"
-                />
+                  }}><MdOutlineAddchart className="text-3xl text-white" />
+                </button>
+                
               </div>
             )}
 
@@ -787,7 +788,7 @@ const Session: React.FC = () => {
               </>
             ) : null}
           <DataTable value={classData} className="mt-10">
-              <Column  header="S.No" body={(_data, options) => options.rowIndex + 1}></Column>
+              <Column  header="S.No" body={(data, options) => options.rowIndex + 1}></Column>
               <Column field="refCustTimeData" header="Custom Class"></Column>
               <Column field="refBranchName" header="Branch"></Column>
              

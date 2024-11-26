@@ -8,6 +8,11 @@ import { Column } from "primereact/column";
 import { InputNumber } from "primereact/inputnumber";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { GrEdit } from "react-icons/gr";
+import { MdDelete } from "react-icons/md";
+import { MdOutlineAddchart } from "react-icons/md";
+import { ImUpload2 } from "react-icons/im";
+
 
 type DecryptResult = any;
 
@@ -110,40 +115,33 @@ const FeesStructure: React.FC = () => {
 
   const EditBtn = (rowData: any) => {
     return (
-      <Button
-        label="Edit"
-        severity="success"
-        onClick={() => {
-          console.log(rowData);
+      <GrEdit 
+  style={{ cursor: "pointer", color: "green", fontSize: "1.5rem" }}
+  onClick={() => {
+    console.log(rowData);
 
-          setWorkSpace(true);
+    setWorkSpace(true);
+    setUpdateStructure(true);
+    getAddStructure();
 
-          setUpdateStructure(true);
-
-          getAddStructure();
-          
-
-          setWorkSpaceData({
-            refFeId: rowData.refFeId,
-            memberlist: rowData.refMemberList,
-            sessionType: rowData.refSessionType,
-            perday: rowData.refAmtPerDay,
-            fees: rowData.refFees,
-            gstfees: rowData.refGst,
-            totalfees: rowData.refFeTotal,
-          });
-        }}
-       
-
-      />
+    setWorkSpaceData({
+      refFeId: rowData.refFeId,
+      memberlist: rowData.refMemberList,
+      sessionType: rowData.refSessionType,
+      perday: rowData.refAmtPerDay,
+      fees: rowData.refFees,
+      gstfees: rowData.refGst,
+      totalfees: rowData.refFeTotal,
+    });
+  }}
+/>
     );
   };
 
   const DeleteBtn = (rowData: any) => {
     return (
-      <Button
-        label="Delete"
-        severity="danger"
+      <MdDelete  
+      style={{ cursor: "pointer", color: "red", fontSize: "1.8rem" }}
         onClick={() => {
           deleteFees(rowData.refFeId);
         }}
@@ -181,7 +179,6 @@ const FeesStructure: React.FC = () => {
         theme: "light",
         // transition: Bounce,
       });
-
 
       branchChange(branch);
 
@@ -366,11 +363,10 @@ const FeesStructure: React.FC = () => {
     }
   };
 
-
   return (
     <>
       <ToastContainer />
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center w-[90%]">
         <Dropdown
           value={branch}
           onChange={(e: any) => {
@@ -387,15 +383,16 @@ const FeesStructure: React.FC = () => {
         />
 
         {workSpace ? null : (
-          <Button
-            severity="success"
-            onClick={() => {
-              setWorkSpace(true);
-              getAddStructure();
-            }}
-            label="Add Structure"
-          />
+         
+
+          <button className="bg-green-500 border-none rounded-lg p-2  " onClick={() => {
+            setWorkSpace(true);
+            getAddStructure();
+          }}><MdOutlineAddchart className="text-3xl text-white" />
+ </button>
         )}
+
+        
       </div>
 
       {workSpace ? (
@@ -512,7 +509,8 @@ const FeesStructure: React.FC = () => {
               ) : null}
               <div className="flex justify-end mt-4 mb-3">
                 {updateStructure ? (
-                  <Button severity="warning" type="submit" label="Update" />
+                  <Button severity="warning" type="submit" label="Upadate" />
+                  
                 ) : (
                   <Button severity="success" type="submit" label="Save" />
                 )}

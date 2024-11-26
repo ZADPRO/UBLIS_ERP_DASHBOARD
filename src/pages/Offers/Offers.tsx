@@ -11,6 +11,9 @@ import { InputText } from "primereact/inputtext";
 import { FaRegCopy } from "react-icons/fa6";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { GrEdit } from "react-icons/gr";
+import { MdDelete } from "react-icons/md";
+import { MdOutlineAddchart } from "react-icons/md";
 
 type DecryptResult = any;
 
@@ -169,9 +172,8 @@ const Offers: React.FC = () => {
 
   const EditBtn = (rowData: any) => {
     return (
-      <Button
-        label="Edit"
-        severity="success"
+      <GrEdit 
+  style={{ cursor: "pointer", color: "green", fontSize: "1.5rem" }}
         onClick={() => {
           setWorkSpace(true);
 
@@ -193,9 +195,8 @@ const Offers: React.FC = () => {
 
   const DeleteBtn = (rowData: any) => {
     return (
-      <Button
-        label="Delete"
-        severity="danger"
+      <MdDelete  
+      style={{ cursor: "pointer", color: "red", fontSize: "1.8rem" }}
         onClick={() => {
           deleteFees(rowData.refOfId);
         }}
@@ -467,13 +468,12 @@ const Offers: React.FC = () => {
         />
 
         {workSpace ? null : (
-          <Button
-            severity="success"
-            onClick={() => {
-              setWorkSpace(true);
-            }}
-            label="Add Offer"
-          />
+         
+
+          <button className="bg-green-500 border-none rounded-lg p-2  " onClick={() => {
+            setWorkSpace(true);
+          }}><MdOutlineAddchart className="text-3xl text-white" />
+ </button>
         )}
       </div>
 

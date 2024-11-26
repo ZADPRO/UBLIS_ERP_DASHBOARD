@@ -16,6 +16,7 @@ import { SlOrganization } from "react-icons/sl";
 import { AiOutlineBell } from "react-icons/ai";
 import { GrDocumentNotes } from "react-icons/gr";
 import { MdAssignmentAdd } from "react-icons/md";
+import { FaFileInvoiceDollar } from "react-icons/fa6";
 
 import { RiSpam2Line } from "react-icons/ri";
 
@@ -216,6 +217,11 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
       path: "/staff/registeredUsers",
       name: "Trial & Fee Due",
       icon: <HiOutlineUsers />,
+    },
+    {
+      path: "/staff/payment",
+      name: "Payment",
+      icon: <FaFileInvoiceDollar />,
     },
     
     {
