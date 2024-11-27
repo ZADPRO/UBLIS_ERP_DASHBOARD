@@ -14,6 +14,10 @@ import { InputText } from "primereact/inputtext";
 import { GrEdit } from "react-icons/gr";
 import { MdDelete } from "react-icons/md";
 import { MdOutlineAddchart } from "react-icons/md";
+import { MultiSelect } from 'primereact/multiselect';
+import "./Session.css"
+
+
 // import { ImUpload2 } from "react-icons/im";
 type DecryptResult = any;
 
@@ -94,9 +98,6 @@ const Session: React.FC = () => {
     });
   };
 
-
-
-
   const fetchsessionData = () => {
     Axios.post(
       import.meta.env.VITE_API_URL + "/settings/Section",
@@ -121,8 +122,6 @@ const Session: React.FC = () => {
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
     });
   };
-
-
 
   const fetchclassData = () => {
     Axios.post(
@@ -149,9 +148,6 @@ const Session: React.FC = () => {
     });
   };
 
-
-
-
   const fetchsessionOption = () => {
     Axios.get(
       import.meta.env.VITE_API_URL + "/settings/Section/addSectionPage",
@@ -167,7 +163,7 @@ const Session: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      console.log('data', data)
+      console.log("data", data);
 
       const options = data.MemberList.map((sessionMemberTypeOptions: any) => ({
         label: sessionMemberTypeOptions.refTimeMembers,
@@ -200,8 +196,8 @@ const Session: React.FC = () => {
 
   const sessionEdit = (rowData: any) => {
     return (
-      <GrEdit 
-      style={{ cursor: "pointer", color: "green", fontSize: "1.5rem" }}
+      <GrEdit
+        style={{ cursor: "pointer", color: "green", fontSize: "1.5rem" }}
         onClick={() => {
           fetchsessionOption();
           setSessionAdd(true);
@@ -229,7 +225,6 @@ const Session: React.FC = () => {
           //   (item: any) => item.label == rowData.refTimeMembers
           // );
 
-
           setSessionEditId(rowData.refTimeId);
 
           setSessionWorkSpaceData({
@@ -238,51 +233,35 @@ const Session: React.FC = () => {
             sessionmode: rowData.refTimeMode,
             sessiondays: rowData.refTimeDays,
             membertype: rowData.refTimeMembersID,
+            branch:rowData.refBranch
           });
         }}
-       
       />
     );
   };
 
-  const  customClassEdit= (rowData: any) => {
+  const customClassEdit = (rowData: any) => {
     return (
-      <GrEdit 
-      style={{ cursor: "pointer", color: "green", fontSize: "1.5rem" }}
+      <GrEdit
+        style={{ cursor: "pointer", color: "green", fontSize: "1.5rem" }}
         onClick={() => {
           setClassAdd(true);
           setClassUpdate(true);
 
-         
-
-
-
           setCustomClassEditId(rowData.refCustTimeId);
 
           setClassWorkSpaceData({
-            custClass:rowData.refCustTimeData
-           
+            custClass: rowData.refCustTimeData,
           });
         }}
-        
-        
       />
     );
   };
 
-
-
-
-
-
-
-
-
-
   const sessionDelete = (rowData: any) => {
     return (
-      <MdDelete  
-  style={{ cursor: "pointer", color: "red", fontSize: "2rem" }}
+      <MdDelete
+        style={{ cursor: "pointer", color: "red", fontSize: "2rem" }}
         onClick={() => {
           Axios.post(
             import.meta.env.VITE_API_URL +
@@ -323,8 +302,8 @@ const Session: React.FC = () => {
 
   const customClassDelete = (rowData: any) => {
     return (
-      <MdDelete  
-      style={{ cursor: "pointer", color: "red", fontSize: "2rem" }}
+      <MdDelete
+        style={{ cursor: "pointer", color: "red", fontSize: "2rem" }}
         onClick={() => {
           Axios.post(
             import.meta.env.VITE_API_URL +
@@ -344,7 +323,7 @@ const Session: React.FC = () => {
               res.data[0],
               import.meta.env.VITE_ENCRYPTION_KEY
             );
-            console.log('data', data)
+            console.log("data", data);
             localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
             toast.error("Custom class Deleted Successfully", {
               position: "top-right",
@@ -364,49 +343,33 @@ const Session: React.FC = () => {
     );
   };
 
-
-
-
-
-
-
-
-
-
-
-
   const [sessionadd, setSessionAdd] = useState(false);
   const [classadd, setClassAdd] = useState(false);
-
 
   const [sessionWorkSpaceData, setSessionWorkSpaceData] = useState<{
     fromdate: Date | null | undefined;
     todate: Date | null | undefined;
-    sessionmode: null;
-    sessiondays: null;
-    membertype: null;
+    sessionmode: any[];
+    sessiondays: any[];
+    membertype: any[];
+    branch:any[];
   }>({
     fromdate: undefined,
     todate: undefined,
-    sessionmode: null,
-    sessiondays: null,
-    membertype: null,
+    sessionmode: [],
+    sessiondays: [],
+    membertype: [],
+    branch:[],
   });
-
-
 
   const [classWorkSpaceData, setClassWorkSpaceData] = useState<{
-    
-    custClass:null,
-
+    custClass: null;
   }>({
-    custClass:null
+    custClass: null,
   });
-
 
   const [sessionUpdate, setSessionUpdate] = useState(false);
   const [classUpdate, setClassUpdate] = useState(false);
-
 
   return (
     <>
@@ -436,14 +399,15 @@ const Session: React.FC = () => {
               <></>
             ) : (
               <div className="flex justify-end">
-               
-
-
-<button className="bg-green-500 border-none rounded-lg p-2  "  onClick={() => {
+                <button
+                  className="bg-green-500 border-none rounded-lg p-2  "
+                  onClick={() => {
                     setSessionAdd(true);
                     fetchsessionOption();
-                  }}><MdOutlineAddchart className="text-3xl text-white" />
-</button>
+                  }}
+                >
+                  <MdOutlineAddchart className="text-3xl text-white" />
+                </button>
               </div>
             )}
 
@@ -472,7 +436,7 @@ const Session: React.FC = () => {
                         refTimeDays: sessionWorkSpaceData.sessiondays,
                         refTimeMembersID: sessionWorkSpaceData.membertype,
                         refTimeId: sessionUpdate ? sessionEditId : null,
-                        refBranchId:branch
+                        refBranchId: branch,
                       },
                       {
                         headers: {
@@ -513,9 +477,10 @@ const Session: React.FC = () => {
                       setSessionWorkSpaceData({
                         fromdate: undefined,
                         todate: undefined,
-                        sessionmode: null,
-                        sessiondays: null,
-                        membertype: null,
+                        sessionmode: [],
+                        sessiondays: [],
+                        membertype: [],
+                        branch:[],
                       });
 
                       localStorage.setItem(
@@ -584,9 +549,8 @@ const Session: React.FC = () => {
                     <div className="flex justify-between mt-4">
                       <div className="flex flex-row gap-2 w-[50%]">
                         <div className="flex flex-column gap-2 w-[100%]">
-                          <label htmlFor="username">Session
-                             Days</label>
-                          <Dropdown
+                          <label htmlFor="username">Session Days</label>
+                          {/* <Dropdown
                             value={sessionWorkSpaceData.sessiondays}
                             onChange={(e) => {
                               setSessionWorkSpaceData({
@@ -602,12 +566,27 @@ const Session: React.FC = () => {
                             checkmark={true}
                             highlightOnSelect={false}
                             required
+                          /> */}
+                          <MultiSelect
+                            value={sessionWorkSpaceData.sessiondays}
+                            onChange={(e) => {
+                              setSessionWorkSpaceData({
+                                ...sessionWorkSpaceData,
+                                sessiondays: e.value, // e.value will be of type Nullable<Date>
+                              });
+                            }}
+                            options={sessionDaysOptions}
+                            optionLabel="value"
+                            display="chip"
+                            placeholder="Select Session Days"
+                            maxSelectedLabels={3}
+                            className="w-full md:w-20rem"
                           />
                         </div>
                       </div>
                       <div className="flex flex-column gap-2 w-[48%]">
                         <label htmlFor="username">Member Type</label>
-                        <Dropdown
+                        {/* <Dropdown
                           value={sessionWorkSpaceData.membertype}
                           onChange={(e) => {
                             setSessionWorkSpaceData({
@@ -623,11 +602,49 @@ const Session: React.FC = () => {
                           checkmark={true}
                           highlightOnSelect={false}
                           required
-                        />
+                        /> */}
+                        <MultiSelect
+                            value={sessionWorkSpaceData.membertype}
+                            onChange={(e) => {
+                              setSessionWorkSpaceData({
+                                ...sessionWorkSpaceData,
+                                membertype: e.value, // e.value will be of type Nullable<Date>
+                              });
+                            }}
+                             options={sessionMemberTypeOptions}
+                          optionLabel="label"
+                            display="chip"
+                             placeholder="Select a Session Mode"
+                            maxSelectedLabels={3}
+                            className="w-full md:w-20rem"
+                          />
+
+
+
+
                       </div>
                     </div>
                   </div>
-                  <div className="flex justify-end gap-3 mt-5">
+                  {/* <div className="flex justify-between w-[100%] mt-5">
+
+                  <Dropdown
+              value={branch}
+              onChange={(e: any) => {
+                setBranch(e.value);
+              }}
+              options={branchOptions}
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Select a City"
+              className="w-[200px] mt-2 h-[35px]"
+              checkmark={true}
+              highlightOnSelect={false}
+            />
+
+                  <div className="flex justify-end gap-3 ">
+
+
+
                     <Button
                       severity="info"
                       label="Close"
@@ -637,9 +654,9 @@ const Session: React.FC = () => {
                         setSessionWorkSpaceData({
                           fromdate: undefined,
                           todate: undefined,
-                          sessionmode: null,
-                          sessiondays: null,
-                          membertype: null,
+                          sessionmode: [],
+                          sessiondays: [],
+                          membertype: [],
                         });
                       }}
                     />
@@ -649,6 +666,31 @@ const Session: React.FC = () => {
                       <Button severity="success" label="Save" type="submit" />
                     )}
                   </div>
+                  </div> */}
+                  <div className="flex flex-column gap-2 w-[48%]">
+                        <label htmlFor="username">Branch</label>
+                       
+                        <MultiSelect
+                            value={sessionWorkSpaceData.membertype}
+                            onChange={(e) => {
+                              setSessionWorkSpaceData({
+                                ...sessionWorkSpaceData,
+                                membertype: e.value, 
+                              });
+                            }}
+                             options={sessionMemberTypeOptions}
+                          optionLabel="label"
+                            display="chip"
+                             placeholder="Select a Session Mode"
+                            maxSelectedLabels={3}
+                            className="w-full md:w-20rem"
+                          />
+
+
+
+
+                      </div>
+                  
                 </form>
               </>
             ) : null}
@@ -663,25 +705,21 @@ const Session: React.FC = () => {
             </DataTable>
           </TabPanel>
 
-
-
-
-
-
-
           {/* ***************************************************************************** */}
 
           <TabPanel header="Custom Class">
-          {classadd ? (
+            {classadd ? (
               <></>
             ) : (
               <div className="flex justify-end">
-                
-                <button className="bg-green-500 border-none rounded-lg p-2  "  onClick={() => {
+                <button
+                  className="bg-green-500 border-none rounded-lg p-2  "
+                  onClick={() => {
                     setClassAdd(true);
-                  }}><MdOutlineAddchart className="text-3xl text-white" />
+                  }}
+                >
+                  <MdOutlineAddchart className="text-3xl text-white" />
                 </button>
-                
               </div>
             )}
 
@@ -700,11 +738,9 @@ const Session: React.FC = () => {
                     Axios.post(
                       import.meta.env.VITE_API_URL + url,
                       {
-                        
                         refCustTimeId: classUpdate ? customClassEditId : null,
-                        refCustTimeData:classWorkSpaceData.custClass,
-                        refBranchId:branch,
-                        
+                        refCustTimeData: classWorkSpaceData.custClass,
+                        refBranchId: branch,
                       },
                       {
                         headers: {
@@ -743,7 +779,7 @@ const Session: React.FC = () => {
                         setClassUpdate(false);
                       }
                       setClassWorkSpaceData({
-                        custClass:null,
+                        custClass: null,
                       });
 
                       localStorage.setItem(
@@ -753,19 +789,19 @@ const Session: React.FC = () => {
                     });
                   }}
                 >
-                   <div className="flex flex-column gap-2 w-[100%]">
-                  <label htmlFor="username">Custom class name</label>
-                  <InputText
-                    value={classWorkSpaceData.custClass}
-                    onChange={(e: any) => {
-                      setClassWorkSpaceData({
-                        ...classWorkSpaceData,
-                        custClass: e.target.value,
-                      });
-                    }}
-                    required
-                  />
-                </div>
+                  <div className="flex flex-column gap-2 w-[100%]">
+                    <label htmlFor="username">Custom class name</label>
+                    <InputText
+                      value={classWorkSpaceData.custClass}
+                      onChange={(e: any) => {
+                        setClassWorkSpaceData({
+                          ...classWorkSpaceData,
+                          custClass: e.target.value,
+                        });
+                      }}
+                      required
+                    />
+                  </div>
                   <div className="flex justify-end gap-3 mt-5">
                     <Button
                       severity="info"
@@ -774,7 +810,7 @@ const Session: React.FC = () => {
                       onClick={() => {
                         setClassAdd(false);
                         setClassWorkSpaceData({
-                          custClass:null
+                          custClass: null,
                         });
                       }}
                     />
@@ -787,14 +823,16 @@ const Session: React.FC = () => {
                 </form>
               </>
             ) : null}
-          <DataTable value={classData} className="mt-10">
-              <Column  header="S.No" body={(_data, options) => options.rowIndex + 1}></Column>
+            <DataTable value={classData} className="mt-10">
+              <Column
+                header="S.No"
+                body={(_data, options) => options.rowIndex + 1}
+              ></Column>
               <Column field="refCustTimeData" header="Custom Class"></Column>
               <Column field="refBranchName" header="Branch"></Column>
-             
+
               <Column header="Edit" body={customClassEdit}></Column>
               <Column header="Delete" body={customClassDelete}></Column>
-              
             </DataTable>
           </TabPanel>
         </TabView>
