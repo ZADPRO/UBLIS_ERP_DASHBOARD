@@ -14,7 +14,7 @@ import { InputText } from "primereact/inputtext";
 import { GrEdit } from "react-icons/gr";
 import { MdDelete } from "react-icons/md";
 import { MdOutlineAddchart } from "react-icons/md";
-import { ImUpload2 } from "react-icons/im";
+// import { ImUpload2 } from "react-icons/im";
 type DecryptResult = any;
 
 const Session: React.FC = () => {
@@ -225,9 +225,9 @@ const Session: React.FC = () => {
 
           const [startTime, endTime] = rowData.refTime.split(" to ");
 
-          const selectedItem = sessionMemberTypeOptions.find(
-            (item: any) => item.label == rowData.refTimeMembers
-          );
+          // const selectedItem = sessionMemberTypeOptions.find(
+          //   (item: any) => item.label == rowData.refTimeMembers
+          // );
 
 
           setSessionEditId(rowData.refTimeId);
@@ -788,7 +788,7 @@ const Session: React.FC = () => {
               </>
             ) : null}
           <DataTable value={classData} className="mt-10">
-              <Column  header="S.No" body={(data, options) => options.rowIndex + 1}></Column>
+              <Column  header="S.No" body={(_data, options) => options.rowIndex + 1}></Column>
               <Column field="refCustTimeData" header="Custom Class"></Column>
               <Column field="refBranchName" header="Branch"></Column>
              

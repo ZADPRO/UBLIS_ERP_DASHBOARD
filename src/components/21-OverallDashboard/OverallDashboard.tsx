@@ -46,8 +46,12 @@ const OverallDashboard: React.FC = () => {
     futureToday: 0,
   });
   const [trailCount, setTrialCount] = useState({
-    today: 0,
-    futureToday: 0,
+    Trial: 0,
+    FeesPending: 0,
+  });
+  const [feesCount, setFeesCount] = useState({
+    feesPaid: 0,
+    feesPending: 0,
   });
   const [overallUserStatus, setOverallUserStatus] = useState([]);
 
@@ -117,8 +121,12 @@ const OverallDashboard: React.FC = () => {
           localStorage.getItem("refUtId") === "4"
         ) {
           setTrialCount({
-            today: data.data.trailCount[0].count_today,
-            futureToday: data.data.trailCount[0].count_other_days,
+            Trial: data.data.trailCount[0].trailCount,
+            FeesPending: data.data.trailCount[0].paymentPending,
+          });
+          setFeesCount({
+            feesPaid: data.data.fessCount[0].feesPaid,
+            feesPending: data.data.fessCount[0].feesPending,
           });
         }
 
@@ -246,7 +254,7 @@ const OverallDashboard: React.FC = () => {
     <>
       {pageLoading.verifytoken && pageLoading.pageData ? (
         <>
-          <div className="bg-[#f6f5f5]">
+          <div className="bg-[#f6f5f5] ">
             <div className="headerPrimary">
               <h3>DASHBOARD</h3>
               <div className="quickAcces">
@@ -382,8 +390,8 @@ const OverallDashboard: React.FC = () => {
                 </div>
                 <div className="counts">
                   <div className="countOne">
-                    <h3>{trailCount.today}</h3>
-                    <h5>Today</h5>
+                    <h3>{trailCount.Trial}</h3>
+                    <h5>Trial</h5>
                   </div>
                   <div className="w-full md:w-2">
                     <Divider
@@ -397,12 +405,14 @@ const OverallDashboard: React.FC = () => {
                     ></Divider>
                   </div>
                   <div className="countOne">
-                    <h3>{trailCount.futureToday}</h3>
-                    <h5>Previous Day</h5>
+                    <h3>{trailCount.FeesPending}</h3>
+                    <h5>Fees Pending</h5>
                   </div>
                 </div>
               </div>
             </Link>
+
+            
 
             {localStorage.getItem("refUtId") === "7" ? (
               <Link
@@ -536,8 +546,42 @@ const OverallDashboard: React.FC = () => {
                 </div>
               </Link>
             ) : null}
-          </div>
 
+{(localStorage.getItem("refUtId") === "4" || localStorage.getItem("refUtId") === "7" || localStorage.getItem("refUtId") === "8" || localStorage.getItem("refUtId") === "11" ) ? (
+              <Link
+                to="/staff/payment"
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <div className="cardOutline card">
+                  <div className="header">
+                    <AiOutlineAudit />
+                    <h3>Fees Paid & Pending</h3>
+                  </div>
+                  <div className="counts">
+                    <div className="countOne">
+                      <h3>{feesCount.feesPaid}</h3>
+                      <h5>Fees Paid</h5>
+                    </div>
+                    <div className="w-full md:w-2">
+                      <Divider
+                        layout="vertical"
+                        className="hidden md:flex"
+                      ></Divider>
+                      <Divider
+                        layout="horizontal"
+                        className="flex md:hidden"
+                        align="center"
+                      ></Divider>
+                    </div>
+                    <div className="countOne">
+                      <h3>{feesCount.feesPending}</h3>
+                      <h5>Fees Pending</h5>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ) : null}
+          </div>
           <div className="overallComponent mt-3" style={{ inlineSize: "100%" }}>
             <div className="dashboardContxt">
               <div

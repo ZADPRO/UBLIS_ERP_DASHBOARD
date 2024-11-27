@@ -11,10 +11,22 @@ import { Dropdown } from "primereact/dropdown";
 import { FilterMatchMode } from "primereact/api";
 import { Sidebar } from "primereact/sidebar";
 import { Fieldset } from "primereact/fieldset";
+import { Skeleton } from "primereact/skeleton";
 
 type DecryptResult = any;
 
 const Payment: React.FC = () => {
+  const [pageLoading, setPageLoading] = useState({
+    verifytoken: true,
+    pageData: true,
+  });
+
+  const [userdata, setuserdata] = useState({
+    username: "",
+    usernameid: "",
+    profileimg: { contentType: "", content: "" },
+  });
+
   const decrypt = (
     encryptedData: string,
     iv: string,
@@ -40,6 +52,38 @@ const Payment: React.FC = () => {
 
     return JSON.parse(decryptedString);
   };
+
+  useEffect(() => {
+    Axios.get(import.meta.env.VITE_API_URL + "/validateTokenData", {
+      headers: {
+        Authorization: localStorage.getItem("JWTtoken"),
+        "Content-Type": "application/json",
+      },
+    }).then((res) => {
+      const data = decrypt(
+        res.data[1],
+        res.data[0],
+        import.meta.env.VITE_ENCRYPTION_KEY
+      );
+      console.log('data', data)
+
+      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+
+      setuserdata({
+        username:
+          "" + data.data[0].refStFName + " " + data.data[0].refStLName + "",
+        usernameid: data.data[0].refusertype,
+        profileimg: data.profileFile,
+      });
+
+      setPageLoading({
+        ...pageLoading,
+        verifytoken: false,
+      });
+
+      console.log("Verify Token  Running --- ");
+    });
+  }, []);
 
   interface Customer {
     refCtEmail: string;
@@ -69,6 +113,7 @@ const Payment: React.FC = () => {
   }
 
   const [dataType, setDataType] = useState<number>(6);
+
   const [userData, setUserData] = useState<Customer[]>([]);
   const [info, setInfo] = useState<any[]>([]);
   // const [info, setInfo] = useState(false);
@@ -152,7 +197,7 @@ const Payment: React.FC = () => {
 
   useEffect(() => {
     fetchCustomers();
-  }, []);
+  }, [dataType]);
 
   const onUserIdClick = (data: Customer) => {
     setInfo([data]);
@@ -193,7 +238,6 @@ const Payment: React.FC = () => {
             value={dataType}
             onChange={(e) => {
               setDataType(e.value);
-              fetchCustomers();
             }}
             placeholder="Select Fees"
           />
@@ -217,212 +261,280 @@ const Payment: React.FC = () => {
 
   return (
     <>
-      <div className="card m-1" style={{ overflow: "auto" }}>
-        <h3 className="mx-5">Payments</h3>
-        <DataTable
-          value={userData}
-          paginator
-          header={header}
-          rows={10}
-          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-          rowsPerPageOptions={[10, 25, 50]}
-          dataKey="id"
-          selectionMode="checkbox"
-          selection={selectedCustomers}
-          onSelectionChange={(e) => {
-            const customers = e.value as Customer[];
-            setSelectedCustomers(customers);
-          }}
-          emptyMessage="No customers found."
-          // filters={filters}
-          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-        >
-          {/* <Column
+      {pageLoading.verifytoken && pageLoading.pageData ? (
+        <>
+          <div className="bg-[#f6f5f5]">
+            <div className="headerPrimary">
+              <h3>PAYMENTS</h3>
+              <div className="quickAcces">
+                <Skeleton
+                  shape="circle"
+                  size="3rem"
+                  className="mr-2"
+                ></Skeleton>
+                <h3 className="flex-col flex items-center justify-center text-center ml-2 lg:ml-2 mr-0 lg:mr-5">
+                  <Skeleton width="7rem" className="mb-2"></Skeleton>
+                  <Skeleton width="7rem" className="mb-2"></Skeleton>
+                </h3>
+              </div>{" "}
+            </div>
+
+            <div className="userProfilePage">
+              <Skeleton
+                className="lg:m-[30px] shadow-lg"
+                width="95%"
+                height="80vh"
+                borderRadius="16px"
+              ></Skeleton>
+              <div className="py-1"></div>
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="card m-1" style={{ overflow: "auto" }}>
+          <div className="headerPrimary">
+            <h3>PAYMENTS</h3>
+            <div className="quickAcces">
+              {userdata.profileimg ? (
+                <div className="p-link layout-topbar-button">
+                  <img
+                    id="userprofileimg"
+                    className="w-[45px] h-[45px] object-cover rounded-full"
+                    src={`data:${userdata.profileimg.contentType};base64,${userdata.profileimg.content}`}
+                    alt=""
+                  />
+                </div>
+              ) : (
+                <div className="p-link layout-topbar-button">
+                  <i className="pi pi-user"></i>
+                </div>
+              )}
+              <h3 className="text-[1rem] text-center ml-2 lg:ml-2 mr-0 lg:mr-5">
+                <span>{userdata.username}</span>
+                <br />
+                <span className="text-[0.8rem] text-[#f95005]">
+                  {userdata.usernameid}
+                </span>
+              </h3>
+            </div>{" "}
+          </div>
+            <DataTable
+              value={userData}
+              paginator
+              header={header}
+              rows={10}
+              paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+              rowsPerPageOptions={[10, 25, 50]}
+              dataKey="id"
+              selectionMode="checkbox"
+              selection={selectedCustomers}
+              onSelectionChange={(e) => {
+                const customers = e.value as Customer[];
+                setSelectedCustomers(customers);
+              }}
+              emptyMessage="No customers found."
+              // filters={filters}
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            >
+              {/* <Column
         selectionMode="multiple"
         frozen
         headerStyle={{ inlineSize: "3rem" }}
       /> */}
-          <Column
-            field="refSCustId"
-            header="User ID"
-            body={userIdTemplate}
-            frozen
-            style={{ inlineSize: "15rem" }}
-          />
+              <Column
+                field="refSCustId"
+                header="User ID"
+                body={userIdTemplate}
+                frozen
+                style={{ inlineSize: "15rem" }}
+              />
 
-          <Column
-            field="fullName"
-            header="Name"
-            style={{ inlineSize: "14rem" }}
-            body={(rowData) => `${rowData.refStFName} ${rowData.refStLName}`}
-          />
+              <Column
+                field="fullName"
+                header="Name"
+                style={{ inlineSize: "14rem" }}
+                body={(rowData) =>
+                  `${rowData.refStFName} ${rowData.refStLName}`
+                }
+              />
 
-          <Column
-            field="refCtMobile"
-            header="Mobile"
-            style={{ inlineSize: "14rem" }}
-          />
-          <Column
-            field="refExpiry"
-            header="Expire On"
-            style={{ inlineSize: "14rem" }}
-          />
-          <Column
-            field="refDate"
-            header="Last Payment"
-            style={{ inlineSize: "14rem" }}
-          />
-          <Column
-            field="refPaymentMode"
-            header="Last Payment Mode"
-            style={{ inlineSize: "14rem" }}
-          />
-        </DataTable>
-      </div>
-      <Sidebar
-        style={{ width: "70%" }}
-        visible={visibleLeft}
-        position="right"
-        onHide={() => setVisibleLeft(false)}
-      >
-        <h2>Profile Data</h2>
-        <p className="m-0">
-          <Fieldset
-            className="border-2 border-[#f95005] fieldData"
-            legend={info[0] ? `${info[0].refSCustId}` : "No user selected"}
+              <Column
+                field="refCtMobile"
+                header="Mobile"
+                style={{ inlineSize: "14rem" }}
+              />
+              <Column
+                field="refExpiry"
+                header="Expire On"
+                style={{ inlineSize: "14rem" }}
+              />
+              <Column
+                field="refDate"
+                header="Last Payment"
+                style={{ inlineSize: "14rem" }}
+              />
+              <Column
+                field="refPaymentMode"
+                header="Last Payment Mode"
+                style={{ inlineSize: "14rem" }}
+              />
+            </DataTable>
+          </div>
+          <Sidebar
+            style={{ width: "70%" }}
+            visible={visibleLeft}
+            position="right"
+            onHide={() => setVisibleLeft(false)}
           >
+            <h2>Profile Data</h2>
+            <p className="m-0">
+              <Fieldset
+                className="border-2 border-[#f95005] fieldData"
+                legend={info[0] ? `${info[0].refSCustId}` : "No user selected"}
+              >
+                {info[0] ? (
+                  <div>
+                    <tr>
+                      <td className="text-900 font-bold p-2">Name</td>
+                      <td className="text-[#000] p-2">
+                        {info[0].refStFName} {info[0].refStLName}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="text-900 font-bold p-2">Phone Number</td>
+                      <td className="text-[#000] p-2">{info[0].refCtMobile}</td>
+                    </tr>
+                    <tr>
+                      <td className="text-900 font-bold p-2">Email</td>
+                      <td className="text-[#000] p-2">{info[0].refCtEmail}</td>
+                    </tr>
+                    <tr>
+                      <td className="text-900 font-bold p-2">
+                        Whatsapp Number
+                      </td>
+                      <td className="text-[#000] p-2">
+                        {info[0].refCtWhatsapp}
+                      </td>
+                    </tr>
+                  </div>
+                ) : (
+                  <p>No user details available.</p>
+                )}
+              </Fieldset>
+            </p>
             {info[0] ? (
-              <div>
-                <tr>
-                  <td className="text-900 font-bold p-2">Name</td>
-                  <td className="text-[#000] p-2">
-                    {info[0].refStFName} {info[0].refStLName}
-                  </td>
-                </tr>
-                <tr>
-                  <td className="text-900 font-bold p-2">Phone Number</td>
-                  <td className="text-[#000] p-2">{info[0].refCtMobile}</td>
-                </tr>
-                <tr>
-                  <td className="text-900 font-bold p-2">Email</td>
-                  <td className="text-[#000] p-2">{info[0].refCtEmail}</td>
-                </tr>
-                <tr>
-                  <td className="text-900 font-bold p-2">Whatsapp Number</td>
-                  <td className="text-[#000] p-2">{info[0].refCtWhatsapp}</td>
-                </tr>
-              </div>
-            ) : (
-              <p>No user details available.</p>
-            )}
-          </Fieldset>
-        </p>
-        {info[0] ? (
-          <div className="contents">
-            <Fieldset
-              className="mt-10 border-2 border-[#f95005] fieldData"
-              legend={"Class Type"}
-            >
-              {info[0] ? (
-                <div>
-                  <tr>
-                    <td className="text-900 font-bold p-2">Members Session</td>
-                    <td className="text-[#000] p-2">
-                      {info[0].refTimeMembers ? info[0].refTimeMembers : "null"}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="text-900 font-bold p-2">Session Type</td>
-                    <td className="text-[#000] p-2">
-                      {info[0].refCustTimeData
-                        ? info[0].refCustTimeData
-                        : "null"}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="text-900 font-bold p-2">
-                      Preferable Timing
-                    </td>
-                    <td className="text-[#000] p-2">
-                      {info[0].refTime
-                        ? info[0].refTime +
-                          " | " +
-                          info[0].refTimeDays +
-                          " | " +
-                          info[0].refTimeMode
-                        : "null"}
-                    </td>
-                  </tr>
-                </div>
-              ) : (
-                <p>No user details available.</p>
-              )}
-            </Fieldset>
+              <div className="contents">
+                <Fieldset
+                  className="mt-10 border-2 border-[#f95005] fieldData"
+                  legend={"Class Type"}
+                >
+                  {info[0] ? (
+                    <div>
+                      <tr>
+                        <td className="text-900 font-bold p-2">
+                          Members Session
+                        </td>
+                        <td className="text-[#000] p-2">
+                          {info[0].refTimeMembers
+                            ? info[0].refTimeMembers
+                            : "null"}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="text-900 font-bold p-2">Session Type</td>
+                        <td className="text-[#000] p-2">
+                          {info[0].refCustTimeData
+                            ? info[0].refCustTimeData
+                            : "null"}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="text-900 font-bold p-2">
+                          Preferable Timing
+                        </td>
+                        <td className="text-[#000] p-2">
+                          {info[0].refTime
+                            ? info[0].refTime +
+                              " | " +
+                              info[0].refTimeDays +
+                              " | " +
+                              info[0].refTimeMode
+                            : "null"}
+                        </td>
+                      </tr>
+                    </div>
+                  ) : (
+                    <p>No user details available.</p>
+                  )}
+                </Fieldset>
 
-            <Fieldset
-              className="mt-10 h-[46vh] border-2 border-[#f95005] fieldData"
-              legend={"Last Payment"}
-            >
-              {info[0] ? (
-                <div>
-                  <tr>
-                    <td className="text-900 font-bold p-2">Payment From</td>
-                    <td className="text-[#000] p-2">
-                      {info[0].refPaymentFrom
-                        ? info[0].refPaymentFrom
-                        : "No Payment"}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="text-900 font-bold p-2">Payment To</td>
-                    <td className="text-[#000] p-2">
-                      {info[0].refPaymentTo
-                        ? info[0].refPaymentTo
-                        : "No Payment"}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="text-900 font-bold p-2">Payment Expire</td>
-                    <td className="text-[#000] p-2">
-                      {info[0].refExpiry ? info[0].refExpiry : "No Payment"}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="text-900 font-bold p-2">
-                      Last Payment Date
-                    </td>
-                    <td className="text-[#000] p-2">
-                      {info[0].refDate ? info[0].refDate : "No Payment"}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="text-900 font-bold p-2">Payment Mode</td>
-                    <td className="text-[#000] p-2">
-                      {info[0].refPaymentMode
-                        ? info[0].refPaymentMode
-                        : "No Payment"}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="text-900 font-bold p-2">Amount</td>
-                    <td className="text-[#000] p-2">
-                      {info[0].refFeesPaid
-                        ? "Net: " +
-                          info[0].refFeesPaid +
-                          " + GST: " +
-                          info[0].refGstPaid +
-                          " : Total = " +
-                          info[0].refToAmt
-                        : "No Payment"}
-                    </td>
-                  </tr>
-                </div>
-              ) : (
-                <p>No user details available.</p>
-              )}
-            </Fieldset>
+                <Fieldset
+                  className="mt-10 h-[46vh] border-2 border-[#f95005] fieldData"
+                  legend={"Last Payment"}
+                >
+                  {info[0] ? (
+                    <div>
+                      <tr>
+                        <td className="text-900 font-bold p-2">Payment From</td>
+                        <td className="text-[#000] p-2">
+                          {info[0].refPaymentFrom
+                            ? info[0].refPaymentFrom
+                            : "No Payment"}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="text-900 font-bold p-2">Payment To</td>
+                        <td className="text-[#000] p-2">
+                          {info[0].refPaymentTo
+                            ? info[0].refPaymentTo
+                            : "No Payment"}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="text-900 font-bold p-2">
+                          Payment Expire
+                        </td>
+                        <td className="text-[#000] p-2">
+                          {info[0].refExpiry ? info[0].refExpiry : "No Payment"}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="text-900 font-bold p-2">
+                          Last Payment Date
+                        </td>
+                        <td className="text-[#000] p-2">
+                          {info[0].refDate ? info[0].refDate : "No Payment"}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="text-900 font-bold p-2">Payment Mode</td>
+                        <td className="text-[#000] p-2">
+                          {info[0].refPaymentMode
+                            ? info[0].refPaymentMode
+                            : "No Payment"}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="text-900 font-bold p-2">Amount</td>
+                        <td className="text-[#000] p-2">
+                          {info[0].refFeesPaid
+                            ? "Net: " +
+                              info[0].refFeesPaid +
+                              " + GST: " +
+                              info[0].refGstPaid +
+                              " : Total = " +
+                              info[0].refToAmt
+                            : "No Payment"}
+                        </td>
+                      </tr>
+                    </div>
+                  ) : (
+                    <p>No user details available.</p>
+                  )}
+                </Fieldset>
 
-            {/* <Fieldset
+                {/* <Fieldset
               className="mt-10 h-[25vh] border-2 border-[#f95005] fieldData"
               legend={"Payment Offers"}
             >
@@ -450,11 +562,13 @@ const Payment: React.FC = () => {
                 <p>No user details available.</p>
               )}
             </Fieldset> */}
-          </div>
-        ) : (
-          <p>No user details available.</p>
-        )}
-      </Sidebar>
+              </div>
+            ) : (
+              <p>No user details available.</p>
+            )}
+          </Sidebar>
+        </>
+      )}
     </>
   );
 };

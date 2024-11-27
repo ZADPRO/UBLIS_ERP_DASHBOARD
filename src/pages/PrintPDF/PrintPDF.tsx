@@ -362,7 +362,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                         fontFamily: "Poppins",
                         fontWeight: "bold",
                         color: "#f95005",
-                        textAlign: "right",
+                        textAlign: "left",
                       }}
                     >
                       Date:
@@ -392,7 +392,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                         fontFamily: "Poppins",
                         fontWeight: "bold",
                         color: "#f95005",
-                        textAlign: "right",
+                        textAlign: "left",
                       }}
                     >
                       Branch:
@@ -422,7 +422,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                         fontFamily: "Poppins",
                         fontWeight: "bold",
                         color: "#f95005",
-                        textAlign: "right",
+                        textAlign: "left",
                       }}
                     >
                       Receipt ID:

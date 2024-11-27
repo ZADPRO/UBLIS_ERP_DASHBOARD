@@ -184,10 +184,15 @@ export default function RegisteredDataTable() {
     }
   };
 
+  
+  const closePayment = () => {
+    setPayment(false);
+  };
+
   useEffect(() => {
     fetchCustomers();
     initFilters();
-  }, []);
+  }, [closePayment]);
 
   const exportExcel = () => {
     import("xlsx").then((xlsx) => {
@@ -489,9 +494,6 @@ export default function RegisteredDataTable() {
 
   const [payment, setPayment] = useState(false);
 
-  const closePayment = () => {
-    setPayment(false);
-  };
 
   return (
     <div className="card" style={{ overflow: "auto" }}>

@@ -11,7 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { GrEdit } from "react-icons/gr";
 import { MdDelete } from "react-icons/md";
 import { MdOutlineAddchart } from "react-icons/md";
-import { ImUpload2 } from "react-icons/im";
+// import { ImUpload2 } from "react-icons/im";
 
 
 type DecryptResult = any;
