@@ -584,7 +584,11 @@ export default function RegisteredDataTable() {
         style={{ width: "70%" }}
         visible={payment}
         position="right"
-        onHide={() => setPayment(false)}
+        onHide={() => {
+          console.log("1 --------------------------------------");
+          setPayment(false);
+          fetchCustomers();
+        }}
       >
         <h2>Payment</h2>
         <Payment closePayment={closePayment} refStId={paymentID} />

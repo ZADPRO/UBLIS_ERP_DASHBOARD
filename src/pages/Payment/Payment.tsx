@@ -223,57 +223,59 @@ const Payment: React.FC<PaymentProps> = ({ refStId, closePayment }) => {
   const handlePayment = (e: any) => {
     e.preventDefault();
 
-    Axios.post(
-      import.meta.env.VITE_API_URL + "/finance/FeesPaid",
-      {
-        refStId: refStId,
-        refPaymentMode: "offline",
-        refPaymentFrom: paymentInput.paymentfromDate,
-        refPaymentTo: paymentInput.paymenttoDate,
-        refExpiry: paymentInput.couponexpireDate
-          ? paymentInput.couponexpireDate
-          : paymentInput.paymentExpireDate,
-        refToAmt: paymentInput.coupontotal
-          ? paymentInput.coupontotal
-          : paymentInput.paymenttotal,
-        refFeesAmtOf: paymentInput.couponfees ? paymentInput.couponfees : 0,
-        refOfferValue: paymentInput.refOfferValue
-          ? paymentInput.refOfferValue
-          : null,
-        refFeesPaid: paymentInput.paymentfees,
-        refGstPaid: paymentInput.paymentgst,
-        refCoupon: paymentInput.coupon ? paymentInput.coupon : null,
-        refOfferType: paymentInput.refOfferType
-          ? paymentInput.refOfferType
-          : null,
-        refOfferName: paymentInput.refOfferName
-          ? paymentInput.refOfferName
-          : null,
-      },
-      {
-        headers: {
-          Authorization: localStorage.getItem("JWTtoken"),
-          "Content-Type": "application/json",
+    if (downloadStatus.status == false) {
+      Axios.post(
+        import.meta.env.VITE_API_URL + "/finance/FeesPaid",
+        {
+          refStId: refStId,
+          refPaymentMode: "offline",
+          refPaymentFrom: paymentInput.paymentfromDate,
+          refPaymentTo: paymentInput.paymenttoDate,
+          refExpiry: paymentInput.couponexpireDate
+            ? paymentInput.couponexpireDate
+            : paymentInput.paymentExpireDate,
+          refToAmt: paymentInput.coupontotal
+            ? paymentInput.coupontotal
+            : paymentInput.paymenttotal,
+          refFeesAmtOf: paymentInput.couponfees ? paymentInput.couponfees : 0,
+          refOfferValue: paymentInput.refOfferValue
+            ? paymentInput.refOfferValue
+            : null,
+          refFeesPaid: paymentInput.paymentfees,
+          refGstPaid: paymentInput.paymentgst,
+          refCoupon: paymentInput.coupon ? paymentInput.coupon : null,
+          refOfferType: paymentInput.refOfferType
+            ? paymentInput.refOfferType
+            : null,
+          refOfferName: paymentInput.refOfferName
+            ? paymentInput.refOfferName
+            : null,
         },
-      }
-    ).then((res) => {
-      const data = decrypt(
-        res.data[1],
-        res.data[0],
-        import.meta.env.VITE_ENCRYPTION_KEY
-      );
+        {
+          headers: {
+            Authorization: localStorage.getItem("JWTtoken"),
+            "Content-Type": "application/json",
+          },
+        }
+      ).then((res) => {
+        const data = decrypt(
+          res.data[1],
+          res.data[0],
+          import.meta.env.VITE_ENCRYPTION_KEY
+        );
 
-      console.log(data);
+        console.log(data);
 
-      if (data.success) {
-        setDownloadStatus({
-          status: true,
-          id: data.data,
-        });
-      }
+        if (data.success) {
+          setDownloadStatus({
+            status: true,
+            id: data.data,
+          });
+        }
 
-      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
-    });
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+      });
+    }
   };
 
   const [getHistoryData, setGetHistoryData] = useState();
