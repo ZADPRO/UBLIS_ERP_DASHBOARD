@@ -14,9 +14,8 @@ import { InputText } from "primereact/inputtext";
 import { GrEdit } from "react-icons/gr";
 import { MdDelete } from "react-icons/md";
 import { MdOutlineAddchart } from "react-icons/md";
-import { MultiSelect } from 'primereact/multiselect';
-import "./Session.css"
-
+import { MultiSelect } from "primereact/multiselect";
+import "./Session.css";
 
 // import { ImUpload2 } from "react-icons/im";
 type DecryptResult = any;
@@ -68,6 +67,7 @@ const Session: React.FC = () => {
   const [sessionDaysOptions, setSessionDaysOption] = useState([]);
 
   const [sessionMemberTypeOptions, setSessionMemberTypeOptions] = useState([]);
+  const [sessionBranchOptions, setSessionBranchOptions] = useState([]);
 
   const [sessionEditId, setSessionEditId] = useState(0);
   const [customClassEditId, setCustomClassEditId] = useState(0);
@@ -172,13 +172,21 @@ const Session: React.FC = () => {
 
       setSessionMemberTypeOptions(options);
 
+      const bOptions = data.Branch.map((sessionBranchOptions: any) => ({
+        label: sessionBranchOptions.refBranchName,
+        value: sessionBranchOptions.refbranchId,
+      }));
+
+      setSessionBranchOptions(bOptions);
+
       const sessionOptions = data.SessionDays.map(
         (sessionDaysOptions: any) => ({
           label: sessionDaysOptions.refDays,
-          value: sessionDaysOptions.refDays,
+          value: sessionDaysOptions.refSDId,
         })
       );
 
+      console.log("sessionOptions line ---------  189", sessionOptions);
       setSessionDaysOption(sessionOptions);
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
@@ -233,7 +241,7 @@ const Session: React.FC = () => {
             sessionmode: rowData.refTimeMode,
             sessiondays: rowData.refTimeDays,
             membertype: rowData.refTimeMembersID,
-            branch:rowData.refBranch
+            branch: rowData.refBranch,
           });
         }}
       />
@@ -352,14 +360,14 @@ const Session: React.FC = () => {
     sessionmode: any[];
     sessiondays: any[];
     membertype: any[];
-    branch:any[];
+    branch: any[];
   }>({
     fromdate: undefined,
     todate: undefined,
     sessionmode: [],
     sessiondays: [],
     membertype: [],
-    branch:[],
+    branch: [],
   });
 
   const [classWorkSpaceData, setClassWorkSpaceData] = useState<{
@@ -423,6 +431,10 @@ const Session: React.FC = () => {
                       url = "/settings/Section/editSectionData";
                     }
 
+                    console.log(
+                      "sessionWorkSpaceData.sessiondays",
+                      sessionWorkSpaceData.sessiondays
+                    );
                     Axios.post(
                       import.meta.env.VITE_API_URL + url,
                       {
@@ -436,7 +448,7 @@ const Session: React.FC = () => {
                         refTimeDays: sessionWorkSpaceData.sessiondays,
                         refTimeMembersID: sessionWorkSpaceData.membertype,
                         refTimeId: sessionUpdate ? sessionEditId : null,
-                        refBranchId: branch,
+                        refBranchId: sessionWorkSpaceData.branch,
                       },
                       {
                         headers: {
@@ -480,7 +492,7 @@ const Session: React.FC = () => {
                         sessionmode: [],
                         sessiondays: [],
                         membertype: [],
-                        branch:[],
+                        branch: [],
                       });
 
                       localStorage.setItem(
@@ -550,23 +562,7 @@ const Session: React.FC = () => {
                       <div className="flex flex-row gap-2 w-[50%]">
                         <div className="flex flex-column gap-2 w-[100%]">
                           <label htmlFor="username">Session Days</label>
-                          {/* <Dropdown
-                            value={sessionWorkSpaceData.sessiondays}
-                            onChange={(e) => {
-                              setSessionWorkSpaceData({
-                                ...sessionWorkSpaceData,
-                                sessiondays: e.value, // e.value will be of type Nullable<Date>
-                              });
-                            }}
-                            options={sessionDaysOptions}
-                            optionLabel="value"
-                            optionValue="value"
-                            placeholder="Select a Session Days"
-                            className="w-[100%] h-[35px]"
-                            checkmark={true}
-                            highlightOnSelect={false}
-                            required
-                          /> */}
+
                           <MultiSelect
                             value={sessionWorkSpaceData.sessiondays}
                             onChange={(e) => {
@@ -576,7 +572,7 @@ const Session: React.FC = () => {
                               });
                             }}
                             options={sessionDaysOptions}
-                            optionLabel="value"
+                            optionLabel="label"
                             display="chip"
                             placeholder="Select Session Days"
                             maxSelectedLabels={3}
@@ -586,7 +582,8 @@ const Session: React.FC = () => {
                       </div>
                       <div className="flex flex-column gap-2 w-[48%]">
                         <label htmlFor="username">Member Type</label>
-                        {/* <Dropdown
+
+                        <MultiSelect
                           value={sessionWorkSpaceData.membertype}
                           onChange={(e) => {
                             setSessionWorkSpaceData({
@@ -596,101 +593,61 @@ const Session: React.FC = () => {
                           }}
                           options={sessionMemberTypeOptions}
                           optionLabel="label"
-                          optionValue="value"
+                          display="chip"
                           placeholder="Select a Session Mode"
-                          className="w-[100%] h-[35px]"
-                          checkmark={true}
-                          highlightOnSelect={false}
-                          required
-                        /> */}
-                        <MultiSelect
-                            value={sessionWorkSpaceData.membertype}
-                            onChange={(e) => {
-                              setSessionWorkSpaceData({
-                                ...sessionWorkSpaceData,
-                                membertype: e.value, // e.value will be of type Nullable<Date>
-                              });
-                            }}
-                             options={sessionMemberTypeOptions}
-                          optionLabel="label"
-                            display="chip"
-                             placeholder="Select a Session Mode"
-                            maxSelectedLabels={3}
-                            className="w-full md:w-20rem"
-                          />
-
-
-
-
+                          maxSelectedLabels={3}
+                          className="w-full md:w-20rem"
+                        />
                       </div>
                     </div>
                   </div>
-                  {/* <div className="flex justify-between w-[100%] mt-5">
+                  <div className="flex justify-between w-[100%] mt-5">
+                    <label htmlFor="username">Branch</label>
 
-                  <Dropdown
-              value={branch}
-              onChange={(e: any) => {
-                setBranch(e.value);
-              }}
-              options={branchOptions}
-              optionLabel="label"
-              optionValue="value"
-              placeholder="Select a City"
-              className="w-[200px] mt-2 h-[35px]"
-              checkmark={true}
-              highlightOnSelect={false}
-            />
-
-                  <div className="flex justify-end gap-3 ">
-
-
-
-                    <Button
-                      severity="info"
-                      label="Close"
-                      type="button"
-                      onClick={() => {
-                        setSessionAdd(false);
+                    <MultiSelect
+                      value={sessionWorkSpaceData.branch}
+                      onChange={(e) => {
                         setSessionWorkSpaceData({
-                          fromdate: undefined,
-                          todate: undefined,
-                          sessionmode: [],
-                          sessiondays: [],
-                          membertype: [],
+                          ...sessionWorkSpaceData,
+                          branch: e.value, // e.value will be of type Nullable<Date>
                         });
                       }}
+                      options={sessionBranchOptions}
+                      optionLabel="label"
+                      display="chip"
+                      placeholder="Select a Session Mode"
+                      maxSelectedLabels={3}
+                      className="w-full md:w-20rem"
                     />
-                    {sessionUpdate ? (
-                      <Button severity="warning" label="Update" type="submit" />
-                    ) : (
-                      <Button severity="success" label="Save" type="submit" />
-                    )}
+
+                    <div className="flex justify-end gap-3 ">
+                      <Button
+                        severity="info"
+                        label="Close"
+                        type="button"
+                        onClick={() => {
+                          setSessionAdd(false);
+                          setSessionWorkSpaceData({
+                            fromdate: undefined,
+                            todate: undefined,
+                            sessionmode: [],
+                            sessiondays: [],
+                            membertype: [],
+                            branch: [],
+                          });
+                        }}
+                      />
+                      {sessionUpdate ? (
+                        <Button
+                          severity="warning"
+                          label="Update"
+                          type="submit"
+                        />
+                      ) : (
+                        <Button severity="success" label="Save" type="submit" />
+                      )}
+                    </div>
                   </div>
-                  </div> */}
-                  <div className="flex flex-column gap-2 w-[48%]">
-                        <label htmlFor="username">Branch</label>
-                       
-                        <MultiSelect
-                            value={sessionWorkSpaceData.membertype}
-                            onChange={(e) => {
-                              setSessionWorkSpaceData({
-                                ...sessionWorkSpaceData,
-                                membertype: e.value, 
-                              });
-                            }}
-                             options={sessionMemberTypeOptions}
-                          optionLabel="label"
-                            display="chip"
-                             placeholder="Select a Session Mode"
-                            maxSelectedLabels={3}
-                            className="w-full md:w-20rem"
-                          />
-
-
-
-
-                      </div>
-                  
                 </form>
               </>
             ) : null}
