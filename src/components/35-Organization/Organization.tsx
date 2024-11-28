@@ -3,10 +3,13 @@ import { OrganizationChart } from "primereact/organizationchart";
 import CryptoJS from "crypto-js";
 import Axios from "axios";
 import { Skeleton } from "primereact/skeleton";
+import { useNavigate } from "react-router-dom";
+
 
 type DecryptResult = any;
 
 const Organization: React.FC = () => {
+  const navigate = useNavigate();
   const [data] = useState([
     {
       label: "Director",
@@ -90,8 +93,10 @@ const Organization: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-
-      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+      if(data.token==false){
+        navigate("/expired")
+      }else{
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
       setuserdata({
         username:
@@ -106,6 +111,9 @@ const Organization: React.FC = () => {
       });
 
       console.log("Verify Token  Running --- ");
+
+      }
+      
     });
   }, []);
 

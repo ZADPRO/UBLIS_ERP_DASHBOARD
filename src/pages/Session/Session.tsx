@@ -17,10 +17,14 @@ import { MdOutlineAddchart } from "react-icons/md";
 import { MultiSelect } from "primereact/multiselect";
 import "./Session.css";
 
+import { useNavigate } from "react-router-dom";
+
+
 // import { ImUpload2 } from "react-icons/im";
 type DecryptResult = any;
 
 const Session: React.FC = () => {
+  const navigate = useNavigate();
   const decrypt = (
     encryptedData: string,
     iv: string,
@@ -84,17 +88,21 @@ const Session: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-
-      const options = data.Branch.map((branch: any) => ({
-        label: branch.refBranchName,
-        value: branch.refbranchId,
-      }));
-
-      setBranchOptions(options);
-
-      setBranch(options[0].value);
-
-      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+      if(data.token==false){
+        navigate("/expired")
+      }else{
+        const options = data.Branch.map((branch: any) => ({
+          label: branch.refBranchName,
+          value: branch.refbranchId,
+        }));
+  
+        setBranchOptions(options);
+  
+        setBranch(options[0].value);
+  
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+      }
+     
     });
   };
 

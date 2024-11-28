@@ -14,6 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import Axios from "axios";
 import { FilterMatchMode } from "primereact/api";
+import { useNavigate } from "react-router-dom";
 
 interface Customer {
   id: string;
@@ -70,6 +71,7 @@ export default function Datatables() {
     return JSON.parse(decryptedString);
   };
 
+  const navigate = useNavigate();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [selectedCustomers, setSelectedCustomers] = useState<Customer[]>([]);
 
@@ -116,6 +118,9 @@ export default function Datatables() {
       response.data[0],
       import.meta.env.VITE_ENCRYPTION_KEY
     );
+    if(data.token==false){
+      navigate("/expired")
+    }
 
     console.log("Data", data);
 
@@ -233,6 +238,10 @@ export default function Datatables() {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      if(data.token==false){
+        navigate("/expired")
+      }
+      console.log("Data line --------------- 227", data);
       console.log("data", data);
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
@@ -277,6 +286,10 @@ export default function Datatables() {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      if(data.token==false){
+        navigate("/expired")
+      }
+      console.log("Data line --------------- 227", data);
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 

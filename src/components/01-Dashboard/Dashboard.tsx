@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 
+
 type DecryptResult = any;
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+
   console.log("dfhbdf");
 
-  const navigate = useNavigate();
   const urlParams = new URLSearchParams(window.location.search);
   const token = urlParams.get("JWTtoken");
   const refUtId = urlParams.get("refUtId");
@@ -72,22 +74,29 @@ const Dashboard = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      if(data.token==false)
+      {
+        navigate("/expired")
 
-      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+      }
+      else{
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
-      setuserdata({
-        username:
-          "" + data.data[0].refStFName + " " + data.data[0].refStLName + "",
-        usernameid: data.data[0].refusertype,
-        profileimg: data.profileFile,
-      });
-
-      setPageLoading({
-        ...pageLoading,
-        verifytoken: false,
-      });
-
-      console.log("Verify Token  Running --- ");
+        setuserdata({
+          username:
+            "" + data.data[0].refStFName + " " + data.data[0].refStLName + "",
+          usernameid: data.data[0].refusertype,
+          profileimg: data.profileFile,
+        });
+  
+        setPageLoading({
+          ...pageLoading,
+          verifytoken: false,
+        });
+  
+        console.log("Verify Token  Running --- ");
+      }
+      
     });
   }, []);
 

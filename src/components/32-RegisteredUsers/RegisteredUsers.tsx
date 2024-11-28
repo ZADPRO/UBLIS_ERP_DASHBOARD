@@ -7,10 +7,14 @@ import RegisteredDataTable from "../../pages/Datatable/RegisteredDataTable";
 import Axios from "axios";
 import { Skeleton } from "primereact/skeleton";
 import CryptoJS from "crypto-js";
+import { useNavigate } from "react-router-dom";
+
 
 type DecryptResult = any;
 
 const RegisteredUsers: React.FC = () => {
+
+  const navigate = useNavigate();
   const [pageLoading, setPageLoading] = useState({
     verifytoken: true,
     pageData: true,
@@ -60,8 +64,10 @@ const RegisteredUsers: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-
-      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+      if(data.token==false){
+        navigate("/expired")
+      }else{
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
       setuserdata({
         username:
@@ -76,6 +82,10 @@ const RegisteredUsers: React.FC = () => {
       });
 
       console.log("Verify Token  Running --- ");
+
+      }
+
+      
     });
   }, []);
 

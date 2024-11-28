@@ -4,12 +4,15 @@ import TherapistTable from "../../pages/Datatable/TherapistTable";
 import Axios from "axios";
 import { Skeleton } from "primereact/skeleton";
 import CryptoJS from "crypto-js";
+import { useNavigate } from "react-router-dom";
+
 
 
 
 type DecryptResult = any;
 
 const Therapist: React.FC = () => {
+  const navigate = useNavigate();
   const [pageLoading, setPageLoading] = useState({
     verifytoken: true,
     pageData: true,
@@ -59,25 +62,30 @@ const Therapist: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-
-      console.log(data);
+      if(data.token==false){
+        navigate("/expired")
+      }else
+{
+  console.log(data);
       
 
-      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+  localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
-      setuserdata({
-        username:
-          "" + data.data[0].refStFName + " " + data.data[0].refStLName + "",
-        usernameid: data.data[0].refusertype,
-        profileimg: data.profileFile,
-      });
+  setuserdata({
+    username:
+      "" + data.data[0].refStFName + " " + data.data[0].refStLName + "",
+    usernameid: data.data[0].refusertype,
+    profileimg: data.profileFile,
+  });
 
-      setPageLoading({
-        ...pageLoading,
-        verifytoken: false,
-      });
+  setPageLoading({
+    ...pageLoading,
+    verifytoken: false,
+  });
 
-      console.log("Verify Token  Running --- ");
+  console.log("Verify Token  Running --- ");
+}
+     
     });
   }, []);
 

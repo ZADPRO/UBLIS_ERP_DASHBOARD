@@ -11,12 +11,15 @@ import "react-toastify/dist/ReactToastify.css";
 import { GrEdit } from "react-icons/gr";
 import { MdDelete } from "react-icons/md";
 import { MdOutlineAddchart } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+
 // import { ImUpload2 } from "react-icons/im";
 
 
 type DecryptResult = any;
 
 const FeesStructure: React.FC = () => {
+  const navigate = useNavigate();
   const decrypt = (
     encryptedData: string,
     iv: string,
@@ -66,21 +69,26 @@ const FeesStructure: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      if(data.token==false){
+        navigate("/expired")
+      }else{
+        console.log(data.FessData);
 
-      console.log(data.FessData);
+        const options = data.Branch.map((branch: any) => ({
+          label: branch.refBranchName,
+          value: branch.refbranchId,
+        }));
+  
+        setBranchOptions(options);
+  
+        setBranch(options[0].value);
+  
+        setTableData(data.FessData);
+  
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+      }
 
-      const options = data.Branch.map((branch: any) => ({
-        label: branch.refBranchName,
-        value: branch.refbranchId,
-      }));
-
-      setBranchOptions(options);
-
-      setBranch(options[0].value);
-
-      setTableData(data.FessData);
-
-      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+ 
     });
   };
 
@@ -106,10 +114,14 @@ const FeesStructure: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      if(data.token==false){
+        navigate("/expired")
+      }else{
+        setTableData(data.FessData);
 
-      setTableData(data.FessData);
-
-      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+      }
+     
     });
   };
 
@@ -166,23 +178,28 @@ const FeesStructure: React.FC = () => {
         res.data[1],
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
-      );
+      );  if(data.token==false){
+        navigate("/expired")
+      }else{
+        toast.error("Deleted Successfully", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          // transition: Bounce,
+        });
+  
+        branchChange(branch);
+  
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
-      toast.error("Deleted Successfully", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        // transition: Bounce,
-      });
+      }
 
-      branchChange(branch);
-
-      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+      
     });
   };
 
@@ -212,26 +229,31 @@ const FeesStructure: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      if(data.token==false){
+        navigate("/expired")
+      }else
+{
+  const MemberListoptions = data.memberList.map(
+    (memeberlistOption: any) => ({
+      label: memeberlistOption.refTimeMembers,
+      value: memeberlistOption.refTimeMembersID,
+    })
+  );
 
-      const MemberListoptions = data.memberList.map(
-        (memeberlistOption: any) => ({
-          label: memeberlistOption.refTimeMembers,
-          value: memeberlistOption.refTimeMembersID,
-        })
-      );
+  setMemberListOption(MemberListoptions);
 
-      setMemberListOption(MemberListoptions);
+  const sessionTypeOption = data.timeData.map((sessionTypeOption: any) => ({
+    label: sessionTypeOption.refCustTimeData,
+    value: sessionTypeOption.refCustTimeId,
+  }));
 
-      const sessionTypeOption = data.timeData.map((sessionTypeOption: any) => ({
-        label: sessionTypeOption.refCustTimeData,
-        value: sessionTypeOption.refCustTimeId,
-      }));
+  setsessionTypeOption(sessionTypeOption);
 
-      setsessionTypeOption(sessionTypeOption);
+  console.log(sessionTypeOption);
 
-      console.log(sessionTypeOption);
-
-      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+  localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+}
+     
     });
   };
 
@@ -262,40 +284,45 @@ const FeesStructure: React.FC = () => {
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
+        if(data.token==false){
+          navigate("/expired")
+        }else{
+          console.log(data);
 
-        console.log(data);
-
-        if (data.success) {
-          setWorkSpaceData({
-            refFeId: "",
-            memberlist: "",
-            sessionType: "",
-            perday: 0,
-            fees: 0,
-            gstfees: 0,
-            totalfees: 0,
+          if (data.success) {
+            setWorkSpaceData({
+              refFeId: "",
+              memberlist: "",
+              sessionType: "",
+              perday: 0,
+              fees: 0,
+              gstfees: 0,
+              totalfees: 0,
+            });
+  
+            setUpdateStructure(false);
+  
+            setWorkSpace(false);
+  
+            branchChange(branch);
+          } else {
+            setUpdateStructure(true);
+          }
+          toast.success("Updated Successfully", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            // transition: Bounce,
           });
-
-          setUpdateStructure(false);
-
-          setWorkSpace(false);
-
-          branchChange(branch);
-        } else {
-          setUpdateStructure(true);
+          localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
         }
-        toast.success("Updated Successfully", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          // transition: Bounce,
-        });
-        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+
+        
       });
     } else {
       Axios.post(
@@ -321,44 +348,48 @@ const FeesStructure: React.FC = () => {
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
+        if(data.token==false){
+          navigate("/expired")
+        }else{
+          console.log(data);
 
-        console.log(data);
-
-        toast.success("New Fees Added Successfully", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          // transition: Bounce,
-        });
-
-        if (data.success) {
-          setWorkSpaceData({
-            refFeId: "",
-            memberlist: "",
-            sessionType: "",
-            perday: 0,
-            fees: 0,
-            gstfees: 0,
-            totalfees: 0,
+          toast.success("New Fees Added Successfully", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            // transition: Bounce,
           });
-
-          setWorkSpace(false);
-
-          branchChange(branch);
-        } else {
-          setWorkSpaceData({
-            ...workSpaceData,
-            refFeId: data.data[0].refFeId,
-          });
-          setUpdateStructure(true);
+  
+          if (data.success) {
+            setWorkSpaceData({
+              refFeId: "",
+              memberlist: "",
+              sessionType: "",
+              perday: 0,
+              fees: 0,
+              gstfees: 0,
+              totalfees: 0,
+            });
+  
+            setWorkSpace(false);
+  
+            branchChange(branch);
+          } else {
+            setWorkSpaceData({
+              ...workSpaceData,
+              refFeId: data.data[0].refFeId,
+            });
+            setUpdateStructure(true);
+          }
+  
+          localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
         }
-
-        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+      
       });
     }
   };

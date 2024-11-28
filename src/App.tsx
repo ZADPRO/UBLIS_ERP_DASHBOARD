@@ -30,6 +30,7 @@ import Settings from "./components/08-Settings/Settings";
 import StaffFeedback from "./components/38-Feedback/Feedback";
 import AddNotes from "./components/39-AddNotes/AddNotes";
 import AssignNotes from "./components/40-AssignNotes/AssignNotes";
+import Expired from "./pages/Expired/Expired";
 const App = () => {
   const urlParams = new URLSearchParams(window.location.search);
   const token = urlParams.get("JWTtoken");
@@ -87,6 +88,8 @@ const App = () => {
           <Route path="/editNotes" element={<EditNotes />} />
           <Route path="/restrictions" element={<Restrictions />} />
           <Route path="/fSettings" element={<OverallSettings />} />
+          <Route path="/expired" element={<Expired />} />
+
         </Routes>
       </Header>
     </Router>

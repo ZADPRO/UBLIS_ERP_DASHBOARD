@@ -15,6 +15,7 @@ import PasswordInput from "../../pages/Inputs/PasswordInput";
 import ErrorMessage from "../../pages/Messages/ErrorMessage";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 interface HealthProblemData {
   presentHealthProblem: Record<string, string>;
@@ -33,6 +34,8 @@ interface ModeOfContact {
 }
 
 const Profile: React.FC = () => {
+  const navigate = useNavigate();
+
   const decrypt = (
     encryptedData: string,
     iv: string,
@@ -192,8 +195,29 @@ const Profile: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      if(data.token==false){
+        navigate("/expired")
+      }else
+      {
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+
+      if (data.success) {
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+        setuserdata({
+          username:
+            "" + data.data[0].refStFName + " " + data.data[0].refStLName + "",
+          usernameid: data.data[0].refusertype,
+          profileimg: data.profileFile,
+        });
+
+        setPageLoading({
+          ...pageLoading,
+          verifytoken: false,
+        });
+      } else {
+        navigate("/expired");
+      }
 
       setuserdata({
         username:
@@ -206,9 +230,11 @@ const Profile: React.FC = () => {
         ...pageLoading,
         verifytoken: false,
       });
-
+    }
       console.log("Verify Token  Running --- ");
     });
+    
+    
   }, []);
 
   const [modeofcontact, setModeofContact] = useState<ModeOfContact | undefined>(
@@ -243,7 +269,11 @@ const Profile: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-
+       if(data.token==false){
+        navigate("/expired")
+      }
+      else{
+        
       console.log("UserData Running --- ");
       console.log(data);
 
@@ -381,6 +411,7 @@ const Profile: React.FC = () => {
         ...pageLoading,
         pageData: false,
       });
+      }
     });
   }, []);
 
@@ -432,6 +463,9 @@ const Profile: React.FC = () => {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      if(data.token==false){
+        navigate("/expired")
+      }else{
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
@@ -453,7 +487,9 @@ const Profile: React.FC = () => {
       });
 
       console.log("Image uploaded successfully:", data);
-    } catch (error) {
+    } 
+  }
+  catch (error) {
       console.error("Error uploading image:", error);
     }
   };
@@ -541,17 +577,22 @@ const Profile: React.FC = () => {
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
+        if(data.token==false){
+          navigate("/expired")
+        }else{
 
-        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+          localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
-        console.log(data.success);
-
-        if (data.success) {
-          setEdits({
-            ...edits,
-            address: false,
-          });
+          console.log(data.success);
+  
+          if (data.success) {
+            setEdits({
+              ...edits,
+              address: false,
+            });
+          }
         }
+       
       })
       .catch((err) => {
         // Catching any 400 status or general errors
@@ -594,8 +635,10 @@ const Profile: React.FC = () => {
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
-
-        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+        if(data.token==false){
+          navigate("/expired")
+        } else{
+          localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
         console.log(data.success);
 
@@ -605,6 +648,10 @@ const Profile: React.FC = () => {
             personal: false,
           });
         }
+
+        }
+
+        
       })
       .catch((err) => {
         // Catching any 400 status or general errors
@@ -637,7 +684,11 @@ const Profile: React.FC = () => {
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
+        if(data.token==false){
+          navigate("/expired")
+        } else{
 
+          
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
         console.log(data.success);
@@ -648,6 +699,8 @@ const Profile: React.FC = () => {
             communitcation: false,
           });
         }
+        }
+
       })
       .catch((err) => {
         // Catching any 400 status or general errors
@@ -687,17 +740,22 @@ const Profile: React.FC = () => {
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
+        if(data.token==false){
+          navigate("/expired")
+        }else{
+          localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
-        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
-
-        console.log(data.success);
-
-        if (data.success) {
-          setEdits({
-            ...edits,
-            gendrel: false,
-          });
+          console.log(data.success);
+  
+          if (data.success) {
+            setEdits({
+              ...edits,
+              gendrel: false,
+            });
+          }
         }
+
+       
       })
       .catch((err) => {
         // Catching any 400 status or general errors
@@ -740,17 +798,22 @@ const Profile: React.FC = () => {
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
+        if(data.token==false){
+          navigate("/expired")
+        }else{
+          localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
-        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
-
-        console.log(data.success);
-
-        if (data.success) {
-          setEdits({
-            ...edits,
-            present: false,
-          });
+          console.log(data.success);
+  
+          if (data.success) {
+            setEdits({
+              ...edits,
+              present: false,
+            });
+          }
         }
+
+       
       })
       .catch((err) => {
         // Catching any 400 status or general errors
@@ -796,18 +859,22 @@ const Profile: React.FC = () => {
           res.data[1],
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
-        );
+        );  if(data.token==false){
+          navigate("/expired")
+        }else{
+          localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
-        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
-
-        console.log(data.success);
-
-        if (data.success) {
-          setEdits({
-            ...edits,
-            therapy: false,
-          });
+          console.log(data.success);
+  
+          if (data.success) {
+            setEdits({
+              ...edits,
+              therapy: false,
+            });
+          }
         }
+
+       
       })
       .catch((err) => {
         // Catching any 400 status or general errors
@@ -859,9 +926,10 @@ const Profile: React.FC = () => {
           res.data[1],
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
-        );
-
-        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+        );  if(data.token==false){
+          navigate("/expired")
+        }else{
+          localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
         console.log(data);
 
@@ -894,6 +962,10 @@ const Profile: React.FC = () => {
               : inputs.certification,
           });
         }
+
+        }
+
+        
       })
       .catch((err) => {
         console.log("Error: ", err);
@@ -931,8 +1003,11 @@ const Profile: React.FC = () => {
           res.data[1],
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
-        );
+        );  if(data.token==false){
+          navigate("/expired")
+        }else
 
+       {
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
         console.log("Password Change-------------", data);
@@ -953,6 +1028,7 @@ const Profile: React.FC = () => {
             message: "Invalid Current Password",
           });
         }
+       }
       })
       .catch((err) => {
         // Catching any 400 status or general errors
@@ -988,8 +1064,10 @@ const Profile: React.FC = () => {
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
-
-        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+        if(data.token==false){
+          navigate("/expired")
+        }else{
+          localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
         if (data.success) {
           console.log("Prof---------", data);
@@ -1008,6 +1086,8 @@ const Profile: React.FC = () => {
               : "",
           });
         }
+        }
+        
       })
       .catch((err) => {
         // Catching any 400 status or general errors
@@ -1277,8 +1357,11 @@ const Profile: React.FC = () => {
                               { value: "single", label: "Single" },
                               { value: "married", label: "Married" },
                             ]}
-
-                            disabled={!edits.personal && inputs.age > '18'? false : true}
+                            disabled={
+                              !edits.personal && inputs.age > "18"
+                                ? false
+                                : true
+                            }
                             required
                           />
                         </div>
@@ -1313,7 +1396,7 @@ const Profile: React.FC = () => {
                             name="qualification"
                             id="qualification"
                             type="text"
-                            disabled={inputs.age > '18'? false : true}
+                            disabled={inputs.age > "18" ? false : true}
                             onChange={handleInputVal}
                             value={inputs.qualification}
                             readonly={!edits.personal}
@@ -1329,7 +1412,7 @@ const Profile: React.FC = () => {
                               name="occupation"
                               id="Occupation"
                               type="text"
-                              disabled={inputs.age > '18'? false : true}
+                              disabled={inputs.age > "18" ? false : true}
                               onChange={handleInputVal}
                               value={inputs.occupation}
                               readonly={!edits.personal}
@@ -1660,7 +1743,7 @@ const Profile: React.FC = () => {
                   <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
                     <div className="w-[100%] flex justify-between items-center mb-5">
                       <div className="text-[1.2rem] lg:text-[25px] font-bold">
-                      General Health
+                        General Health
                       </div>
                       {edits.gendrel ? (
                         <button

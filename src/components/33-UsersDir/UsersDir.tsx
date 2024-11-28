@@ -7,10 +7,13 @@ import UserDirData from "../../pages/Datatable/UserDirData";
 import Axios from "axios";
 import { Skeleton } from "primereact/skeleton";
 import CryptoJS from "crypto-js";
+import { useNavigate } from "react-router-dom";
+
 
 type DecryptResult = any;
 
 const UsersDir: React.FC = () => {
+  const navigate = useNavigate();
   const [pageLoading, setPageLoading] = useState({
     verifytoken: true,
     pageData: true,
@@ -60,7 +63,11 @@ const UsersDir: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      if(data.token==false){
+        navigate("/expired")
+      }else
 
+     {
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
       setuserdata({
@@ -75,6 +82,7 @@ const UsersDir: React.FC = () => {
         verifytoken: false,
       });
 
+     }
     });
   }, []);
 

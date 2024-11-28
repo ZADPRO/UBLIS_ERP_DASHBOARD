@@ -6,7 +6,7 @@ import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import { Button } from "primereact/button";
 import Axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 import { Sidebar } from "primereact/sidebar";
 import CryptoJS from "crypto-js";
 
@@ -78,7 +78,7 @@ const StaffDatas: React.FC<StaffDatasProps> = ({ changes }) => {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [userDetails, setUserDetails] = useState<Customer | null>(null);
   const [UserDetailss, setUserDetailss] = useState<UserDetails[]>([]);
-
+  const navigate = useNavigate();
   console.log(UserDetailss, userDetails);
 
   const [globalFilterValue, setGlobalFilterValue] = useState<string>("");
@@ -105,6 +105,10 @@ const StaffDatas: React.FC<StaffDatasProps> = ({ changes }) => {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      if(data.token==false){
+        navigate("/expired")
+      }
+      console.log("Data line --------------- 227", data);
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
@@ -219,7 +223,10 @@ const StaffDatas: React.FC<StaffDatasProps> = ({ changes }) => {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-
+      if(data.token==false){
+        navigate("/expired")
+      }
+      console.log("Data line --------------- 227", data);
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
       console.log("New ---------------", data);

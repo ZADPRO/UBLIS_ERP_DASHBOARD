@@ -13,6 +13,8 @@ import { Sidebar } from "primereact/sidebar";
 import { Fieldset } from "primereact/fieldset";
 import { Skeleton } from "primereact/skeleton";
 
+import { useNavigate } from "react-router-dom";
+
 type DecryptResult = any;
 
 const Payment: React.FC = () => {
@@ -52,6 +54,7 @@ const Payment: React.FC = () => {
 
     return JSON.parse(decryptedString);
   };
+  const navigate = useNavigate();
 
   useEffect(() => {
     Axios.get(import.meta.env.VITE_API_URL + "/validateTokenData", {
@@ -65,23 +68,29 @@ const Payment: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      console.log('data', data)
+      if(data.token==false)
+      {
+        navigate("/expired")
+      }
+      else{
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
-      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+        setuserdata({
+          username:
+            "" + data.data[0].refStFName + " " + data.data[0].refStLName + "",
+          usernameid: data.data[0].refusertype,
+          profileimg: data.profileFile,
+        });
+  
+        setPageLoading({
+          ...pageLoading,
+          verifytoken: false,
+        });
+  
+        console.log("Verify Token  Running --- ");
+      }
 
-      setuserdata({
-        username:
-          "" + data.data[0].refStFName + " " + data.data[0].refStLName + "",
-        usernameid: data.data[0].refusertype,
-        profileimg: data.profileFile,
-      });
-
-      setPageLoading({
-        ...pageLoading,
-        verifytoken: false,
-      });
-
-      console.log("Verify Token  Running --- ");
+      
     });
   }, []);
 
@@ -153,43 +162,51 @@ const Payment: React.FC = () => {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      console.log("data", data);
+      if(data.token==false){
+        navigate("/expired")
+      }
+      else
+      {
 
-      const capitalizeString = (str: any): string => {
-        if (typeof str !== "string") return str; // Only capitalize if it's a string
-        return str.charAt(0).toUpperCase() + str.slice(1); // Capitalize first letter, leave the rest unchanged
-      };
-
-      const fetchedCustomers: Customer[] = data.feeData.map(
-        (customer: any) => ({
-          refCtEmail: customer.refCtEmail,
-          refCtMobile: capitalizeString(customer.refCtMobile),
-          refCtWhatsapp: capitalizeString(customer.refCtWhatsapp),
-          refCustTimeData: capitalizeString(customer.refCustTimeData),
-          refExpiry: capitalizeString(customer.refExpiry),
-          refFeesAmtOf: capitalizeString(customer.refFeesAmtOf),
-          refFeesPaid: capitalizeString(customer.refFeesPaid),
-          refGstPaid: capitalizeString(customer.refGstPaid),
-          refOfferType: capitalizeString(customer.refOfferType),
-          refOfferValue: capitalizeString(customer.refOfferValue),
-          refPaymentFrom: capitalizeString(customer.refPaymentFrom),
-          refPaymentTo: capitalizeString(customer.refPaymentTo),
-          refSCustId: capitalizeString(customer.refSCustId),
-          refStFName: capitalizeString(customer.refStFName),
-          refStId: capitalizeString(customer.refStId),
-          refStLName: capitalizeString(customer.refStLName),
-          refTime: capitalizeString(customer.refTime),
-          refTimeDays: capitalizeString(customer.refTimeDays),
-          refTimeMembers: capitalizeString(customer.refTimeMembers),
-          refTimeMode: capitalizeString(customer.refTimeMode),
-          refToAmt: capitalizeString(customer.refToAmt),
-          row_num: customer.row_num,
-          refDate: capitalizeString(customer.refDate),
-          refPaymentMode: capitalizeString(customer.refPaymentMode),
-        })
-      );
-
-      setUserData(fetchedCustomers);
+        console.log("Data line --------------- 227", data);
+        console.log("data", data);
+  
+        const capitalizeString = (str: any): string => {
+          if (typeof str !== "string") return str; // Only capitalize if it's a string
+          return str.charAt(0).toUpperCase() + str.slice(1); // Capitalize first letter, leave the rest unchanged
+        };
+  
+        const fetchedCustomers: Customer[] = data.feeData.map(
+          (customer: any) => ({
+            refCtEmail: customer.refCtEmail,
+            refCtMobile: capitalizeString(customer.refCtMobile),
+            refCtWhatsapp: capitalizeString(customer.refCtWhatsapp),
+            refCustTimeData: capitalizeString(customer.refCustTimeData),
+            refExpiry: capitalizeString(customer.refExpiry),
+            refFeesAmtOf: capitalizeString(customer.refFeesAmtOf),
+            refFeesPaid: capitalizeString(customer.refFeesPaid),
+            refGstPaid: capitalizeString(customer.refGstPaid),
+            refOfferType: capitalizeString(customer.refOfferType),
+            refOfferValue: capitalizeString(customer.refOfferValue),
+            refPaymentFrom: capitalizeString(customer.refPaymentFrom),
+            refPaymentTo: capitalizeString(customer.refPaymentTo),
+            refSCustId: capitalizeString(customer.refSCustId),
+            refStFName: capitalizeString(customer.refStFName),
+            refStId: capitalizeString(customer.refStId),
+            refStLName: capitalizeString(customer.refStLName),
+            refTime: capitalizeString(customer.refTime),
+            refTimeDays: capitalizeString(customer.refTimeDays),
+            refTimeMembers: capitalizeString(customer.refTimeMembers),
+            refTimeMode: capitalizeString(customer.refTimeMode),
+            refToAmt: capitalizeString(customer.refToAmt),
+            row_num: customer.row_num,
+            refDate: capitalizeString(customer.refDate),
+            refPaymentMode: capitalizeString(customer.refPaymentMode),
+          })
+        );
+  
+        setUserData(fetchedCustomers);
+      }
     } catch (error) {
       console.error("Error fetching customers:", error);
     }

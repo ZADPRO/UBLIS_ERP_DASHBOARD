@@ -6,12 +6,15 @@ import { Divider } from "primereact/divider";
 import Datatables from "../../pages/Datatable/Datatable";
 import CryptoJS from "crypto-js";
 
+import { useNavigate } from "react-router-dom";
+
 import Axios from "axios";
 import { Skeleton } from "primereact/skeleton";
 
 type DecryptResult = any;
 
 const Users: React.FC = () => {
+  const navigate = useNavigate();
   const [pageLoading, setPageLoading] = useState({
     verifytoken: true,
     pageData: true,
@@ -61,22 +64,27 @@ const Users: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      if(data.token==false){
+        navigate("/expired")
+      }else{
 
-      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
-      setuserdata({
-        username:
-          "" + data.data[0].refStFName + " " + data.data[0].refStLName + "",
-        usernameid: data.data[0].refusertype,
-        profileimg: data.profileFile,
-      });
+        setuserdata({
+          username:
+            "" + data.data[0].refStFName + " " + data.data[0].refStLName + "",
+          usernameid: data.data[0].refusertype,
+          profileimg: data.profileFile,
+        });
+  
+        setPageLoading({
+          ...pageLoading,
+          verifytoken: false,
+        });
+  
+        console.log("Verify Token  Running --- ");
+      }
 
-      setPageLoading({
-        ...pageLoading,
-        verifytoken: false,
-      });
-
-      console.log("Verify Token  Running --- ");
     });
   }, []);
 

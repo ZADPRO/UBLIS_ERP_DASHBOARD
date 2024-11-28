@@ -6,6 +6,7 @@ import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import { Button } from "primereact/button";
 import Axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 import { Sidebar } from "primereact/sidebar";
 
@@ -83,7 +84,7 @@ export default function RegisteredDataTable() {
 
     return JSON.parse(decryptedString);
   };
-
+  const navigate = useNavigate();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [selectedCustomers, setSelectedCustomers] = useState<Customer[]>([]);
   const [visibleLeft, setVisibleLeft] = useState(false);
@@ -148,6 +149,10 @@ export default function RegisteredDataTable() {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      if(data.token==false){
+        navigate("/expired")
+      }
+      console.log("Data line --------------- 227", data);
 
       const fetchedCustomers: Customer[] = data.data.map((customer: any) => ({
         id: customer.refStId,
@@ -288,7 +293,10 @@ export default function RegisteredDataTable() {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-
+      if(data.token==false){
+        navigate("/expired")
+      }
+      console.log("Data line --------------- 227", data);
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
       if (data.success) {
@@ -392,7 +400,10 @@ export default function RegisteredDataTable() {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-
+      if(data.token==false){
+        navigate("/expired")
+      }
+      console.log("Data line --------------- 227", data);
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
       const userData = data.data.userTransaction;

@@ -9,6 +9,8 @@ import CryptoJS from "crypto-js";
 import PrintPDF from "../PrintPDF/PrintPDF";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
+import { useNavigate } from "react-router-dom";
+
 
 interface PaymentProps {
   refStId: string;
@@ -68,7 +70,7 @@ const Payment: React.FC<PaymentProps> = ({ refStId, closePayment }) => {
   };
 
   const [constfees, setConstFees] = useState(0);
-
+  const navigate = useNavigate();
   const fetchData = () => {
     Axios.post(
       import.meta.env.VITE_API_URL + "/finance/studentFeesDetails",
@@ -87,6 +89,11 @@ const Payment: React.FC<PaymentProps> = ({ refStId, closePayment }) => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+
+      if(data.token==false){
+        navigate("/expired")
+      }
+      console.log("Data line --------------- 227", data);
 
       const userData = data.data[0];
 
@@ -176,7 +183,9 @@ const Payment: React.FC<PaymentProps> = ({ refStId, closePayment }) => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-
+      if(data.token==false){
+        navigate("/expired")
+      }
       const fetchedData = data.data;
 
       if (data.success) {
@@ -263,7 +272,9 @@ const Payment: React.FC<PaymentProps> = ({ refStId, closePayment }) => {
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
-
+        if(data.token==false){
+          navigate("/expired")
+        }
         console.log(data);
 
         if (data.success) {
@@ -298,6 +309,9 @@ const Payment: React.FC<PaymentProps> = ({ refStId, closePayment }) => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      if(data.token==false){
+        navigate("/expired")
+      }
 
       console.log(data.data);
 

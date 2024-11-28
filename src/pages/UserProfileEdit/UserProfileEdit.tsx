@@ -6,6 +6,8 @@ import SelectInput from "../../pages/Inputs/SelectInput";
 import CheckboxInput from "../../pages/Inputs/CheckboxInput";
 import RadiobuttonInput from "../../pages/Inputs/RadiobuttonInput";
 import Axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 
 import CryptoJS from "crypto-js";
 
@@ -58,7 +60,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
     return JSON.parse(decryptedString);
   };
   const [conditions, setConditions] = useState<Condition[]>([]);
-
+  const navigate = useNavigate();
   const handleCheckboxChange = (index: any) => {
     setConditions((prevConditions: any) =>
       prevConditions.map((condition: any, i: any) =>
@@ -189,7 +191,9 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-
+      if(data.token==false){
+        navigate("/expired")
+      }
       console.log("UserData Running --- ");
       console.log(data);
 

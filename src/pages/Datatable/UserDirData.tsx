@@ -6,7 +6,7 @@ import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import { Button } from "primereact/button";
 import { Sidebar } from "primereact/sidebar";
-
+import { useNavigate } from "react-router-dom";
 import { TabView, TabPanel } from "primereact/tabview";
 import CryptoJS from "crypto-js";
 
@@ -54,7 +54,7 @@ const UserDirData: React.FC = () => {
   const [userDetails, setUserDetails] = useState<Customer | null>(null);
   const [UserDetailss, setUserDetailss] = useState<UserDetails[]>([]);
   const [globalFilterValue, setGlobalFilterValue] = useState<string>("");
-
+  const navigate = useNavigate();
   const decrypt = (
     encryptedData: string,
     iv: string,
@@ -107,7 +107,10 @@ const UserDirData: React.FC = () => {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-
+      if(data.token==false){
+        navigate("/expired")
+      }
+      console.log("Data line --------------- 227", data);
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
       console.log(data.data);
@@ -153,7 +156,10 @@ const UserDirData: React.FC = () => {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-
+      if(data.token==false){
+        navigate("/expired")
+      }
+      console.log("Data line --------------- 227", data);
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
       const userData = data.data.userTransaction;

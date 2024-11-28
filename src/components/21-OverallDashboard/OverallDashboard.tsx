@@ -13,6 +13,7 @@ import { Skeleton } from "primereact/skeleton";
 import CryptoJS from "crypto-js";
 
 import { AiOutlineAudit } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 
 type DecryptResult = any;
 
@@ -31,6 +32,7 @@ const lineData = {
 };
 
 const OverallDashboard: React.FC = () => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
 
   const [trialSampleData, setTrailSampleData] = useState([]);
@@ -110,78 +112,84 @@ const OverallDashboard: React.FC = () => {
           response.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
-
-        setFutureClient({
-          today: data.data.signUpCount[0].count_today,
-          futureToday: data.data.signUpCount[0].count_other_days,
-        });
-
-        if (
-          localStorage.getItem("refUtId") === "7" ||
-          localStorage.getItem("refUtId") === "4"
-        ) {
-          setTrialCount({
-            Trial: data.data.trailCount[0].trailCount,
-            FeesPending: data.data.trailCount[0].paymentPending,
+        if(data.token==false){
+          navigate("/expired")
+        }else{
+          setFutureClient({
+            today: data.data.signUpCount[0].count_today,
+            futureToday: data.data.signUpCount[0].count_other_days,
           });
-          setFeesCount({
-            feesPaid: data.data.fessCount[0].feesPaid,
-            feesPending: data.data.fessCount[0].feesPending,
-          });
-        }
-
-        if (localStorage.getItem("refUtId") === "7") {
-          setStudentAudit({
-            approvalCount:
-              data.data.getStudentChangesCountResult[0].ApproveCount,
-            readCount: data.data.getStudentChangesCountResult[0].Student_Read,
-          });
-
-          setEmployeeAudit({
-            approvalCount:
-              data.data.getEmployeeChangesCountResult[0].ApproveCount,
-            readCount: data.data.getEmployeeChangesCountResult[0].Employee_Read,
-          });
-        }
-
-        if (localStorage.getItem("refUtId") === "4") {
-        } else {
-          setFormSubmitted({
-            today: data.data.registerCount[0].count_today,
-            futureToday: data.data.registerCount[0].count_other_days,
-          });
-
-          const recentData = data.data.registerSampleData;
-          const mappedData = recentData.map((item: any, index: any) => ({
-            sno: index + 1,
-            name: `${item.refStFName} ${item.refStLName}`,
-            transTime: item.transTime,
-          }));
-          setProducts(mappedData);
-
-          const trailSampleData = data.data.trailSampleData;
-          const trailSampleDatamappedData = trailSampleData.map(
-            (item: any, index: any) => ({
-              sno: index + 1,
-              name: `${item.refStFName} ${item.refStLName}`,
-              transTime: item.transTime,
-            })
-          );
-          setTrailSampleData(trailSampleDatamappedData);
-
-          const paymentPendingSampleData = data.data.paymentPendingSampleData;
-          const paymentPendingSampleDatamappedData =
-            paymentPendingSampleData.map((item: any, index: any) => ({
+  
+          if (
+            localStorage.getItem("refUtId") === "7" ||
+            localStorage.getItem("refUtId") === "4"
+          ) {
+            setTrialCount({
+              Trial: data.data.trailCount[0].trailCount,
+              FeesPending: data.data.trailCount[0].paymentPending,
+            });
+            setFeesCount({
+              feesPaid: data.data.fessCount[0].feesPaid,
+              feesPending: data.data.fessCount[0].feesPending,
+            });
+          }
+  
+          if (localStorage.getItem("refUtId") === "7") {
+            setStudentAudit({
+              approvalCount:
+                data.data.getStudentChangesCountResult[0].ApproveCount,
+              readCount: data.data.getStudentChangesCountResult[0].Student_Read,
+            });
+  
+            setEmployeeAudit({
+              approvalCount:
+                data.data.getEmployeeChangesCountResult[0].ApproveCount,
+              readCount: data.data.getEmployeeChangesCountResult[0].Employee_Read,
+            });
+          }
+  
+          if (localStorage.getItem("refUtId") === "4") {
+          } else {
+            setFormSubmitted({
+              today: data.data.registerCount[0].count_today,
+              futureToday: data.data.registerCount[0].count_other_days,
+            });
+  
+            const recentData = data.data.registerSampleData;
+            const mappedData = recentData.map((item: any, index: any) => ({
               sno: index + 1,
               name: `${item.refStFName} ${item.refStLName}`,
               transTime: item.transTime,
             }));
-          setPaymentSampleData(paymentPendingSampleDatamappedData);
+            setProducts(mappedData);
+  
+            const trailSampleData = data.data.trailSampleData;
+            const trailSampleDatamappedData = trailSampleData.map(
+              (item: any, index: any) => ({
+                sno: index + 1,
+                name: `${item.refStFName} ${item.refStLName}`,
+                transTime: item.transTime,
+              })
+            );
+            setTrailSampleData(trailSampleDatamappedData);
+  
+            const paymentPendingSampleData = data.data.paymentPendingSampleData;
+            const paymentPendingSampleDatamappedData =
+              paymentPendingSampleData.map((item: any, index: any) => ({
+                sno: index + 1,
+                name: `${item.refStFName} ${item.refStLName}`,
+                transTime: item.transTime,
+              }));
+            setPaymentSampleData(paymentPendingSampleDatamappedData);
+          }
+  
+          setOverallUserStatus(data.data.userTypeCount);
+  
+          setOverallEmployeeStatus(data.data.staffCount);
+          
         }
 
-        setOverallUserStatus(data.data.userTypeCount);
-
-        setOverallEmployeeStatus(data.data.staffCount);
+        
       });
   }, []);
 
@@ -234,19 +242,26 @@ const OverallDashboard: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      if(data.token==false){
+        navigate("/expired")
+      }else{
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+        setuserdata({
+          username:
+            "" + data.data[0].refStFName + " " + data.data[0].refStLName + "",
+          usernameid: data.data[0].refusertype,
+          profileimg: data.profileFile,
+        });
+  
+        setPageLoading({
+          ...pageLoading,
+          verifytoken: false,
+        });
 
-      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
-      setuserdata({
-        username:
-          "" + data.data[0].refStFName + " " + data.data[0].refStLName + "",
-        usernameid: data.data[0].refusertype,
-        profileimg: data.profileFile,
-      });
+      }
 
-      setPageLoading({
-        ...pageLoading,
-        verifytoken: false,
-      });
+
+     
     });
   }, []);
 

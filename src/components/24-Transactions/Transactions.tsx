@@ -14,9 +14,12 @@ import { Fieldset } from "primereact/fieldset";
 import "./Transactions.css";
 import Payment from "../../pages/Payment/Payment";
 
+import { useNavigate } from "react-router-dom";
+
 type DecryptResult = any;
 
 const Transactions: React.FC = () => {
+  const navigate = useNavigate();
   const [globalFilterValue, setGlobalFilterValue] = useState<string>("");
   const [pageLoading, setPageLoading] = useState({
     verifytoken: true,
@@ -67,22 +70,28 @@ const Transactions: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      if(data.token==false){
+        navigate("/expired")
+      }else{
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
-      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+        setuserdata({
+          username:
+            "" + data.data[0].refStFName + " " + data.data[0].refStLName + "",
+          usernameid: data.data[0].refusertype,
+          profileimg: data.profileFile,
+        });
+  
+        setPageLoading({
+          ...pageLoading,
+          verifytoken: false,
+        });
+  
+        console.log("Verify Token  Running --- ");
+      }
 
-      setuserdata({
-        username:
-          "" + data.data[0].refStFName + " " + data.data[0].refStLName + "",
-        usernameid: data.data[0].refusertype,
-        profileimg: data.profileFile,
-      });
 
-      setPageLoading({
-        ...pageLoading,
-        verifytoken: false,
-      });
-
-      console.log("Verify Token  Running --- ");
+     
     });
   }, []);
 
@@ -168,12 +177,17 @@ const Transactions: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-
-      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+      if(data.token==false){
+        navigate("/expired")
+      }else{
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
       console.log("Fetch Data--------", data);
 
       setTableData(data.data);
+
+      }
+      
     });
   };
 
@@ -269,12 +283,17 @@ const Transactions: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      if(data.token==false){
+        navigate("/expired")
+      }else{
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
-      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+        setAuditData(data.data);
+  
+        console.log("Fetch Data--------", data);
+      }
 
-      setAuditData(data.data);
-
-      console.log("Fetch Data--------", data);
+     
     });
   };
 

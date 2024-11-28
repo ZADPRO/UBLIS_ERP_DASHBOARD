@@ -1,0 +1,40 @@
+.session-expired-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f8f9fa;
+  }
+  
+  .session-expired-content {
+    text-align: center;
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  h1 {
+    font-size: 2rem;
+    color: #333;
+  }
+  
+  p {
+    margin: 1rem 0;
+    color: #555;
+  }
+  
+  .login-button {
+    padding: 0.5rem 1rem;
+    background-color: #f95005;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  
+  .login-button:hover {
+    background-color: #0056b3;
+  }
+  

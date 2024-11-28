@@ -14,6 +14,9 @@ import PoppinsSemiBold from "../../assets/Font/Poppins-SemiBold.ttf";
 import { Button } from "primereact/button";
 import Axios from "axios";
 import CryptoJS from "crypto-js";
+import { useNavigate } from "react-router-dom";
+
+
 
 // Register the font with specified weights
 Font.register({
@@ -57,7 +60,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
 
     return JSON.parse(decryptedString);
   };
-
+  const navigate = useNavigate();
   const FetchData = async () => {
     console.log(refOrderId);
 
@@ -76,6 +79,9 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      if(data.token==false){
+        navigate("/expired")
+      }
 
       console.log(data);
 

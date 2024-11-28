@@ -14,6 +14,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { GrEdit } from "react-icons/gr";
 import { MdDelete } from "react-icons/md";
 import { MdOutlineAddchart } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+
 
 type DecryptResult = any;
 
@@ -53,7 +55,7 @@ const Offers: React.FC = () => {
 
     return JSON.parse(decryptedString);
   };
-
+  const navigate = useNavigate();
   const [branch, setBranch] = useState();
   const [branchOptions, setBranchOptions] = useState([]);
 
@@ -83,6 +85,9 @@ const Offers: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      if(data.token==false){
+        navigate("/expired")
+      }
 
       console.log("Offers Data -----------", data);
 
@@ -133,7 +138,9 @@ const Offers: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-
+      if(data.token==false){
+        navigate("/expired")
+      }
       console.log(data);
 
       setTableData(data.offersStructure);
@@ -161,6 +168,9 @@ const Offers: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      if(data.token==false){
+        navigate("/expired")
+      }
 
       console.log(data);
 
@@ -221,7 +231,10 @@ const Offers: React.FC = () => {
         res.data[1],
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
-      );
+      );  
+      if(data.token==false){
+        navigate("/expired")
+      }
 
       branchChange(branch);
       toast.error("Deleted Successfully", {
@@ -288,6 +301,9 @@ const Offers: React.FC = () => {
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
+        if(data.token==false){
+          navigate("/expired")
+        }
 
         console.log("Edited Data ----------", data);
         toast.success("Updated Successfully", {
@@ -349,6 +365,9 @@ const Offers: React.FC = () => {
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
+        if(data.token==false){
+          navigate("/expired")
+        }
 
         console.log(data);
 

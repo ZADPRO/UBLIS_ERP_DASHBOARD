@@ -11,10 +11,13 @@ import Offers from "../../pages/Offers/Offers";
 // import session from "../../pages/Session/Session"
 import Session from "../../pages/Session/Session";
 import { FaUserClock } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
 type DecryptResult = any;
 
 const Settings: React.FC = () => {
+  const navigate = useNavigate();
+
   const [pageLoading, setPageLoading] = useState({
     verifytoken: true,
     pageData: true,
@@ -65,21 +68,30 @@ const Settings: React.FC = () => {
         import.meta.env.VITE_ENCRYPTION_KEY
       );
 
-      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+      if(data.token==false){
+        
+        navigate("/expired")
+      }
+      else
+      {
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
-      setuserdata({
-        username:
-          "" + data.data[0].refStFName + " " + data.data[0].refStLName + "",
-        usernameid: data.data[0].refusertype,
-        profileimg: data.profileFile,
-      });
+        setuserdata({
+          username:
+            "" + data.data[0].refStFName + " " + data.data[0].refStLName + "",
+          usernameid: data.data[0].refusertype,
+          profileimg: data.profileFile,
+        });
+  
+        setPageLoading({
+          ...pageLoading,
+          verifytoken: false,
+        });
+  
+        console.log("Verify Token  Running --- ");
+      }
 
-      setPageLoading({
-        ...pageLoading,
-        verifytoken: false,
-      });
-
-      console.log("Verify Token  Running --- ");
+      
     });
   }, []);
 

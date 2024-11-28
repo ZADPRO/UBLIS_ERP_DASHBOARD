@@ -34,6 +34,7 @@ import { BiMessage } from "react-icons/bi";
 import { NavLink, useLocation } from "react-router-dom";
 
 import "./Header.css";
+import Expired from "../../pages/Expired/Expired";
 
 // Define types for the route structure
 interface Route {
@@ -223,7 +224,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
       name: "Payment",
       icon: <FaFileInvoiceDollar />,
     },
-    
+
     {
       path: "/staff/signedupUsers",
       name: "Future Clients",
@@ -443,69 +444,78 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     }
   }, [location.pathname]);
 
-  return (
-    <div>
-      <div className="main_container">
-        <motion.div
-          animate={{
-            inlineSize: isOpen ? "250px" : "60px",
-            transition: {
-              duration: 0.2,
-              type: "spring",
-              damping: 10,
-            },
-          }}
-          className="sidebar"
-        >
-          <div className="top_section">
-            <AnimatePresence>
-              {isOpen && (
-                <motion.h1
-                  className="logo"
-                  variants={showAnimation}
-                  initial="hidden"
-                  animate="show"
-                  exit="hidden"
-                >
-                  {headername}
-                </motion.h1>
-              )}
-            </AnimatePresence>
-            <div className="bars pr-4">
-              <IoMdMenu onClick={toggle} />
-            </div>
-          </div>
+  
 
-          <section className="routes">
-            {routes.map((route) => (
-              <NavLink
-                to={route.path}
-                key={route.name}
-                className={({ isActive }) =>
-                  isActive ? "link active" : "link"
-                }
-              >
-                <div className="icon">{route.icon}</div>
+  return (
+    <>
+      {location.pathname != "/expired" ? (
+        <div>
+          <div className="main_container">
+            <motion.div
+              animate={{
+                inlineSize: isOpen ? "250px" : "60px",
+                transition: {
+                  duration: 0.2,
+                  type: "spring",
+                  damping: 10,
+                },
+              }}
+              className="sidebar"
+            >
+              <div className="top_section">
                 <AnimatePresence>
                   {isOpen && (
-                    <motion.div
-                      className="link_text"
+                    <motion.h1
+                      className="logo"
                       variants={showAnimation}
                       initial="hidden"
                       animate="show"
                       exit="hidden"
                     >
-                      {route.name}
-                    </motion.div>
+                      {headername}
+                    </motion.h1>
                   )}
                 </AnimatePresence>
-              </NavLink>
-            ))}
-          </section>
-        </motion.div>
-        <main style={{ inlineSize: isOpen ? "85vw" : "95vw" }}>{children}</main>
-      </div>
-    </div>
+                <div className="bars pr-4">
+                  <IoMdMenu onClick={toggle} />
+                </div>
+              </div>
+
+              <section className="routes">
+                {routes.map((route) => (
+                  <NavLink
+                    to={route.path}
+                    key={route.name}
+                    className={({ isActive }) =>
+                      isActive ? "link active" : "link"
+                    }
+                  >
+                    <div className="icon">{route.icon}</div>
+                    <AnimatePresence>
+                      {isOpen && (
+                        <motion.div
+                          className="link_text"
+                          variants={showAnimation}
+                          initial="hidden"
+                          animate="show"
+                          exit="hidden"
+                        >
+                          {route.name}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </NavLink>
+                ))}
+              </section>
+            </motion.div>
+            <main style={{ inlineSize: isOpen ? "85vw" : "95vw" }}>
+              {children}
+            </main>
+          </div>
+        </div>
+      ) : <>
+      <Expired/></>}
+    </>
   );
 };
 

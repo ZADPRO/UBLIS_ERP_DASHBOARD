@@ -7,12 +7,14 @@ import { InputIcon } from "primereact/inputicon";
 import { Button } from "primereact/button";
 import { Sidebar } from "primereact/sidebar";
 import CryptoJS from "crypto-js";
+import { useNavigate } from "react-router-dom";
 
 import { TabView, TabPanel } from "primereact/tabview";
 
 import Axios from "axios";
 
 import { FilterMatchMode } from "primereact/api";
+
 
 interface Customer {
   id: string;
@@ -98,7 +100,7 @@ export default function Notify(selectedType: any) {
   const [visibleLeft, setVisibleLeft] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [globalFilterValue, setGlobalFilterValue] = useState<string>("");
-
+  const navigate = useNavigate();
   const [historyData, setHistoryData] = useState<HistoryData[]>([]);
 
   const [ApprovalData, setApprovalData] = useState<ApprovalData[]>([]);
@@ -132,6 +134,9 @@ export default function Notify(selectedType: any) {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      if(data.token==false){
+        navigate("/expired")
+      }
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
@@ -219,7 +224,11 @@ export default function Notify(selectedType: any) {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      console.log("zdhd", data);
+      if(data.token==false){
+        navigate("/expired")
+      }
+      console.log("Data line --------------- 227", data);
+      console.log("Data line --------------- 227", data);
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
@@ -314,6 +323,10 @@ export default function Notify(selectedType: any) {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      if(data.token==false){
+        navigate("/expired")
+      }
+      console.log("Data line --------------- 227", data);
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
@@ -354,6 +367,10 @@ export default function Notify(selectedType: any) {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      if(data.token==false){
+        navigate("/expired")
+      }
+      console.log("Data line --------------- 227", data);
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
@@ -394,6 +411,10 @@ export default function Notify(selectedType: any) {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      if(data.token==false){
+        navigate("/expired")
+      }
+      console.log("Data line --------------- 227", data);
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
@@ -546,7 +567,12 @@ export default function Notify(selectedType: any) {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      if(data.token==false){
+        navigate("/expired")
+      }
+      console.log("Data line --------------- 227", data);
 
+      
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
       if (historyData[0].userid) {

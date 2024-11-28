@@ -13,6 +13,10 @@ import CryptoJS from "crypto-js";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import { useNavigate } from "react-router-dom";
+
+
+
 // interface City {
 //   name: string;
 //   code: string;
@@ -71,6 +75,9 @@ const StaffData: React.FC = () => {
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
+        if(data.token==false){
+          navigate("/expired")
+        }
 
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
@@ -101,7 +108,7 @@ const StaffData: React.FC = () => {
   const [mobile, setMobile] = useState<string>(""); // Mobile state
   const [panCard, setPanCard] = useState<string>(""); // PAN card state
   const [aadharCard, setAadharCard] = useState<string>(""); // Aadhar card state
-
+  const navigate = useNavigate();
   const [dropdownOptions, setDropdownOptions] = useState<
     { label: string; value: number }[]
   >([]);
@@ -127,6 +134,10 @@ const StaffData: React.FC = () => {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      if(data.token==false){
+        navigate("/expired")
+      }
+      console.log("Data line --------------- 227", data);
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
@@ -210,6 +221,10 @@ const StaffData: React.FC = () => {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      if(data.token==false){
+        navigate("/expired")
+      }
+      console.log("Data line --------------- 227", data);
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
