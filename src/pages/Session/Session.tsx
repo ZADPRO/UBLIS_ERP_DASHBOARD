@@ -19,7 +19,6 @@ import "./Session.css";
 
 import { useNavigate } from "react-router-dom";
 
-
 // import { ImUpload2 } from "react-icons/im";
 type DecryptResult = any;
 
@@ -88,21 +87,20 @@ const Session: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
-      }else{
+      if (data.token == false) {
+        navigate("/expired");
+      } else {
         const options = data.Branch.map((branch: any) => ({
           label: branch.refBranchName,
           value: branch.refbranchId,
         }));
-  
+
         setBranchOptions(options);
-  
+
         setBranch(options[0].value);
-  
+
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
       }
-     
     });
   };
 
@@ -215,6 +213,8 @@ const Session: React.FC = () => {
       <GrEdit
         style={{ cursor: "pointer", color: "green", fontSize: "1.5rem" }}
         onClick={() => {
+          console.log("rowData", rowData);
+          //start here
           fetchsessionOption();
           setSessionAdd(true);
           setSessionUpdate(true);
@@ -224,7 +224,6 @@ const Session: React.FC = () => {
             const [hours, minutes] = time.split(":").map(Number);
             const date = new Date();
 
-            // Adjust hours based on AM/PM
             date.setHours(
               meridian === "PM" && hours < 12 ? hours + 12 : hours % 12
             );
@@ -237,19 +236,15 @@ const Session: React.FC = () => {
 
           const [startTime, endTime] = rowData.refTime.split(" to ");
 
-          // const selectedItem = sessionMemberTypeOptions.find(
-          //   (item: any) => item.label == rowData.refTimeMembers
-          // );
-
           setSessionEditId(rowData.refTimeId);
 
           setSessionWorkSpaceData({
             fromdate: parseTimeToDate(startTime.trim()),
             todate: parseTimeToDate(endTime.trim()),
             sessionmode: rowData.refTimeMode,
-            sessiondays: rowData.refTimeDays,
-            membertype: rowData.refTimeMembersID,
-            branch: rowData.refBranch,
+            // sessiondays: rowData.refTimeDays,
+            // membertype: rowData.refTimeMembersID,
+            // branch: rowData.refBranch,
           });
         }}
       />
@@ -363,12 +358,12 @@ const Session: React.FC = () => {
   const [classadd, setClassAdd] = useState(false);
 
   const [sessionWorkSpaceData, setSessionWorkSpaceData] = useState<{
-    fromdate: Date | null | undefined;
-    todate: Date | null | undefined;
-    sessionmode: any[];
-    sessiondays: any[];
-    membertype: any[];
-    branch: any[];
+    fromdate?: Date | null | undefined;
+    todate?: Date | null | undefined;
+    sessionmode?: any[];
+    sessiondays?: any[];
+    membertype?: any[];
+    branch?: any[];
   }>({
     fromdate: undefined,
     todate: undefined,
@@ -546,6 +541,7 @@ const Session: React.FC = () => {
                       </div>
                       <div className="flex flex-column gap-2 w-[48%]">
                         <label htmlFor="username">Session Mode</label>
+
                         <Dropdown
                           value={sessionWorkSpaceData.sessionmode}
                           onChange={(e) => {
@@ -571,7 +567,7 @@ const Session: React.FC = () => {
                         <div className="flex flex-column gap-2 w-[100%]">
                           <label htmlFor="username">Session Days</label>
 
-                          <MultiSelect
+                          {/* <MultiSelect
                             value={sessionWorkSpaceData.sessiondays}
                             onChange={(e) => {
                               setSessionWorkSpaceData({
@@ -585,13 +581,31 @@ const Session: React.FC = () => {
                             placeholder="Select Session Days"
                             maxSelectedLabels={3}
                             className="w-full md:w-20rem"
-                          />
+                          /> */}
+
+                          {/* <Dropdown
+                            value={sessionWorkSpaceData.sessiondays}
+                            onChange={(e) => {
+                              setSessionWorkSpaceData({
+                                ...sessionWorkSpaceData,
+                                sessiondays: e.value, // e.value will be of type Nullable<Date>
+                              });
+                            }}
+                            options={sessionDaysOptions}
+                            optionLabel="label"
+                            optionValue="value"
+                            placeholder="Select a Session Days"
+                            className="w-[100%] h-[35px]"
+                            checkmark={true}
+                            highlightOnSelect={false}
+                            required
+                          /> */}
                         </div>
                       </div>
                       <div className="flex flex-column gap-2 w-[48%]">
                         <label htmlFor="username">Member Type</label>
 
-                        <MultiSelect
+                        {/* <MultiSelect
                           value={sessionWorkSpaceData.membertype}
                           onChange={(e) => {
                             setSessionWorkSpaceData({
@@ -602,10 +616,28 @@ const Session: React.FC = () => {
                           options={sessionMemberTypeOptions}
                           optionLabel="label"
                           display="chip"
-                          placeholder="Select a Session Mode"
+                          placeholder="Select a Member Type"
                           maxSelectedLabels={3}
                           className="w-full md:w-20rem"
-                        />
+                        /> */}
+
+                        {/* <Dropdown
+                          value={sessionWorkSpaceData.membertype}
+                          onChange={(e) => {
+                            setSessionWorkSpaceData({
+                              ...sessionWorkSpaceData,
+                              membertype: e.value, // e.value will be of type Nullable<Date>
+                            });
+                          }}
+                          options={sessionMemberTypeOptions}
+                          optionLabel="label"
+                          optionValue="value"
+                          placeholder="Select a Session Mode"
+                          className="w-[100%] h-[35px]"
+                          checkmark={true}
+                          highlightOnSelect={false}
+                          required
+                        /> */}
                       </div>
                     </div>
                   </div>
@@ -623,7 +655,7 @@ const Session: React.FC = () => {
                       options={sessionBranchOptions}
                       optionLabel="label"
                       display="chip"
-                      placeholder="Select a Session Mode"
+                      placeholder="Select a Branch"
                       maxSelectedLabels={3}
                       className="w-full md:w-20rem"
                     />
