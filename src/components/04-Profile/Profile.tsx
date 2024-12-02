@@ -195,15 +195,28 @@ const Profile: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
-      }else
-      {
-
-      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
-
-      if (data.success) {
+      if (data.token == false) {
+        navigate("/expired");
+      } else {
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+
+        if (data.success) {
+          localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+          setuserdata({
+            username:
+              "" + data.data[0].refStFName + " " + data.data[0].refStLName + "",
+            usernameid: data.data[0].refusertype,
+            profileimg: data.profileFile,
+          });
+
+          setPageLoading({
+            ...pageLoading,
+            verifytoken: false,
+          });
+        } else {
+          navigate("/expired");
+        }
+
         setuserdata({
           username:
             "" + data.data[0].refStFName + " " + data.data[0].refStLName + "",
@@ -215,26 +228,9 @@ const Profile: React.FC = () => {
           ...pageLoading,
           verifytoken: false,
         });
-      } else {
-        navigate("/expired");
       }
-
-      setuserdata({
-        username:
-          "" + data.data[0].refStFName + " " + data.data[0].refStLName + "",
-        usernameid: data.data[0].refusertype,
-        profileimg: data.profileFile,
-      });
-
-      setPageLoading({
-        ...pageLoading,
-        verifytoken: false,
-      });
-    }
       console.log("Verify Token  Running --- ");
     });
-    
-    
   }, []);
 
   const [modeofcontact, setModeofContact] = useState<ModeOfContact | undefined>(
@@ -269,148 +265,150 @@ const Profile: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-       if(data.token==false){
-        navigate("/expired")
-      }
-      else{
-        
-      console.log("UserData Running --- ");
-      console.log(data);
-
-      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
-
-      if (data.data.presentHealth) {
-        const healthConditions = Object.entries(
-          (data.data as HealthProblemData).presentHealthProblem
-        ).map(
-          ([value, label]): Condition => ({
-            label, // Label as string
-            value: Number(value), // Ensure value is a number
-            checked: 0, // Default checked value
-          })
-        );
-
-        // Step 2: Update the mapped conditions to set `checked` to 1 if value matches
-        const updatedConditions = healthConditions.map((condition) => {
-          // Check if the condition value is in `presenthealth.refPresentHealth`
-          if (
-            data.data.presentHealth.refPresentHealth.includes(condition.value)
-          ) {
-            return {
-              ...condition,
-              checked: 1, // Set `checked` to 1 if value matches
-            };
-          }
-          return condition; // Return as is if no match
-        });
-
-        // Step 3: Set the final updated conditions in state
-        setConditions(updatedConditions);
+      if (data.token == false) {
+        navigate("/expired");
       } else {
-        setEmployeeData({
-          refExperence: data.data.EmployeeData.refExperence,
-          refSpecialization: data.data.EmployeeData.refSpecialization,
+        console.log("UserData Running --- ");
+        console.log(data);
+
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+
+        if (data.data.presentHealth) {
+          const healthConditions = Object.entries(
+            (data.data as HealthProblemData).presentHealthProblem
+          ).map(
+            ([value, label]): Condition => ({
+              label, // Label as string
+              value: Number(value), // Ensure value is a number
+              checked: 0, // Default checked value
+            })
+          );
+
+          // Step 2: Update the mapped conditions to set `checked` to 1 if value matches
+          const updatedConditions = healthConditions.map((condition) => {
+            // Check if the condition value is in `presenthealth.refPresentHealth`
+            if (
+              data.data.presentHealth.refPresentHealth.includes(condition.value)
+            ) {
+              return {
+                ...condition,
+                checked: 1, // Set `checked` to 1 if value matches
+              };
+            }
+            return condition; // Return as is if no match
+          });
+
+          // Step 3: Set the final updated conditions in state
+          setConditions(updatedConditions);
+        } else {
+          setEmployeeData({
+            refExperence: data.data.EmployeeData.refExperence,
+            refSpecialization: data.data.EmployeeData.refSpecialization,
+          });
+        }
+
+        setModeofContact(data.data.modeOfCommunication);
+
+        console.log(data.data);
+
+        const personaldata = data.data.personalData;
+        const addressdata = data.data.address;
+        const communication = data.data.communication;
+        const generalhealth = data.data.generalhealth;
+        const presenthealth = data.data.presentHealth;
+
+        setOptions({
+          ...options,
+          address: addressdata ? addressdata.addresstype : false,
+          accident: generalhealth ? generalhealth.refRecentInjuries : false,
+          breaks: generalhealth ? generalhealth.refRecentFractures : false,
+          care: presenthealth ? presenthealth.refUnderPhysicalCare : false,
+          backpain: presenthealth
+            ? presenthealth.refBackPain === "no"
+              ? false
+              : true
+            : false,
         });
-      }
 
-      setModeofContact(data.data.modeOfCommunication);
+        setInputs({
+          profilefile: data.data.profileFile,
+          fname: personaldata.refStFName,
+          lname: personaldata.refStLName,
+          dob: personaldata.refStDOB,
+          age: personaldata.refStAge,
+          gender: personaldata.refStSex,
+          maritalstatus: personaldata.refMaritalStatus,
+          anniversarydate: personaldata.refWeddingDate,
+          guardianname: personaldata.refguardian,
+          qualification: personaldata.refQualification,
+          occupation: personaldata.refOccupation,
+          peraddress: addressdata.refAdAdd1,
+          perpincode: addressdata.refAdPincode1,
+          perstate: addressdata.refAdState1,
+          percity: addressdata.refAdCity1,
+          tempaddress: addressdata.addresstype
+            ? addressdata.refAdAdd1
+            : addressdata.refAdAdd2,
+          temppincode: addressdata.addresstype
+            ? addressdata.refAdPincode1
+            : addressdata.refAdPincode2,
+          tempstate: addressdata.addresstype
+            ? addressdata.refAdState1
+            : addressdata.refAdState2,
+          tempcity: addressdata.addresstype
+            ? addressdata.refAdCity1
+            : addressdata.refAdCity2,
+          email: communication.refCtEmail,
+          phoneno: communication.refCtMobile,
+          whatsappno: communication.refCtWhatsapp,
+          mode: communication.refUcPreference,
+          height: generalhealth ? generalhealth.refHeight : null,
+          weight: generalhealth ? generalhealth.refWeight : null,
+          bloodgroup: generalhealth ? generalhealth.refBlood : null,
+          bmi: generalhealth ? generalhealth.refBMI : null,
+          bp: generalhealth ? generalhealth.refBP : null,
+          accidentdetails: generalhealth
+            ? generalhealth.refRecentInjuriesReason
+            : null,
+          breaksdetails: generalhealth
+            ? generalhealth.refRecentFracturesReason
+            : null,
+          breaksotheractivities: generalhealth ? generalhealth.refOthers : null,
+          genderalanything: generalhealth ? generalhealth.refElse : null,
+          pastother: presenthealth ? presenthealth.refPastHistory : null,
+          pastmedicaldetails: presenthealth
+            ? presenthealth.refMedicalDetails
+            : null,
+          caredoctorname: presenthealth ? presenthealth.refDoctor : null,
+          caredoctorhospital: presenthealth ? presenthealth.refHospital : null,
+          backpainscale: presenthealth ? presenthealth.refBackPain : null,
+          therapydurationproblem: presenthealth
+            ? presenthealth.refProblem
+            : null,
+          therapypasthistory: presenthealth
+            ? presenthealth.refPastHistory
+            : null,
+          therapyfamilyhistory: presenthealth
+            ? presenthealth.refFamilyHistory
+            : null,
+          therapyanythingelse: presenthealth
+            ? presenthealth.refAnythingelse
+            : null,
+          pancard: data.data.employeeDocuments
+            ? data.data.employeeDocuments.panCard
+            : "",
+          aadhar: data.data.employeeDocuments
+            ? data.data.employeeDocuments.AadharCard
+            : "",
+          certification: data.data.employeeDocuments
+            ? data.data.employeeDocuments.Certification
+            : "",
+        });
 
-      console.log(data.data);
-
-      const personaldata = data.data.personalData;
-      const addressdata = data.data.address;
-      const communication = data.data.communication;
-      const generalhealth = data.data.generalhealth;
-      const presenthealth = data.data.presentHealth;
-
-      setOptions({
-        ...options,
-        address: addressdata ? addressdata.addresstype : false,
-        accident: generalhealth ? generalhealth.refRecentInjuries : false,
-        breaks: generalhealth ? generalhealth.refRecentFractures : false,
-        care: presenthealth ? presenthealth.refUnderPhysicalCare : false,
-        backpain: presenthealth
-          ? presenthealth.refBackPain === "no"
-            ? false
-            : true
-          : false,
-      });
-
-      setInputs({
-        profilefile: data.data.profileFile,
-        fname: personaldata.refStFName,
-        lname: personaldata.refStLName,
-        dob: personaldata.refStDOB,
-        age: personaldata.refStAge,
-        gender: personaldata.refStSex,
-        maritalstatus: personaldata.refMaritalStatus,
-        anniversarydate: personaldata.refWeddingDate,
-        guardianname: personaldata.refguardian,
-        qualification: personaldata.refQualification,
-        occupation: personaldata.refOccupation,
-        peraddress: addressdata.refAdAdd1,
-        perpincode: addressdata.refAdPincode1,
-        perstate: addressdata.refAdState1,
-        percity: addressdata.refAdCity1,
-        tempaddress: addressdata.addresstype
-          ? addressdata.refAdAdd1
-          : addressdata.refAdAdd2,
-        temppincode: addressdata.addresstype
-          ? addressdata.refAdPincode1
-          : addressdata.refAdPincode2,
-        tempstate: addressdata.addresstype
-          ? addressdata.refAdState1
-          : addressdata.refAdState2,
-        tempcity: addressdata.addresstype
-          ? addressdata.refAdCity1
-          : addressdata.refAdCity2,
-        email: communication.refCtEmail,
-        phoneno: communication.refCtMobile,
-        whatsappno: communication.refCtWhatsapp,
-        mode: communication.refUcPreference,
-        height: generalhealth ? generalhealth.refHeight : null,
-        weight: generalhealth ? generalhealth.refWeight : null,
-        bloodgroup: generalhealth ? generalhealth.refBlood : null,
-        bmi: generalhealth ? generalhealth.refBMI : null,
-        bp: generalhealth ? generalhealth.refBP : null,
-        accidentdetails: generalhealth
-          ? generalhealth.refRecentInjuriesReason
-          : null,
-        breaksdetails: generalhealth
-          ? generalhealth.refRecentFracturesReason
-          : null,
-        breaksotheractivities: generalhealth ? generalhealth.refOthers : null,
-        genderalanything: generalhealth ? generalhealth.refElse : null,
-        pastother: presenthealth ? presenthealth.refPastHistory : null,
-        pastmedicaldetails: presenthealth
-          ? presenthealth.refMedicalDetails
-          : null,
-        caredoctorname: presenthealth ? presenthealth.refDoctor : null,
-        caredoctorhospital: presenthealth ? presenthealth.refHospital : null,
-        backpainscale: presenthealth ? presenthealth.refBackPain : null,
-        therapydurationproblem: presenthealth ? presenthealth.refProblem : null,
-        therapypasthistory: presenthealth ? presenthealth.refPastHistory : null,
-        therapyfamilyhistory: presenthealth
-          ? presenthealth.refFamilyHistory
-          : null,
-        therapyanythingelse: presenthealth
-          ? presenthealth.refAnythingelse
-          : null,
-        pancard: data.data.employeeDocuments
-          ? data.data.employeeDocuments.panCard
-          : "",
-        aadhar: data.data.employeeDocuments
-          ? data.data.employeeDocuments.AadharCard
-          : "",
-        certification: data.data.employeeDocuments
-          ? data.data.employeeDocuments.Certification
-          : "",
-      });
-
-      setPageLoading({
-        ...pageLoading,
-        pageData: false,
-      });
+        setPageLoading({
+          ...pageLoading,
+          pageData: false,
+        });
       }
     });
   }, []);
@@ -463,33 +461,31 @@ const Profile: React.FC = () => {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
-      }else{
+      if (data.token == false) {
+        navigate("/expired");
+      } else {
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
-      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+        console.log(data);
 
-      console.log(data);
+        setInputs({
+          ...inputs,
+          profilefile: data.filePath,
+        });
 
-      setInputs({
-        ...inputs,
-        profilefile: data.filePath,
-      });
+        setuserdata({
+          ...userdata,
+          profileimg: data.filePath,
+        });
 
-      setuserdata({
-        ...userdata,
-        profileimg: data.filePath,
-      });
+        setLoading({
+          ...loading,
+          changeimg: false,
+        });
 
-      setLoading({
-        ...loading,
-        changeimg: false,
-      });
-
-      console.log("Image uploaded successfully:", data);
-    } 
-  }
-  catch (error) {
+        console.log("Image uploaded successfully:", data);
+      }
+    } catch (error) {
       console.error("Error uploading image:", error);
     }
   };
@@ -577,14 +573,13 @@ const Profile: React.FC = () => {
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
-        if(data.token==false){
-          navigate("/expired")
-        }else{
-
+        if (data.token == false) {
+          navigate("/expired");
+        } else {
           localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
           console.log(data.success);
-  
+
           if (data.success) {
             setEdits({
               ...edits,
@@ -592,7 +587,6 @@ const Profile: React.FC = () => {
             });
           }
         }
-       
       })
       .catch((err) => {
         // Catching any 400 status or general errors
@@ -635,23 +629,20 @@ const Profile: React.FC = () => {
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
-        if(data.token==false){
-          navigate("/expired")
-        } else{
+        if (data.token == false) {
+          navigate("/expired");
+        } else {
           localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
-        console.log(data.success);
+          console.log(data.success);
 
-        if (data.success) {
-          setEdits({
-            ...edits,
-            personal: false,
-          });
+          if (data.success) {
+            setEdits({
+              ...edits,
+              personal: false,
+            });
+          }
         }
-
-        }
-
-        
       })
       .catch((err) => {
         // Catching any 400 status or general errors
@@ -684,23 +675,20 @@ const Profile: React.FC = () => {
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
-        if(data.token==false){
-          navigate("/expired")
-        } else{
+        if (data.token == false) {
+          navigate("/expired");
+        } else {
+          localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
-          
-        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+          console.log(data.success);
 
-        console.log(data.success);
-
-        if (data.success) {
-          setEdits({
-            ...edits,
-            communitcation: false,
-          });
+          if (data.success) {
+            setEdits({
+              ...edits,
+              communitcation: false,
+            });
+          }
         }
-        }
-
       })
       .catch((err) => {
         // Catching any 400 status or general errors
@@ -740,13 +728,13 @@ const Profile: React.FC = () => {
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
-        if(data.token==false){
-          navigate("/expired")
-        }else{
+        if (data.token == false) {
+          navigate("/expired");
+        } else {
           localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
           console.log(data.success);
-  
+
           if (data.success) {
             setEdits({
               ...edits,
@@ -754,8 +742,6 @@ const Profile: React.FC = () => {
             });
           }
         }
-
-       
       })
       .catch((err) => {
         // Catching any 400 status or general errors
@@ -798,13 +784,13 @@ const Profile: React.FC = () => {
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
-        if(data.token==false){
-          navigate("/expired")
-        }else{
+        if (data.token == false) {
+          navigate("/expired");
+        } else {
           localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
           console.log(data.success);
-  
+
           if (data.success) {
             setEdits({
               ...edits,
@@ -812,8 +798,6 @@ const Profile: React.FC = () => {
             });
           }
         }
-
-       
       })
       .catch((err) => {
         // Catching any 400 status or general errors
@@ -859,13 +843,14 @@ const Profile: React.FC = () => {
           res.data[1],
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
-        );  if(data.token==false){
-          navigate("/expired")
-        }else{
+        );
+        if (data.token == false) {
+          navigate("/expired");
+        } else {
           localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
           console.log(data.success);
-  
+
           if (data.success) {
             setEdits({
               ...edits,
@@ -873,8 +858,6 @@ const Profile: React.FC = () => {
             });
           }
         }
-
-       
       })
       .catch((err) => {
         // Catching any 400 status or general errors
@@ -926,46 +909,44 @@ const Profile: React.FC = () => {
           res.data[1],
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
-        );  if(data.token==false){
-          navigate("/expired")
-        }else{
+        );
+        if (data.token == false) {
+          navigate("/expired");
+        } else {
           localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
-        console.log(data);
+          console.log(data);
 
-        if (data.success) {
-          toast.success(
-            "Document Uploaded Successfully, Waiting for Approval",
-            {
-              position: "top-right",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-              // transition: Bounce,
-            }
-          );
-          setUploadLoading(false);
-          setInputs({
-            ...inputs,
-            pancard: data.profileFile.employeeDocuments.panCard
-              ? data.profileFile.employeeDocuments.panCard
-              : inputs.pancard,
-            aadhar: data.profileFile.employeeDocuments.aadharCard
-              ? data.profileFile.employeeDocuments.aadharCard
-              : inputs.aadhar,
-            certification: data.profileFile.employeeDocuments.certification
-              ? data.profileFile.employeeDocuments.certification
-              : inputs.certification,
-          });
+          if (data.success) {
+            toast.success(
+              "Document Uploaded Successfully, Waiting for Approval",
+              {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                // transition: Bounce,
+              }
+            );
+            setUploadLoading(false);
+            setInputs({
+              ...inputs,
+              pancard: data.profileFile.employeeDocuments.panCard
+                ? data.profileFile.employeeDocuments.panCard
+                : inputs.pancard,
+              aadhar: data.profileFile.employeeDocuments.aadharCard
+                ? data.profileFile.employeeDocuments.aadharCard
+                : inputs.aadhar,
+              certification: data.profileFile.employeeDocuments.certification
+                ? data.profileFile.employeeDocuments.certification
+                : inputs.certification,
+            });
+          }
         }
-
-        }
-
-        
       })
       .catch((err) => {
         console.log("Error: ", err);
@@ -1003,32 +984,31 @@ const Profile: React.FC = () => {
           res.data[1],
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
-        );  if(data.token==false){
-          navigate("/expired")
-        }else
-
-       {
-        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
-
-        console.log("Password Change-------------", data);
-
-        if (data.success) {
-          setPasswordInputs({
-            currentpass: "",
-            newpass: "",
-            confirmpass: "",
-          });
-          setPasswordError({
-            status: false,
-            message: "",
-          });
+        );
+        if (data.token == false) {
+          navigate("/expired");
         } else {
-          setPasswordError({
-            status: true,
-            message: "Invalid Current Password",
-          });
+          localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+
+          console.log("Password Change-------------", data);
+
+          if (data.success) {
+            setPasswordInputs({
+              currentpass: "",
+              newpass: "",
+              confirmpass: "",
+            });
+            setPasswordError({
+              status: false,
+              message: "",
+            });
+          } else {
+            setPasswordError({
+              status: true,
+              message: "Invalid Current Password",
+            });
+          }
         }
-       }
       })
       .catch((err) => {
         // Catching any 400 status or general errors
@@ -1064,30 +1044,29 @@ const Profile: React.FC = () => {
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
-        if(data.token==false){
-          navigate("/expired")
-        }else{
+        if (data.token == false) {
+          navigate("/expired");
+        } else {
           localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
-        if (data.success) {
-          console.log("Prof---------", data);
+          if (data.success) {
+            console.log("Prof---------", data);
 
-          setEdits({
-            ...edits,
-            prof: false,
-          });
+            setEdits({
+              ...edits,
+              prof: false,
+            });
 
-          setEmployeeData({
-            refExperence: data.data.EmployeeData.refExperence
-              ? data.data.EmployeeData.refExperence
-              : "",
-            refSpecialization: data.data.EmployeeData.refSpecialization
-              ? data.data.EmployeeData.refSpecialization
-              : "",
-          });
+            setEmployeeData({
+              refExperence: data.data.EmployeeData.refExperence
+                ? data.data.EmployeeData.refExperence
+                : "",
+              refSpecialization: data.data.EmployeeData.refSpecialization
+                ? data.data.EmployeeData.refSpecialization
+                : "",
+            });
+          }
         }
-        }
-        
       })
       .catch((err) => {
         // Catching any 400 status or general errors

@@ -427,7 +427,7 @@ const FeesStructure: React.FC = () => {
               <div className="my-3 text-[25px] font-semibold">
                 {updateStructure ? "Update Structure" : "Add Structure"}
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between w-[100%]">
                 <div className="flex flex-column gap-2 w-[48%]">
                   <label htmlFor="username">Member List</label>
                   {editFeeStructure ? (
@@ -463,7 +463,7 @@ const FeesStructure: React.FC = () => {
                       display="chip"
                       placeholder="Select Session Days"
                       maxSelectedLabels={3}
-                      className="w-full md:w-20rem"
+                      className="w-full "
                     />
                   )}
                 </div>
@@ -503,7 +503,7 @@ const FeesStructure: React.FC = () => {
                       display="chip"
                       placeholder="Select Session Days"
                       maxSelectedLabels={3}
-                      className="w-full md:w-20rem"
+                      className="w-full "
                     />
                   )}
                 </div>
@@ -612,3 +612,4 @@ const FeesStructure: React.FC = () => {
 };
 
 export default FeesStructure;
+
