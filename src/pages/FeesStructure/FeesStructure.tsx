@@ -12,9 +12,9 @@ import { GrEdit } from "react-icons/gr";
 import { MdDelete } from "react-icons/md";
 import { MdOutlineAddchart } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { MultiSelect } from "primereact/multiselect";
 
 // import { ImUpload2 } from "react-icons/im";
-
 
 type DecryptResult = any;
 
@@ -48,7 +48,7 @@ const FeesStructure: React.FC = () => {
 
   const [branch, setBranch] = useState();
   const [branchOptions, setBranchOptions] = useState([]);
-
+  const [editFeeStructure, setFeeStructure] = useState(false);
   const [tableData, setTableData] = useState();
 
   const fetchData = () => {
@@ -69,26 +69,24 @@ const FeesStructure: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
-      }else{
+      if (data.token == false) {
+        navigate("/expired");
+      } else {
         console.log(data.FessData);
 
         const options = data.Branch.map((branch: any) => ({
           label: branch.refBranchName,
           value: branch.refbranchId,
         }));
-  
+
         setBranchOptions(options);
-  
+
         setBranch(options[0].value);
-  
+
         setTableData(data.FessData);
-  
+
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
       }
-
- 
     });
   };
 
@@ -114,46 +112,46 @@ const FeesStructure: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
-      }else{
+      if (data.token == false) {
+        navigate("/expired");
+      } else {
         setTableData(data.FessData);
 
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
       }
-     
     });
   };
 
   const EditBtn = (rowData: any) => {
     return (
-      <GrEdit 
-  style={{ cursor: "pointer", color: "green", fontSize: "1.5rem" }}
-  onClick={() => {
-    console.log(rowData);
+      <GrEdit
+        style={{ cursor: "pointer", color: "green", fontSize: "1.5rem" }}
+        onClick={() => {
+          setFeeStructure(true);
+          console.log(rowData);
 
-    setWorkSpace(true);
-    setUpdateStructure(true);
-    getAddStructure();
+          setWorkSpace(true);
+          setUpdateStructure(true);
+          getAddStructure();
 
-    setWorkSpaceData({
-      refFeId: rowData.refFeId,
-      memberlist: rowData.refMemberList,
-      sessionType: rowData.refSessionType,
-      perday: rowData.refAmtPerDay,
-      fees: rowData.refFees,
-      gstfees: rowData.refGst,
-      totalfees: rowData.refFeTotal,
-    });
-  }}
-/>
+          setWorkSpaceData({
+            refFeId: rowData.refFeId,
+            memberlist: rowData.refMemberList,
+            sessionType: rowData.refSessionType,
+            perday: rowData.refAmtPerDay,
+            fees: rowData.refFees,
+            gstfees: rowData.refGst,
+            totalfees: rowData.refFeTotal,
+          });
+        }}
+      />
     );
   };
 
   const DeleteBtn = (rowData: any) => {
     return (
-      <MdDelete  
-      style={{ cursor: "pointer", color: "red", fontSize: "1.8rem" }}
+      <MdDelete
+        style={{ cursor: "pointer", color: "red", fontSize: "1.8rem" }}
         onClick={() => {
           deleteFees(rowData.refFeId);
         }}
@@ -178,9 +176,10 @@ const FeesStructure: React.FC = () => {
         res.data[1],
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
-      );  if(data.token==false){
-        navigate("/expired")
-      }else{
+      );
+      if (data.token == false) {
+        navigate("/expired");
+      } else {
         toast.error("Deleted Successfully", {
           position: "top-right",
           autoClose: 5000,
@@ -192,14 +191,11 @@ const FeesStructure: React.FC = () => {
           theme: "light",
           // transition: Bounce,
         });
-  
+
         branchChange(branch);
-  
+
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
-
       }
-
-      
     });
   };
 
@@ -209,8 +205,8 @@ const FeesStructure: React.FC = () => {
   const [sessionTypeOption, setsessionTypeOption] = useState([]);
   const [workSpaceData, setWorkSpaceData] = useState({
     refFeId: "",
-    memberlist: "",
-    sessionType: "",
+    memberlist: [],
+    sessionType: [],
     perday: 0,
     fees: 0,
     gstfees: 0,
@@ -229,31 +225,31 @@ const FeesStructure: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
-      }else
-{
-  const MemberListoptions = data.memberList.map(
-    (memeberlistOption: any) => ({
-      label: memeberlistOption.refTimeMembers,
-      value: memeberlistOption.refTimeMembersID,
-    })
-  );
+      if (data.token == false) {
+        navigate("/expired");
+      } else {
+        const MemberListoptions = data.memberList.map(
+          (memeberlistOption: any) => ({
+            label: memeberlistOption.refTimeMembers,
+            value: memeberlistOption.refTimeMembersID,
+          })
+        );
 
-  setMemberListOption(MemberListoptions);
+        setMemberListOption(MemberListoptions);
 
-  const sessionTypeOption = data.timeData.map((sessionTypeOption: any) => ({
-    label: sessionTypeOption.refCustTimeData,
-    value: sessionTypeOption.refCustTimeId,
-  }));
+        const sessionTypeOption = data.timeData.map(
+          (sessionTypeOption: any) => ({
+            label: sessionTypeOption.refCustTimeData,
+            value: sessionTypeOption.refCustTimeId,
+          })
+        );
 
-  setsessionTypeOption(sessionTypeOption);
+        setsessionTypeOption(sessionTypeOption);
 
-  console.log(sessionTypeOption);
+        console.log(sessionTypeOption);
 
-  localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
-}
-     
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+      }
     });
   };
 
@@ -284,26 +280,26 @@ const FeesStructure: React.FC = () => {
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
-        if(data.token==false){
-          navigate("/expired")
-        }else{
+        if (data.token == false) {
+          navigate("/expired");
+        } else {
           console.log(data);
 
           if (data.success) {
             setWorkSpaceData({
               refFeId: "",
-              memberlist: "",
-              sessionType: "",
+              memberlist: [],
+              sessionType: [],
               perday: 0,
               fees: 0,
               gstfees: 0,
               totalfees: 0,
             });
-  
+
             setUpdateStructure(false);
-  
+
             setWorkSpace(false);
-  
+
             branchChange(branch);
           } else {
             setUpdateStructure(true);
@@ -321,8 +317,6 @@ const FeesStructure: React.FC = () => {
           });
           localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
         }
-
-        
       });
     } else {
       Axios.post(
@@ -348,9 +342,9 @@ const FeesStructure: React.FC = () => {
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
-        if(data.token==false){
-          navigate("/expired")
-        }else{
+        if (data.token == false) {
+          navigate("/expired");
+        } else {
           console.log(data);
 
           toast.success("New Fees Added Successfully", {
@@ -364,20 +358,20 @@ const FeesStructure: React.FC = () => {
             theme: "light",
             // transition: Bounce,
           });
-  
+
           if (data.success) {
             setWorkSpaceData({
               refFeId: "",
-              memberlist: "",
-              sessionType: "",
+              memberlist: [],
+              sessionType: [],
               perday: 0,
               fees: 0,
               gstfees: 0,
               totalfees: 0,
             });
-  
+
             setWorkSpace(false);
-  
+
             branchChange(branch);
           } else {
             setWorkSpaceData({
@@ -386,10 +380,9 @@ const FeesStructure: React.FC = () => {
             });
             setUpdateStructure(true);
           }
-  
+
           localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
         }
-      
       });
     }
   };
@@ -414,16 +407,17 @@ const FeesStructure: React.FC = () => {
         />
 
         {workSpace ? null : (
-         
-
-          <button className="bg-green-500 border-none rounded-lg p-2  " onClick={() => {
-            setWorkSpace(true);
-            getAddStructure();
-          }}><MdOutlineAddchart className="text-3xl text-white" />
- </button>
+          <button
+            className="bg-green-500 border-none rounded-lg p-2  "
+            onClick={() => {
+              setWorkSpace(true);
+              setFeeStructure(false);
+              getAddStructure();
+            }}
+          >
+            <MdOutlineAddchart className="text-3xl text-white" />
+          </button>
         )}
-
-        
       </div>
 
       {workSpace ? (
@@ -436,46 +430,82 @@ const FeesStructure: React.FC = () => {
               <div className="flex justify-between">
                 <div className="flex flex-column gap-2 w-[48%]">
                   <label htmlFor="username">Member List</label>
-                  <Dropdown
-                    value={workSpaceData.memberlist}
-                    onChange={(e: any) => {
-                      setWorkSpaceData({
-                        ...workSpaceData,
-                        memberlist: e.value,
-                      });
-                    }}
-                    options={memeberlistOption}
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Select a Member List"
-                    className="w-[100%] h-[35px]"
-                    checkmark={true}
-                    highlightOnSelect={false}
-                    required
-                    disabled={updateStructure}
-                  />
+                  {editFeeStructure ? (
+                    <Dropdown
+                      value={workSpaceData.memberlist}
+                      onChange={(e: any) => {
+                        setWorkSpaceData({
+                          ...workSpaceData,
+                          memberlist: e.value,
+                        });
+                      }}
+                      options={memeberlistOption}
+                      optionLabel="label"
+                      optionValue="value"
+                      placeholder="Select a Member List"
+                      className="w-[100%] h-[35px]"
+                      checkmark={true}
+                      highlightOnSelect={false}
+                      required
+                      disabled={updateStructure}
+                    />
+                  ) : (
+                    <MultiSelect
+                      value={workSpaceData.memberlist}
+                      onChange={(e: any) => {
+                        setWorkSpaceData({
+                          ...workSpaceData,
+                          memberlist: e.value,
+                        });
+                      }}
+                      options={memeberlistOption}
+                      optionLabel="label"
+                      display="chip"
+                      placeholder="Select Session Days"
+                      maxSelectedLabels={3}
+                      className="w-full md:w-20rem"
+                    />
+                  )}
                 </div>
 
                 <div className="flex flex-column gap-2 w-[48%]">
                   <label htmlFor="username">Session Type</label>
-                  <Dropdown
-                    value={workSpaceData.sessionType}
-                    onChange={(e: any) => {
-                      setWorkSpaceData({
-                        ...workSpaceData,
-                        sessionType: e.value,
-                      });
-                    }}
-                    options={sessionTypeOption}
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Select a Member List"
-                    className="w-[100%] h-[35px]"
-                    checkmark={true}
-                    highlightOnSelect={false}
-                    required
-                    disabled={updateStructure}
-                  />
+                  {editFeeStructure ? (
+                    <Dropdown
+                      value={workSpaceData.sessionType}
+                      onChange={(e: any) => {
+                        setWorkSpaceData({
+                          ...workSpaceData,
+                          sessionType: e.value,
+                        });
+                      }}
+                      options={sessionTypeOption}
+                      optionLabel="label"
+                      optionValue="value"
+                      placeholder="Select a Member List"
+                      className="w-[100%] h-[35px]"
+                      checkmark={true}
+                      highlightOnSelect={false}
+                      required
+                      disabled={updateStructure}
+                    />
+                  ) : (
+                    <MultiSelect
+                      value={workSpaceData.sessionType}
+                      onChange={(e: any) => {
+                        setWorkSpaceData({
+                          ...workSpaceData,
+                          sessionType: e.value,
+                        });
+                      }}
+                      options={sessionTypeOption}
+                      optionLabel="label"
+                      display="chip"
+                      placeholder="Select Session Days"
+                      maxSelectedLabels={3}
+                      className="w-full md:w-20rem"
+                    />
+                  )}
                 </div>
               </div>
               <div className="flex justify-between mt-4">
@@ -541,7 +571,6 @@ const FeesStructure: React.FC = () => {
               <div className="flex justify-end mt-4 mb-3">
                 {updateStructure ? (
                   <Button severity="warning" type="submit" label="Upadate" />
-                  
                 ) : (
                   <Button severity="success" type="submit" label="Save" />
                 )}
@@ -552,8 +581,8 @@ const FeesStructure: React.FC = () => {
                     setUpdateStructure(false);
                     setWorkSpaceData({
                       refFeId: "",
-                      memberlist: "",
-                      sessionType: "",
+                      memberlist: [],
+                      sessionType: [],
                       fees: 0,
                       gstfees: 0,
                       perday: 0,
