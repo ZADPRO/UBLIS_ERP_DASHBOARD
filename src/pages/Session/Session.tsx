@@ -55,6 +55,14 @@ const Session: React.FC = () => {
   const [sectionData, setSectionData] = useState([]);
   const [classData, setClassData] = useState([]);
   // const [customClassData, setCustomClassDataData] = useState([]);
+  const [sessionDaysOptions, setSessionDaysOption] = useState([]);
+
+  const [sessionMemberTypeOptions, setSessionMemberTypeOptions] = useState([]);
+  const [sessionBranchOptions, setSessionBranchOptions] = useState([]);
+
+  const [sessionEditId, setSessionEditId] = useState();
+  const [customClassEditId, setCustomClassEditId] = useState(0);
+  const [editSession, setEditSession] = useState(false);
   const sessionModeOptions = [
     {
       value: "Online",
@@ -66,14 +74,6 @@ const Session: React.FC = () => {
       value: "Offline & Online",
     },
   ];
-
-  const [sessionDaysOptions, setSessionDaysOption] = useState([]);
-
-  const [sessionMemberTypeOptions, setSessionMemberTypeOptions] = useState([]);
-  const [sessionBranchOptions, setSessionBranchOptions] = useState([]);
-
-  const [sessionEditId, setSessionEditId] = useState(0);
-  const [customClassEditId, setCustomClassEditId] = useState(0);
 
   const fetchBranchData = () => {
     Axios.get(import.meta.env.VITE_API_URL + "/settings/Section/branch", {
@@ -175,15 +175,7 @@ const Session: React.FC = () => {
         label: sessionMemberTypeOptions.refTimeMembers,
         value: sessionMemberTypeOptions.refTimeMembersID,
       }));
-
       setSessionMemberTypeOptions(options);
-
-      const bOptions = data.Branch.map((sessionBranchOptions: any) => ({
-        label: sessionBranchOptions.refBranchName,
-        value: sessionBranchOptions.refbranchId,
-      }));
-
-      setSessionBranchOptions(bOptions);
 
       const sessionOptions = data.SessionDays.map(
         (sessionDaysOptions: any) => ({
@@ -192,8 +184,24 @@ const Session: React.FC = () => {
         })
       );
 
-      console.log("sessionOptions line ---------  189", sessionOptions);
       setSessionDaysOption(sessionOptions);
+
+      const bOptions = data.Branch.map((sessionBranchOptions: any) => ({
+        label: sessionBranchOptions.refBranchName,
+        value: sessionBranchOptions.refbranchId,
+      }));
+
+      setSessionBranchOptions(bOptions);
+
+      //   const sessionOptions = data.SessionDays.map(
+      //     (sessionDaysOptions: any) => ({
+      //       label: sessionDaysOptions.refDays,
+      //       value: sessionDaysOptions.refSDId,
+      //     })
+      //   );
+
+      //   console.log("sessionOptions line ---------  189", sessionOptions);
+      //   setSessionDaysOption(sessionOptions);
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
     });
@@ -213,7 +221,7 @@ const Session: React.FC = () => {
       <GrEdit
         style={{ cursor: "pointer", color: "green", fontSize: "1.5rem" }}
         onClick={() => {
-          console.log("rowData", rowData);
+          setEditSession(true);
           //start here
           fetchsessionOption();
           setSessionAdd(true);
@@ -242,9 +250,9 @@ const Session: React.FC = () => {
             fromdate: parseTimeToDate(startTime.trim()),
             todate: parseTimeToDate(endTime.trim()),
             sessionmode: rowData.refTimeMode,
-            // sessiondays: rowData.refTimeDays,
-            // membertype: rowData.refTimeMembersID,
-            // branch: rowData.refBranch,
+            sessiondays: rowData.refTimeDaysId,
+            membertype: rowData.refTimeMembersID,
+            branch: rowData.refBranch,
           });
         }}
       />
@@ -334,7 +342,6 @@ const Session: React.FC = () => {
               res.data[0],
               import.meta.env.VITE_ENCRYPTION_KEY
             );
-            console.log("data", data);
             localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
             toast.error("Custom class Deleted Successfully", {
               position: "top-right",
@@ -414,6 +421,7 @@ const Session: React.FC = () => {
                   className="bg-green-500 border-none rounded-lg p-2  "
                   onClick={() => {
                     setSessionAdd(true);
+                    setEditSession(false);
                     fetchsessionOption();
                   }}
                 >
@@ -434,10 +442,6 @@ const Session: React.FC = () => {
                       url = "/settings/Section/editSectionData";
                     }
 
-                    console.log(
-                      "sessionWorkSpaceData.sessiondays",
-                      sessionWorkSpaceData.sessiondays
-                    );
                     Axios.post(
                       import.meta.env.VITE_API_URL + url,
                       {
@@ -566,99 +570,107 @@ const Session: React.FC = () => {
                       <div className="flex flex-row gap-2 w-[50%]">
                         <div className="flex flex-column gap-2 w-[100%]">
                           <label htmlFor="username">Session Days</label>
-
-                          {/* <MultiSelect
-                            value={sessionWorkSpaceData.sessiondays}
-                            onChange={(e) => {
-                              setSessionWorkSpaceData({
-                                ...sessionWorkSpaceData,
-                                sessiondays: e.value, // e.value will be of type Nullable<Date>
-                              });
-                            }}
-                            options={sessionDaysOptions}
-                            optionLabel="label"
-                            display="chip"
-                            placeholder="Select Session Days"
-                            maxSelectedLabels={3}
-                            className="w-full md:w-20rem"
-                          /> */}
-
-                          {/* <Dropdown
-                            value={sessionWorkSpaceData.sessiondays}
-                            onChange={(e) => {
-                              setSessionWorkSpaceData({
-                                ...sessionWorkSpaceData,
-                                sessiondays: e.value, // e.value will be of type Nullable<Date>
-                              });
-                            }}
-                            options={sessionDaysOptions}
-                            optionLabel="label"
-                            optionValue="value"
-                            placeholder="Select a Session Days"
-                            className="w-[100%] h-[35px]"
-                            checkmark={true}
-                            highlightOnSelect={false}
-                            required
-                          /> */}
+                          {editSession ? (
+                            <Dropdown
+                              value={sessionWorkSpaceData.sessiondays}
+                              onChange={(e) => {
+                                setSessionWorkSpaceData({
+                                  ...sessionWorkSpaceData,
+                                  sessiondays: e.value, // e.value will be of type Nullable<Date>
+                                });
+                              }}
+                              options={sessionDaysOptions}
+                              optionLabel="label"
+                              optionValue="value"
+                              placeholder="Select a Session Days"
+                              className="w-[100%] h-[35px]"
+                              checkmark={true}
+                              highlightOnSelect={false}
+                              required
+                            />
+                          ) : (
+                            <MultiSelect
+                              value={sessionWorkSpaceData.sessiondays}
+                              onChange={(e) => {
+                                setSessionWorkSpaceData({
+                                  ...sessionWorkSpaceData,
+                                  sessiondays: e.value, // e.value will be of type Nullable<Date>
+                                });
+                              }}
+                              options={sessionDaysOptions}
+                              optionLabel="label"
+                              display="chip"
+                              placeholder="Select Session Days"
+                              maxSelectedLabels={3}
+                              className="w-full md:w-20rem"
+                            />
+                          )}
                         </div>
                       </div>
                       <div className="flex flex-column gap-2 w-[48%]">
                         <label htmlFor="username">Member Type</label>
-
-                        {/* <MultiSelect
-                          value={sessionWorkSpaceData.membertype}
-                          onChange={(e) => {
-                            setSessionWorkSpaceData({
-                              ...sessionWorkSpaceData,
-                              membertype: e.value, // e.value will be of type Nullable<Date>
-                            });
-                          }}
-                          options={sessionMemberTypeOptions}
-                          optionLabel="label"
-                          display="chip"
-                          placeholder="Select a Member Type"
-                          maxSelectedLabels={3}
-                          className="w-full md:w-20rem"
-                        /> */}
-
-                        {/* <Dropdown
-                          value={sessionWorkSpaceData.membertype}
-                          onChange={(e) => {
-                            setSessionWorkSpaceData({
-                              ...sessionWorkSpaceData,
-                              membertype: e.value, // e.value will be of type Nullable<Date>
-                            });
-                          }}
-                          options={sessionMemberTypeOptions}
-                          optionLabel="label"
-                          optionValue="value"
-                          placeholder="Select a Session Mode"
-                          className="w-[100%] h-[35px]"
-                          checkmark={true}
-                          highlightOnSelect={false}
-                          required
-                        /> */}
+                        {editSession ? (
+                          <Dropdown
+                            value={sessionWorkSpaceData.membertype}
+                            onChange={(e) => {
+                              setSessionWorkSpaceData({
+                                ...sessionWorkSpaceData,
+                                membertype: e.value, // e.value will be of type Nullable<Date>
+                              });
+                            }}
+                            options={sessionMemberTypeOptions}
+                            optionLabel="label"
+                            optionValue="value"
+                            placeholder="Select a Session Mode"
+                            className="w-[100%] h-[35px]"
+                            checkmark={true}
+                            highlightOnSelect={false}
+                            required
+                          />
+                        ) : (
+                          <MultiSelect
+                            value={sessionWorkSpaceData.membertype}
+                            onChange={(e) => {
+                              setSessionWorkSpaceData({
+                                ...sessionWorkSpaceData,
+                                membertype: e.value, // e.value will be of type Nullable<Date>
+                              });
+                            }}
+                            options={sessionMemberTypeOptions}
+                            optionLabel="label"
+                            display="chip"
+                            placeholder="Select a Member Type"
+                            maxSelectedLabels={3}
+                            className="w-full md:w-20rem"
+                          />
+                        )}
                       </div>
                     </div>
                   </div>
                   <div className="flex justify-between w-[100%] mt-5">
-                    <label htmlFor="username">Branch</label>
+                    {editSession ? (
+                      <></>
+                    ) : (
+                      <>
+                        <label htmlFor="username">Branch</label>
 
-                    <MultiSelect
-                      value={sessionWorkSpaceData.branch}
-                      onChange={(e) => {
-                        setSessionWorkSpaceData({
-                          ...sessionWorkSpaceData,
-                          branch: e.value, // e.value will be of type Nullable<Date>
-                        });
-                      }}
-                      options={sessionBranchOptions}
-                      optionLabel="label"
-                      display="chip"
-                      placeholder="Select a Branch"
-                      maxSelectedLabels={3}
-                      className="w-full md:w-20rem"
-                    />
+                        <MultiSelect
+                          value={sessionWorkSpaceData.branch}
+                          onChange={(e) => {
+                            setSessionWorkSpaceData({
+                              ...sessionWorkSpaceData,
+                              branch: e.value, // e.value will be of type Nullable<Date>
+                            });
+                          }}
+                          options={sessionBranchOptions}
+                          optionLabel="label"
+                          display="chip"
+                          placeholder="Select a Branch"
+                          maxSelectedLabels={3}
+                          className="w-full md:w-20rem"
+                        />
+                      </>
+                    )}
 
                     <div className="flex justify-end gap-3 ">
                       <Button

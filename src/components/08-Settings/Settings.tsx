@@ -68,12 +68,9 @@ const Settings: React.FC = () => {
         import.meta.env.VITE_ENCRYPTION_KEY
       );
 
-      if(data.token==false){
-        
-        navigate("/expired")
-      }
-      else
-      {
+      if (data.token == false) {
+        navigate("/expired");
+      } else {
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
         setuserdata({
@@ -82,21 +79,18 @@ const Settings: React.FC = () => {
           usernameid: data.data[0].refusertype,
           profileimg: data.profileFile,
         });
-  
+
         setPageLoading({
           ...pageLoading,
           verifytoken: false,
         });
-  
+
         console.log("Verify Token  Running --- ");
       }
-
-      
     });
   }, []);
 
   const [feesStructure, setFeesStructure] = useState(false);
-
 
   const [offers, setOffers] = useState(false);
 
@@ -189,18 +183,15 @@ const Settings: React.FC = () => {
                 </div>
               </div>
 
-              
               <div
                 className="w-[250px] h-[100px] rounded-[5px] flex flex-col justify-center bg-[#fff] shadow-lg p-3 cursor-pointer"
                 onClick={() => {
                   setSession(true);
                 }}
               >
-                <div className="text-[20px] font-bold font-serif">
-                  Session
-                </div>
+                <div className="text-[20px] font-bold font-serif">Session</div>
                 <div className="text-[#f95005] text-[40px] text-end">
-                <FaUserClock />
+                  <FaUserClock />
                 </div>
               </div>
             </div>
@@ -234,10 +225,8 @@ const Settings: React.FC = () => {
         position="right"
         onHide={() => setSession(false)}
       >
-        
         <Session />
       </Sidebar>
-
     </>
   );
 };
