@@ -149,8 +149,8 @@ export default function RegisteredDataTable() {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
+      if (data.token == false) {
+        navigate("/expired");
       }
       console.log("Data line --------------- 227", data);
 
@@ -189,7 +189,6 @@ export default function RegisteredDataTable() {
     }
   };
 
-  
   const closePayment = () => {
     setPayment(false);
   };
@@ -197,7 +196,7 @@ export default function RegisteredDataTable() {
   useEffect(() => {
     fetchCustomers();
     initFilters();
-  }, [closePayment]);
+  }, []);
 
   const exportExcel = () => {
     import("xlsx").then((xlsx) => {
@@ -293,8 +292,8 @@ export default function RegisteredDataTable() {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
+      if (data.token == false) {
+        navigate("/expired");
       }
       console.log("Data line --------------- 227", data);
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
@@ -400,8 +399,8 @@ export default function RegisteredDataTable() {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
+      if (data.token == false) {
+        navigate("/expired");
       }
       console.log("Data line --------------- 227", data);
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
@@ -504,7 +503,6 @@ export default function RegisteredDataTable() {
   const [paymentID, setPaymentID] = useState<string>("");
 
   const [payment, setPayment] = useState(false);
-
 
   return (
     <div className="card" style={{ overflow: "auto" }}>
