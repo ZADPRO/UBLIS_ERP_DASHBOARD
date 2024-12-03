@@ -12,7 +12,8 @@ import Offers from "../../pages/Offers/Offers";
 import Session from "../../pages/Session/Session";
 import { FaUserClock } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
-
+import Healthissues from "../../pages/Healthissues/Healthissues";
+import { FaClipboardList } from "react-icons/fa6";
 type DecryptResult = any;
 
 const Settings: React.FC = () => {
@@ -95,6 +96,8 @@ const Settings: React.FC = () => {
   const [offers, setOffers] = useState(false);
 
   const [session, setSession] = useState(false);
+
+  const [healthissue, setHealthissue] = useState(false);
 
   return (
     <>
@@ -194,6 +197,18 @@ const Settings: React.FC = () => {
                   <FaUserClock />
                 </div>
               </div>
+
+              <div
+                className="w-[250px] h-[100px] rounded-[5px] flex flex-col justify-center bg-[#fff] shadow-lg p-3 cursor-pointer"
+                onClick={() => {
+                  setHealthissue(true);
+                }}
+              >
+                <div className="text-[20px] font-bold font-serif">Health Issue</div>
+                <div className="text-[#f95005] text-[40px] text-end">
+                <FaClipboardList />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -227,6 +242,17 @@ const Settings: React.FC = () => {
       >
         <Session />
       </Sidebar>
+
+      <Sidebar
+        style={{ width: "50%" }}
+        visible={healthissue}
+        position="right"
+        onHide={() => setHealthissue(false)}
+      >
+        <Healthissues/>
+      </Sidebar>
+
+      
     </>
   );
 };
