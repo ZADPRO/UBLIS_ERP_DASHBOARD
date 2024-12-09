@@ -200,7 +200,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                     textAlign: "right",
                   }}
                 >
-                  No :28, Second Floor, Madambakkam Main Road,
+                  No: 28, Second Floor, Madambakkam Main Road,
                 </Text>
                 <Text
                   style={{
@@ -209,7 +209,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                     textAlign: "right",
                   }}
                 >
-                  Opp. to Jains Sudharshana Apartment Gandhi nagar,
+                  Opp. to Jains Sudharshana Apartment, Gandhi nagar,
                 </Text>
                 <Text
                   style={{
@@ -353,6 +353,10 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                     alignItems: "flex-end",
                   }}
                 >
+                  
+                  
+                  
+                  
                   <View
                     style={{
                       width: "100%",
@@ -363,7 +367,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                   >
                     <Text
                       style={{
-                        width: "40%",
+                        width: "35%",
                         fontSize: "13px",
                         fontFamily: "Poppins",
                         fontWeight: "bold",
@@ -371,16 +375,16 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                         textAlign: "left",
                       }}
                     >
-                      Date:
+                      Date
                     </Text>
                     <Text
                       style={{
-                        width: "60%",
+                        width: "65%",
                         fontSize: "13px",
                         paddingLeft: "10px",
                       }}
                     >
-                      {userData.refDate}
+                      :{userData.refDate}
                     </Text>
                   </View>
                   <View
@@ -393,7 +397,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                   >
                     <Text
                       style={{
-                        width: "40%",
+                        width: "35%",
                         fontSize: "13px",
                         fontFamily: "Poppins",
                         fontWeight: "bold",
@@ -401,16 +405,16 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                         textAlign: "left",
                       }}
                     >
-                      Branch:
+                      Branch
                     </Text>
                     <Text
                       style={{
-                        width: "60%",
+                        width: "65%",
                         fontSize: "13px",
                         paddingLeft: "10px",
                       }}
                     >
-                      {userData.refBranchName}
+                     :{userData.refBranchName}
                     </Text>
                   </View>
                   <View
@@ -423,7 +427,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                   >
                     <Text
                       style={{
-                        width: "40%",
+                        width: "35%",
                         fontSize: "13px",
                         fontFamily: "Poppins",
                         fontWeight: "bold",
@@ -431,16 +435,16 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                         textAlign: "left",
                       }}
                     >
-                      Receipt ID:
+                      Receipt ID
                     </Text>
                     <Text
                       style={{
-                        width: "60%",
+                        width: "65%",
                         fontSize: "13px",
                         paddingLeft: "10px",
                       }}
                     >
-                      {userData.refOrderId}
+                      :{userData.refOrderId}
                     </Text>
                   </View>
                 </View>
@@ -667,7 +671,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                   }}
                 >
                   <Text>
-                    {userData.refPaymentFrom} - {userData.refPaymentTo}
+                    {userData.refPaymentFrom} to {userData.refPaymentTo}
                   </Text>
                 </View>
 

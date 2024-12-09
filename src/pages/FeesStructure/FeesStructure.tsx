@@ -346,7 +346,7 @@ const FeesStructure: React.FC = () => {
           navigate("/expired");
         } else {
           console.log(data);
-
+          if (data.success == true) {
           toast.success("New Fees Added Successfully", {
             position: "top-right",
             autoClose: 5000,
@@ -357,7 +357,20 @@ const FeesStructure: React.FC = () => {
             progress: undefined,
             theme: "light",
             // transition: Bounce,
-          });
+          });}
+          else{
+            toast.warning("can't Add New Health Issue", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              // transition: Bounce,
+            });
+          }
 
           if (data.success) {
             setWorkSpaceData({

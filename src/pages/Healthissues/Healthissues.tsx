@@ -29,6 +29,7 @@ const Healthissues: React.FC = () => {
   const [editHealthissue, setHealthissue] = useState(false);
   const [healthissueUpdate, setHealthissueUpdate] = useState(false);
   const [healthData, setHealthData] = useState<string | undefined>("");
+  const [id, setId] = useState<number | undefined>();
   type DecryptResult = any;
 
   const decrypt = (
@@ -91,14 +92,6 @@ const Healthissues: React.FC = () => {
     });
   };
 
-
-
-
-
-
-
-
-  
   const addHealthissueDate = () => {
     Axios.post(
       import.meta.env.VITE_API_URL + "/settings/generalHealth/addOptions",
@@ -152,6 +145,60 @@ const Healthissues: React.FC = () => {
       }
     });
   };
+  const updateHealthissueDate = () => {
+    console.log("----------------------------------------------------");
+    Axios.post(
+      import.meta.env.VITE_API_URL + "/settings/generalHealth/editOptions",
+      {
+        healthText: healthData,
+        refHId: id,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("JWTtoken"),
+          "Content-Type": "application/json",
+        },
+      }
+    ).then((res) => {
+      const data = decrypt(
+        res.data[1],
+        res.data[0],
+        import.meta.env.VITE_ENCRYPTION_KEY
+      );
+      if (data.token == false) {
+        navigate("/expired");
+      } else {
+        if (data.success == true) {
+          setHealthissueAdd(false);
+          // setHealthData();
+          fetchHealthissueDate();
+          toast.success("Health Issue Updated Successfully!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            // transition: Bounce,
+          });
+        } else {
+          toast.warning("can't Update the Health Issue", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            // transition: Bounce,
+          });
+        }
+      }
+    });
+  };
 
   useEffect(() => {
     fetchHealthissueDate();
@@ -160,60 +207,83 @@ const Healthissues: React.FC = () => {
   const sessionEdit = (rowData: any) => {
     console.log("rowData", rowData);
     return (
-        <div
-          onClick={() => {
-            console.log("rowData.refTimeId", rowData.refTimeId);
-            setHealthissueAdd(true);
-            setHealthissue(false);
-            setHealthData(rowData.refHealthData);
-          }}
-        >
-      <GrEdit
-        style={{ cursor: "pointer", color: "green", fontSize: "1.5rem" }}
-      />
-        </div>
-      
+      <div
+        onClick={() => {
+          console.log("rowData.refTimeId", rowData.refTimeId);
+          setHealthissueAdd(true);
+          setHealthissueUpdate(true);
+          setHealthissue(false);
+          setHealthData(rowData.refHealthData);
+          setId(rowData.id);
+        }}
+      >
+        <GrEdit
+          style={{ cursor: "pointer", color: "green", fontSize: "1.5rem" }}
+        />
+      </div>
     );
   };
+
+  function deleteHealth(rowData:any){
+    Axios.post(
+      import.meta.env.VITE_API_URL +
+        "/settings/generalHealth/deleteOptions",
+      {
+        refHealthId: rowData.id,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("JWTtoken"),
+          "Content-Type": "application/json",
+        },
+      }
+    ).then((res) => {
+      const data = decrypt(
+        res.data[1],
+        res.data[0],
+        import.meta.env.VITE_ENCRYPTION_KEY
+      );
+      if (data.token == false) {
+        navigate("/expired");
+      } else {
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+        if (data.success == true) {
+          toast.error("The Section Is Deleted Successfully", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            // transition: Bounce,
+          });
+          fetchHealthissueDate();
+        } else {
+          toast.warning("Something Went Wrong", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            // transition: Bounce,
+          });
+        }
+      }
+    });
+  }
 
   const sessionDelete = (rowData: any) => {
     return (
       <MdDelete
         style={{ cursor: "pointer", color: "red", fontSize: "2rem" }}
-        // onClick={() => {
-        //   Axios.post(
-        //     import.meta.env.VITE_API_URL +
-        //       "/settings/Section/deleteSectionData",
-        //     {
-        //       refTimeId: rowData.refTimeId,
-        //     },
-        //     {
-        //       headers: {
-        //         Authorization: localStorage.getItem("JWTtoken"),
-        //         "Content-Type": "application/json",
-        //       },
-        //     }
-        //   ).then((res) => {
-        //     const data = decrypt(
-        //       res.data[1],
-        //       res.data[0],
-        //       import.meta.env.VITE_ENCRYPTION_KEY
-        //     );
-        //     localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
-        //     toast.error("The Section Is Deleted Successfully", {
-        //       position: "top-right",
-        //       autoClose: 5000,
-        //       hideProgressBar: false,
-        //       closeOnClick: true,
-        //       pauseOnHover: true,
-        //       draggable: true,
-        //       progress: undefined,
-        //       theme: "light",
-        //       // transition: Bounce,
-        //     });
-        //     fetchsessionData();
-        //   });
-        // }}
+        onClick={() => {
+          deleteHealth(rowData)
+        }}
       />
     );
   };
@@ -235,6 +305,7 @@ const Healthissues: React.FC = () => {
             onClick={() => {
               setHealthissueAdd(true);
               setHealthissue(false);
+              setHealthissueUpdate(false);
             }}
           >
             <RiHeartAddFill className="text-3xl text-white" />
@@ -277,7 +348,12 @@ const Healthissues: React.FC = () => {
                   }}
                 />
                 {healthissueUpdate ? (
-                  <Button severity="warning" label="Update" type="submit" />
+                  <Button
+                    severity="warning"
+                    label="Update"
+                    onClick={updateHealthissueDate}
+                    type="submit"
+                  />
                 ) : (
                   <Button
                     severity="success"
@@ -287,8 +363,6 @@ const Healthissues: React.FC = () => {
                   />
                 )}
               </div>
-
-              
             </div>
           </form>
         </>

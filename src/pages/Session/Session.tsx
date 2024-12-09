@@ -18,6 +18,7 @@ import { MultiSelect } from "primereact/multiselect";
 import "./Session.css";
 
 import { useNavigate } from "react-router-dom";
+import { InputNumber } from "primereact/inputnumber";
 
 // import { ImUpload2 } from "react-icons/im";
 type DecryptResult = any;
@@ -269,9 +270,9 @@ const Session: React.FC = () => {
 
           setCustomClassEditId(rowData.refCustTimeId);
 
-          setClassWorkSpaceData({
-            custClass: rowData.refCustTimeData,
-          });
+          // setClassWorkSpaceData({
+          //   custClass: rowData.refCustTimeData,
+          // });
         }}
       />
     );
@@ -381,9 +382,14 @@ const Session: React.FC = () => {
   });
 
   const [classWorkSpaceData, setClassWorkSpaceData] = useState<{
-    custClass: null;
+    custClassCout: number;
+    custClassDuration:number;
+    custClassAddCom:null;
+
   }>({
-    custClass: null,
+    custClassCout: 0,
+    custClassDuration:0,
+    custClassAddCom:null
   });
 
   const [sessionUpdate, setSessionUpdate] = useState(false);
@@ -741,7 +747,9 @@ const Session: React.FC = () => {
                       import.meta.env.VITE_API_URL + url,
                       {
                         refCustTimeId: classUpdate ? customClassEditId : null,
-                        refCustTimeData: classWorkSpaceData.custClass,
+                        refCustClass: classWorkSpaceData.custClassCout,
+                        refCustMonth: classWorkSpaceData.custClassDuration,
+                        refCustAddcomments: classWorkSpaceData.custClassAddCom,
                         refBranchId: branch,
                       },
                       {
@@ -780,9 +788,9 @@ const Session: React.FC = () => {
                       if (classUpdate) {
                         setClassUpdate(false);
                       }
-                      setClassWorkSpaceData({
-                        custClass: null,
-                      });
+                      // setClassWorkSpaceData({
+                      //   custClass: null,
+                      // });
 
                       localStorage.setItem(
                         "JWTtoken",
@@ -791,18 +799,48 @@ const Session: React.FC = () => {
                     });
                   }}
                 >
-                  <div className="flex flex-column gap-2 w-[100%]">
-                    <label htmlFor="username">Custom class name</label>
-                    <InputText
-                      value={classWorkSpaceData.custClass}
+                  <div className="flex flex-row justify-evenly  w-[100%]">
+               
+                    <div className="flex flex-col gap-2">
+                    <label htmlFor="username">Class</label>
+                    <InputNumber
+                      value={classWorkSpaceData.custClassCout}
                       onChange={(e: any) => {
+
                         setClassWorkSpaceData({
                           ...classWorkSpaceData,
-                          custClass: e.target.value,
+                          custClassCout: e.value,
                         });
                       }}
                       required
                     />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                    <label htmlFor="username">Months</label>
+                    <InputNumber
+                      value={classWorkSpaceData.custClassDuration}
+                      onChange={(e: any) => {
+                        setClassWorkSpaceData({
+                          ...classWorkSpaceData,
+                          custClassDuration: e.value,
+                        });
+                      }}
+                      required
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="username">Additional Comments</label>
+                    <InputText
+                       value={classWorkSpaceData.custClassAddCom}
+                       onChange={(e: any) => {
+                         setClassWorkSpaceData({
+                           ...classWorkSpaceData,
+                           custClassAddCom: e.target.value,
+                         });
+                       }}
+                    />
+                  </div>
+                    
                   </div>
                   <div className="flex justify-end gap-3 mt-5">
                     <Button
@@ -811,9 +849,9 @@ const Session: React.FC = () => {
                       type="button"
                       onClick={() => {
                         setClassAdd(false);
-                        setClassWorkSpaceData({
-                          custClass: null,
-                        });
+                        // setClassWorkSpaceData({
+                        //   custClass: null,
+                        // });
                       }}
                     />
                     {classUpdate ? (

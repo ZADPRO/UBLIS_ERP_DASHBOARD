@@ -215,6 +215,7 @@ const Profile: React.FC = () => {
           });
         } else {
           navigate("/expired");
+          
         }
 
         setuserdata({
@@ -944,6 +945,18 @@ const Profile: React.FC = () => {
               certification: data.profileFile.employeeDocuments.certification
                 ? data.profileFile.employeeDocuments.certification
                 : inputs.certification,
+            });
+          } else {
+            toast.warning("Something went wrong", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              // transition: Bounce,
             });
           }
         }

@@ -245,6 +245,7 @@ export default function Datatables() {
       console.log("data", data);
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+      if (data.success == true) {
       fetchCustomers();
       toast.success("Future Client Followup Action is Stored Successfully", {
         position: "top-right",
@@ -256,7 +257,20 @@ export default function Datatables() {
         progress: undefined,
         theme: "light",
         // transition: Bounce,
-      });
+      });}
+      else{
+        toast.warning("can't Add New Health Issue", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          // transition: Bounce,
+        });
+      }
       setVisibleLeft(false);
     } catch (error) {
       console.error("Error fetching user details:", error);
