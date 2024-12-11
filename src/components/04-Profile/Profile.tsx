@@ -267,6 +267,8 @@ const Profile: React.FC = () => {
         import.meta.env.VITE_ENCRYPTION_KEY
       );
       if (data.token == false) {
+        console.log("data.token",data.token)
+        alert("data get")
         navigate("/expired");
       } else {
         console.log("UserData Running --- ");
