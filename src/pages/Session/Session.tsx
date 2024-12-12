@@ -383,13 +383,12 @@ const Session: React.FC = () => {
 
   const [classWorkSpaceData, setClassWorkSpaceData] = useState<{
     custClassCout: number;
-    custClassDuration:number;
-    custClassAddCom:null;
-
+    custClassDuration: number;
+    custClassAddCom: null;
   }>({
     custClassCout: 0,
-    custClassDuration:0,
-    custClassAddCom:null
+    custClassDuration: 0,
+    custClassAddCom: null,
   });
 
   const [sessionUpdate, setSessionUpdate] = useState(false);
@@ -747,10 +746,11 @@ const Session: React.FC = () => {
                       import.meta.env.VITE_API_URL + url,
                       {
                         refCustTimeId: classUpdate ? customClassEditId : null,
-                        refCustClass: classWorkSpaceData.custClassCout,
-                        refCustMonth: classWorkSpaceData.custClassDuration,
-                        refCustAddcomments: classWorkSpaceData.custClassAddCom,
+                        refClassCount: classWorkSpaceData.custClassCout,
+                        refMonthDuration: classWorkSpaceData.custClassDuration,
+                        refClassValue: classWorkSpaceData.custClassAddCom,
                         refBranchId: branch,
+                        checkValue: false,
                       },
                       {
                         headers: {
@@ -800,65 +800,78 @@ const Session: React.FC = () => {
                   }}
                 >
                   <div className="flex flex-row justify-evenly  w-[100%]">
-               
                     <div className="flex flex-col gap-2">
-                    <label htmlFor="username">Class</label>
-                    <InputNumber
-                      value={classWorkSpaceData.custClassCout}
-                      onChange={(e: any) => {
-
-                        setClassWorkSpaceData({
-                          ...classWorkSpaceData,
-                          custClassCout: e.value,
-                        });
-                      }}
-                      required
-                    />
+                      <label htmlFor="username">Class</label>
+                      <InputNumber
+                        value={classWorkSpaceData.custClassCout}
+                        onChange={(e: any) => {
+                          setClassWorkSpaceData({
+                            ...classWorkSpaceData,
+                            custClassCout: e.value,
+                          });
+                        }}
+                        required
+                      />
                     </div>
                     <div className="flex flex-col gap-2">
-                    <label htmlFor="username">Months</label>
-                    <InputNumber
-                      value={classWorkSpaceData.custClassDuration}
-                      onChange={(e: any) => {
-                        setClassWorkSpaceData({
-                          ...classWorkSpaceData,
-                          custClassDuration: e.value,
-                        });
-                      }}
-                      required
-                    />
+                      <label htmlFor="username">Months</label>
+                      <InputNumber
+                        value={classWorkSpaceData.custClassDuration}
+                        onChange={(e: any) => {
+                          setClassWorkSpaceData({
+                            ...classWorkSpaceData,
+                            custClassDuration: e.value,
+                          });
+                        }}
+                        required
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <label htmlFor="username">Additional Comments</label>
+                      <InputText
+                        value={classWorkSpaceData.custClassAddCom}
+                        onChange={(e: any) => {
+                          setClassWorkSpaceData({
+                            ...classWorkSpaceData,
+                            custClassAddCom: e.target.value,
+                          });
+                        }}
+                      />
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-2">
-                    <label htmlFor="username">Additional Comments</label>
-                    <InputText
-                       value={classWorkSpaceData.custClassAddCom}
-                       onChange={(e: any) => {
-                         setClassWorkSpaceData({
-                           ...classWorkSpaceData,
-                           custClassAddCom: e.target.value,
-                         });
-                       }}
-                    />
-                  </div>
-                    
-                  </div>
-                  <div className="flex justify-end gap-3 mt-5">
-                    <Button
-                      severity="info"
-                      label="Close"
-                      type="button"
-                      onClick={() => {
-                        setClassAdd(false);
-                        // setClassWorkSpaceData({
-                        //   custClass: null,
-                        // });
-                      }}
-                    />
-                    {classUpdate ? (
-                      <Button severity="warning" label="Update" type="submit" />
-                    ) : (
-                      <Button severity="success" label="Save" type="submit" />
-                    )}
+                  <div className="flex justify-end align-items-center  gap-3 mt-5 bg-orange-600">
+                    <div className="justify-start bg-black">
+                      <label>
+                        <input
+                          type="checkbox"
+                          name="option1"
+                          value="Option 1"
+                        />
+                        Option 1
+                      </label>
+                    </div>
+                    <div className="w-[50%] flex justify-between">
+                      <Button
+                        severity="info"
+                        label="Close"
+                        type="button"
+                        onClick={() => {
+                          setClassAdd(false);
+                          // setClassWorkSpaceData({
+                          //   custClass: null,
+                          // });
+                        }}
+                      />
+                      {classUpdate ? (
+                        <Button
+                          severity="warning"
+                          label="Update"
+                          type="submit"
+                        />
+                      ) : (
+                        <Button severity="success" label="Save" type="submit" />
+                      )}
+                    </div>
                   </div>
                 </form>
               </>
