@@ -8,9 +8,9 @@ import RadiobuttonInput from "../../pages/Inputs/RadiobuttonInput";
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-
 import CryptoJS from "crypto-js";
 import { Button } from "primereact/button";
+import { TabPanel, TabView } from "primereact/tabview";
 
 interface HealthProblemData {
   presentHealthProblem: Record<string, string>;
@@ -214,8 +214,8 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
+      if (data.token == false) {
+        navigate("/expired");
       }
 
       console.log("UserData Running --- ");
@@ -774,20 +774,22 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
       <div className="bg-[#fff]">
         <div className="py-1" />
 
-        <div className="">
-          {/* Personal Information */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handlepersonalinfo();
-            }}
-          >
-            <div className="basicProfileCont p-10 shadow-lg">
-              <div className="w-[100%] flex justify-between items-center mb-5">
-                <div className="text-[1.2rem] lg:text-[25px] font-bold">
-                  Personal Information
-                </div>
-                {/* {edits.personal ? (
+        <TabView>
+          <TabPanel header="Profile">
+            <div className="">
+              {/* Personal Information */}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handlepersonalinfo();
+                }}
+              >
+                <div className="basicProfileCont p-10 shadow-lg">
+                  <div className="w-[100%] flex justify-between items-center mb-5">
+                    <div className="text-[1.2rem] lg:text-[25px] font-bold">
+                      Personal Information
+                    </div>
+                    {/* {edits.personal ? (
                   <button
                     className="text-[15px] outline-none py-2 border-none px-3 bg-[#f95005] font-bold cursor-pointer text-white rounded"
                     type="submit"
@@ -806,25 +808,25 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                     <i className="text-[15px] pi pi-pen-to-square"></i>
                   </div>
                 )} */}
-              </div>
-              <div className="w-[100%] flex flex-col gap-y-10 justify-center items-center">
-                <div className="w-[100%] mb-10 lg:mb-0 lg:w-[30%] flex flex-col justify-center lg:justify-start items-center lg:items-start">
-                  {!inputs.profilefile ? (
-                    <div className="w-[250px] border-[#b3b4b6] cursor-pointer rounded-full flex justify-center items-center border-2 h-[250px]">
-                      <i className="text-[150px] text-[#858585] pi pi-user"></i>
-                    </div>
-                  ) : (
-                    <div className="w-[250px] border-[#b3b4b6] cursor-pointer rounded-full flex justify-center items-center border-2 h-[250px]">
-                      <img
-                        id="userprofileimg"
-                        className="w-[250px] h-[250px] object-cover rounded-full"
-                        src={`data:${inputs.profilefile.contentType};base64,${inputs.profilefile.content}`}
-                        alt=""
-                      />
-                    </div>
-                  )}
+                  </div>
+                  <div className="w-[100%] flex flex-col gap-y-10 justify-center items-center">
+                    <div className="w-[100%] mb-10 lg:mb-0 lg:w-[30%] flex flex-col justify-center lg:justify-start items-center lg:items-start">
+                      {!inputs.profilefile ? (
+                        <div className="w-[250px] border-[#b3b4b6] cursor-pointer rounded-full flex justify-center items-center border-2 h-[250px]">
+                          <i className="text-[150px] text-[#858585] pi pi-user"></i>
+                        </div>
+                      ) : (
+                        <div className="w-[250px] border-[#b3b4b6] cursor-pointer rounded-full flex justify-center items-center border-2 h-[250px]">
+                          <img
+                            id="userprofileimg"
+                            className="w-[250px] h-[250px] object-cover rounded-full"
+                            src={`data:${inputs.profilefile.contentType};base64,${inputs.profilefile.content}`}
+                            alt=""
+                          />
+                        </div>
+                      )}
 
-                  {/* <div className="w-[250px] flex flex-col justify-center items-center">
+                      {/* <div className="w-[250px] flex flex-col justify-center items-center">
                     <input
                       type="file"
                       id="file-upload"
@@ -869,174 +871,178 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                       </label>
                     )}
                   </div> */}
-                </div>
-                <div className="w-[100%] lg:w-[100%] flex flex-col justify-center items-center">
-                  <div className="w-[100%] justify-center items-center flex flex-col">
-                    <div className="w-[100%] flex justify-between mb-[20px]">
-                      <div className="w-[48%]">
-                        <TextInput
-                          label="First Name *"
-                          name="fname"
-                          id="fname"
-                          type="text"
-                          onChange={handleInputVal}
-                          value={inputs.fname}
-                          readonly={!edits.personal}
-                          required
-                        />
-                      </div>
-                      <div className="w-[48%]">
-                        <TextInput
-                          label="Last Name *"
-                          name="lname"
-                          id="lname"
-                          type="text"
-                          onChange={handleInputVal}
-                          value={inputs.lname}
-                          readonly={!edits.personal}
-                          required
-                        />
-                      </div>
                     </div>
-
-                    <div className="w-[100%] flex justify-between mb-[20px]">
-                      <div className="w-[48%]">
-                        <TextInput
-                          label="Date of Birth *"
-                          name="dob"
-                          id="dob"
-                          type="date"
-                          onChange={handleInputVal}
-                          value={inputs.dob}
-                          readonly={!edits.personal}
-                          required
-                        />
-                      </div>
-                      <div className="w-[48%]">
-                        <TextInput
-                          label="Age *"
-                          name="age"
-                          id="age"
-                          type="number"
-                          value={inputs.age}
-                          readonly
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
-                      <div className="w-[100%] md:w-[48%] lg:w-[48%]">
-                        <SelectInput
-                          id="gender"
-                          name="gender"
-                          label="Gender *"
-                          value={inputs.gender}
-                          disabled={!edits.personal}
-                          onChange={handleInputVal}
-                          options={[
-                            { value: "male", label: "Male" },
-                            { value: "female", label: "Female" },
-                          ]}
-                          required
-                        />
-                      </div>
-                      <div className="w-[100%] md:w-[48%] lg:w-[48%]">
-                        <TextInput
-                          label="Father / Husband Name *"
-                          name="guardianname"
-                          id="guardianname"
-                          type="text"
-                          onChange={handleInputVal}
-                          value={inputs.guardianname}
-                          readonly={!edits.personal}
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
-                      <div className="w-[100%] md:w-[48%] lg:w-[48%]">
-                        <SelectInput
-                          id="maritalstatus"
-                          name="maritalstatus"
-                          label="Marital Status *"
-                          value={inputs.maritalstatus}
-                          onChange={handleInputVal}
-                          options={[
-                            { value: "single", label: "Single" },
-                            { value: "married", label: "Married" },
-                          ]}
-                          disabled={!edits.personal}
-                          required
-                        />
-                      </div>
-                      <div className="w-[100%] md:w-[48%] lg:w-[48%]">
-                        <TextInput
-                          label="Anniversary Date *"
-                          name="anniversarydate"
-                          id="anniversarydate"
-                          type="date"
-                          onChange={handleInputVal}
-                          disabled={
-                            inputs.maritalstatus === "married" ? false : true
-                          }
-                          readonly={!edits.personal}
-                          value={inputs.anniversarydate}
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div className="w-[100%] flex justify-between">
-                      <div
-                        className={type === "staff" ? "w-[100%]" : "w-[48%]"}
-                      >
-                        <TextInput
-                          label="Qualification *"
-                          name="qualification"
-                          id="qualification"
-                          type="text"
-                          onChange={handleInputVal}
-                          value={inputs.qualification}
-                          readonly={!edits.personal}
-                          required
-                        />
-                      </div>
-                      {type === "staff" ? null : (
-                        <div className="w-[48%]">
-                          <TextInput
-                            label="Occupation *"
-                            name="occupation"
-                            id="Occupation"
-                            type="text"
-                            onChange={handleInputVal}
-                            value={inputs.occupation}
-                            readonly={!edits.personal}
-                            required
-                          />
+                    <div className="w-[100%] lg:w-[100%] flex flex-col justify-center items-center">
+                      <div className="w-[100%] justify-center items-center flex flex-col">
+                        <div className="w-[100%] flex justify-between mb-[20px]">
+                          <div className="w-[48%]">
+                            <TextInput
+                              label="First Name *"
+                              name="fname"
+                              id="fname"
+                              type="text"
+                              onChange={handleInputVal}
+                              value={inputs.fname}
+                              readonly={!edits.personal}
+                              required
+                            />
+                          </div>
+                          <div className="w-[48%]">
+                            <TextInput
+                              label="Last Name *"
+                              name="lname"
+                              id="lname"
+                              type="text"
+                              onChange={handleInputVal}
+                              value={inputs.lname}
+                              readonly={!edits.personal}
+                              required
+                            />
+                          </div>
                         </div>
-                      )}
+
+                        <div className="w-[100%] flex justify-between mb-[20px]">
+                          <div className="w-[48%]">
+                            <TextInput
+                              label="Date of Birth *"
+                              name="dob"
+                              id="dob"
+                              type="date"
+                              onChange={handleInputVal}
+                              value={inputs.dob}
+                              readonly={!edits.personal}
+                              required
+                            />
+                          </div>
+                          <div className="w-[48%]">
+                            <TextInput
+                              label="Age *"
+                              name="age"
+                              id="age"
+                              type="number"
+                              value={inputs.age}
+                              readonly
+                              required
+                            />
+                          </div>
+                        </div>
+
+                        <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
+                          <div className="w-[100%] md:w-[48%] lg:w-[48%]">
+                            <SelectInput
+                              id="gender"
+                              name="gender"
+                              label="Gender *"
+                              value={inputs.gender}
+                              disabled={!edits.personal}
+                              onChange={handleInputVal}
+                              options={[
+                                { value: "male", label: "Male" },
+                                { value: "female", label: "Female" },
+                              ]}
+                              required
+                            />
+                          </div>
+                          <div className="w-[100%] md:w-[48%] lg:w-[48%]">
+                            <TextInput
+                              label="Father / Husband Name *"
+                              name="guardianname"
+                              id="guardianname"
+                              type="text"
+                              onChange={handleInputVal}
+                              value={inputs.guardianname}
+                              readonly={!edits.personal}
+                              required
+                            />
+                          </div>
+                        </div>
+
+                        <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
+                          <div className="w-[100%] md:w-[48%] lg:w-[48%]">
+                            <SelectInput
+                              id="maritalstatus"
+                              name="maritalstatus"
+                              label="Marital Status *"
+                              value={inputs.maritalstatus}
+                              onChange={handleInputVal}
+                              options={[
+                                { value: "single", label: "Single" },
+                                { value: "married", label: "Married" },
+                              ]}
+                              disabled={!edits.personal}
+                              required
+                            />
+                          </div>
+                          <div className="w-[100%] md:w-[48%] lg:w-[48%]">
+                            <TextInput
+                              label="Anniversary Date *"
+                              name="anniversarydate"
+                              id="anniversarydate"
+                              type="date"
+                              onChange={handleInputVal}
+                              disabled={
+                                inputs.maritalstatus === "married"
+                                  ? false
+                                  : true
+                              }
+                              readonly={!edits.personal}
+                              value={inputs.anniversarydate}
+                              required
+                            />
+                          </div>
+                        </div>
+
+                        <div className="w-[100%] flex justify-between">
+                          <div
+                            className={
+                              type === "staff" ? "w-[100%]" : "w-[48%]"
+                            }
+                          >
+                            <TextInput
+                              label="Qualification *"
+                              name="qualification"
+                              id="qualification"
+                              type="text"
+                              onChange={handleInputVal}
+                              value={inputs.qualification}
+                              readonly={!edits.personal}
+                              required
+                            />
+                          </div>
+                          {type === "staff" ? null : (
+                            <div className="w-[48%]">
+                              <TextInput
+                                label="Occupation *"
+                                name="occupation"
+                                id="Occupation"
+                                type="text"
+                                onChange={handleInputVal}
+                                value={inputs.occupation}
+                                readonly={!edits.personal}
+                                required
+                              />
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </form>
+              </form>
 
-          {/* Address */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handlesubmitaddress();
-            }}
-          >
-            <div className="basicProfileCont p-10 shadow-lg mt-10">
-              <div className="w-[100%] flex justify-between items-center mb-5">
-                <div className="text-[1.2rem] lg:text-[25px] font-bold">
-                  Address
-                </div>
-                {/* {edits.address ? (
+              {/* Address */}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handlesubmitaddress();
+                }}
+              >
+                <div className="basicProfileCont p-10 shadow-lg mt-10">
+                  <div className="w-[100%] flex justify-between items-center mb-5">
+                    <div className="text-[1.2rem] lg:text-[25px] font-bold">
+                      Address
+                    </div>
+                    {/* {edits.address ? (
                   <button
                     className="text-[15px] outline-none py-2 border-none px-3 bg-[#f95005] font-bold cursor-pointer text-white rounded"
                     type="submit"
@@ -1055,173 +1061,173 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                     <i className="text-[15px] pi pi-pen-to-square"></i>
                   </div>
                 )} */}
-              </div>
-              <div className="w-[100%] flex justify-center items-center">
-                <div className="w-[100%] justify-center items-center flex flex-col">
-                  <div className="text-[1.2rem] lg:text-[25px] font-bold mb-5">
-                    Permanent Address
                   </div>
-                  <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
-                    <div className="w-[100%] md:w-[48%]">
-                      <TextInput
-                        label="Residential  Address *"
-                        name="peraddress"
-                        id="peraddress"
-                        type="text"
-                        onChange={handleInputVal}
-                        value={inputs.peraddress}
-                        readonly={!edits.address}
-                        required
-                      />
-                    </div>
-                    <div className="w-[100%] md:w-[48%]">
-                      <TextInput
-                        label="Pincode *"
-                        name="perpincode"
-                        id="perpincode"
-                        type="number"
-                        onChange={handleInputVal}
-                        value={inputs.perpincode}
-                        readonly={!edits.address}
-                        required
-                      />
-                    </div>
-                  </div>
+                  <div className="w-[100%] flex justify-center items-center">
+                    <div className="w-[100%] justify-center items-center flex flex-col">
+                      <div className="text-[1.2rem] lg:text-[25px] font-bold mb-5">
+                        Permanent Address
+                      </div>
+                      <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
+                        <div className="w-[100%] md:w-[48%]">
+                          <TextInput
+                            label="Residential  Address *"
+                            name="peraddress"
+                            id="peraddress"
+                            type="text"
+                            onChange={handleInputVal}
+                            value={inputs.peraddress}
+                            readonly={!edits.address}
+                            required
+                          />
+                        </div>
+                        <div className="w-[100%] md:w-[48%]">
+                          <TextInput
+                            label="Pincode *"
+                            name="perpincode"
+                            id="perpincode"
+                            type="number"
+                            onChange={handleInputVal}
+                            value={inputs.perpincode}
+                            readonly={!edits.address}
+                            required
+                          />
+                        </div>
+                      </div>
 
-                  <div className="w-[100%] flex justify-between mb-[20px]">
-                    <div className="w-[48%]">
-                      <TextInput
-                        label="State *"
-                        name="perstate"
-                        id="perstate"
-                        type="text"
-                        onChange={handleInputVal}
-                        value={inputs.perstate}
-                        readonly={!edits.address}
-                        required
-                      />
-                    </div>
-                    <div className="w-[48%]">
-                      <TextInput
-                        label="City *"
-                        name="percity"
-                        id="percity"
-                        type="text"
-                        onChange={handleInputVal}
-                        value={inputs.percity}
-                        readonly={!edits.address}
-                        required
-                      />
-                    </div>
-                  </div>
+                      <div className="w-[100%] flex justify-between mb-[20px]">
+                        <div className="w-[48%]">
+                          <TextInput
+                            label="State *"
+                            name="perstate"
+                            id="perstate"
+                            type="text"
+                            onChange={handleInputVal}
+                            value={inputs.perstate}
+                            readonly={!edits.address}
+                            required
+                          />
+                        </div>
+                        <div className="w-[48%]">
+                          <TextInput
+                            label="City *"
+                            name="percity"
+                            id="percity"
+                            type="text"
+                            onChange={handleInputVal}
+                            value={inputs.percity}
+                            readonly={!edits.address}
+                            required
+                          />
+                        </div>
+                      </div>
 
-                  <div className="w-[100%]">
-                    <CheckboxInput
-                      id="bothaddress"
-                      label="Use Communication Address & Permanent Address as Same."
-                      checked={options.address}
-                      onChange={() => {
-                        setOptions({
-                          ...options,
-                          address: !options.address,
-                        });
+                      <div className="w-[100%]">
+                        <CheckboxInput
+                          id="bothaddress"
+                          label="Use Communication Address & Permanent Address as Same."
+                          checked={options.address}
+                          onChange={() => {
+                            setOptions({
+                              ...options,
+                              address: !options.address,
+                            });
 
-                        if (!options.address) {
-                          setInputs({
-                            ...inputs,
-                            tempaddress: inputs.peraddress,
-                            temppincode: inputs.perpincode,
-                            tempstate: inputs.perstate,
-                            tempcity: inputs.percity,
-                          });
-                        } else {
-                          setInputs({
-                            ...inputs,
-                            tempaddress: "",
-                            temppincode: "",
-                            tempstate: "",
-                            tempcity: "",
-                          });
-                        }
-                      }}
-                      readonly={!edits.address}
-                    />
-                  </div>
+                            if (!options.address) {
+                              setInputs({
+                                ...inputs,
+                                tempaddress: inputs.peraddress,
+                                temppincode: inputs.perpincode,
+                                tempstate: inputs.perstate,
+                                tempcity: inputs.percity,
+                              });
+                            } else {
+                              setInputs({
+                                ...inputs,
+                                tempaddress: "",
+                                temppincode: "",
+                                tempstate: "",
+                                tempcity: "",
+                              });
+                            }
+                          }}
+                          readonly={!edits.address}
+                        />
+                      </div>
 
-                  <div className="text-[1.2rem] lg:text-[25px] font-bold mb-5">
-                    Communication Address
-                  </div>
-                  <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
-                    <div className="w-[100%] md:w-[48%]">
-                      <TextInput
-                        label="Residential  Address *"
-                        name="tempaddress"
-                        id="tempaddress"
-                        type="text"
-                        onChange={handleInputVal}
-                        value={inputs.tempaddress}
-                        readonly={!edits.address}
-                        required
-                      />
-                    </div>
-                    <div className="w-[100%] md:w-[48%]">
-                      <TextInput
-                        label="Pincode *"
-                        name="temppincode"
-                        id="temppincode"
-                        type="number"
-                        onChange={handleInputVal}
-                        value={inputs.temppincode}
-                        readonly={!edits.address}
-                        required
-                      />
-                    </div>
-                  </div>
+                      <div className="text-[1.2rem] lg:text-[25px] font-bold mb-5">
+                        Communication Address
+                      </div>
+                      <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
+                        <div className="w-[100%] md:w-[48%]">
+                          <TextInput
+                            label="Residential  Address *"
+                            name="tempaddress"
+                            id="tempaddress"
+                            type="text"
+                            onChange={handleInputVal}
+                            value={inputs.tempaddress}
+                            readonly={!edits.address}
+                            required
+                          />
+                        </div>
+                        <div className="w-[100%] md:w-[48%]">
+                          <TextInput
+                            label="Pincode *"
+                            name="temppincode"
+                            id="temppincode"
+                            type="number"
+                            onChange={handleInputVal}
+                            value={inputs.temppincode}
+                            readonly={!edits.address}
+                            required
+                          />
+                        </div>
+                      </div>
 
-                  <div className="w-[100%] flex justify-between">
-                    <div className="w-[48%]">
-                      <TextInput
-                        label="State *"
-                        name="tempstate"
-                        id="perstate"
-                        type="text"
-                        onChange={handleInputVal}
-                        value={inputs.tempstate}
-                        readonly={!edits.address}
-                        required
-                      />
-                    </div>
-                    <div className="w-[48%]">
-                      <TextInput
-                        label="City *"
-                        name="tempcity"
-                        id="tempcity"
-                        type="text"
-                        onChange={handleInputVal}
-                        value={inputs.tempcity}
-                        readonly={!edits.address}
-                        required
-                      />
+                      <div className="w-[100%] flex justify-between">
+                        <div className="w-[48%]">
+                          <TextInput
+                            label="State *"
+                            name="tempstate"
+                            id="perstate"
+                            type="text"
+                            onChange={handleInputVal}
+                            value={inputs.tempstate}
+                            readonly={!edits.address}
+                            required
+                          />
+                        </div>
+                        <div className="w-[48%]">
+                          <TextInput
+                            label="City *"
+                            name="tempcity"
+                            id="tempcity"
+                            type="text"
+                            onChange={handleInputVal}
+                            value={inputs.tempcity}
+                            readonly={!edits.address}
+                            required
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </form>
+              </form>
 
-          {/* Communication Type */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handlecommunicationtype();
-            }}
-          >
-            <div className="basicProfileCont p-10 shadow-lg mt-10">
-              <div className="w-[100%] flex justify-between items-center mb-5">
-                <div className="text-[1rem] lg:text-[25px] font-bold">
-                  Communication Type
-                </div>
-                {/* {edits.communitcation ? (
+              {/* Communication Type */}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handlecommunicationtype();
+                }}
+              >
+                <div className="basicProfileCont p-10 shadow-lg mt-10">
+                  <div className="w-[100%] flex justify-between items-center mb-5">
+                    <div className="text-[1rem] lg:text-[25px] font-bold">
+                      Communication Type
+                    </div>
+                    {/* {edits.communitcation ? (
                   <button
                     className="text-[15px] outline-none py-2 border-none px-3 bg-[#f95005] font-bold cursor-pointer text-white rounded"
                     type="submit"
@@ -1240,49 +1246,49 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                     <i className="text-[15px] pi pi-pen-to-square"></i>
                   </div>
                 )} */}
-              </div>
-              <div className="w-[100%] flex flex-col justify-center items-center">
-                <div className="w-[100%] flex justify-between mb-[20px]">
-                  <div className="w-[100%]">
-                    <TextInput
-                      label="E-Mail *"
-                      name="email"
-                      id="email"
-                      type="email"
-                      onChange={handleInputVal}
-                      value={inputs.email}
-                      readonly={!edits.communitcation}
-                      required
-                    />
                   </div>
-                </div>
-                <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
-                  <div className="w-[100%] md:w-[48%]">
-                    <TextInput
-                      label="Phone Number *"
-                      name="phoneno"
-                      id="phoneno"
-                      type="number"
-                      onChange={handleInputVal}
-                      value={inputs.phoneno}
-                      readonly={!edits.communitcation}
-                      required
-                    />
-                  </div>
-                  <div className="w-[100%] md:w-[48%] flex justify-between">
-                    <div className="w-[65%] md:w-[100%]">
-                      <TextInput
-                        label="WhatsApp Number *"
-                        name="whatsappno"
-                        id="whatsappno"
-                        type="number"
-                        onChange={handleInputVal}
-                        value={inputs.whatsappno}
-                        readonly={!edits.communitcation}
-                        required
-                      />
+                  <div className="w-[100%] flex flex-col justify-center items-center">
+                    <div className="w-[100%] flex justify-between mb-[20px]">
+                      <div className="w-[100%]">
+                        <TextInput
+                          label="E-Mail *"
+                          name="email"
+                          id="email"
+                          type="email"
+                          onChange={handleInputVal}
+                          value={inputs.email}
+                          readonly={!edits.communitcation}
+                          required
+                        />
+                      </div>
                     </div>
-                    {/* <div
+                    <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
+                      <div className="w-[100%] md:w-[48%]">
+                        <TextInput
+                          label="Phone Number *"
+                          name="phoneno"
+                          id="phoneno"
+                          type="number"
+                          onChange={handleInputVal}
+                          value={inputs.phoneno}
+                          readonly={!edits.communitcation}
+                          required
+                        />
+                      </div>
+                      <div className="w-[100%] md:w-[48%] flex justify-between">
+                        <div className="w-[65%] md:w-[100%]">
+                          <TextInput
+                            label="WhatsApp Number *"
+                            name="whatsappno"
+                            id="whatsappno"
+                            type="number"
+                            onChange={handleInputVal}
+                            value={inputs.whatsappno}
+                            readonly={!edits.communitcation}
+                            required
+                          />
+                        </div>
+                        {/* <div
                       className="w-[30%] md:w-[18%] text-[0.7rem] lg:text-[14px] flex justify-center items-center text-center bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
                       onClick={() => {
                         if (edits.communitcation) {
@@ -1297,186 +1303,200 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                     >
                       Use Same Number
                     </div> */}
-                  </div>
-                </div>
-
-                <div className="w-[100%] ">
-                  <SelectInput
-                    id="modeofcontact"
-                    name="mode"
-                    label="Mode of Contact *"
-                    value={inputs.mode}
-                    onChange={handleInputVal}
-                    options={
-                      modeofcontact
-                        ? Object.entries(modeofcontact).map(
-                            ([value, label]) => ({
-                              value, // The key as value
-                              label, // The value as label
-                            })
-                          )
-                        : [] // Empty array before the data is loaded
-                    }
-                    disabled={!edits.communitcation}
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-          </form>
-
-          {type === "staff" ? (
-            <>
-              <div className="basicProfileCont mt-10 p-[20px] lg:p-[40px] shadow-lg">
-                <div className="w-[100%] flex justify-between items-center mb-5">
-                  <div className="text-[1rem] lg:text-[25px] font-bold">
-                    Documentation
-                  </div>
-                </div>
-                <div className="w-[100%] flex flex-col justify-center items-center">
-                  <div className="w-[100%] flex flex-col lg:flex-row gap-3 justify-between mb-[20px]">
-                    <div className="w-[100%] lg:w-[30%]">
-                      <div className="w-[100%] flex flex-col gap-1">
-                        <label className="text-[14px] text-[#f95005] font-medium font-mont leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                          Aadhaar Card *
-                        </label>
-                        {inputs.aadhar ? (
-                          <Button
-                            type="button"
-                            severity="success"
-                            onClick={() => {
-                              // Assuming `content` is your base64 string for the PDF file
-                              const content = inputs.aadhar.content;
-                              const filename = "AadhaarCard.pdf";
-
-                              // Decode base64 to binary and create a Blob
-                              const byteCharacters = atob(content);
-                              const byteNumbers = new Array(
-                                byteCharacters.length
-                              );
-                              for (let i = 0; i < byteCharacters.length; i++) {
-                                byteNumbers[i] = byteCharacters.charCodeAt(i);
-                              }
-                              const byteArray = new Uint8Array(byteNumbers);
-                              const blob = new Blob([byteArray], {
-                                type: "application/pdf",
-                              });
-
-                              // Create a download link and trigger it
-                              const link = document.createElement("a");
-                              link.href = URL.createObjectURL(blob);
-                              link.download = filename;
-                              link.click();
-
-                              // Release memory
-                              URL.revokeObjectURL(link.href);
-                            }}
-                            label="Download"
-                          />
-                        ) : (
-                          <label>No Documents Upload</label>
-                        )}
                       </div>
                     </div>
 
-                    <div className="w-[100%] lg:w-[30%]">
-                      <div className="w-[100%] flex flex-col gap-1">
-                        <label className="text-[14px] text-[#f95005] font-medium font-mont leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                          Pan Card *
-                        </label>
-                        {inputs.pancard ? (
-                          <Button
-                            type="button"
-                            severity="success"
-                            onClick={() => {
-                              // Assuming `content` is your base64 string for the PDF file
-                              const content = inputs.pancard.content;
-                              const filename = "PanCard.pdf";
-
-                              // Decode base64 to binary and create a Blob
-                              const byteCharacters = atob(content);
-                              const byteNumbers = new Array(
-                                byteCharacters.length
-                              );
-                              for (let i = 0; i < byteCharacters.length; i++) {
-                                byteNumbers[i] = byteCharacters.charCodeAt(i);
-                              }
-                              const byteArray = new Uint8Array(byteNumbers);
-                              const blob = new Blob([byteArray], {
-                                type: "application/pdf",
-                              });
-
-                              // Create a download link and trigger it
-                              const link = document.createElement("a");
-                              link.href = URL.createObjectURL(blob);
-                              link.download = filename;
-                              link.click();
-
-                              // Release memory
-                              URL.revokeObjectURL(link.href);
-                            }}
-                            label="Download"
-                          />
-                        ) : (
-                          <label>No Documents Upload</label>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="w-[100%] lg:w-[30%]">
-                      <div className="w-[100%] flex flex-col gap-1">
-                        <label className="text-[14px] text-[#f95005] font-medium font-mont leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                          Certification *
-                        </label>
-                        {inputs.certification ? (
-                          <Button
-                            type="button"
-                            severity="success"
-                            onClick={() => {
-                              // Assuming `content` is your base64 string for the PDF file
-                              const content = inputs.certification.content;
-                              const filename = "Certification.pdf";
-
-                              // Decode base64 to binary and create a Blob
-                              const byteCharacters = atob(content);
-                              const byteNumbers = new Array(
-                                byteCharacters.length
-                              );
-                              for (let i = 0; i < byteCharacters.length; i++) {
-                                byteNumbers[i] = byteCharacters.charCodeAt(i);
-                              }
-                              const byteArray = new Uint8Array(byteNumbers);
-                              const blob = new Blob([byteArray], {
-                                type: "application/pdf",
-                              });
-
-                              // Create a download link and trigger it
-                              const link = document.createElement("a");
-                              link.href = URL.createObjectURL(blob);
-                              link.download = filename;
-                              link.click();
-
-                              // Release memory
-                              URL.revokeObjectURL(link.href);
-                            }}
-                            label="Download"
-                          />
-                        ) : (
-                          <label>No Documents Upload</label>
-                        )}
-                      </div>
+                    <div className="w-[100%] ">
+                      <SelectInput
+                        id="modeofcontact"
+                        name="mode"
+                        label="Mode of Contact *"
+                        value={inputs.mode}
+                        onChange={handleInputVal}
+                        options={
+                          modeofcontact
+                            ? Object.entries(modeofcontact).map(
+                                ([value, label]) => ({
+                                  value, // The key as value
+                                  label, // The value as label
+                                })
+                              )
+                            : [] // Empty array before the data is loaded
+                        }
+                        disabled={!edits.communitcation}
+                        required
+                      />
                     </div>
                   </div>
                 </div>
-              </div>
+              </form>
 
-              <div className="basicProfileCont mt-10 p-[20px] lg:p-[40px] shadow-lg">
-                <div className="w-[100%] flex justify-between items-center mb-5">
-                  <div className="text-[1rem] lg:text-[25px] font-bold">
-                  
-                    Professional Experience
+              {type === "staff" ? (
+                <>
+                  <div className="basicProfileCont mt-10 p-[20px] lg:p-[40px] shadow-lg">
+                    <div className="w-[100%] flex justify-between items-center mb-5">
+                      <div className="text-[1rem] lg:text-[25px] font-bold">
+                        Documentation
+                      </div>
+                    </div>
+                    <div className="w-[100%] flex flex-col justify-center items-center">
+                      <div className="w-[100%] flex flex-col lg:flex-row gap-3 justify-between mb-[20px]">
+                        <div className="w-[100%] lg:w-[30%]">
+                          <div className="w-[100%] flex flex-col gap-1">
+                            <label className="text-[14px] text-[#f95005] font-medium font-mont leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                              Aadhaar Card *
+                            </label>
+                            {inputs.aadhar ? (
+                              <Button
+                                type="button"
+                                severity="success"
+                                onClick={() => {
+                                  // Assuming `content` is your base64 string for the PDF file
+                                  const content = inputs.aadhar.content;
+                                  const filename = "AadhaarCard.pdf";
+
+                                  // Decode base64 to binary and create a Blob
+                                  const byteCharacters = atob(content);
+                                  const byteNumbers = new Array(
+                                    byteCharacters.length
+                                  );
+                                  for (
+                                    let i = 0;
+                                    i < byteCharacters.length;
+                                    i++
+                                  ) {
+                                    byteNumbers[i] =
+                                      byteCharacters.charCodeAt(i);
+                                  }
+                                  const byteArray = new Uint8Array(byteNumbers);
+                                  const blob = new Blob([byteArray], {
+                                    type: "application/pdf",
+                                  });
+
+                                  // Create a download link and trigger it
+                                  const link = document.createElement("a");
+                                  link.href = URL.createObjectURL(blob);
+                                  link.download = filename;
+                                  link.click();
+
+                                  // Release memory
+                                  URL.revokeObjectURL(link.href);
+                                }}
+                                label="Download"
+                              />
+                            ) : (
+                              <label>No Documents Upload</label>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="w-[100%] lg:w-[30%]">
+                          <div className="w-[100%] flex flex-col gap-1">
+                            <label className="text-[14px] text-[#f95005] font-medium font-mont leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                              Pan Card *
+                            </label>
+                            {inputs.pancard ? (
+                              <Button
+                                type="button"
+                                severity="success"
+                                onClick={() => {
+                                  // Assuming `content` is your base64 string for the PDF file
+                                  const content = inputs.pancard.content;
+                                  const filename = "PanCard.pdf";
+
+                                  // Decode base64 to binary and create a Blob
+                                  const byteCharacters = atob(content);
+                                  const byteNumbers = new Array(
+                                    byteCharacters.length
+                                  );
+                                  for (
+                                    let i = 0;
+                                    i < byteCharacters.length;
+                                    i++
+                                  ) {
+                                    byteNumbers[i] =
+                                      byteCharacters.charCodeAt(i);
+                                  }
+                                  const byteArray = new Uint8Array(byteNumbers);
+                                  const blob = new Blob([byteArray], {
+                                    type: "application/pdf",
+                                  });
+
+                                  // Create a download link and trigger it
+                                  const link = document.createElement("a");
+                                  link.href = URL.createObjectURL(blob);
+                                  link.download = filename;
+                                  link.click();
+
+                                  // Release memory
+                                  URL.revokeObjectURL(link.href);
+                                }}
+                                label="Download"
+                              />
+                            ) : (
+                              <label>No Documents Upload</label>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="w-[100%] lg:w-[30%]">
+                          <div className="w-[100%] flex flex-col gap-1">
+                            <label className="text-[14px] text-[#f95005] font-medium font-mont leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                              Certification *
+                            </label>
+                            {inputs.certification ? (
+                              <Button
+                                type="button"
+                                severity="success"
+                                onClick={() => {
+                                  // Assuming `content` is your base64 string for the PDF file
+                                  const content = inputs.certification.content;
+                                  const filename = "Certification.pdf";
+
+                                  // Decode base64 to binary and create a Blob
+                                  const byteCharacters = atob(content);
+                                  const byteNumbers = new Array(
+                                    byteCharacters.length
+                                  );
+                                  for (
+                                    let i = 0;
+                                    i < byteCharacters.length;
+                                    i++
+                                  ) {
+                                    byteNumbers[i] =
+                                      byteCharacters.charCodeAt(i);
+                                  }
+                                  const byteArray = new Uint8Array(byteNumbers);
+                                  const blob = new Blob([byteArray], {
+                                    type: "application/pdf",
+                                  });
+
+                                  // Create a download link and trigger it
+                                  const link = document.createElement("a");
+                                  link.href = URL.createObjectURL(blob);
+                                  link.download = filename;
+                                  link.click();
+
+                                  // Release memory
+                                  URL.revokeObjectURL(link.href);
+                                }}
+                                label="Download"
+                              />
+                            ) : (
+                              <label>No Documents Upload</label>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  {/* {edits.prof ? (
+
+                  <div className="basicProfileCont mt-10 p-[20px] lg:p-[40px] shadow-lg">
+                    <div className="w-[100%] flex justify-between items-center mb-5">
+                      <div className="text-[1rem] lg:text-[25px] font-bold">
+                        Professional Experience
+                      </div>
+                      {/* {edits.prof ? (
                     <div
                       className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
                       // onClick={handleprof}
@@ -1495,60 +1515,81 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                       <i className="text-[15px] pi pi-pen-to-square"></i>
                     </div>
                   )} */}
-                </div>
-                <div className="w-[100%] flex flex-col justify-center items-center">
-                  <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between mb-[20px]">
-                    <div className="w-[100%] lg:w-[48%]">
-                      <TextInput
-                        label="Year of Experience"
-                        name="yearexprience"
-                        id="yearexprience"
-                        type="number"
-                        onChange={(e) => {
-                          setEmployeeData({
-                            ...employeeData,
-                            refExperence: e.target.value,
-                          });
-                        }}
-                        value={employeeData.refExperence}
-                        readonly={!edits.prof}
-                      />
                     </div>
-                    <div className="w-[100%] lg:w-[48%]">
-                      <TextInput
-                        label="Specialization"
-                        name="specialization"
-                        id="specialization"
-                        type="text"
-                        onChange={(e) => {
-                          setEmployeeData({
-                            ...employeeData,
-                            refSpecialization: e.target.value,
-                          });
-                        }}
-                        value={employeeData.refSpecialization}
-                        readonly={!edits.prof}
-                      />
+                    <div className="w-[100%] flex flex-col justify-center items-center">
+                      <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between mb-[20px]">
+                        <div className="w-[100%] lg:w-[48%]">
+                          <TextInput
+                            label="Year of Experience"
+                            name="yearexprience"
+                            id="yearexprience"
+                            type="number"
+                            onChange={(e) => {
+                              setEmployeeData({
+                                ...employeeData,
+                                refExperence: e.target.value,
+                              });
+                            }}
+                            value={employeeData.refExperence}
+                            readonly={!edits.prof}
+                          />
+                        </div>
+                        <div className="w-[100%] lg:w-[48%]">
+                          <TextInput
+                            label="Specialization"
+                            name="specialization"
+                            id="specialization"
+                            type="text"
+                            onChange={(e) => {
+                              setEmployeeData({
+                                ...employeeData,
+                                refSpecialization: e.target.value,
+                              });
+                            }}
+                            value={employeeData.refSpecialization}
+                            readonly={!edits.prof}
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
+                </>
+              ) : (
+                <></>
+              )}
+
+              <div className="py-1"></div>
+            </div>
+          </TabPanel>
+          <TabPanel header="Medical details ">
+
+          <div className="basicProfileCont p-10 shadow-lg mt-10">
+              <div className="w-[100%] flex justify-between items-center mb-5">
+                <div className="text-[1.2rem] lg:text-[25px] font-bold">
+                  Documentation
                 </div>
+                <div
+                      // key={index}
+                      className="w-[100%] flex flex-row justify-evenly lg:p-[10px] mt-5 lg:mt-0"
+                    >
+                      </div>
+
+                
               </div>
-            </>
-          ) : (
-            <>
-              {/* Genderal Health */}
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handlegenderalhealth();
-                }}
-              >
-                <div className="basicProfileCont p-10 shadow-lg mt-10">
-                  <div className="w-[100%] flex justify-between items-center mb-5">
-                    <div className="text-[1.2rem] lg:text-[25px] font-bold">
+            </div>
+            {/* Genderal Health */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handlegenderalhealth();
+              }}
+            >
+              <div className="basicProfileCont p-10 shadow-lg mt-10">
+                <div className="w-[100%] flex justify-between items-center mb-5">
+                  <div className="text-[1.2rem] lg:text-[25px] font-bold">
                     General Health
-                    </div>
-                    {/* {edits.gendrel ? (
+                  </div>
+                  {/* {edits.gendrel ? (
                   <button
                     className="text-[15px] outline-none py-2 border-none px-3 bg-[#f95005] font-bold cursor-pointer text-white rounded"
                     type="submit"
@@ -1567,252 +1608,254 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                     <i className="text-[15px] pi pi-pen-to-square"></i>
                   </div>
                 )} */}
+                </div>
+                <div className="w-[100%] flex flex-col justify-center items-center">
+                  <div className="w-[100%] flex justify-between mb-[20px]">
+                    <div className="w-[48%]">
+                      <TextInput
+                        label="Height in CM *"
+                        name="height"
+                        id="height"
+                        type="number"
+                        onChange={handleInputVal}
+                        value={inputs.height}
+                        readonly={!edits.gendrel}
+                        required
+                      />
+                    </div>
+                    <div className="w-[48%]">
+                      <TextInput
+                        label="Weight in KG *"
+                        name="weight"
+                        id="weight"
+                        type="number"
+                        onChange={handleInputVal}
+                        value={inputs.weight}
+                        readonly={!edits.gendrel}
+                        required
+                      />
+                    </div>
                   </div>
-                  <div className="w-[100%] flex flex-col justify-center items-center">
-                    <div className="w-[100%] flex justify-between mb-[20px]">
-                      <div className="w-[48%]">
-                        <TextInput
-                          label="Height in CM *"
-                          name="height"
-                          id="height"
-                          type="number"
-                          onChange={handleInputVal}
-                          value={inputs.height}
-                          readonly={!edits.gendrel}
-                          required
-                        />
-                      </div>
-                      <div className="w-[48%]">
-                        <TextInput
-                          label="Weight in KG *"
-                          name="weight"
-                          id="weight"
-                          type="number"
-                          onChange={handleInputVal}
-                          value={inputs.weight}
-                          readonly={!edits.gendrel}
-                          required
-                        />
-                      </div>
+
+                  <div className="w-[100%] flex justify-between mb-[20px]">
+                    <div className="w-[48%]">
+                      <SelectInput
+                        id="bloodgroup"
+                        name="bloodgroup"
+                        label="Blood Group *"
+                        onChange={handleInputVal}
+                        value={inputs.bloodgroup}
+                        options={[
+                          { value: "A+", label: "A+" },
+                          { value: "A-", label: "A-" },
+                          { value: "B+", label: "B+" },
+                          { value: "B-", label: "B-" },
+                          { value: "AB+", label: "AB+" },
+                          { value: "AB-", label: "AB-" },
+                          { value: "O+", label: "O+" },
+                          { value: "O-", label: "O-" },
+                        ]}
+                        disabled={!edits.gendrel}
+                        required
+                      />
                     </div>
-
-                    <div className="w-[100%] flex justify-between mb-[20px]">
-                      <div className="w-[48%]">
-                        <SelectInput
-                          id="bloodgroup"
-                          name="bloodgroup"
-                          label="Blood Group *"
-                          onChange={handleInputVal}
-                          value={inputs.bloodgroup}
-                          options={[
-                            { value: "A+", label: "A+" },
-                            { value: "A-", label: "A-" },
-                            { value: "B+", label: "B+" },
-                            { value: "B-", label: "B-" },
-                            { value: "AB+", label: "AB+" },
-                            { value: "AB-", label: "AB-" },
-                            { value: "O+", label: "O+" },
-                            { value: "O-", label: "O-" },
-                          ]}
-                          disabled={!edits.gendrel}
-                          required
-                        />
-                      </div>
-                      <div className="w-[48%]">
-                        <TextInput
-                          label="BMI"
-                          name="bmi"
-                          id="bmi"
-                          type="number"
-                          onChange={handleInputVal}
-                          value={inputs.bmi}
-                          readonly={!edits.gendrel}
-                        />
-                      </div>
+                    <div className="w-[48%]">
+                      <TextInput
+                        label="BMI"
+                        name="bmi"
+                        id="bmi"
+                        type="number"
+                        onChange={handleInputVal}
+                        value={inputs.bmi}
+                        readonly={!edits.gendrel}
+                      />
                     </div>
+                  </div>
 
-                    <div className="w-[100%] flex justify-between mb-[20px]">
-                      <div className="w-[100%]">
-                        <TextInput
-                          label="BP"
-                          name="bp"
-                          id="bp"
-                          type="number"
-                          onChange={handleInputVal}
-                          value={inputs.bp}
-                          readonly={!edits.gendrel}
-                        />
-                      </div>
+                  <div className="w-[100%] flex justify-between mb-[20px]">
+                    <div className="w-[100%]">
+                      <TextInput
+                        label="BP"
+                        name="bp"
+                        id="bp"
+                        type="number"
+                        onChange={handleInputVal}
+                        value={inputs.bp}
+                        readonly={!edits.gendrel}
+                      />
                     </div>
+                  </div>
 
-                    <div className="w-[100%] flex flex-col md:flex-row gap-y-[25px] justify-between mb-[25px]">
-                      <div className="w-[100%] md:w-[48%]">
-                        <label className="w-[100%] text-[#f95005] font-bold text-[1.0rem] lg:text-[20px] text-start">
-                          Recent injuries / Accidents / Operations *{" "}
-                        </label>
-                        <div className="w-[100%] flex justify-start mt-[10px]">
-                          <div className="mr-10">
-                            <RadiobuttonInput
-                              id="accidentyes"
-                              value="yes"
-                              name="accident"
-                              selectedOption={options.accident ? "yes" : ""}
-                              onChange={() => {
-                                setOptions({
-                                  ...options,
-                                  accident: true,
-                                });
-                              }}
-                              label="Yes"
-                              readonly={!edits.gendrel}
-                              required
-                            />
-                          </div>
-                          <div className="">
-                            <RadiobuttonInput
-                              id="accidentno"
-                              value="no"
-                              name="accident"
-                              label="No"
-                              onChange={() => {
-                                setOptions({
-                                  ...options,
-                                  accident: false,
-                                });
-
-                                setInputs({
-                                  ...inputs,
-                                  accidentdetails: "",
-                                });
-                              }}
-                              selectedOption={!options.accident ? "no" : ""}
-                              readonly={!edits.gendrel}
-                              required
-                            />
-                          </div>
+                  <div className="w-[100%] flex flex-col md:flex-row gap-y-[25px] justify-between mb-[25px]">
+                    <div className="w-[100%] md:w-[48%]">
+                      <label className="w-[100%] text-[#f95005]  text-[1.0rem] lg:text-[18px] text-start">
+                        Recent injuries / Accidents / Operations *{" "}
+                      </label>
+                      <div className="w-[100%] flex justify-start mt-[10px]">
+                        <div className="mr-10 ">
+                          <RadiobuttonInput
+                         
+                            id="accidentyes"
+                            value="yes"
+                            name="accident"
+                            selectedOption={options.accident ? "yes" : ""}
+                            onChange={() => {
+                              setOptions({
+                                ...options,
+                                accident: true,
+                              });
+                            }}
+                            label="Yes"
+                            readonly={!edits.gendrel}
+                            required
+                          
+                          />
                         </div>
-                        <div className="w-[100%] mt-[20px]">
-                          <div className="w-[100%]">
-                            <TextInput
-                              label="Details"
-                              name="accidentdetails"
-                              id="details"
-                              type="text"
-                              onChange={handleInputVal}
-                              value={inputs.accidentdetails}
-                              disabled={!options.accident}
-                              readonly={!edits.gendrel}
-                              required
-                            />
-                          </div>
+                        <div className="">
+                          <RadiobuttonInput
+                            id="accidentno"
+                            value="no"
+                            name="accident"
+                            label="No"
+                            onChange={() => {
+                              setOptions({
+                                ...options,
+                                accident: false,
+                              });
+
+                              setInputs({
+                                ...inputs,
+                                accidentdetails: "",
+                              });
+                            }}
+                            selectedOption={!options.accident ? "no" : ""}
+                            readonly={!edits.gendrel}
+                            required
+                          />
                         </div>
                       </div>
-                      <div className="w-[100%] md:w-[48%]">
-                        <label className="w-[100%] text-[#f95005] font-bold text-[1.0rem] lg:text-[20px] text-start">
-                          Recent breaks / Fractures / Sprains *
-                        </label>
-                        <div className="w-[100%] flex justify-start mt-[10px]">
-                          <div className="mr-10">
-                            <RadiobuttonInput
-                              id="breaksyes"
-                              value="yes"
-                              name="breaks"
-                              label="Yes"
-                              selectedOption={options.breaks ? "yes" : ""}
-                              onChange={() => {
-                                setOptions({
-                                  ...options,
-                                  breaks: true,
-                                });
-                              }}
-                              readonly={!edits.gendrel}
-                              required
-                            />
-                          </div>
-                          <div className="">
-                            <RadiobuttonInput
-                              id="breaksno"
-                              value="no"
-                              name="breaks"
-                              label="No"
-                              selectedOption={!options.breaks ? "no" : ""}
-                              onChange={() => {
-                                setOptions({
-                                  ...options,
-                                  breaks: false,
-                                });
-                                setInputs({
-                                  ...inputs,
-                                  breaksdetails: "",
-                                  breaksotheractivities: "",
-                                });
-                              }}
-                              readonly={!edits.gendrel}
-                              required
-                            />
-                          </div>
-                        </div>
-                        <div className="w-[100%] flex justify-between mt-[20px]">
-                          <div className="w-[48%]">
-                            <TextInput
-                              label="Details"
-                              name="breaksdetails"
-                              id="details"
-                              type="text"
-                              onChange={handleInputVal}
-                              value={inputs.breaksdetails}
-                              disabled={!options.breaks}
-                              readonly={!edits.gendrel}
-                              required
-                            />
-                          </div>
-                          <div className="w-[48%]">
-                            <TextInput
-                              label="Other Activities"
-                              name="breaksotheractivities"
-                              id="otheractivities"
-                              type="text"
-                              onChange={handleInputVal}
-                              value={inputs.breaksotheractivities}
-                              disabled={!options.breaks}
-                              readonly={!edits.gendrel}
-                              required
-                            />
-                          </div>
+                      <div className="w-[100%] mt-[20px]">
+                        <div className="w-[100%]">
+                          <TextInput
+                            label="Details"
+                            name="accidentdetails"
+                            id="details"
+                            type="text"
+                            onChange={handleInputVal}
+                            value={inputs.accidentdetails}
+                            disabled={!options.accident}
+                            readonly={!edits.gendrel}
+                            required
+                          />
                         </div>
                       </div>
                     </div>
-
-                    <div className="w-[100%] flex justify-between">
-                      <div className="w-[100%]">
-                        <TextInput
-                          label="Anything else"
-                          name="genderalanything"
-                          id="anythingelse"
-                          type="text"
-                          onChange={handleInputVal}
-                          value={inputs.genderalanything}
-                          readonly={!edits.gendrel}
-                        />
+                    <div className="w-[100%] md:w-[48%]">
+                    <label className="w-[100%] text-[#f95005]  text-[1.0rem] lg:text-[18px] text-start">
+                        Recent breaks / Fractures / Sprains *
+                      </label>
+                      <div className="w-[100%] flex justify-start mt-[10px]">
+                        <div className="mr-10">
+                          <RadiobuttonInput
+                            id="breaksyes"
+                            value="yes"
+                            name="breaks"
+                            label="Yes"
+                            selectedOption={options.breaks ? "yes" : ""}
+                            onChange={() => {
+                              setOptions({
+                                ...options,
+                                breaks: true,
+                              });
+                            }}
+                            readonly={!edits.gendrel}
+                            required
+                          />
+                        </div>
+                        <div className="">
+                          <RadiobuttonInput
+                            id="breaksno"
+                            value="no"
+                            name="breaks"
+                            label="No"
+                            selectedOption={!options.breaks ? "no" : ""}
+                            onChange={() => {
+                              setOptions({
+                                ...options,
+                                breaks: false,
+                              });
+                              setInputs({
+                                ...inputs,
+                                breaksdetails: "",
+                                breaksotheractivities: "",
+                              });
+                            }}
+                            readonly={!edits.gendrel}
+                            required
+                          />
+                        </div>
                       </div>
+                      <div className="w-[100%] flex justify-between mt-[20px]">
+                        <div className="w-[48%]">
+                          <TextInput
+                            label="Details"
+                            name="breaksdetails"
+                            id="details"
+                            type="text"
+                            onChange={handleInputVal}
+                            value={inputs.breaksdetails}
+                            disabled={!options.breaks}
+                            readonly={!edits.gendrel}
+                            required
+                          />
+                        </div>
+                        <div className="w-[48%]">
+                          <TextInput
+                            label="Other Activities"
+                            name="breaksotheractivities"
+                            id="otheractivities"
+                            type="text"
+                            onChange={handleInputVal}
+                            value={inputs.breaksotheractivities}
+                            disabled={!options.breaks}
+                            readonly={!edits.gendrel}
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="w-[100%] flex justify-between">
+                    <div className="w-[100%]">
+                      <TextInput
+                        label="Anything else"
+                        name="genderalanything"
+                        id="anythingelse"
+                        type="text"
+                        onChange={handleInputVal}
+                        value={inputs.genderalanything}
+                        readonly={!edits.gendrel}
+                      />
                     </div>
                   </div>
                 </div>
-              </form>
+              </div>
+            </form>
 
-              {/* Past or Present Health */}
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handlepresenthealth();
-                }}
-              >
-                <div className="basicProfileCont p-10 shadow-lg mt-10">
-                  <div className="w-[100%] flex justify-between items-center mb-5">
-                    <div className="text-[1.2rem] lg:text-[25px] font-bold">
-                      Past or Present Health
-                    </div>
-                    {/* {edits.present ? (
+            {/* Past or Present Health */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handlepresenthealth();
+              }}
+            >
+              <div className="basicProfileCont p-10 shadow-lg mt-10">
+                <div className="w-[100%] flex justify-between items-center mb-5">
+                  <div className="text-[1.2rem] lg:text-[25px] font-bold">
+                    Past or Present Health
+                  </div>
+                  {/* {edits.present ? (
                   <button
                     className="text-[15px] outline-none py-2 border-none px-3 bg-[#f95005] font-bold cursor-pointer text-white rounded"
                     type="submit"
@@ -1831,191 +1874,191 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                     <i className="text-[15px] pi pi-pen-to-square"></i>
                   </div>
                 )} */}
-                  </div>
-                  <div className="w-[100%] flex justify-center items-center">
-                    <div className="w-[100%] justify-center items-center flex flex-col">
-                      <div className="w-[100%] flex flex-wrap gap-y-[10px] lg:gap-y-[30px] gap-x-10 mb-[20px]">
-                        {conditions.map((condition, index) => (
-                          <div className="w-[140px]" key={index}>
-                            <CheckboxInput
-                              id={`condition-${index}`}
-                              checked={condition.checked === 1}
-                              label={condition.label}
-                              onChange={() => handleCheckboxChange(index)}
+                </div>
+                <div className="w-[100%] flex justify-center items-center">
+                  <div className="w-[100%] justify-center items-center flex flex-col">
+                    <div className="w-[100%] flex flex-wrap gap-y-[10px] lg:gap-y-[30px] gap-x-10 mb-[20px]">
+                      {conditions.map((condition, index) => (
+                        <div className="w-[140px]" key={index}>
+                          <CheckboxInput
+                            id={`condition-${index}`}
+                            checked={condition.checked === 1}
+                            label={condition.label}
+                            onChange={() => handleCheckboxChange(index)}
+                            readonly={!edits.present}
+                          />
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
+                      <div className="w-[100%] md:w-[48%]">
+                        <TextInput
+                          label="Others"
+                          name="pastother"
+                          id="others"
+                          type="text"
+                          onChange={handleInputVal}
+                          value={inputs.pastother}
+                          readonly={!edits.present}
+                        />
+                      </div>
+                      <div className="w-[100%] md:w-[48%]">
+                        <TextInput
+                          label="Current Medicines"
+                          name="pastmedicaldetails"
+                          id="medicaldetails"
+                          type="text"
+                          onChange={handleInputVal}
+                          value={inputs.pastmedicaldetails}
+                          readonly={!edits.present}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="w-[100%] flex flex-col gap-y-[20px] md:flex-row justify-between">
+                      <div className="w-[100%] md:w-[48%]">
+                      <label className="w-[100%] text-[#f95005]  text-[1.0rem] lg:text-[18px] text-start">
+                          Under Physician's Care *
+                        </label>
+                        <div className="w-[100%] flex justify-start mt-[10px]">
+                          <div className="mr-10">
+                            <RadiobuttonInput
+                              id="careyes"
+                              value="yes"
+                              name="care"
+                              label="Yes"
+                              selectedOption={options.care ? "yes" : ""}
+                              onChange={() => {
+                                setOptions({
+                                  ...options,
+                                  care: true,
+                                });
+                              }}
                               readonly={!edits.present}
+                              required
                             />
                           </div>
-                        ))}
+                          <div className="">
+                            <RadiobuttonInput
+                              id="careno"
+                              value="no"
+                              name="care"
+                              label="No"
+                              selectedOption={!options.care ? "no" : ""}
+                              onChange={() => {
+                                setOptions({
+                                  ...options,
+                                  care: false,
+                                });
+                              }}
+                              readonly={!edits.present}
+                              required
+                            />
+                          </div>
+                        </div>
+                        <div className="w-[100%] flex justify-between mt-[20px]">
+                          <div className="w-[48%]">
+                            <TextInput
+                              label="Doctor Name"
+                              name="caredoctorname"
+                              id="doctorname"
+                              type="text"
+                              onChange={handleInputVal}
+                              value={inputs.caredoctorname}
+                              disabled={!options.care}
+                              readonly={!edits.present}
+                              required
+                            />
+                          </div>
+                          <div className="w-[48%]">
+                            <TextInput
+                              label="Hospital"
+                              name="caredoctorhospital"
+                              id="hospital"
+                              type="text"
+                              onChange={handleInputVal}
+                              value={inputs.caredoctorhospital}
+                              disabled={!options.care}
+                              readonly={!edits.present}
+                              required
+                            />
+                          </div>
+                        </div>
                       </div>
-
-                      <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
-                        <div className="w-[100%] md:w-[48%]">
-                          <TextInput
-                            label="Others"
-                            name="pastother"
-                            id="others"
-                            type="text"
-                            onChange={handleInputVal}
-                            value={inputs.pastother}
-                            readonly={!edits.present}
-                          />
-                        </div>
-                        <div className="w-[100%] md:w-[48%]">
-                          <TextInput
-                            label="Current Medicines"
-                            name="pastmedicaldetails"
-                            id="medicaldetails"
-                            type="text"
-                            onChange={handleInputVal}
-                            value={inputs.pastmedicaldetails}
-                            readonly={!edits.present}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="w-[100%] flex flex-col gap-y-[20px] md:flex-row justify-between">
-                        <div className="w-[100%] md:w-[48%]">
-                          <label className="w-[100%] text-[#f95005] font-bold text-[1rem] lg:text-[20px] text-start">
-                            Under Physician's Care *
-                          </label>
-                          <div className="w-[100%] flex justify-start mt-[10px]">
-                            <div className="mr-10">
-                              <RadiobuttonInput
-                                id="careyes"
-                                value="yes"
-                                name="care"
-                                label="Yes"
-                                selectedOption={options.care ? "yes" : ""}
-                                onChange={() => {
-                                  setOptions({
-                                    ...options,
-                                    care: true,
-                                  });
-                                }}
-                                readonly={!edits.present}
-                                required
-                              />
-                            </div>
-                            <div className="">
-                              <RadiobuttonInput
-                                id="careno"
-                                value="no"
-                                name="care"
-                                label="No"
-                                selectedOption={!options.care ? "no" : ""}
-                                onChange={() => {
-                                  setOptions({
-                                    ...options,
-                                    care: false,
-                                  });
-                                }}
-                                readonly={!edits.present}
-                                required
-                              />
-                            </div>
+                      <div className="w-[100%] md:w-[48%]">
+                      <label className="w-[100%] text-[#f95005]  text-[1.0rem] lg:text-[18px] text-start">  
+                          Back Pain *
+                        </label>
+                        <div className="w-[100%] flex justify-start mt-[10px]">
+                          <div className="mr-10">
+                            <RadiobuttonInput
+                              id="painyes"
+                              value="yes"
+                              name="pain"
+                              label="Yes"
+                              selectedOption={options.backpain ? "yes" : ""}
+                              onChange={() => {
+                                setOptions({
+                                  ...options,
+                                  backpain: true,
+                                });
+                              }}
+                              readonly={!edits.present}
+                              required
+                            />
                           </div>
-                          <div className="w-[100%] flex justify-between mt-[20px]">
-                            <div className="w-[48%]">
-                              <TextInput
-                                label="Doctor Name"
-                                name="caredoctorname"
-                                id="doctorname"
-                                type="text"
-                                onChange={handleInputVal}
-                                value={inputs.caredoctorname}
-                                disabled={!options.care}
-                                readonly={!edits.present}
-                                required
-                              />
-                            </div>
-                            <div className="w-[48%]">
-                              <TextInput
-                                label="Hospital"
-                                name="caredoctorhospital"
-                                id="hospital"
-                                type="text"
-                                onChange={handleInputVal}
-                                value={inputs.caredoctorhospital}
-                                disabled={!options.care}
-                                readonly={!edits.present}
-                                required
-                              />
-                            </div>
+                          <div className="">
+                            <RadiobuttonInput
+                              id="painno"
+                              value="no"
+                              name="pain"
+                              label="No"
+                              selectedOption={!options.backpain ? "no" : ""}
+                              onChange={() => {
+                                setOptions({
+                                  ...options,
+                                  backpain: false,
+                                });
+                              }}
+                              readonly={!edits.present}
+                              required
+                            />
                           </div>
                         </div>
-                        <div className="w-[100%] md:w-[48%]">
-                          <label className="w-[100%] text-[#f95005] font-bold text-[1rem] lg:text-[20px] text-start">
-                            Back Pain *
-                          </label>
-                          <div className="w-[100%] flex justify-start mt-[10px]">
-                            <div className="mr-10">
-                              <RadiobuttonInput
-                                id="painyes"
-                                value="yes"
-                                name="pain"
-                                label="Yes"
-                                selectedOption={options.backpain ? "yes" : ""}
-                                onChange={() => {
-                                  setOptions({
-                                    ...options,
-                                    backpain: true,
-                                  });
-                                }}
-                                readonly={!edits.present}
-                                required
-                              />
-                            </div>
-                            <div className="">
-                              <RadiobuttonInput
-                                id="painno"
-                                value="no"
-                                name="pain"
-                                label="No"
-                                selectedOption={!options.backpain ? "no" : ""}
-                                onChange={() => {
-                                  setOptions({
-                                    ...options,
-                                    backpain: false,
-                                  });
-                                }}
-                                readonly={!edits.present}
-                                required
-                              />
-                            </div>
-                          </div>
 
-                          <div className="w-[100%] mt-[20px]">
-                            <div className="w-[100%]">
-                              <SelectInput
-                                id="painscale"
-                                name="backpainscale"
-                                label="Pain Scale"
-                                onChange={handleInputVal}
-                                value={inputs.backpainscale}
-                                options={[
-                                  { value: "upper", label: "Upper" },
-                                  { value: "middle", label: "Middle" },
-                                  { value: "lower", label: "Lower" },
-                                ]}
-                                disabled={!options.backpain || !edits.present}
-                                required
-                              />
-                            </div>
+                        <div className="w-[100%] mt-[20px]">
+                          <div className="w-[100%]">
+                            <SelectInput
+                              id="painscale"
+                              name="backpainscale"
+                              label="Pain Scale"
+                              onChange={handleInputVal}
+                              value={inputs.backpainscale}
+                              options={[
+                                { value: "upper", label: "Upper" },
+                                { value: "middle", label: "Middle" },
+                                { value: "lower", label: "Lower" },
+                              ]}
+                              disabled={!options.backpain || !edits.present}
+                              required
+                            />
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </form>
+              </div>
+            </form>
 
-              {/* Therapy */}
-              <div className="basicProfileCont p-10 shadow-lg mt-10">
-                <div className="w-[100%] flex justify-between items-center mb-5">
-                  <div className="text-[1.2rem] lg:text-[25px] font-bold">
-                    Therapy
-                  </div>
-                  {/* {edits.therapy ? (
+            {/* Therapy */}
+            <div className="basicProfileCont p-10 shadow-lg mt-10">
+              <div className="w-[100%] flex justify-between items-center mb-5">
+                <div className="text-[1.2rem] lg:text-[25px] font-bold">
+                  Health Problem History
+                </div>
+                {/* {edits.therapy ? (
                 <div
                   className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
                   onClick={handletherapy}
@@ -2034,69 +2077,81 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                   <i className="text-[15px] pi pi-pen-to-square"></i>
                 </div>
               )} */}
-                </div>
-                <div className="w-[100%] flex justify-center items-center">
-                  <div className="w-[100%] justify-center items-center flex flex-col">
-                    <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
-                      <div className="w-[100%] md:w-[48%]">
-                        <TextInput
-                          label="Duration of the Problem"
-                          name="therapydurationproblem"
-                          id="durationproblem"
-                          type="text"
-                          onChange={handleInputVal}
-                          value={inputs.therapydurationproblem}
-                          readonly={!edits.therapy}
-                        />
-                      </div>
-                      <div className="w-[100%] md:w-[48%]">
-                        <TextInput
-                          label="Relevant Past History"
-                          name="therapypasthistory"
-                          id="relevantpasthistory"
-                          type="text"
-                          onChange={handleInputVal}
-                          value={inputs.therapypasthistory}
-                          readonly={!edits.therapy}
-                        />
-                      </div>
+              </div>
+              <div className="w-[100%] flex justify-center items-center">
+                <div className="w-[100%] justify-center items-center flex flex-col">
+                  <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
+                    <div className="w-[100%] md:w-[48%]">
+                      <TextInput
+                        label="Duration of the Problem"
+                        name="therapydurationproblem"
+                        id="durationproblem"
+                        type="text"
+                        onChange={handleInputVal}
+                        value={inputs.therapydurationproblem}
+                        readonly={!edits.therapy}
+                      />
                     </div>
+                    <div className="w-[100%] md:w-[48%]">
+                      <TextInput
+                        label="Relevant Past History"
+                        name="therapypasthistory"
+                        id="relevantpasthistory"
+                        type="text"
+                        onChange={handleInputVal}
+                        value={inputs.therapypasthistory}
+                        readonly={!edits.therapy}
+                      />
+                    </div>
+                  </div>
 
-                    <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between">
-                      <div className="w-[100%] md:w-[48%]">
-                        <TextInput
-                          label="Relevant Family History"
-                          name="therapyfamilyhistory"
-                          id="relevantfamilyhistory"
-                          type="text"
-                          onChange={handleInputVal}
-                          value={inputs.therapyfamilyhistory}
-                          readonly={!edits.therapy}
-                        />
-                      </div>
-                      <div className="w-[100%] md:w-[48%]">
-                        <TextInput
-                          label="Anything else"
-                          name="therapyanythingelse"
-                          id="anythingelse"
-                          type="text"
-                          onChange={handleInputVal}
-                          value={inputs.therapyanythingelse}
-                          readonly={!edits.therapy}
-                        />
-                      </div>
+                  <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between">
+                    <div className="w-[100%] md:w-[48%]">
+                      <TextInput
+                        label="Relevant Family History"
+                        name="therapyfamilyhistory"
+                        id="relevantfamilyhistory"
+                        type="text"
+                        onChange={handleInputVal}
+                        value={inputs.therapyfamilyhistory}
+                        readonly={!edits.therapy}
+                      />
+                    </div>
+                    <div className="w-[100%] md:w-[48%]">
+                      <TextInput
+                        label="Anything else"
+                        name="therapyanythingelse"
+                        id="anythingelse"
+                        type="text"
+                        onChange={handleInputVal}
+                        value={inputs.therapyanythingelse}
+                        readonly={!edits.therapy}
+                      />
                     </div>
                   </div>
                 </div>
               </div>
-            </>
-          )}
+            </div>
 
-          <div className="py-1"></div>
-        </div>
+            
+          </TabPanel>
+          <TabPanel header="Session details"></TabPanel>
+        </TabView>
       </div>
     </>
   );
 };
 
 export default UserProfileView;
+
+
+          <div className="basicProfileCont p-10 shadow-lg mt-10">
+              <div className="w-[100%] flex justify-between items-center mb-5">
+                <div className="text-[1.2rem] lg:text-[25px] font-bold">
+                  Documentation
+                </div>
+                
+                
+              </div>
+            </div>
+            

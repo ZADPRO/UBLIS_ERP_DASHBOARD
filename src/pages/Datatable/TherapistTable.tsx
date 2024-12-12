@@ -499,7 +499,7 @@ export default function TherapistTable() {
         onHide={() => setVisibleLeft(false)}
         style={{ inlineSize: "75vw" }}
       >
-        <h2>Therapy Users</h2>
+        <h2>Registered User</h2>
         {/* <p>
           {selectedUserId ? `User ID: ${selectedUserId}` : "No user selected"}
         </p> */}

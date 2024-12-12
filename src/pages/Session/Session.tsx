@@ -320,6 +320,14 @@ const Session: React.FC = () => {
     );
   };
 
+  const onCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setClassWorkSpaceData((prevData) => ({
+      ...prevData,
+      checkValue: event.target.checked,
+    }));
+  };
+  
+
   const customClassDelete = (rowData: any) => {
     return (
       <MdDelete
@@ -385,11 +393,20 @@ const Session: React.FC = () => {
     custClassCout: number;
     custClassDuration: number;
     custClassAddCom: null;
+    checkValue: boolean;
   }>({
     custClassCout: 0,
     custClassDuration: 0,
     custClassAddCom: null,
+    checkValue: false,
   });
+
+const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  setClassWorkSpaceData((prevData) => ({
+    ...prevData,
+    checkValue: event.target.checked, // Update the checkValue based on the checkbox state
+  }));
+};
 
   const [sessionUpdate, setSessionUpdate] = useState(false);
   const [classUpdate, setClassUpdate] = useState(false);
@@ -750,7 +767,7 @@ const Session: React.FC = () => {
                         refMonthDuration: classWorkSpaceData.custClassDuration,
                         refClassValue: classWorkSpaceData.custClassAddCom,
                         refBranchId: branch,
-                        checkValue: false,
+                        checkValue: classWorkSpaceData.checkValue,
                       },
                       {
                         headers: {
@@ -839,19 +856,24 @@ const Session: React.FC = () => {
                       />
                     </div>
                   </div>
-                  <div className="flex justify-end align-items-center  gap-3 mt-5 bg-orange-600">
-                    <div className="justify-start bg-black">
-                      <label>
-                        <input
-                          type="checkbox"
-                          name="option1"
-                          value="Option 1"
-                        />
-                        Option 1
-                      </label>
+                  <div className="flex justify-end align-items-center  gap-3 mt-5">
+                    <div className="justify-center flex w-[50%]">
+                    <label className="text-[1rem]">
+                    <input
+  className="w-[1rem] h-[1rem]"
+  type="checkbox"
+  name="checkvalue"
+  value="true"
+  checked={classWorkSpaceData.checkValue}
+  onChange={onCheckboxChange}
+/>
+
+  Use Additional Comments as the label
+</label>
                     </div>
-                    <div className="w-[50%] flex justify-between">
+                    <div className="w-[50%] flex justify-end">
                       <Button
+                        className="mx-[20px]"
                         severity="info"
                         label="Close"
                         type="button"
@@ -864,6 +886,7 @@ const Session: React.FC = () => {
                       />
                       {classUpdate ? (
                         <Button
+                          className="mx-[20px]"
                           severity="warning"
                           label="Update"
                           type="submit"
