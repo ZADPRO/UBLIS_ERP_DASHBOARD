@@ -16,8 +16,6 @@ import Axios from "axios";
 import CryptoJS from "crypto-js";
 import { useNavigate } from "react-router-dom";
 
-
-
 // Register the font with specified weights
 Font.register({
   family: "Poppins",
@@ -79,8 +77,8 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
+      if (data.token == false) {
+        navigate("/expired");
       }
 
       console.log(data);
@@ -265,14 +263,16 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
+                alignItems: "center",
                 marginTop: "10px",
+                border: "2px solid #f95005",
+                borderRadius: "4px",
               }}
             >
               <View
                 style={{
-                  width: "55%",
-                  border: "2px solid #f95005",
-                  borderRadius: "4px",
+                  width: "50%",
+
                   padding: "6px",
                 }}
               >
@@ -340,7 +340,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
 
               <View
                 style={{
-                  width: "40%",
+                  width: "50%",
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "center",
@@ -350,7 +350,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                   style={{
                     width: "100%",
                     display: "flex",
-                    alignItems: "flex-end",
+                    alignItems: "flex-start",
                   }}
                 >
                   <View
@@ -358,12 +358,12 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                       width: "100%",
                       display: "flex",
                       flexDirection: "row",
-                      justifyContent: "center",
+                      justifyContent: "flex-start",
                     }}
                   >
                     <Text
                       style={{
-                        width: "40%",
+                        width: "30%",
                         fontSize: "13px",
                         fontFamily: "Poppins",
                         fontWeight: "bold",
@@ -371,16 +371,16 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                         textAlign: "left",
                       }}
                     >
-                      Date:
+                      Date
                     </Text>
                     <Text
                       style={{
-                        width: "60%",
+                        width: "70%",
                         fontSize: "13px",
                         paddingLeft: "10px",
                       }}
                     >
-                      {userData.refDate}
+                      : {userData.refDate}
                     </Text>
                   </View>
                   <View
@@ -388,12 +388,12 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                       width: "100%",
                       display: "flex",
                       flexDirection: "row",
-                      justifyContent: "center",
+                      justifyContent: "flex-start",
                     }}
                   >
                     <Text
                       style={{
-                        width: "40%",
+                        width: "30%",
                         fontSize: "13px",
                         fontFamily: "Poppins",
                         fontWeight: "bold",
@@ -401,16 +401,16 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                         textAlign: "left",
                       }}
                     >
-                      Branch:
+                      Branch
                     </Text>
                     <Text
                       style={{
-                        width: "60%",
+                        width: "70%",
                         fontSize: "13px",
                         paddingLeft: "10px",
                       }}
                     >
-                      {userData.refBranchName}
+                      : {userData.refBranchName}
                     </Text>
                   </View>
                   <View
@@ -418,12 +418,12 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                       width: "100%",
                       display: "flex",
                       flexDirection: "row",
-                      justifyContent: "center",
+                      justifyContent: "flex-start",
                     }}
                   >
                     <Text
                       style={{
-                        width: "40%",
+                        width: "30%",
                         fontSize: "13px",
                         fontFamily: "Poppins",
                         fontWeight: "bold",
@@ -431,16 +431,16 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                         textAlign: "left",
                       }}
                     >
-                      Receipt ID:
+                      Receipt ID
                     </Text>
                     <Text
                       style={{
-                        width: "60%",
+                        width: "70%",
                         fontSize: "13px",
                         paddingLeft: "10px",
                       }}
                     >
-                      {userData.refOrderId}
+                      : {userData.refOrderId}
                     </Text>
                   </View>
                 </View>
@@ -493,7 +493,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                     alignItems: "center",
                   }}
                 >
-                  <Text>Date</Text>
+                  <Text>Duration</Text>
                 </View>
                 <View
                   style={{
@@ -648,8 +648,9 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                   }}
                 >
                   <Text style={{ padding: "2px" }}>
-                    {userData.refTimeMembers} & {userData.refCustTimeData}{" "}
-                    Session
+                    {userData.refTimeMembers}
+                    {"\n"}
+                    {userData.refCustTimeData} Session
                   </Text>
                 </View>
 
@@ -667,7 +668,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                   }}
                 >
                   <Text>
-                    {userData.refPaymentFrom} - {userData.refPaymentTo}
+                    {userData.refPaymentFrom} to {userData.refPaymentTo}
                   </Text>
                 </View>
 
@@ -906,42 +907,63 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
             </View>
 
             <View>
-              <Text style={{ fontSize: "16px", fontFamily: "Poppins" }}>
+              <Text style={{ fontSize: "11px", fontFamily: "Poppins" }}>
                 Terms & Conditions
+              </Text>
+              <Text style={{ fontSize: "10px", fontFamily: "Poppins" }}>
+                Schedule :
               </Text>
               <Text
                 style={{
-                  fontSize: "13px",
-                  marginTop: "10px",
+                  fontSize: "10px",
+                  marginBottom: "5px",
                   textAlign: "justify",
                 }}
               >
-                User has to be complete their sessions on the subscribed month
-                itself, the sessions cannot be compensate or carry forward to
-                the next month.
+                Users must adhere to their subscribed schedules, and any
+                schedule changes require prior notice and approval.
+              </Text>
+
+              <Text style={{ fontSize: "10px", fontFamily: "Poppins" }}>
+                Compensation Classes :
               </Text>
 
               <Text
                 style={{
-                  fontSize: "13px",
-                  marginTop: "10px",
+                  fontSize: "10px",
+                  marginBottom: "5px",
                   textAlign: "justify",
                 }}
               >
-                All subscription sessions purchased by User are non-refundable,
-                non exchangeable, non- saleable and non- transferrable. User
-                wishes to disconitinue with its subscription, User will not
-                receive the refund.
+                Users must complete their sessions within the subscribed month,
+                sessions cannot be compensated or carried forward to the next
+                month.
+              </Text>
+
+              <Text style={{ fontSize: "10px", fontFamily: "Poppins" }}>
+                Refund :
+              </Text>
+
+              <Text
+                style={{
+                  fontSize: "10px",
+                  marginBottom: "5px",
+                  textAlign: "justify",
+                }}
+              >
+                All subscription sessions are non-refundable, non-exchangeable
+                and non-transferable. If a user decides to discontinue the
+                subscription, no refund will be issued.
               </Text>
             </View>
 
             <View>
               <Text
                 style={{
-                  fontSize: "11px",
+                  fontSize: "10px",
                   fontFamily: "Poppins",
                   textAlign: "center",
-                  marginTop: "20px",
+                  // marginTop: "10px",
                 }}
               >
                 This is computer generated invoice no signature required
