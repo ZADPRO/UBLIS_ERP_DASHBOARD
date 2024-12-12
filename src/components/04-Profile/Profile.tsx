@@ -215,6 +215,7 @@ const Profile: React.FC = () => {
           });
         } else {
           navigate("/expired");
+          
         }
 
         setuserdata({
@@ -266,6 +267,8 @@ const Profile: React.FC = () => {
         import.meta.env.VITE_ENCRYPTION_KEY
       );
       if (data.token == false) {
+        console.log("data.token",data.token)
+        alert("data get")
         navigate("/expired");
       } else {
         console.log("UserData Running --- ");
@@ -944,6 +947,18 @@ const Profile: React.FC = () => {
               certification: data.profileFile.employeeDocuments.certification
                 ? data.profileFile.employeeDocuments.certification
                 : inputs.certification,
+            });
+          } else {
+            toast.warning("Something went wrong", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              // transition: Bounce,
             });
           }
         }

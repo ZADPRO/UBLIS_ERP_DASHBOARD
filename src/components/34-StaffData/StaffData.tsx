@@ -228,18 +228,20 @@ const StaffData: React.FC = () => {
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
-      setVisibleRight(false);
-      setStaffName("");
-      setStaffRole("");
-      setDob(null);
-      setDropdownValue("");
-      setDropdownValueBranch("");
-      setEmail("");
-      setMobile("");
-      setPanCard("");
-      setAadharCard("");
-
-      setChnages(!changes);
+    
+      if (data.success == true){
+        setVisibleRight(false);
+        setStaffName("");
+        setStaffRole("");
+        setDob(null);
+        setDropdownValue("");
+        setDropdownValueBranch("");
+        setEmail("");
+        setMobile("");
+        setPanCard("");
+        setAadharCard("");
+  
+        setChnages(!changes);
 
       toast.success("New Staff Added", {
         position: "top-right",
@@ -252,6 +254,19 @@ const StaffData: React.FC = () => {
         theme: "light",
         // transition: Bounce,
       });
+    }else{
+      toast.warning("can't Add New Health Issue", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        // transition: Bounce,
+      });
+    }
 
       fetchUserTypeLabel();
     } catch (error) {

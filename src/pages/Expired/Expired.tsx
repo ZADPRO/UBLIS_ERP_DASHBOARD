@@ -1,10 +1,11 @@
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import "./Expired.css"; // Optional CSS file for custom styling
 import React from "react";
 
+
 const Expired: React.FC = () => {
 
-      const navigate = useNavigate();
+      // const navigate = useNavigate();
     
       const handleLoginRedirect = () => {
         window.location.href = import.meta.env.VITE_SUB_API; // Navigate to the external URL

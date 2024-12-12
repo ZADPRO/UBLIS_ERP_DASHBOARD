@@ -198,7 +198,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                     textAlign: "right",
                   }}
                 >
-                  No :28, Second Floor, Madambakkam Main Road,
+                  No: 28, Second Floor, Madambakkam Main Road,
                 </Text>
                 <Text
                   style={{
@@ -207,7 +207,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                     textAlign: "right",
                   }}
                 >
-                  Opp. to Jains Sudharshana Apartment Gandhi nagar,
+                  Opp. to Jains Sudharshana Apartment, Gandhi nagar,
                 </Text>
                 <Text
                   style={{
@@ -353,6 +353,10 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                     alignItems: "flex-start",
                   }}
                 >
+                  
+                  
+                  
+                  
                   <View
                     style={{
                       width: "100%",
@@ -363,7 +367,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                   >
                     <Text
                       style={{
-                        width: "30%",
+                        width: "40%",
                         fontSize: "13px",
                         fontFamily: "Poppins",
                         fontWeight: "bold",
@@ -375,12 +379,12 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                     </Text>
                     <Text
                       style={{
-                        width: "70%",
+                        width: "60%",
                         fontSize: "13px",
                         paddingLeft: "10px",
                       }}
                     >
-                      : {userData.refDate}
+                      {userData.refDate}
                     </Text>
                   </View>
                   <View
@@ -393,7 +397,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                   >
                     <Text
                       style={{
-                        width: "30%",
+                        width: "40%",
                         fontSize: "13px",
                         fontFamily: "Poppins",
                         fontWeight: "bold",
@@ -405,12 +409,12 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                     </Text>
                     <Text
                       style={{
-                        width: "70%",
+                        width: "60%",
                         fontSize: "13px",
                         paddingLeft: "10px",
                       }}
                     >
-                      : {userData.refBranchName}
+                      {userData.refBranchName}
                     </Text>
                   </View>
                   <View
@@ -423,7 +427,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                   >
                     <Text
                       style={{
-                        width: "30%",
+                        width: "40%",
                         fontSize: "13px",
                         fontFamily: "Poppins",
                         fontWeight: "bold",
@@ -435,12 +439,12 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                     </Text>
                     <Text
                       style={{
-                        width: "70%",
+                        width: "60%",
                         fontSize: "13px",
                         paddingLeft: "10px",
                       }}
                     >
-                      : {userData.refOrderId}
+                      {userData.refOrderId}
                     </Text>
                   </View>
                 </View>
@@ -907,54 +911,52 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
             </View>
 
             <View>
-              <Text style={{ fontSize: "11px", fontFamily: "Poppins" }}>
+              <Text style={{ fontSize: "16px", fontFamily: "Poppins" }}>
                 Terms & Conditions
               </Text>
-              <Text style={{ fontSize: "10px", fontFamily: "Poppins" }}>
-                Schedule :
-              </Text>
               <Text
                 style={{
-                  fontSize: "10px",
-                  marginBottom: "5px",
+                  fontSize: "13px",
+                  marginTop: "10px",
                   textAlign: "justify",
                 }}
               >
-                Users must adhere to their subscribed schedules, and any
-                schedule changes require prior notice and approval.
+                User has to be complete their sessions on the subscribed month
+                itself, the sessions cannot be compensate or carry forward to
+                the next month.
               </Text>
 
-              <Text style={{ fontSize: "10px", fontFamily: "Poppins" }}>
-                Compensation Classes :
+              <Text style={{ fontSize: "12px", fontFamily: "Poppins" }}>
+              Compensation Classes:
               </Text>
-
               <Text
                 style={{
-                  fontSize: "10px",
-                  marginBottom: "5px",
+                  fontSize: "13px",
+                  marginTop: "10px",
                   textAlign: "justify",
                 }}
               >
-                Users must complete their sessions within the subscribed month,
-                sessions cannot be compensated or carried forward to the next
-                month.
+                All subscription sessions purchased by User are non-refundable,
+                non exchangeable, non- saleable and non- transferrable. User
+                wishes to disconitinue with its subscription, User will not
+                receive the refund.
               </Text>
 
-              <Text style={{ fontSize: "10px", fontFamily: "Poppins" }}>
-                Refund :
+              <Text style={{ fontSize: "12px", fontFamily: "Poppins" }}>
+              Refund:
               </Text>
-
               <Text
                 style={{
-                  fontSize: "10px",
-                  marginBottom: "5px",
+                  fontSize: "12px",
+                  marginTop: "5px",
                   textAlign: "justify",
                 }}
               >
-                All subscription sessions are non-refundable, non-exchangeable
-                and non-transferable. If a user decides to discontinue the
-                subscription, no refund will be issued.
+                All subscription sessions are non-refundable, non-exchangeable and non-transferable. If a user decides to discontinue the subscription, no refund will be issued.
+
               </Text>
+
+              
             </View>
 
             <View>
@@ -977,7 +979,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                 paddingBottom: "10px",
                 width: "110%",
                 marginLeft: "-30px",
-                marginTop: "90px",
+                marginTop: "30px",
               }}
             >
               <Text

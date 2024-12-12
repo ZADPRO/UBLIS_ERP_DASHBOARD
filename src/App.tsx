@@ -31,6 +31,8 @@ import StaffFeedback from "./components/38-Feedback/Feedback";
 import AddNotes from "./components/39-AddNotes/AddNotes";
 import AssignNotes from "./components/40-AssignNotes/AssignNotes";
 import Expired from "./pages/Expired/Expired";
+
+
 const App = () => {
   const urlParams = new URLSearchParams(window.location.search);
   const token = urlParams.get("JWTtoken");
@@ -62,6 +64,9 @@ const App = () => {
           <Route path="/yoganotes" element={<AddNotes />} />
 
           <Route path="/settings" element={<Settings />} />
+         
+        
+          
 
           {/* USER DASHBOARD */}
           <Route path="/users/dashboard" element={<Dashboard />} />
