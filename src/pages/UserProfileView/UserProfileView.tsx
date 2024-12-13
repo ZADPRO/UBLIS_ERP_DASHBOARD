@@ -141,6 +141,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
     refTime: "",
     refTimeId: "",
     refClassMode: "",
+    branch: "",
   });
 
   const [edits, setEdits] = useState({
@@ -151,6 +152,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
     present: false,
     therapy: false,
     prof: false,
+    session: false,
   });
 
   // const editform = (event: string) => {
@@ -390,6 +392,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
         tempcity: addressdata.addresstype
           ? addressdata.refAdCity1
           : addressdata.refAdCity2,
+        branch: personaldata.refBranchId,
         email: communication.refCtEmail,
         phoneno: communication.refCtMobile,
         whatsappno: communication.refCtWhatsapp,
@@ -859,6 +862,43 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
   //       console.log("Error: ", err);
   //     });
   // };
+  interface MemOption {
+    [key: number]: string; // This allows numeric keys with string values
+  }
+  const [memberListOption, setMemberListOption] = useState<MemOption[]>([]);
+  const sessionEditModule = () => {
+    setSessionEdit(true);
+    Axios.post(
+      import.meta.env.VITE_API_URL + "/profile/MemberList",
+
+      {
+        refAge: inputs.age,
+        branchId: inputs.branch,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("JWTtoken"),
+          "Content-Type": "application/json", // Ensure the content type is set
+        },
+      }
+    )
+      .then((res) => {
+        const data = decrypt(
+          res.data[1],
+          res.data[0],
+          import.meta.env.VITE_ENCRYPTION_KEY
+        );
+        console.log("data", data);
+        if (data.success) {
+          setMemberListOption([data.data]);
+        }
+        console.log("memberListOption", memberListOption);
+      })
+      .catch((err) => {
+        // Catching any 400 status or general errors
+        console.log("Error: ", err);
+      });
+  };
 
   const [sessionEdit, setSessionEdit] = useState(false);
   return (
@@ -2256,7 +2296,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                   ) : (
                     <div
                       onClick={() => {
-                        editform("therapy");
+                        sessionEditModule();
                       }}
                       className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
                     >
@@ -2288,7 +2328,6 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                             name="mType"
                             id="mtype"
                             type="text"
-                            // onChange={handleInputVal}
                             disabled={sessionEdit ? false : true}
                             value={inputs.refTimeMembers}
                             readonly
@@ -2315,7 +2354,6 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                             name="mType"
                             id="mtype"
                             type="text"
-                            // onChange={handleInputVal}
                             disabled={sessionEdit ? false : true}
                             value={inputs.refCustTimeData}
                             readonly
@@ -2345,7 +2383,6 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                             id="mtype"
                             type="text"
                             disabled={sessionEdit ? false : true}
-                            // onChange={handleInputVal}
                             value={inputs.refTime}
                             readonly
                           />
