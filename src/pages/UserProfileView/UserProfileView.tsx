@@ -7,10 +7,14 @@ import CheckboxInput from "../../pages/Inputs/CheckboxInput";
 import RadiobuttonInput from "../../pages/Inputs/RadiobuttonInput";
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import Swal from "sweetalert2";
+import "./UserProfileView.css";
 import CryptoJS from "crypto-js";
 import { Button } from "primereact/button";
 import { TabPanel, TabView } from "primereact/tabview";
+import { ImUpload2 } from "react-icons/im";
+import { MdDelete } from "react-icons/md";
+import { FaEye } from "react-icons/fa";
 
 interface HealthProblemData {
   presentHealthProblem: Record<string, string>;
@@ -72,6 +76,12 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
       )
     );
   };
+  const editform = (event: string) => {
+    setEdits({
+      ...edits,
+      [event]: true,
+    });
+  };
 
   const [inputs, setInputs] = useState({
     profilefile: { contentType: "", content: "" },
@@ -124,6 +134,13 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
     certification: {
       content: "",
     },
+    refTimeMembersId: "",
+    refTimeMembers: "",
+    refCustTimeId: "",
+    refCustTimeData: "",
+    refTime: "",
+    refTimeId: "",
+    refClassMode: "",
   });
 
   const [edits, setEdits] = useState({
@@ -191,6 +208,68 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
     refExperence: "",
     refSpecialization: "",
   });
+  interface MedDoc {
+    refMedDocId: number;
+    refStId: number;
+    refMedDocName: string;
+    refMedDocPath: string;
+    refMedDocFile: {
+      filename: string;
+      content: string; // Base64 string
+      contentType: string; // MIME type
+    };
+  }
+  const [medDocData, setMedDocData] = useState<MedDoc[]>([]);
+
+  const handlePreviewDocument = (dataArray: any, index: number) => {
+    console.log("dataArray", dataArray);
+    const file = dataArray[index]?.refMedDocFile;
+    console.log("file", file);
+    if (file) {
+      try {
+        const binaryContent = atob(file.content);
+        const byteArray = new Uint8Array(binaryContent.length);
+        for (let i = 0; i < binaryContent.length; i++) {
+          byteArray[i] = binaryContent.charCodeAt(i);
+        }
+
+        const blob = new Blob([byteArray], { type: file.contentType });
+        const url = URL.createObjectURL(blob);
+        let content;
+        if (file.contentType == "application/pdf") {
+          content = `<iframe src="${url}" width="100%" height="450px" style="border: none;"></iframe>`;
+        } else {
+          content = `<img src="${url}" alt="Document Preview" style="max-width: 100%; max-height: 450px; object-fit: contain; display: block; margin: 0 auto;">`;
+        }
+        const targetDiv = document.getElementById("target-container");
+
+        Swal.fire({
+          title: "Medical Document Preview",
+          html: `
+          <div style="display: flex; justify-content:center;align-item:center;">     
+          ${content} 
+          </div>
+            <div style="margin-top: 10px; text-align: center; width: 100%; display: flex; justify-content: center;">
+              <a href="${url}" download="document.pdf" style="padding: 10px 20px; width: 80%; background-color: #f95005; color: white; text-decoration: none; border-radius: 4px; text-align: center;">
+                Download
+              </a>
+            </div>
+          `,
+          showCloseButton: true,
+          showConfirmButton: false,
+          target: targetDiv,
+          customClass: {
+            title: "custom-title",
+            popup: "custom-popup",
+          },
+        });
+      } catch (error) {
+        console.error("Error previewing document:", error);
+      }
+    } else {
+      console.error("No file to preview");
+    }
+  };
 
   useEffect(() => {
     let url = "/user/profileData";
@@ -267,6 +346,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
       const communication = data.data.communication;
       const generalhealth = data.data.generalhealth;
       const presenthealth = data.data.presentHealth;
+      const refSessionData = data.data.refSessionData;
 
       setOptions({
         ...options,
@@ -348,7 +428,18 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
         certification: data.data.employeeDocuments
           ? data.data.employeeDocuments.Certification
           : "",
+        refTimeMembersId:
+          type === "staff" ? "" : refSessionData.refTimeMembersId,
+        refTimeMembers: type === "staff" ? "" : refSessionData.refTimeMembers,
+        refCustTimeId: type === "staff" ? "" : refSessionData.refCustTimeId,
+        refCustTimeData: type === "staff" ? "" : refSessionData.refCustTimeData,
+        refTime: type === "staff" ? "" : refSessionData.refTime,
+        refTimeId: type === "staff" ? "" : refSessionData.refTimeId,
+        refClassMode: type === "staff" ? "" : refSessionData.refClassMode,
       });
+      if (data.Documents && Array.isArray(data.Documents)) {
+        setMedDocData(data.Documents);
+      }
     });
   }, []);
 
@@ -769,9 +860,10 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
   //     });
   // };
 
+  const [sessionEdit, setSessionEdit] = useState(false);
   return (
     <>
-      <div className="bg-[#fff]">
+      <div className="bg-[#fff]" id="target-container">
         <div className="py-1" />
 
         <TabView>
@@ -1306,7 +1398,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                       </div>
                     </div>
 
-                    <div className="w-[100%] ">
+                    {/* <div className="w-[100%] ">
                       <SelectInput
                         id="modeofcontact"
                         name="mode"
@@ -1326,7 +1418,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                         disabled={!edits.communitcation}
                         required
                       />
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </form>
@@ -1562,21 +1654,39 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
             </div>
           </TabPanel>
           <TabPanel header="Medical details ">
-
-          <div className="basicProfileCont p-10 shadow-lg mt-10">
+            {/* Documentation */}
+            <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
               <div className="w-[100%] flex justify-between items-center mb-5">
-                <div className="text-[1.2rem] lg:text-[25px] font-bold">
+                <div className="text-[1rem] lg:text-[25px] font-bold">
                   Documentation
                 </div>
-                <div
-                      // key={index}
-                      className="w-[100%] flex flex-row justify-evenly lg:p-[10px] mt-5 lg:mt-0"
-                    >
-                      </div>
+              </div>
 
-                
+              <div className="w-[100%] flex justify-center items-center">
+                <div className="flex flex-wrap  items-center w-[100%]">
+                  {medDocData.map((doc, index) => (
+                    <div
+                      key={doc.refMedDocId}
+                      className="lg:basis-1/3 basis-full flex items-center justify-start lg:p-2 hover:border-2 border-[#f95005]"
+                    >
+                      <div className="lg:mr-5 mr-2">
+                        <FaEye
+                          className="w-[30px] h-[25px] text-[#f95005] cursor-pointer"
+                          onClick={() =>
+                            handlePreviewDocument(medDocData, index)
+                          }
+                        />
+                      </div>
+                      <div className="">
+                        <h3 className="text-[20px]">{doc.refMedDocName}</h3>
+                        {/* Display refMedDocName */}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
+
             {/* Genderal Health */}
             <form
               onSubmit={(e) => {
@@ -1694,7 +1804,6 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                       <div className="w-[100%] flex justify-start mt-[10px]">
                         <div className="mr-10 ">
                           <RadiobuttonInput
-                         
                             id="accidentyes"
                             value="yes"
                             name="accident"
@@ -1708,7 +1817,6 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                             label="Yes"
                             readonly={!edits.gendrel}
                             required
-                          
                           />
                         </div>
                         <div className="">
@@ -1751,7 +1859,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                       </div>
                     </div>
                     <div className="w-[100%] md:w-[48%]">
-                    <label className="w-[100%] text-[#f95005]  text-[1.0rem] lg:text-[18px] text-start">
+                      <label className="w-[100%] text-[#f95005]  text-[1.0rem] lg:text-[18px] text-start">
                         Recent breaks / Fractures / Sprains *
                       </label>
                       <div className="w-[100%] flex justify-start mt-[10px]">
@@ -1918,7 +2026,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
 
                     <div className="w-[100%] flex flex-col gap-y-[20px] md:flex-row justify-between">
                       <div className="w-[100%] md:w-[48%]">
-                      <label className="w-[100%] text-[#f95005]  text-[1.0rem] lg:text-[18px] text-start">
+                        <label className="w-[100%] text-[#f95005]  text-[1.0rem] lg:text-[18px] text-start">
                           Under Physician's Care *
                         </label>
                         <div className="w-[100%] flex justify-start mt-[10px]">
@@ -1987,7 +2095,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                         </div>
                       </div>
                       <div className="w-[100%] md:w-[48%]">
-                      <label className="w-[100%] text-[#f95005]  text-[1.0rem] lg:text-[18px] text-start">  
+                        <label className="w-[100%] text-[#f95005]  text-[1.0rem] lg:text-[18px] text-start">
                           Back Pain *
                         </label>
                         <div className="w-[100%] flex justify-start mt-[10px]">
@@ -2132,10 +2240,220 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                 </div>
               </div>
             </div>
-
-            
           </TabPanel>
-          <TabPanel header="Session details"></TabPanel>
+          <TabPanel header="Session details">
+            <form>
+              <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
+                <div className="w-[100%] flex justify-between items-center mb-5">
+                  <div className="text-[1.2rem] lg:text-[25px] font-bold">
+                    Yoga class
+                  </div>
+                  {edits.therapy ? (
+                    <div className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded">
+                      Save&nbsp;&nbsp;
+                      <i className="text-[15px] pi pi-check"></i>
+                    </div>
+                  ) : (
+                    <div
+                      onClick={() => {
+                        editform("therapy");
+                      }}
+                      className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
+                    >
+                      Edit&nbsp;&nbsp;
+                      <i className="text-[15px] pi pi-pen-to-square"></i>
+                    </div>
+                  )}
+                </div>
+                <div className="w-[100%] flex justify-center items-center">
+                  <div className="w-[100%] justify-center items-center flex flex-col">
+                    <div className="w-[100%] flex flex-row lg:flex-row gap-y-[20px] justify-between mb-[20px]">
+                      <div className="w-[100%] lg:w-[48%]">
+                        {sessionEdit ? (
+                          <>
+                            <SelectInput
+                              id="sessiontype"
+                              name="sessiontype"
+                              label="Member Type *"
+                              // disabled={inputs.memberlist ? false : true}
+                              // options={[inputs.refTimeMembers]}
+                              // required
+                              value={inputs.refTimeMembersId}
+                              // onChange={(e) => handleInput(e)}
+                            />
+                          </>
+                        ) : (
+                          <TextInput
+                            label="Member Type *"
+                            name="mType"
+                            id="mtype"
+                            type="text"
+                            // onChange={handleInputVal}
+                            disabled={sessionEdit ? false : true}
+                            value={inputs.refTimeMembers}
+                            readonly
+                          />
+                        )}
+                      </div>
+                      <div className="w-[100%] lg:w-[48%]">
+                        {sessionEdit ? (
+                          <>
+                            <SelectInput
+                              id="sessiontype"
+                              name="sessiontype"
+                              label="Session Type *"
+                              // disabled={inputs.memberlist ? false : true}
+                              // options={sessionTypeOption}
+                              // required
+                              // value={inputs.sessiontype}
+                              // onChange={(e) => handleInput(e)}
+                            />
+                          </>
+                        ) : (
+                          <TextInput
+                            label="Member Type *"
+                            name="mType"
+                            id="mtype"
+                            type="text"
+                            // onChange={handleInputVal}
+                            disabled={sessionEdit ? false : true}
+                            value={inputs.refCustTimeData}
+                            readonly
+                          />
+                        )}
+                      </div>
+                    </div>
+                    <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between">
+                      <div className="w-[100%] lg:w-[68%]">
+                        {sessionEdit ? (
+                          <>
+                            <SelectInput
+                              id="sessiontype"
+                              name="sessiontype"
+                              label="Timing *"
+                              // disabled={inputs.memberlist ? false : true}
+                              // options={sessionTypeOption}
+                              // required
+                              // value={inputs.sessiontype}
+                              // onChange={(e) => handleInput(e)}
+                            />
+                          </>
+                        ) : (
+                          <TextInput
+                            label="Member Type *"
+                            name="mType"
+                            id="mtype"
+                            type="text"
+                            disabled={sessionEdit ? false : true}
+                            // onChange={handleInputVal}
+                            value={inputs.refTime}
+                            readonly
+                          />
+                        )}
+                      </div>
+                      <div className="w-[100%] lg:w-[28%]">
+                        <SelectInput
+                          id="sessiontype"
+                          name="sessiontype"
+                          label="Class Type *"
+                          required
+                          disabled={sessionEdit ? false : true}
+                          value={inputs.refClassMode}
+                          options={[
+                            { value: "1", label: "Online" },
+                            { value: "2", label: "Offline" },
+                          ]}
+                          // onChange={(e) => handleInput(e)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            <form>
+              <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
+                <div className="w-[100%] flex justify-between items-center mb-5">
+                  <div className="text-[1.2rem] lg:text-[25px] font-bold">
+                    Therapy class
+                  </div>
+                  {edits.therapy ? (
+                    <div className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded">
+                      Save&nbsp;&nbsp;
+                      <i className="text-[15px] pi pi-check"></i>
+                    </div>
+                  ) : (
+                    <div
+                      onClick={() => {
+                        editform("therapy");
+                      }}
+                      className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
+                    >
+                      Edit&nbsp;&nbsp;
+                      <i className="text-[15px] pi pi-pen-to-square"></i>
+                    </div>
+                  )}
+                </div>
+                <div className="w-[100%] flex justify-center items-center">
+                  <div className="w-[100%] justify-center items-center flex flex-col">
+                    <div className="w-[100%] flex flex-row lg:flex-row gap-y-[20px] justify-between mb-[20px]">
+                      <div className="w-[100%] lg:w-[48%]">
+                        <SelectInput
+                          id="sessiontype"
+                          name="sessiontype"
+                          label="Member Type *"
+                          // disabled={inputs.memberlist ? false : true}
+                          // options={sessionTypeOption}
+                          // required
+                          // value={inputs.sessiontype}
+                          // onChange={(e) => handleInput(e)}
+                        />
+                      </div>
+                      <div className="w-[100%] lg:w-[48%]">
+                        <SelectInput
+                          id="sessiontype"
+                          name="sessiontype"
+                          label="Session Type *"
+                          // disabled={inputs.memberlist ? false : true}
+                          // options={sessionTypeOption}
+                          // required
+                          // value={inputs.sessiontype}
+                          // onChange={(e) => handleInput(e)}
+                        />
+                      </div>
+                    </div>
+                    <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between">
+                      <div className="w-[100%] lg:w-[68%]">
+                        <SelectInput
+                          id="sessiontype"
+                          name="sessiontype"
+                          label="Timing *"
+                          // disabled={inputs.memberlist ? false : true}
+                          // options={sessionTypeOption}
+                          // required
+                          // value={inputs.sessiontype}
+                          // onChange={(e) => handleInput(e)}
+                        />
+                      </div>
+                      <div className="w-[100%] lg:w-[28%]">
+                        <SelectInput
+                          id="sessiontype"
+                          name="sessiontype"
+                          label="Class Type *"
+                          // disabled={inputs.memberlist ? false : true}
+                          // options={sessionTypeOption}
+                          // required
+                          // value={inputs.sessiontype}
+                          // onChange={(e) => handleInput(e)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </TabPanel>
         </TabView>
       </div>
     </>
@@ -2144,14 +2462,8 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
 
 export default UserProfileView;
 
-
-          <div className="basicProfileCont p-10 shadow-lg mt-10">
-              <div className="w-[100%] flex justify-between items-center mb-5">
-                <div className="text-[1.2rem] lg:text-[25px] font-bold">
-                  Documentation
-                </div>
-                
-                
-              </div>
-            </div>
-            
+<div className="basicProfileCont p-10 shadow-lg mt-10">
+  <div className="w-[100%] flex justify-between items-center mb-5">
+    <div className="text-[1.2rem] lg:text-[25px] font-bold">Documentation</div>
+  </div>
+</div>;

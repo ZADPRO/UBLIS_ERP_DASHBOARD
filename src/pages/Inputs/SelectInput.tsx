@@ -14,7 +14,7 @@ interface SelectInputProps {
   disabled?: boolean;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  isInvalid?: boolean; 
+  isInvalid?: boolean;
 }
 
 const SelectInput: React.FC<SelectInputProps> = ({
