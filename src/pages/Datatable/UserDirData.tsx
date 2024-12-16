@@ -364,7 +364,7 @@ const UserDirData: React.FC = () => {
         </p>
         <div className="card">
           <TabView>
-            <TabPanel header="User Detail">
+            <TabPanel header="Profile">
               <p className="m-0">
                 {userDetails ? (
                   <>
@@ -376,7 +376,16 @@ const UserDirData: React.FC = () => {
                   <p>No user details available.</p>
                 )}
               </p>
+            </TabPanel >
+            <TabPanel header="Medical details">
+
+
             </TabPanel>
+            <TabPanel header="Session details">
+              
+
+              </TabPanel>
+            
             <TabPanel header="Audit">
               <p className="m-0">
                 <DataTable

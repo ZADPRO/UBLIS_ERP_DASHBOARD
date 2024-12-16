@@ -118,8 +118,8 @@ export default function Datatables() {
       response.data[0],
       import.meta.env.VITE_ENCRYPTION_KEY
     );
-    if(data.token==false){
-      navigate("/expired")
+    if (data.token == false) {
+      navigate("/expired");
     }
 
     console.log("Data", data);
@@ -160,8 +160,6 @@ export default function Datatables() {
     setCustomers(fetchedCustomers);
   };
   useEffect(() => {
-   
-
     fetchCustomers();
   }, []);
 
@@ -238,27 +236,27 @@ export default function Datatables() {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
+      if (data.token == false) {
+        navigate("/expired");
       }
       console.log("Data line --------------- 227", data);
       console.log("data", data);
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
       if (data.success == true) {
-      fetchCustomers();
-      toast.success("Future Client Followup Action is Stored Successfully", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        // transition: Bounce,
-      });}
-      else{
+        fetchCustomers();
+        toast.success("Future Client Followup Action is Stored Successfully", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          // transition: Bounce,
+        });
+      } else {
         toast.warning("can't Add New Health Issue", {
           position: "top-right",
           autoClose: 5000,
@@ -300,8 +298,8 @@ export default function Datatables() {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
+      if (data.token == false) {
+        navigate("/expired");
       }
       console.log("Data line --------------- 227", data);
 

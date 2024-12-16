@@ -1698,7 +1698,7 @@ const Profile: React.FC = () => {
                       </div>
                     </div>
                   </div>
-
+{/* 
                   <div className="w-[100%] ">
                     <SelectInput
                       id="modeofcontact"
@@ -1719,7 +1719,7 @@ const Profile: React.FC = () => {
                       disabled={!edits.communitcation}
                       required
                     />
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </form>

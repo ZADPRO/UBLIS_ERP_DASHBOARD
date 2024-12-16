@@ -17,7 +17,7 @@ import { AiOutlineBell } from "react-icons/ai";
 import { GrDocumentNotes } from "react-icons/gr";
 import { MdAssignmentAdd } from "react-icons/md";
 import { FaFileInvoiceDollar } from "react-icons/fa6";
-
+import { LuNotebookTabs } from "react-icons/lu";
 import { RiSpam2Line } from "react-icons/ri";
 
 import {
@@ -223,6 +223,11 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
       path: "/staff/payment",
       name: "Payment",
       icon: <FaFileInvoiceDollar />,
+    },
+    {
+      path: "/staff/attendance",
+      name: "Attendance",
+      icon: <LuNotebookTabs />,
     },
 
     {
@@ -444,8 +449,6 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     }
   }, [location.pathname]);
 
-  
-
   return (
     <>
       {location.pathname != "/expired" ? (
@@ -513,8 +516,11 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
             </main>
           </div>
         </div>
-      ) : <>
-      <Expired/></>}
+      ) : (
+        <>
+          <Expired />
+        </>
+      )}
     </>
   );
 };

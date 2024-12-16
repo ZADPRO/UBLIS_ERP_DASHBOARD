@@ -2,7 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/00-Header/Header";
 import OverallDashboard from "./components/21-OverallDashboard/OverallDashboard";
 import UserNotes from "./components/02-UserNotes/UserNotes";
-import Attendance from "./components/03-Attendance/Attendance";
+import UserAttendance from "./components/03-UserAttendance/Attendance";
+import StaffAttendance from "./components/09-StaffAttendance/Attendance";
 import Profile from "./components/04-Profile/Profile";
 import Payment from "./components/05-Payment/Payment";
 import Branch from "./components/06-Branch/Branch";
@@ -55,7 +56,7 @@ const App = () => {
           {/* USER */}
           <Route path="/" element={<OverallDashboard />} />
           <Route path="/users/notes" element={<UserNotes />} />
-          <Route path="/users/attendance" element={<Attendance />} />
+          <Route path="/users/attendance" element={<UserAttendance />} />
           <Route path="/users/payment" element={<Payment />} />
           <Route path="/users/branch" element={<Branch />} />
           <Route path="/users/profile" element={<Profile />} />
@@ -84,6 +85,8 @@ const App = () => {
           <Route path="/feedback" element={<Feedback />} />
           <Route path="/staff/feedback" element={<StaffFeedback />} />
           <Route path="/staff/payment" element={<Payment/>} />
+          <Route path="/staff/attendance" element={<StaffAttendance/>} />
+
 
           <Route path="/staff/transaction" element={<Transactions />} />
           <Route path="/staff/payroll" element={<Payroll />} />

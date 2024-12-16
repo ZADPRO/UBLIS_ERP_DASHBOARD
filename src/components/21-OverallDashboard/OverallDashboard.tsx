@@ -437,7 +437,7 @@ const OverallDashboard: React.FC = () => {
                 <div className="cardOutline card">
                   <div className="header">
                     <AiOutlineAudit />
-                    <h3>Student Aduit</h3>
+                    <h3>Student Audit</h3>
                   </div>
                   <div className="counts">
                     <div className="countOne">
@@ -535,7 +535,7 @@ const OverallDashboard: React.FC = () => {
                 <div className="cardOutline card">
                   <div className="header">
                     <AiOutlineAudit />
-                    <h3>Employee Aduit</h3>
+                    <h3>Employee Audit</h3>
                   </div>
                   <div className="counts">
                     <div className="countOne">
