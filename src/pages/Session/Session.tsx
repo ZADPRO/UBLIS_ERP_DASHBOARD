@@ -326,7 +326,6 @@ const Session: React.FC = () => {
       checkValue: event.target.checked,
     }));
   };
-  
 
   const customClassDelete = (rowData: any) => {
     return (
@@ -401,12 +400,12 @@ const Session: React.FC = () => {
     checkValue: false,
   });
 
-const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  setClassWorkSpaceData((prevData) => ({
-    ...prevData,
-    checkValue: event.target.checked, // Update the checkValue based on the checkbox state
-  }));
-};
+  // const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setClassWorkSpaceData((prevData) => ({
+  //     ...prevData,
+  //     checkValue: event.target.checked, // Update the checkValue based on the checkbox state
+  //   }));
+  // };
 
   const [sessionUpdate, setSessionUpdate] = useState(false);
   const [classUpdate, setClassUpdate] = useState(false);
@@ -858,18 +857,17 @@ const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
                   </div>
                   <div className="flex justify-end align-items-center  gap-3 mt-5">
                     <div className="justify-center flex w-[50%]">
-                    <label className="text-[1rem]">
-                    <input
-  className="w-[1rem] h-[1rem]"
-  type="checkbox"
-  name="checkvalue"
-  value="true"
-  checked={classWorkSpaceData.checkValue}
-  onChange={onCheckboxChange}
-/>
-
-  Use Additional Comments as the label
-</label>
+                      <label className="text-[1rem]">
+                        <input
+                          className="w-[1rem] h-[1rem]"
+                          type="checkbox"
+                          name="checkvalue"
+                          value="true"
+                          checked={classWorkSpaceData.checkValue}
+                          onChange={onCheckboxChange}
+                        />
+                        Use Additional Comments as the label
+                      </label>
                     </div>
                     <div className="w-[50%] flex justify-end">
                       <Button

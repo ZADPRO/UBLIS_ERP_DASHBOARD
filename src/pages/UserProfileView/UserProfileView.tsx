@@ -12,8 +12,8 @@ import "./UserProfileView.css";
 import CryptoJS from "crypto-js";
 import { Button } from "primereact/button";
 import { TabPanel, TabView } from "primereact/tabview";
-import { ImUpload2 } from "react-icons/im";
-import { MdDelete } from "react-icons/md";
+// import { ImUpload2 } from "react-icons/im";
+// import { MdDelete } from "react-icons/md";
 import { FaEye } from "react-icons/fa";
 
 interface HealthProblemData {
@@ -76,12 +76,12 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
       )
     );
   };
-  const editform = (event: string) => {
-    setEdits({
-      ...edits,
-      [event]: true,
-    });
-  };
+  // const editform = (event: string) => {
+  //   setEdits({
+  //     ...edits,
+  //     [event]: true,
+  //   });
+  // };
 
   const [inputs, setInputs] = useState({
     profilefile: { contentType: "", content: "" },
@@ -202,9 +202,9 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
   //   });
   // }, []);
 
-  const [modeofcontact, setModeofContact] = useState<ModeOfContact | undefined>(
-    undefined
-  );
+  const [_modeofcontact, setModeofContact] = useState<
+    ModeOfContact | undefined
+  >(undefined);
 
   const [employeeData, setEmployeeData] = useState({
     refExperence: "",
@@ -862,10 +862,14 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
   //       console.log("Error: ", err);
   //     });
   // };
-  interface MemOption {
-    [key: number]: string; // This allows numeric keys with string values
+  // interface MemOption {
+  //   [key: number]: string; // This allows numeric keys with string values
+  // }
+  interface Option {
+    value: string;
+    label: string;
   }
-  const [memberListOption, setMemberListOption] = useState<MemOption[]>([]);
+  const [memberListOption, setMemberListOption] = useState<Option[]>([]);
   const sessionEditModule = () => {
     setSessionEdit(true);
     Axios.post(
@@ -878,7 +882,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
       {
         headers: {
           Authorization: localStorage.getItem("JWTtoken"),
-          "Content-Type": "application/json", // Ensure the content type is set
+          "Content-Type": "application/json",
         },
       }
     )
@@ -888,9 +892,30 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
-        console.log("data", data);
+        console.log("data", data.data);
         if (data.success) {
-          setMemberListOption([data.data]);
+          const transformedOptions = Object.entries(data.data).map(
+            ([key, value]) => ({
+              value: key,
+              label: value as string,
+            })
+          );
+          setMemberListOption(transformedOptions);
+
+          Axios.post(
+            import.meta.env.VITE_API_URL + "/profile/MemberList",
+      
+            {
+              refAge: inputs.age,
+              branchId: inputs.branch,
+            },
+            {
+              headers: {
+                Authorization: localStorage.getItem("JWTtoken"),
+                "Content-Type": "application/json",
+              },
+            }
+          )
         }
         console.log("memberListOption", memberListOption);
       })
@@ -2288,7 +2313,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                   <div className="text-[1.2rem] lg:text-[25px] font-bold">
                     Yoga class
                   </div>
-                  {edits.therapy ? (
+                  {edits.session ? (
                     <div className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded">
                       Save&nbsp;&nbsp;
                       <i className="text-[15px] pi pi-check"></i>
@@ -2316,10 +2341,18 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                               name="sessiontype"
                               label="Member Type *"
                               // disabled={inputs.memberlist ? false : true}
-                              // options={[inputs.refTimeMembers]}
+                              options={memberListOption}
                               // required
                               value={inputs.refTimeMembersId}
-                              // onChange={(e) => handleInput(e)}
+                              onChange={(e) => {
+                                e.preventDefault();
+
+                                console.log(" e.target.value", e.target.value);
+                                setInputs({
+                                  ...inputs,
+                                  refTimeMembersId: e.target.value,
+                                });
+                              }}
                             />
                           </>
                         ) : (
@@ -2333,6 +2366,15 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                             readonly
                           />
                         )}
+                        {/* <TextInput
+                          label="Member Type *"
+                          name="mType"
+                          id="mtype"
+                          type="text"
+                          // disabled={sessionEdit ? false : true}
+                          value={inputs.refTimeMembers}
+                          readonly
+                        /> */}
                       </div>
                       <div className="w-[100%] lg:w-[48%]">
                         {sessionEdit ? (
@@ -2359,6 +2401,15 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                             readonly
                           />
                         )}
+                        {/* <TextInput
+                          label="Member Type *"
+                          name="mType"
+                          id="mtype"
+                          type="text"
+                          // disabled={sessionEdit ? false : true}
+                          value={inputs.refCustTimeData}
+                          readonly
+                        /> */}
                       </div>
                     </div>
                     <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between">
@@ -2387,6 +2438,15 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                             readonly
                           />
                         )}
+                        {/* <TextInput
+                          label="Member Type *"
+                          name="mType"
+                          id="mtype"
+                          type="text"
+                          // disabled={sessionEdit ? false : true}
+                          value={inputs.refTime}
+                          readonly
+                        /> */}
                       </div>
                       <div className="w-[100%] lg:w-[28%]">
                         <SelectInput
@@ -2394,7 +2454,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                           name="sessiontype"
                           label="Class Type *"
                           required
-                          disabled={sessionEdit ? false : true}
+                          disabled
                           value={inputs.refClassMode}
                           options={[
                             { value: "1", label: "Online" },
@@ -2409,7 +2469,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
               </div>
             </form>
 
-            <form>
+            {/* <form>
               <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
                 <div className="w-[100%] flex justify-between items-center mb-5">
                   <div className="text-[1.2rem] lg:text-[25px] font-bold">
@@ -2489,7 +2549,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                   </div>
                 </div>
               </div>
-            </form>
+            </form> */}
           </TabPanel>
         </TabView>
       </div>
@@ -2498,9 +2558,3 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
 };
 
 export default UserProfileView;
-
-<div className="basicProfileCont p-10 shadow-lg mt-10">
-  <div className="w-[100%] flex justify-between items-center mb-5">
-    <div className="text-[1.2rem] lg:text-[25px] font-bold">Documentation</div>
-  </div>
-</div>;
