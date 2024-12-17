@@ -925,7 +925,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
       });
   };
 
-  const [sessionEdit, setSessionEdit] = useState(false);
+  const [_sessionEdit, setSessionEdit] = useState(false);
   return (
     <>
       <div className="bg-[#fff]" id="target-container">
@@ -2334,7 +2334,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                   <div className="w-[100%] justify-center items-center flex flex-col">
                     <div className="w-[100%] flex flex-row lg:flex-row gap-y-[20px] justify-between mb-[20px]">
                       <div className="w-[100%] lg:w-[48%]">
-                        {sessionEdit ? (
+                        {/* {sessionEdit ? (
                           <>
                             <SelectInput
                               id="sessiontype"
@@ -2365,8 +2365,8 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                             value={inputs.refTimeMembers}
                             readonly
                           />
-                        )}
-                        {/* <TextInput
+                        )} */}
+                        <TextInput
                           label="Member Type *"
                           name="mType"
                           id="mtype"
@@ -2374,10 +2374,10 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                           // disabled={sessionEdit ? false : true}
                           value={inputs.refTimeMembers}
                           readonly
-                        /> */}
+                        />
                       </div>
                       <div className="w-[100%] lg:w-[48%]">
-                        {sessionEdit ? (
+                        {/* {sessionEdit ? (
                           <>
                             <SelectInput
                               id="sessiontype"
@@ -2400,8 +2400,8 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                             value={inputs.refCustTimeData}
                             readonly
                           />
-                        )}
-                        {/* <TextInput
+                        )} */}
+                        <TextInput
                           label="Member Type *"
                           name="mType"
                           id="mtype"
@@ -2409,12 +2409,12 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                           // disabled={sessionEdit ? false : true}
                           value={inputs.refCustTimeData}
                           readonly
-                        /> */}
+                        />
                       </div>
                     </div>
                     <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between">
                       <div className="w-[100%] lg:w-[68%]">
-                        {sessionEdit ? (
+                        {/* {sessionEdit ? (
                           <>
                             <SelectInput
                               id="sessiontype"
@@ -2437,8 +2437,8 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                             value={inputs.refTime}
                             readonly
                           />
-                        )}
-                        {/* <TextInput
+                        )} */}
+                        <TextInput
                           label="Member Type *"
                           name="mType"
                           id="mtype"
@@ -2446,7 +2446,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({ refid, type }) => {
                           // disabled={sessionEdit ? false : true}
                           value={inputs.refTime}
                           readonly
-                        /> */}
+                        />
                       </div>
                       <div className="w-[100%] lg:w-[28%]">
                         <SelectInput

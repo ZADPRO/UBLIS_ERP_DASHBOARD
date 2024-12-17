@@ -234,7 +234,7 @@ const Profile: React.FC = () => {
     });
   }, []);
 
-  const [modeofcontact, setModeofContact] = useState<ModeOfContact | undefined>(
+  const [_modeofcontact, setModeofContact] = useState<ModeOfContact | undefined>(
     undefined
   );
 

@@ -11,6 +11,7 @@ import { Sidebar } from "primereact/sidebar";
 import { Calendar } from "primereact/calendar";
 import { Button } from "primereact/button";
 import SelectInput from "../../pages/Inputs/SelectInput";
+import { TabPanel, TabView } from "primereact/tabview";
 
 interface Customer {
   Username: string;
@@ -23,6 +24,7 @@ interface Customer {
   Signup: string;
   status2: string;
   comments: string;
+  classType: string;
 }
 
 const StaffAttendance: React.FC = () => {
@@ -41,6 +43,7 @@ const StaffAttendance: React.FC = () => {
         Signup: "dad33",
         status2: "",
         comments: "No issues",
+        classType: "",
       },
       {
         Username: "001",
@@ -51,6 +54,21 @@ const StaffAttendance: React.FC = () => {
         NotAttend: "12",
         Attend: "32",
         Signup: "dad33",
+        status2: "",
+
+        classType: "",
+        comments: "No issues",
+      },
+      {
+        Username: "001",
+        Sessionname: "U001",
+        Punchtime: "John",
+        Attend_not: "Doe",
+        Online_Offline: "john.doe@example.com",
+        NotAttend: "12",
+        Attend: "32",
+        Signup: "dad33",
+        classType: "",
         status2: "",
         comments: "No issues",
       },
@@ -63,18 +81,7 @@ const StaffAttendance: React.FC = () => {
         NotAttend: "12",
         Attend: "32",
         Signup: "dad33",
-        status2: "",
-        comments: "No issues",
-      },
-      {
-        Username: "001",
-        Sessionname: "U001",
-        Punchtime: "John",
-        Attend_not: "Doe",
-        Online_Offline: "john.doe@example.com",
-        NotAttend: "12",
-        Attend: "32",
-        Signup: "dad33",
+        classType: "",
         status2: "",
         comments: "No issues",
       },
@@ -95,6 +102,10 @@ const StaffAttendance: React.FC = () => {
     profileimg: { contentType: "", content: "" },
   });
   const [visibleLeft, setVisibleLeft] = useState(true);
+  const [classType, setClassType] = useState("1");
+  const [startDate, setStartDate] = useState<Date | null>(null); // For Cust Date - start date
+  const [endDate, setEndDate] = useState<Date | null>(null); // For Cust Date - end date
+  const [selectedMonth, setSelectedMonth] = useState<string>("");
 
   const decrypt = (
     encryptedData: string,
@@ -155,7 +166,117 @@ const StaffAttendance: React.FC = () => {
       }
     });
   }, []);
+  //   const handleEndDateChange = (date: Date | Date[]) => {
+  //     if (Array.isArray(date)) {
+  //       setEndDate(date[0]);
+  //     } else {
+  //       // Ensure the end date is within the same month as the start date
+  //       if (startDate) {
+  //         const startMonth = startDate.getMonth();
+  //         const selectedMonth = date.getMonth();
+  //         if (startMonth !== selectedMonth) {
+  //           alert("End date must be in the same month as the start date.");
+  //           return;
+  //         }
+  //       }
+  //       setEndDate(date);
+  //     }
+  //   };
 
+  const renderCalendar = () => {
+    console.log(classType);
+
+    switch (classType) {
+      case "1":
+        return (
+          <div className="flex flex-row justify-between w-[100%] gap-3 px-3">
+            <Calendar
+              placeholder="Choose date"
+              value={startDate}
+              // onChange={(date: Date | Date[]) => setStartDate(date as Date)}
+              className="relative w-full h-10 placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
+            />
+            <div>
+              <button className="w-[100%] h-[100%] text-white bg-[#f95005] border-none p-2 rounded-md">
+                Submit
+              </button>
+            </div>
+          </div>
+        );
+      case "2":
+        return (
+          <>
+            <div className="flex flex-row justify-between w-[100%] gap-3">
+              {/* Start Date */}
+              <div>
+                <Calendar
+                  placeholder="Start Date"
+                  value={startDate}
+                  onChange={(e) => {
+                    const selectedDate = e.value as Date;
+                    setStartDate(selectedDate);
+                  }}
+                  className="relative w-full h-10 placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
+                />
+              </div>
+
+              {/* End Date */}
+              <div>
+                <Calendar
+                  placeholder="End Date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.value as Date)}
+                  minDate={
+                    startDate
+                      ? new Date(startDate.getTime()) // Clone the startDate to avoid mutating it
+                      : null
+                  } // Set minDate to the selected start date
+                  maxDate={
+                    startDate
+                      ? new Date(
+                          startDate.getFullYear(),
+                          startDate.getMonth() + 1, // Next month
+                          0 // Last day of the next month
+                        )
+                      : null
+                  } // Set maxDate to the end of the next month
+                  monthNavigator
+                  yearNavigator
+                  className="relative w-full h-10 placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
+                />
+              </div>
+              <div>
+                <button className="w-[100%] h-[100%] text-white bg-[#f95005] border-none p-2 rounded-md">
+                  Submit
+                </button>
+              </div>
+            </div>
+          </>
+        );
+
+      case "3":
+        return (
+          <>
+            <div className="flex flex-row justify-between w-[100%] gap-3 px-3">
+              <Calendar
+                placeholder="Choose date"
+                value={startDate}
+                className="relative w-full h-10 placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
+                view="month"
+                dateFormat="mm/yy"
+              />
+              <div>
+                <button className="w-[100%] h-[100%] text-white bg-[#f95005] border-none p-2 rounded-md">
+                  Submit
+                </button>
+              </div>
+            </div>
+          </>
+        );
+      default:
+        return null;
+    }
+  };
   return (
     <>
       {pageLoading.verifytoken && pageLoading.pageData ? (
@@ -216,162 +337,130 @@ const StaffAttendance: React.FC = () => {
                 </h3>
               </div>{" "}
             </div>
-            <div className="flex flex-row ">
-              <div className="basicProfileCont m-[10px] lg:m-[30px] p-[5px] lg:p-[5px]  shadow-lg">
-                <div className="w-[100%] flex flex-row justify-between  items-center mb-5 p-[15px]">
-                  <div>
-                    {" "}
-                    <div className="flex flex-row justify-between  pl-3 pr-3">
-                      <h3 className="m-1">Online</h3>
-                      <button className=" mb-1 text-[1rem] p-2 w-[20%] h-[20%] text-white bg-[#f95005] border-none p-1 rounded-md">
-                        view
-                      </button>
-                    </div>
-                    <DataTable value={attendanceData}>
-                      <Column
-                        field="Sessionname"
-                        header="Session "
-                        frozen
-                        style={{ inlineSize: "15rem" }}
-                      />
 
-                      <Column
-                        field="Signup"
-                        header="Enrolled "
-                        style={{ inlineSize: "18rem" }}
-                      />
-                      <Column
-                        field="Attend"
-                        header="Attended"
-                        style={{ inlineSize: "14rem" }}
-                      />
-                      <Column
-                        field="NotAttend"
-                        header="Not Attended"
-                        style={{ inlineSize: "20rem" }}
-                      />
-                    </DataTable>
+            <TabView>
+              <TabPanel header="Overview"></TabPanel>
+              <TabPanel header="Online">
+                <div className="basicProfileCont m-[10px] lg:m-[30px] p-[5px] lg:p-[5px]  shadow-lg">
+                  <div className="w-[100%] flex flex-row justify-between  items-center mb-5 p-[15px]">
+                    <div>
+                      {" "}
+                      <div className="flex flex-row justify-between  pl-3 pr-3">
+                        <h3 className="m-1">Online</h3>
+                        <button className=" mb-1 text-[1rem] p-2 w-[10%] h-[20%] text-white bg-[#f95005] border-none p-1 rounded-md">
+                          view
+                        </button>
+                      </div>
+                      <DataTable value={attendanceData}>
+                        <Column
+                          field="Sessionname"
+                          header="Session "
+                          frozen
+                          style={{ inlineSize: "15rem" }}
+                        />
+
+                        <Column
+                          field="Signup"
+                          header="Enrolled "
+                          style={{ inlineSize: "18rem" }}
+                        />
+                        <Column
+                          field="Attend"
+                          header="Attended"
+                          style={{ inlineSize: "14rem" }}
+                        />
+                        <Column
+                          field="NotAttend"
+                          header="Not Attended"
+                          style={{ inlineSize: "20rem" }}
+                        />
+                      </DataTable>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="basicProfileCont m-[10px] lg:m-[30px] p-[5px] lg:p-[5px]  shadow-lg">
-                <div className="w-[100%] flex flex-row justify-between  items-center mb-5 p-[15px]">
-                  <div>
-                    {" "}
-                    <div className="flex flex-row justify-between  pl-3 pr-3">
-                      <h3 className="m-1">Offline</h3>
-                      <button className=" mb-1 text-[1rem] p-2 w-[20%] h-[20%] text-white bg-[#f95005] border-none p-1 rounded-md">
-                        view
-                      </button>
-                    </div>
-                    <DataTable value={attendanceData}>
-                      <Column
-                        field="Sessionname"
-                        header="Session "
-                        frozen
-                        style={{ inlineSize: "15rem" }}
-                      />
+              </TabPanel>
+              <TabPanel header="Offline">
+                <div className="basicProfileCont m-[10px] lg:m-[30px] p-[5px] lg:p-[5px]  shadow-lg">
+                  <div className="w-[100%] flex flex-row justify-between  items-center mb-5 p-[15px]">
+                    <div>
+                      {" "}
+                      <div className="flex flex-row justify-between  pl-3 pr-3">
+                        <h3 className="m-1">Offline</h3>
+                        <button className=" mb-1 text-[1rem] p-2 w-[10%] h-[20%] text-white bg-[#f95005] border-none p-1 rounded-md">
+                          view
+                        </button>
+                      </div>
+                      <DataTable value={attendanceData}>
+                        <Column
+                          field="Sessionname"
+                          header="Session "
+                          frozen
+                          style={{ inlineSize: "15rem" }}
+                        />
 
-                      <Column
-                        field="Signup"
-                        header="Enrolled "
-                        style={{ inlineSize: "18rem" }}
-                      />
-                      <Column
-                        field="Attend"
-                        header="Attended"
-                        style={{ inlineSize: "14rem" }}
-                      />
-                      <Column
-                        field="NotAttend"
-                        header="Not Attended"
-                        style={{ inlineSize: "20rem" }}
-                      />
-                    </DataTable>
+                        <Column
+                          field="Signup"
+                          header="Enrolled "
+                          style={{ inlineSize: "18rem" }}
+                        />
+                        <Column
+                          field="Attend"
+                          header="Attended"
+                          style={{ inlineSize: "14rem" }}
+                        />
+                        <Column
+                          field="NotAttend"
+                          header="Not Attended"
+                          style={{ inlineSize: "20rem" }}
+                        />
+                      </DataTable>
+                    </div>
                   </div>
                 </div>
+              </TabPanel>
+            </TabView>
+            <Sidebar
+              style={{ width: "70%" }}
+              visible={visibleLeft}
+              position="right"
+              onHide={() => setVisibleLeft(false)}
+            >
+              <h2>12 Classes in One month duration</h2>
+              <div className="w-[100%]  mt-5 px-5 flex flex-row justify-evenly lg:m-5">
+                <div className="w-[48%] gap-5">
+                  <SelectInput
+                    id="classtype"
+                    name="classtype"
+                    label=""
+                    // label="Class Type *"
+                    options={[
+                      { value: "1", label: "Per Day" },
+                      { value: "2", label: "Custom Date" },
+                      { value: "3", label: "Monthly" },
+                    ]}
+                    // {renderCalendar()}
+                    onChange={(e) => {
+                      setClassType(e.target.value);
+                      console.log(e.target.value);
+                    }}
+                    required
+                  />
+                </div>
+                <div className="w-[48%] ">
+                  {renderCalendar()}
+
+                  {/* <Calendar
+
+                  //   className="relative w-full  h-10  placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
+                  //   // value={inputs.dob}
+                  //   // onChange={(e) => handleInput(e)}
+                  //   name="dob"
+                  /> */}
+                </div>
+                <div></div>
               </div>
-            </div>
+            </Sidebar>
           </div>
-          <Sidebar
-            style={{ width: "70%" }}
-            visible={visibleLeft}
-            position="right"
-            onHide={() => setVisibleLeft(false)}
-          >
-            <h2>12 Classes in One month duration</h2>
-            <div className="w-[80%]  mt-5 px-5 flex flex-row justify-around lg:m-5">
-              <div className="w-[50%] gap-5">
-                <SelectInput
-                  id="classtype"
-                  name="classtype"
-                  // label="Class Type *"
-                  options={[
-                    { value: "1", label: "Per Day" },
-                    { value: "2", label: "Monthly" },
-                  ]}
-                  required
-                />
-              </div>
-              <div>
-                <Calendar
-                  className="relative w-full  h-10  placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
-                  // value={inputs.dob}
-                  // onChange={(e) => handleInput(e)}
-                  name="dob"
-                />
-              </div>
-              <div></div>
-
-              <div>
-                <button className="w-[200%] h-[100%] text-white bg-[#f95005] border-none p-1 rounded-md">
-                  Submit
-                </button>
-              </div>
-            </div>
-
-            <hr />
-            <div className="flex p-4 px-2">
-              <Button type="button" severity="success" label="Download" />
-            </div>
-            <DataTable value={attendanceData}>
-              <Column
-                field="Username"
-                header="User Name "
-                style={{ inlineSize: "15rem" }}
-              />
-
-              <Column
-                field="Sessionname"
-                header="Session Name"
-                style={{ inlineSize: "18rem" }}
-              />
-              <Column
-                field="Punchtime"
-                header="Punch Time"
-                style={{ inlineSize: "14rem" }}
-              />
-              <Column
-                field="Attend_not"
-                header="Attended or Not Attended"
-                style={{ inlineSize: "30rem" }}
-              />
-              <Column
-                field="Online_Offline"
-                header="Online/Offline"
-                style={{ inlineSize: "20rem" }}
-              />
-            </DataTable>
-          </Sidebar>
-          {/* <Sidebar
-            style={{ width: "70%" }}
-            visible={visibleLeft}
-            position="right"
-            onHide={() => setVisibleLeft(false)}
-          >
-            <h2>Attendance Report</h2>
-          
-          </Sidebar> */}
         </>
       )}
     </>

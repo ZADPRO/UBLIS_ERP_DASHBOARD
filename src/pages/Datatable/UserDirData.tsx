@@ -377,7 +377,7 @@ const UserDirData: React.FC = () => {
                 )}
               </p>
             </TabPanel >
-            <TabPanel header="Medical details">
+            {/* <TabPanel header="Medical details">
 
 
             </TabPanel>
@@ -385,7 +385,7 @@ const UserDirData: React.FC = () => {
               
 
               </TabPanel>
-            
+             */}
             <TabPanel header="Audit">
               <p className="m-0">
                 <DataTable
