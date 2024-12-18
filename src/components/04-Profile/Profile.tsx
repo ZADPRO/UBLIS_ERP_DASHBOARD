@@ -91,10 +91,14 @@ const Profile: React.FC = () => {
     anniversarydate: "",
     qualification: "",
     occupation: "",
+    perdoorno: "",
+    perstreetname: "",
     peraddress: "",
     perpincode: "",
     perstate: "",
     percity: "",
+    tempdoorno: "",
+    tempstreetname: "",
     tempaddress: "",
     temppincode: "",
     tempstate: "",
@@ -215,7 +219,6 @@ const Profile: React.FC = () => {
           });
         } else {
           navigate("/expired");
-          
         }
 
         setuserdata({
@@ -234,9 +237,9 @@ const Profile: React.FC = () => {
     });
   }, []);
 
-  const [_modeofcontact, setModeofContact] = useState<ModeOfContact | undefined>(
-    undefined
-  );
+  const [_modeofcontact, setModeofContact] = useState<
+    ModeOfContact | undefined
+  >(undefined);
 
   const [employeeData, setEmployeeData] = useState({
     refExperence: "",
@@ -267,8 +270,8 @@ const Profile: React.FC = () => {
         import.meta.env.VITE_ENCRYPTION_KEY
       );
       if (data.token == false) {
-        console.log("data.token",data.token)
-        alert("data get")
+        console.log("data.token", data.token);
+        alert("data get");
         navigate("/expired");
       } else {
         console.log("UserData Running --- ");
@@ -345,10 +348,18 @@ const Profile: React.FC = () => {
           guardianname: personaldata.refguardian,
           qualification: personaldata.refQualification,
           occupation: personaldata.refOccupation,
+          perdoorno: addressdata.refAdFlat1,
+          perstreetname: addressdata.refAdArea1,
           peraddress: addressdata.refAdAdd1,
           perpincode: addressdata.refAdPincode1,
           perstate: addressdata.refAdState1,
           percity: addressdata.refAdCity1,
+          tempdoorno: addressdata.addresstype
+            ? addressdata.refAdFlat1
+            : addressdata.refAdFlat2,
+          tempstreetname: addressdata.addresstype
+            ? addressdata.refAdArea1
+            : addressdata.refAdArea2,
           tempaddress: addressdata.addresstype
             ? addressdata.refAdAdd1
             : addressdata.refAdAdd2,
@@ -524,6 +535,8 @@ const Profile: React.FC = () => {
 
       // If the address option is enabled, update temporary address fields
       if (options.address) {
+        updatedInputs.tempdoorno = prevInputs.perdoorno;
+        updatedInputs.tempstreetname = prevInputs.perstreetname;
         updatedInputs.tempaddress = prevInputs.peraddress;
         updatedInputs.temppincode = prevInputs.perpincode;
         updatedInputs.tempcity = prevInputs.percity;
@@ -551,13 +564,16 @@ const Profile: React.FC = () => {
       {
         address: {
           addresstype: options.address,
+          refAdFlat1:inputs.perdoorno,
+          refAdArea1:inputs.perstreetname,
           refAdAdd1: inputs.peraddress,
-          refAdArea1: "",
           refAdCity1: inputs.percity,
           refAdState1: inputs.perstate,
+
           refAdPincode1: parseInt(inputs.perpincode),
           refAdAdd2: inputs.tempaddress,
-          refAdArea2: "",
+         refAdFlat2:inputs.tempdoorno,
+        refAdArea2:inputs.tempstreetname,
           refAdCity2: inputs.tempcity,
           refAdState2: inputs.tempstate,
           refAdPincode2: parseInt(inputs.temppincode),
@@ -1460,6 +1476,39 @@ const Profile: React.FC = () => {
                     <div className="text-[1.2rem] lg:text-[25px] font-bold mb-5">
                       Permanent Address
                     </div>
+                    <div
+                      className="w-[100%] mb-[20px] flex justify-between"
+                  
+                    >
+                      <div className="w-[48%]">
+                        <div className="relative w-full">
+                          <TextInput
+                            id="perdoorno"
+                            type="text"
+                            name="perdoorno"
+                            label="Door no *"
+                            required
+                            value={inputs.perdoorno}
+                            onChange={(e) => handleInputVal(e)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="w-[48%]">
+                        <div className="relative w-full">
+                          <TextInput
+                            id="streetname"
+                            type="text"
+                            name="perstreetname"
+                            label="Street Name *"
+                            required
+                            value={inputs.perstreetname}
+                            onChange={(e) => handleInputVal(e)}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
                     <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between mb-[20px]">
                       <div className="w-[100%] lg:w-[48%]">
                         <TextInput
@@ -1528,6 +1577,8 @@ const Profile: React.FC = () => {
                           if (!options.address) {
                             setInputs({
                               ...inputs,
+                              tempdoorno: inputs.perdoorno,
+                              tempstreetname: inputs.perstreetname,
                               tempaddress: inputs.peraddress,
                               temppincode: inputs.perpincode,
                               tempstate: inputs.perstate,
@@ -1536,6 +1587,8 @@ const Profile: React.FC = () => {
                           } else {
                             setInputs({
                               ...inputs,
+                              tempdoorno:"",
+                              tempstreetname:"",
                               tempaddress: "",
                               temppincode: "",
                               tempstate: "",
@@ -1550,6 +1603,38 @@ const Profile: React.FC = () => {
                     <div className="text-[1.2rem] lg:text-[25px] font-bold mb-5">
                       Communication Address
                     </div>
+                    <div
+                    className="w-[100%] mb-[20px] flex justify-between"
+                   
+                  >
+                    <div className="w-[48%]">
+                      <div className="relative w-full">
+                        <TextInput
+                          id="doorno"
+                          type="text"
+                          name="tempdoorno"
+                          label="Door no *"
+                          required
+                          value={inputs.tempdoorno}
+                          onChange={(e) => handleInputVal(e)}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="w-[48%]">
+                      <div className="relative w-full">
+                        <TextInput
+                          id="streetname"
+                          type="text"
+                          name="tempstreetname"
+                          label="Street Name *"
+                          required
+                          value={inputs.tempstreetname}
+                          onChange={(e) => handleInputVal(e)}
+                        />
+                      </div>
+                    </div>
+                  </div>
                     <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between mb-[20px]">
                       <div className="w-[100%] lg:w-[48%]">
                         <TextInput
@@ -1640,6 +1725,7 @@ const Profile: React.FC = () => {
                     </div>
                   )}
                 </div>
+              
                 <div className="w-[100%] flex flex-col justify-center items-center">
                   <div className="w-[100%] flex justify-between mb-[20px]">
                     <div className="w-[100%]">
@@ -1698,7 +1784,7 @@ const Profile: React.FC = () => {
                       </div>
                     </div>
                   </div>
-{/* 
+                  {/* 
                   <div className="w-[100%] ">
                     <SelectInput
                       id="modeofcontact"
@@ -2042,7 +2128,7 @@ const Profile: React.FC = () => {
                         <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between mb-[20px]">
                           <div className="w-[100%] lg:w-[48%]">
                             <TextInput
-                              label="Others"
+                              label="Description "
                               name="pastother"
                               id="others"
                               type="text"

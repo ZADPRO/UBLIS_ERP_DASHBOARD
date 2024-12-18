@@ -189,17 +189,20 @@ const StaffAttendance: React.FC = () => {
     switch (classType) {
       case "1":
         return (
-          <div className="flex flex-row justify-between w-[100%] gap-3 px-3">
-            <Calendar
-              placeholder="Choose date"
-              value={startDate}
-              // onChange={(date: Date | Date[]) => setStartDate(date as Date)}
-              className="relative w-full h-10 placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
-            />
-            <div>
-              <button className="w-[100%] h-[100%] text-white bg-[#f95005] border-none p-2 rounded-md">
-                Submit
-              </button>
+          <div className=" flex flex-col w-[100%] justify-between">
+            <div className="flex flex-row justify-between w-[100%] gap-3 px-3">
+              <Calendar
+                placeholder="Choose date"
+                value={startDate}
+                // onChange={(date: Date | Date[]) => setStartDate(date as Date)}
+                className="relative w-full h-10 placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
+              />
+
+              <div>
+                <button className="w-[100%] h-[100%] text-white bg-[#f95005] border-none p-2 rounded-md">
+                  Submit
+                </button>
+              </div>
             </div>
           </div>
         );
@@ -340,8 +343,16 @@ const StaffAttendance: React.FC = () => {
 
             <TabView>
               <TabPanel header="Overview"></TabPanel>
-              <TabPanel header="Online">
-                <div className="basicProfileCont m-[10px] lg:m-[30px] p-[5px] lg:p-[5px]  shadow-lg">
+              <TabPanel
+                header="Online"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <div className="basicProfileCont m-[10px] lg:m-[30px] p-[5px] lg:p-[5px]  w-[60%]   shadow-lg">
                   <div className="w-[100%] flex flex-row justify-between  items-center mb-5 p-[15px]">
                     <div>
                       {" "}
@@ -372,17 +383,26 @@ const StaffAttendance: React.FC = () => {
                         <Column
                           field="NotAttend"
                           header="Not Attended"
-                          style={{ inlineSize: "20rem" }}
+                          style={{ inlineSize: "15rem" }}
                         />
                       </DataTable>
                     </div>
                   </div>
                 </div>
               </TabPanel>
-              <TabPanel header="Offline">
-                <div className="basicProfileCont m-[10px] lg:m-[30px] p-[5px] lg:p-[5px]  shadow-lg">
+              <TabPanel
+                header="Offline"
+                className=""
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <div className="basicProfileCont m-[10px] lg:m-[30px] p-[5px] lg:p-[5px] w-[60%]  shadow-lg">
                   <div className="w-[100%] flex flex-row justify-between  items-center mb-5 p-[15px]">
-                    <div>
+                    <div className="w-[100%]">
                       {" "}
                       <div className="flex flex-row justify-between  pl-3 pr-3">
                         <h3 className="m-1">Offline</h3>
@@ -411,7 +431,7 @@ const StaffAttendance: React.FC = () => {
                         <Column
                           field="NotAttend"
                           header="Not Attended"
-                          style={{ inlineSize: "20rem" }}
+                          style={{ inlineSize: "15rem" }}
                         />
                       </DataTable>
                     </div>
@@ -426,7 +446,8 @@ const StaffAttendance: React.FC = () => {
               onHide={() => setVisibleLeft(false)}
             >
               <h2>12 Classes in One month duration</h2>
-              <div className="w-[100%]  mt-5 px-5 flex flex-row justify-evenly lg:m-5">
+             <div className="flex flex-col justify-center align-middle w-[100%]">
+             <div className="w-[100%]  mt-5 px-5 flex flex-row justify-evenly lg:m-5">
                 <div className="w-[48%] gap-5">
                   <SelectInput
                     id="classtype"
@@ -446,19 +467,35 @@ const StaffAttendance: React.FC = () => {
                     required
                   />
                 </div>
-                <div className="w-[48%] ">
-                  {renderCalendar()}
-
-                  {/* <Calendar
-
-                  //   className="relative w-full  h-10  placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
-                  //   // value={inputs.dob}
-                  //   // onChange={(e) => handleInput(e)}
-                  //   name="dob"
-                  /> */}
-                </div>
-                <div></div>
+             {renderCalendar()}
+               
               </div>
+               <DataTable value={attendanceData} className="w-[100%]">
+                        <Column
+                          field="Sessionname"
+                          header="Session "
+                          frozen
+                          style={{ inlineSize: "15rem" }}
+                        />
+
+                        <Column
+                          field="Signup"
+                          header="Enrolled "
+                          style={{ inlineSize: "18rem" }}
+                        />
+                        <Column
+                          field="Attend"
+                          header="Attended"
+                          style={{ inlineSize: "14rem" }}
+                        />
+                        <Column
+                          field="NotAttend"
+                          header="Not Attended"
+                          style={{ inlineSize: "15rem" }}
+                        />
+                      </DataTable></div>
+             
+
             </Sidebar>
           </div>
         </>

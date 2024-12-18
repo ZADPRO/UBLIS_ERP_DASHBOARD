@@ -1584,7 +1584,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                   <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
                     <div className="w-[100%] md:w-[48%]">
                       <TextInput
-                        label="Others"
+                        label="Description "
                         name="pastother"
                         id="others"
                         type="text"
