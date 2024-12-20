@@ -1477,9 +1477,7 @@ const Profile: React.FC = () => {
                       Permanent Address
                     </div>
                     <div
-                      className="w-[100%] mb-[20px] flex justify-between"
-                  
-                    >
+                      className="w-[100%] mb-[20px] flex justify-between">
                       <div className="w-[48%]">
                         <div className="relative w-full">
                           <TextInput
@@ -1489,6 +1487,7 @@ const Profile: React.FC = () => {
                             label="Door no *"
                             required
                             value={inputs.perdoorno}
+                            readonly={!edits.address}
                             onChange={(e) => handleInputVal(e)}
                           />
                         </div>
@@ -1503,6 +1502,7 @@ const Profile: React.FC = () => {
                             label="Street Name *"
                             required
                             value={inputs.perstreetname}
+                            readonly={!edits.address}
                             onChange={(e) => handleInputVal(e)}
                           />
                         </div>
@@ -1512,7 +1512,7 @@ const Profile: React.FC = () => {
                     <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between mb-[20px]">
                       <div className="w-[100%] lg:w-[48%]">
                         <TextInput
-                          label="Residential  Address *"
+                          label="Locality *"
                           name="peraddress"
                           id="peraddress"
                           type="text"
@@ -1638,7 +1638,7 @@ const Profile: React.FC = () => {
                     <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between mb-[20px]">
                       <div className="w-[100%] lg:w-[48%]">
                         <TextInput
-                          label="Residential Address *"
+                          label="Locality *"
                           name="tempaddress"
                           id="tempaddress"
                           type="text"

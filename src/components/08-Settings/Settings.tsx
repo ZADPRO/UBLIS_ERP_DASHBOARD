@@ -14,6 +14,8 @@ import { FaUserClock } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import Healthissues from "../../pages/Healthissues/Healthissues";
 import { FaClipboardList } from "react-icons/fa6";
+import { SiGoogleclassroom } from "react-icons/si";
+import Package from "../../pages/Package/Package";
 type DecryptResult = any;
 
 const Settings: React.FC = () => {
@@ -96,6 +98,7 @@ const Settings: React.FC = () => {
   const [offers, setOffers] = useState(false);
 
   const [session, setSession] = useState(false);
+  const [packageCard, setPackageCard] = useState(false);
 
   const [healthissue, setHealthissue] = useState(false);
 
@@ -163,6 +166,18 @@ const Settings: React.FC = () => {
               <div
                 className="w-[250px] h-[100px] rounded-[5px] flex flex-col justify-center bg-[#fff] shadow-lg p-3 cursor-pointer"
                 onClick={() => {
+                  setPackageCard(true);
+                }}
+              >
+                <div className="text-[20px] font-bold font-serif">Package</div>
+                <div className="text-[#f95005] text-[40px] text-end">
+                  <SiGoogleclassroom />
+                </div>
+              </div>
+
+              {/* <div
+                className="w-[250px] h-[100px] rounded-[5px] flex flex-col justify-center bg-[#fff] shadow-lg p-3 cursor-pointer"
+                onClick={() => {
                   setFeesStructure(true);
                 }}
               >
@@ -172,7 +187,7 @@ const Settings: React.FC = () => {
                 <div className="text-[#f95005] text-[40px] text-end">
                   <FaMoneyCheckDollar />
                 </div>
-              </div>
+              </div> */}
 
               <div
                 onClick={() => {
@@ -186,7 +201,7 @@ const Settings: React.FC = () => {
                 </div>
               </div>
 
-              <div
+              {/* <div
                 className="w-[250px] h-[100px] rounded-[5px] flex flex-col justify-center bg-[#fff] shadow-lg p-3 cursor-pointer"
                 onClick={() => {
                   setSession(true);
@@ -196,7 +211,7 @@ const Settings: React.FC = () => {
                 <div className="text-[#f95005] text-[40px] text-end">
                   <FaUserClock />
                 </div>
-              </div>
+              </div> */}
 
               <div
                 className="w-[250px] h-[100px] rounded-[5px] flex flex-col justify-center bg-[#fff] shadow-lg p-3 cursor-pointer"
@@ -204,15 +219,26 @@ const Settings: React.FC = () => {
                   setHealthissue(true);
                 }}
               >
-                <div className="text-[20px] font-bold font-serif">Health Issue</div>
+                <div className="text-[20px] font-bold font-serif">
+                  Health Issue
+                </div>
                 <div className="text-[#f95005] text-[40px] text-end">
-                <FaClipboardList />
+                  <FaClipboardList />
                 </div>
               </div>
             </div>
           </div>
         </div>
       )}
+
+      <Sidebar
+        style={{ width: "80%" }}
+        visible={packageCard}
+        position="right"
+        onHide={() => setPackageCard(false)}
+      >
+        <Package />
+      </Sidebar>
 
       <Sidebar
         style={{ width: "70%" }}
@@ -249,10 +275,8 @@ const Settings: React.FC = () => {
         position="right"
         onHide={() => setHealthissue(false)}
       >
-        <Healthissues/>
+        <Healthissues />
       </Sidebar>
-
-      
     </>
   );
 };

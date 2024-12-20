@@ -83,10 +83,14 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
     anniversarydate: "",
     qualification: "",
     occupation: "",
+    perdoorno:"",
+    perstreetname:"",
     peraddress: "",
     perpincode: "",
     perstate: "",
     percity: "",
+    tempdoorno:"",
+    tempstreetname:"",
     tempaddress: "",
     temppincode: "",
     tempstate: "",
@@ -255,10 +259,18 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
         guardianname: personaldata.refguardian,
         qualification: personaldata.refQualification,
         occupation: personaldata.refOccupation,
+        perdoorno: addressdata.refAdFlat1,
+        perstreetname: addressdata.refAdArea1,
         peraddress: addressdata.refAdAdd1,
         perpincode: addressdata.refAdPincode1,
         perstate: addressdata.refAdState1,
         percity: addressdata.refAdCity1,
+        tempdoorno: addressdata.addresstype
+        ? addressdata.refAdFlat1
+        : addressdata.refAdFlat2,       
+        tempstreetname: addressdata.addresstype
+        ? addressdata.refAdArea1
+        : addressdata.refAdArea2,
         tempaddress: addressdata.addresstype
           ? addressdata.refAdAdd1
           : addressdata.refAdAdd2,
@@ -400,6 +412,8 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
 
       // If the address option is enabled, update temporary address fields
       if (options.address) {
+        updatedInputs.tempdoorno = prevInputs.perdoorno;
+        updatedInputs.tempstreetname = prevInputs.perstreetname;
         updatedInputs.tempaddress = prevInputs.peraddress;
         updatedInputs.temppincode = prevInputs.perpincode;
         updatedInputs.tempcity = prevInputs.percity;
@@ -428,12 +442,14 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
         address: {
           addresstype: options.address,
           refAdAdd1: inputs.peraddress,
-          refAdArea1: "",
+          refAdFlat1:inputs.perdoorno,
+          refAdArea1:inputs.perstreetname,
           refAdCity1: inputs.percity,
           refAdState1: inputs.perstate,
           refAdPincode1: parseInt(inputs.perpincode),
           refAdAdd2: inputs.tempaddress,
-          refAdArea2: "",
+          refAdFlat2:inputs.tempdoorno,
+          refAdArea2:inputs.tempstreetname,
           refAdCity2: inputs.tempcity,
           refAdState2: inputs.tempstate,
           refAdPincode2: parseInt(inputs.temppincode),
@@ -727,9 +743,9 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
               handlepersonalinfo();
             }}
           >
-            <div className="basicProfileCont p-10 shadow-lg">
+            <div className="basicProfileCont p-10 shadow-lg w-[100%] ">
               <div className="w-[100%] flex justify-between items-center mb-5">
-                <div className="text-[1.2rem] lg:text-[25px] font-bold">
+                <div className="text-[1.2rem] lg:text-[25px] font-bold ">
                   Personal Information
                 </div>
                 {edits.personal ? (
@@ -1005,10 +1021,45 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                   <div className="text-[1.2rem] lg:text-[25px] font-bold mb-5">
                     Permanent Address
                   </div>
+
+                  <div
+                    className="w-[100%] mb-[20px] flex justify-between"
+                   
+                  >
+                    <div className="w-[48%]">
+                      <div className="relative w-full">
+                        <TextInput
+                          id="perdoorno"
+                          type="text"
+                          name="perdoorno"
+                          label="Door no *"
+                          required
+                          value={inputs.perdoorno}
+                          readonly={!edits.address}
+                          onChange={(e) => handleInputVal(e)}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="w-[48%]">
+                      <div className="relative w-full">
+                        <TextInput
+                          id="streetname"
+                          type="text"
+                          name="perstreetname"
+                          label="Street Name *"
+                          required
+                          value={inputs.perstreetname}
+                          readonly={!edits.address}
+                          onChange={(e) => handleInputVal(e)}
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
                     <div className="w-[100%] md:w-[48%]">
                       <TextInput
-                        label="Residential  Address *"
+                        label="Locality *"
                         name="peraddress"
                         id="peraddress"
                         type="text"
@@ -1073,6 +1124,8 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                         if (!options.address) {
                           setInputs({
                             ...inputs,
+                            tempdoorno:inputs.perdoorno,
+                            tempstreetname:inputs.perstreetname,
                             tempaddress: inputs.peraddress,
                             temppincode: inputs.perpincode,
                             tempstate: inputs.perstate,
@@ -1081,6 +1134,8 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                         } else {
                           setInputs({
                             ...inputs,
+                            tempdoorno:"",
+                            tempstreetname:"",
                             tempaddress: "",
                             temppincode: "",
                             tempstate: "",
@@ -1095,10 +1150,44 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                   <div className="text-[1.2rem] lg:text-[25px] font-bold mb-5">
                     Communication Address
                   </div>
+                  <div
+                    className="w-[100%] mb-[20px] flex justify-between"
+                  
+                  >
+                    <div className="w-[48%]">
+                      <div className="relative w-full">
+                        <TextInput
+                          id="doorno"
+                          type="text"
+                          name="tempdoorno"
+                          label="Door no *"
+                          required
+                          value={inputs.tempdoorno}
+                          readonly={!edits.address}
+                          onChange={(e) => handleInputVal(e)}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="w-[48%]">
+                      <div className="relative w-full">
+                        <TextInput
+                          id="streetname"
+                          type="text"
+                          name="tempstreetname"
+                          label="Street Name *"
+                          required
+                          value={inputs.tempstreetname}
+                          readonly={!edits.address}
+                          onChange={(e) => handleInputVal(e)}
+                        />
+                      </div>
+                    </div>
+                  </div>
                   <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
                     <div className="w-[100%] md:w-[48%]">
                       <TextInput
-                        label="Residential  Address *"
+                        label="Locality *"
                         name="tempaddress"
                         id="tempaddress"
                         type="text"

@@ -5,3 +5,6 @@
 .custom-popup {
   width: 80%; /* Increase width of the popup */
 }
+.p-tabview-panel{
+  width: 100%;
+}
