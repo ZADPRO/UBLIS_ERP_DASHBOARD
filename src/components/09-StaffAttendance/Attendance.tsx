@@ -675,7 +675,7 @@ const StaffAttendance: React.FC = () => {
               <div className="flex flex-col w-[48%] gap-3  ">
                   <div className="flex fles-row w-[100%]  justify-between ">
                     {" "}
-                    <div className="w-[30%]">
+                    <div className="w-[80%]">
                       <IconField iconPosition="left">
                         <InputIcon className="pi pi-search"> </InputIcon>
                         <InputText placeholder="Search" />
