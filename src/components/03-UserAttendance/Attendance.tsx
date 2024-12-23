@@ -20,7 +20,6 @@ import { useState, useEffect } from "react";
 import CryptoJS from "crypto-js";
 import Axios from "axios";
 import { Sidebar } from "primereact/sidebar";
-
 import { Calendar } from "primereact/calendar";
 import { Button } from "primereact/button";
 import SelectInput from "../../pages/Inputs/SelectInput";
@@ -236,7 +235,7 @@ const StaffAttendance: React.FC = () => {
                     {" "}
                     <div className="flex flex-row justify-between  pl-3 pr-3">
                       <h3 className="m-1">Online</h3>
-                      <button className=" mb-1 text-[1rem] p-2 w-[20%] h-[20%] text-white bg-[#f95005] border-none p-1 rounded-md">
+                      <button className=" mb-1 text-[1rem] p-2 w-[20%] h-[20%] text-white bg-[#f95005] border-none  rounded-md">
                         view
                       </button>
                     </div>
@@ -273,7 +272,7 @@ const StaffAttendance: React.FC = () => {
                     {" "}
                     <div className="flex flex-row justify-between  pl-3 pr-3">
                       <h3 className="m-1">Offline</h3>
-                      <button className=" mb-1 text-[1rem] p-2 w-[20%] h-[20%] text-white bg-[#f95005] border-none p-1 rounded-md">
+                      <button className=" mb-1 text-[1rem] p-2 w-[20%] h-[20%] text-white bg-[#f95005] border-none  rounded-md">
                         view
                       </button>
                     </div>
@@ -318,6 +317,7 @@ const StaffAttendance: React.FC = () => {
                 <SelectInput
                   id="classtype"
                   name="classtype"
+                  label=""
                   // label="Class Type *"
                   options={[
                     { value: "1", label: "Per Day" },

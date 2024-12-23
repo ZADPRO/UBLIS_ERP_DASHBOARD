@@ -18,6 +18,8 @@ import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import Calenderss from "../10-Calender/Calenderss";
 import { View } from "@react-pdf/renderer";
+import { MultiSelect } from "primereact/multiselect";
+import { IoSearch } from "react-icons/io5";
 
 interface Customer {
   Username: string;
@@ -139,6 +141,8 @@ const StaffAttendance: React.FC = () => {
   const [endDate, setEndDate] = useState<Date | null>(null); // For Cust Date - end date
   const [selectedMonth, setSelectedMonth] = useState<string>("");
   const [selectedSession, setSelectedSession] = useState<string>("Online");
+  const [selectedClass, setSelectedClass] = useState<string>("Online");
+
   const [sessionData, setSessionData] = useState({
     sessionName: "Weekend class",
     sessionTime: "(10:10 AM to 11:10 AM)",
@@ -151,7 +155,12 @@ const StaffAttendance: React.FC = () => {
     userId: "00121", // Example user ID
     userEmail: "abc@gmail.com",
   });
-
+  const [preferredTimes, setPreferredTimes] = useState<string[]>([]);
+  const preferredTimeOptions = [
+    { label: "8 AM - 10 AM", value: "Morning" },
+    { label: "12 PM - 2 PM", value: "Afternoon" },
+    { label: "6 PM - 8 PM", value: "Evening" },
+  ];
   const decrypt = (
     encryptedData: string,
     iv: string,
@@ -242,8 +251,8 @@ const StaffAttendance: React.FC = () => {
     switch (classType) {
       case "1":
         return (
-          <div className=" flex flex-col w-[100%] justify-between">
-            <div className="flex flex-row justify-between w-[100%] gap-3 px-3">
+          <div className=" flex flex-row w-[100%] ">
+            <div className="w-[200%] px-3">
               <Calendar
                 placeholder="Choose date"
                 value={startDate}
@@ -251,84 +260,158 @@ const StaffAttendance: React.FC = () => {
                 className="relative w-full h-10 placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
               />
 
-              <div>
+              {/* <div>
                 <button className="w-[100%] h-[100%] text-white bg-[#f95005] border-none p-2 rounded-md">
                   Submit
                 </button>
-              </div>
+              </div> */}
             </div>
+            <div className="w-[200%] px-3">
+              <SelectInput
+                id="sessionSelect"
+                name="sessionSelect"
+                label="SessionType *"
+                onChange={handleSessionChange} // Handle dropdown changes
+                options={[
+                  { value: "Online", label: "Online" },
+                  { value: "Offline", label: "Offline" },
+                ]}
+                required
+              />
+            </div>
+            <div className="w-[100%] px-3">
+              <MultiSelect
+                id="preferredTime"
+                value={preferredTimes}
+                options={preferredTimeOptions}
+                onChange={(e) => setPreferredTimes(e.value)}
+                className="w-full"
+              />
+            </div>
+            <div className="w-[100%] px-3 text-[30px] text-[#f95005]">
+            <IoSearch />
+            </div>
+            {/* <div className="w-[100%]">
+                <button className="w-[100%] h-[100%] text-white bg-[#f95005] border-none p-2 rounded-md">
+                  Submit
+                </button>
+              </div> */}
+            
           </div>
         );
       case "2":
         return (
           <>
-            <div className="flex flex-row justify-between w-[100%] gap-3">
-              {/* Start Date */}
-              <div>
-                <Calendar
-                  placeholder="Start Date"
-                  value={startDate}
-                  onChange={(e) => {
-                    const selectedDate = e.value as Date;
-                    setStartDate(selectedDate);
-                  }}
-                  className="relative w-full h-10 placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
-                />
-              </div>
+         <div className=" flex flex-row w-[100%] ">
+              <div className="flex flex-row gap-3 justify-between w-[200%] px-3 ">
+                {/* Start Date */}
+                <div className="w-[100%]  ">
+                  <Calendar
+                    placeholder="Start Date"
+                    value={startDate}
+                    onChange={(e) => {
+                      const selectedDate = e.value as Date;
+                      setStartDate(selectedDate);
+                    }}
+                    className="relative w-full h-10 placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
+                  />
+                </div>
 
-              {/* End Date */}
-              <div>
-                <Calendar
-                  placeholder="End Date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.value as Date)}
-                  minDate={
-                    startDate
-                      ? new Date(startDate.getTime()) // Clone the startDate to avoid mutating it
-                      : undefined
-                  } // Set minDate to the selected start date
-                  maxDate={
-                    startDate
-                      ? new Date(
-                          startDate.getFullYear(),
-                          startDate.getMonth() + 1, // Next month
-                          0 // Last day of the next month
-                        )
-                      : undefined
-                  } // Set maxDate to the end of the next month
-                  monthNavigator
-                  yearNavigator
-                  className="relative w-full h-10 placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
-                />
-              </div>
-              <div>
+                {/* End Date */}
+                <div className="w-[100%]">
+                  <Calendar
+                    placeholder="End Date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.value as Date)}
+                    minDate={
+                      startDate
+                        ? new Date(startDate.getTime()) // Clone the startDate to avoid mutating it
+                        : undefined
+                    } // Set minDate to the selected start date
+                    maxDate={
+                      startDate
+                        ? new Date(
+                            startDate.getFullYear(),
+                            startDate.getMonth() + 1, // Next month
+                            0 // Last day of the next month
+                          )
+                        : undefined
+                    } // Set maxDate to the end of the next month
+                    monthNavigator
+                    yearNavigator
+                    className="relative w-full h-10 placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
+                  />
+                </div>
+                {/* <div>
                 <button className="w-[100%] h-[100%] text-white bg-[#f95005] border-none p-2 rounded-md">
                   Submit
                 </button>
+              </div> */}
               </div>
+              <div className="w-[150%] px-2 ">
+                <SelectInput
+                  id="sessionSelect"
+                  name="sessionSelect"
+                  label="SessionType *"
+                  onChange={handleSessionChange} // Handle dropdown changes
+                  options={[
+                    { value: "Online", label: "Online" },
+                    { value: "Offline", label: "Offline" },
+                  ]}
+                  required
+                />
+              </div>
+              <div className="w-[100%] px-3">
+                <MultiSelect
+                  id="preferredTime"
+                  value={preferredTimes}
+                  options={preferredTimeOptions}
+                  onChange={(e) => setPreferredTimes(e.value)}
+                  className="w-full"
+                />
+                </div>
+               <div className="w-[100%] text-[30px] px-3 text-[#f95005]">
+            <IoSearch />
+            </div>
             </div>
           </>
+          // <>
+          //   <div className="flex flex-row justify-between w-[30%] gap-3 px-3">
+          //     <Calendar
+          //       placeholder="Choose date"
+          //       value={startDate}
+          //       className="relative w-full h-10 placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
+          //       view="month"
+          //       dateFormat="mm/yy"
+          //     />
+          //     {/* <div>
+          //       <button className="w-[100%] h-[100%] text-white bg-[#f95005] border-none p-2 rounded-md">
+          //         Submit
+          //       </button>
+          //     </div> */}
+          //   </div>
+          // </>
         );
 
-      case "3":
-        return (
-          <>
-            <div className="flex flex-row justify-between w-[100%] gap-3 px-3">
-              <Calendar
-                placeholder="Choose date"
-                value={startDate}
-                className="relative w-full h-10 placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
-                view="month"
-                dateFormat="mm/yy"
-              />
-              <div>
-                <button className="w-[100%] h-[100%] text-white bg-[#f95005] border-none p-2 rounded-md">
-                  Submit
-                </button>
-              </div>
-            </div>
-          </>
-        );
+      // case "3":
+      //   return (
+      //     <>
+      //       <div className="flex flex-row justify-between w-[100%] gap-3 px-3">
+      //         <Calendar
+      //           placeholder="Choose date"
+      //           value={startDate}
+      //           className="relative w-full h-10 placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
+      //           view="month"
+      //           dateFormat="mm/yy"
+      //         />
+      //         <div>
+      //           <button className="w-[100%] h-[100%] text-white bg-[#f95005] border-none p-2 rounded-md">
+      //             Submit
+      //           </button>
+      //         </div>
+      //       </div>
+      //     </>
+      //   );
       default:
         return null;
     }
@@ -337,7 +420,9 @@ const StaffAttendance: React.FC = () => {
   const handleSessionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedSession(e.target.value);
   };
-
+  const handleClassChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedClass(e.target.value);
+  };
   // Sample attendance data for Online and Offline
   const attendanceDataOnline = [
     { Sessionname: "Weekend", Signup: 30, Attend: 25, NotAttend: 5 },
@@ -375,7 +460,6 @@ const StaffAttendance: React.FC = () => {
                 width="95%"
                 height="80vh"
                 borderRadius="16px"
-
               ></Skeleton>
               <div className="py-1"></div>
             </div>
@@ -559,22 +643,40 @@ const StaffAttendance: React.FC = () => {
               >
                 <div className="flex flex-col mt-3">
                   {/* Dropdown */}
-                  <div className="w-[30%] px-10">
+
+                  {/* <div className="w-[30%] px-10">
                     <SelectInput
-                      id="sessionSelect"
-                      name="sessionSelect"
-                      label="Session *"
-                      onChange={handleSessionChange} // Handle dropdown changes
+                      id="classSelect"
+                      name="classSelect"
+                      label="Classes *"
+                      onChange={handleClassChange} // Handle dropdown changes
                       options={[
                         { value: "Online", label: "Online" },
                         { value: "Offline", label: "Offline" },
-                        {
-                          value: "Online and Offline",
-                          label: "Online and Offline",
-                        },
                       ]}
                       required
                     />
+                  </div> */}
+                  <div className="w-[100%] gap-5  mt-5 px-3 flex flex-row justify-evenly lg:m-5">
+                    <div className="w-[25%] gap-5">
+                      <SelectInput
+                        id="classtype"
+                        name="classtype"
+                        label="ClassType *"
+                        // label="Class Type *"
+                        options={[
+                          { value: "1", label: "Per Day" },
+                          { value: "2", label: "Monthly" },
+                        ]}
+                        // {renderCalendar()}
+                        onChange={(e) => {
+                          setClassType(e.target.value);
+                          console.log(e.target.value);
+                        }}
+                        required
+                      />
+                    </div>
+                 <div className="w-[100%]">   {renderCalendar()}</div>
                   </div>
 
                   {/* Display Data Tables Based on Selection */}
@@ -590,7 +692,10 @@ const StaffAttendance: React.FC = () => {
                                 View
                               </button>
                             </div>
-                            <DataTable className="w-[100%] " value={attendanceDataOnline}>
+                            <DataTable
+                              className="w-[100%] "
+                              value={attendanceDataOnline}
+                            >
                               <Column
                                 field="Sessionname"
                                 header="Session"
@@ -667,180 +772,175 @@ const StaffAttendance: React.FC = () => {
                   flexDirection: "column",
                   alignItems: "start",
                   justifyContent: "flex-end",
-                  overflow:"hidden",
-                  marginTop:"-10px",
+                  overflow: "hidden",
+                  marginTop: "-10px",
                 }}
               >
-              <div className="flex flex-row w-[100%] justify-between">
-              <div className="flex flex-col w-[48%] gap-3  ">
-                  <div className="flex fles-row w-[100%]  justify-between ">
-                    {" "}
-                    <div className="w-[80%]">
-                      <IconField iconPosition="left">
-                        <InputIcon className="pi pi-search"> </InputIcon>
-                        <InputText placeholder="Search" />
-                      </IconField>
-                    </div>
-                    <div>
-                      <button className="w-[85px] h-[40px] text-white text-[18px]  bg-[#f95005] border-none p-2 rounded-md">
-                        Submit
-                      </button>
-                    </div>
-                  </div>
-                  <div
-                    className="flex flex-col justify-start p-4 mt-0 w-[100%] px-3  rounded-xl "
-                    style={{ border: "3px solid #f95005" }}
-                  >
-                    <div className=" h-[25px] mt-[-30px]  flex">
-                      {/* <span className="font-bold">User Name :</span>{" "} */}
-                      <p
-                        style={{
-                          width: "30%",
-                          fontSize: "18px",
-
-                          fontWeight: "bold",
-                          color: "#f95005",
-                          textAlign: "left",
-                        }}
-                      >
-                        User Name
-                      </p>
-                      <p
-                        style={{
-                          width: "60%",
-                          fontSize: "18px",
-                          paddingLeft: "10px",
-                        }}
-                      >
-                        {" "}
-                        : {userData.userName}
-                      </p>
-                    </div>
-                    <div className="w-[] h-[25px]  flex">
-                      {/* <span className="font-bold">User Name :</span>{" "} */}
-                      <p
-                        style={{
-                          width: "30%",
-                          fontSize: "18px",
-
-                          fontWeight: "bold",
-                          color: "#f95005",
-                          textAlign: "left",
-                        }}
-                      >
-                        User ID
-                      </p>
-                      <p
-                        style={{
-                          width: "60%",
-                          fontSize: "18px",
-                          paddingLeft: "10px",
-                        }}
-                      >
-                        {" "}
-                        : {userData.userId}
-                      </p>
-                    </div>
-                    <div className="w-[] h-[25px]  flex">
-                      {/* <span className="font-bold">User Name :</span>{" "} */}
-                      <p
-                        style={{
-                          width: "30%",
-                          fontSize: "18px",
-
-                          fontWeight: "bold",
-                          color: "#f95005",
-                          textAlign: "left",
-                        }}
-                      >
-                        User Email
-                      </p>
-                      <p
-                        style={{
-                          width: "60%",
-                          fontSize: "18px",
-                          paddingLeft: "10px",
-                        }}
-                      >
-                        {" "}
-                        : {userData.userEmail}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex flex-col w-[100%] gap-2">
-                    <div className=" w-[100%] flex justify-end">
+                <div className="flex flex-row w-[100%] justify-between">
+                  <div className="flex flex-col w-[48%] gap-3  ">
+                    <div className="flex fles-row w-[100%]  justify-between ">
                       {" "}
-                      <Button
-                        type="button"
-                        severity="success"
-                        onClick={() => {
-                          const content = rowData.newdata?.content;
-                          const filename = rowData.label + ".pdf";
-
-                          if (content) {
-                            const byteCharacters = atob(content);
-                            const byteNumbers = new Array(
-                              byteCharacters.length
-                            );
-                            for (let i = 0; i < byteCharacters.length; i++) {
-                              byteNumbers[i] = byteCharacters.charCodeAt(i);
-                            }
-                            const byteArray = new Uint8Array(byteNumbers);
-                            const blob = new Blob([byteArray], {
-                              type: "application/pdf",
-                            });
-
-                            const link = document.createElement("a");
-                            link.href = URL.createObjectURL(blob);
-                            link.download = filename;
-                            link.click();
-
-                            URL.revokeObjectURL(link.href);
-                          }
-                        }}
-                        label="Download"
-                      />
+                      <div className="w-[80%]">
+                        <IconField iconPosition="left">
+                          <InputIcon className="pi pi-search"> </InputIcon>
+                          <InputText placeholder="Search" />
+                        </IconField>
+                      </div>
+                      <div>
+                        <button className="w-[85px] h-[40px] text-white text-[18px]  bg-[#f95005] border-none p-2 rounded-md">
+                          Submit
+                        </button>
+                      </div>
                     </div>
-                    <DataTable
-                      value={attendanceData}
-                      className="w-[100%] mt-3"
-                      scrollable
-                      scrollHeight="200px" // Set a fixed height for vertical scrolling
+                    <div
+                      className="flex flex-col justify-start p-4 mt-0 w-[100%] px-3  rounded-xl "
+                      style={{ border: "3px solid #f95005" }}
                     >
-                      <Column
-                        field="Sessionname"
-                        header="Session"
-                        frozen
-                        style={{ inlineSize: "15rem" }}
-                      />
+                      <div className=" h-[25px] mt-[-30px]  flex">
+                        {/* <span className="font-bold">User Name :</span>{" "} */}
+                        <p
+                          style={{
+                            width: "30%",
+                            fontSize: "18px",
 
-                      <Column
-                        field="Signup"
-                        header="Enrolled"
-                        style={{ inlineSize: "18rem" }}
-                      />
-                      <Column
-                        field="Attend"
-                        header="Attended"
-                        style={{ inlineSize: "14rem" }}
-                      />
-                      <Column
-                        field="NotAttend"
-                        header="Not Attended"
-                        style={{ inlineSize: "15rem" }}
-                      />
-                    </DataTable>
-                
-                </div>
-                </div>
-                <div className="w-[48%]">
+                            fontWeight: "bold",
+                            color: "#f95005",
+                            textAlign: "left",
+                          }}
+                        >
+                          User Name
+                        </p>
+                        <p
+                          style={{
+                            width: "60%",
+                            fontSize: "18px",
+                            paddingLeft: "10px",
+                          }}
+                        >
+                          {" "}
+                          : {userData.userName}
+                        </p>
+                      </div>
+                      <div className="w-[] h-[25px]  flex">
+                        {/* <span className="font-bold">User Name :</span>{" "} */}
+                        <p
+                          style={{
+                            width: "30%",
+                            fontSize: "18px",
+
+                            fontWeight: "bold",
+                            color: "#f95005",
+                            textAlign: "left",
+                          }}
+                        >
+                          User ID
+                        </p>
+                        <p
+                          style={{
+                            width: "60%",
+                            fontSize: "18px",
+                            paddingLeft: "10px",
+                          }}
+                        >
+                          {" "}
+                          : {userData.userId}
+                        </p>
+                      </div>
+                      <div className="w-[] h-[25px]  flex">
+                        {/* <span className="font-bold">User Name :</span>{" "} */}
+                        <p
+                          style={{
+                            width: "30%",
+                            fontSize: "18px",
+
+                            fontWeight: "bold",
+                            color: "#f95005",
+                            textAlign: "left",
+                          }}
+                        >
+                          User Email
+                        </p>
+                        <p
+                          style={{
+                            width: "60%",
+                            fontSize: "18px",
+                            paddingLeft: "10px",
+                          }}
+                        >
+                          {" "}
+                          : {userData.userEmail}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex flex-col w-[100%] gap-2">
+                      <div className=" w-[100%] flex justify-end">
+                        {" "}
+                        <Button
+                          type="button"
+                          severity="success"
+                          onClick={() => {
+                            const content = rowData.newdata?.content;
+                            const filename = rowData.label + ".pdf";
+
+                            if (content) {
+                              const byteCharacters = atob(content);
+                              const byteNumbers = new Array(
+                                byteCharacters.length
+                              );
+                              for (let i = 0; i < byteCharacters.length; i++) {
+                                byteNumbers[i] = byteCharacters.charCodeAt(i);
+                              }
+                              const byteArray = new Uint8Array(byteNumbers);
+                              const blob = new Blob([byteArray], {
+                                type: "application/pdf",
+                              });
+
+                              const link = document.createElement("a");
+                              link.href = URL.createObjectURL(blob);
+                              link.download = filename;
+                              link.click();
+
+                              URL.revokeObjectURL(link.href);
+                            }
+                          }}
+                          label="Download"
+                        />
+                      </div>
+                      <DataTable
+                        value={attendanceData}
+                        className="w-[100%] mt-3"
+                        scrollable
+                        scrollHeight="200px" // Set a fixed height for vertical scrolling
+                      >
+                        <Column
+                          field="Sessionname"
+                          header="Session"
+                          frozen
+                          style={{ inlineSize: "15rem" }}
+                        />
+
+                        <Column
+                          field="Signup"
+                          header="Enrolled"
+                          style={{ inlineSize: "18rem" }}
+                        />
+                        <Column
+                          field="Attend"
+                          header="Attended"
+                          style={{ inlineSize: "14rem" }}
+                        />
+                        <Column
+                          field="NotAttend"
+                          header="Not Attended"
+                          style={{ inlineSize: "15rem" }}
+                        />
+                      </DataTable>
+                    </div>
+                  </div>
+                  <div className="w-[48%]">
                     <Calenderss />
                   </div>
-              </div>
-
-           
-                 
-               
+                </div>
               </TabPanel>
             </TabView>
             <Sidebar
@@ -851,7 +951,7 @@ const StaffAttendance: React.FC = () => {
             >
               <h2>12 Classes in One month duration</h2>
               <div className="flex flex-col justify-center align-middle w-[100%] ">
-                <div className="w-[100%]  mt-5 px-5 flex flex-row justify-evenly lg:m-5">
+                <div className="w-[100%]  mt-5 px-3 flex flex-row justify-evenly lg:m-5">
                   <div className="w-[48%] gap-5">
                     <SelectInput
                       id="classtype"
