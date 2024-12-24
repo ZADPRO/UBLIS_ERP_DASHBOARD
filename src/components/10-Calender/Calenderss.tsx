@@ -7,9 +7,24 @@ import "./Calenderss.css";
 import axios from "axios";
 import CryptoJS from "crypto-js";
 
+type Attendance = {
+  sno: number;
+  date: string;
+  time: string;
+};
+
+type CalenderssProps = {
+  selectedUser: any;
+  userFilteredAttendanceData: Attendance[];
+};
+
 type DecryptResult = any;
 
-const Calenderss: React.FC = () => {
+const Calenderss: React.FC<CalenderssProps> = ({
+  selectedUser,
+  userFilteredAttendanceData,
+}) => {
+  console.log("selectedUser", selectedUser);
   const today = new Date();
 
   const decrypt = (
@@ -35,33 +50,14 @@ const Calenderss: React.FC = () => {
     return JSON.parse(decryptedString);
   };
 
-  const [eventData, setEventData] = useState({
-    title: "Meeting",
-    start: new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate(),
-      10,
-      0
-    ),
-    color: "#f95005",
-  });
+  const [events, setEvents] = useState<any[]>([]);
 
   const sendEventData = async (formattedMonth: string) => {
     try {
       const token = localStorage.getItem("JWTtoken");
       if (!token) {
-        console.error("JWT token is missing.");
         return;
       }
-      console.log("Token:", token);
-
-      console.log("Sending event data:", {
-        title: eventData.title,
-        start: eventData.start,
-        color: eventData.color,
-        formattedMonth,
-      });
 
       const response = await axios.post(
         import.meta.env.VITE_API_URL + "/attendance/user",
@@ -76,7 +72,6 @@ const Calenderss: React.FC = () => {
         }
       );
 
-      console.log("Full response data:", response.data);
       const data = decrypt(
         response.data[1],
         response.data[0],
@@ -89,14 +84,44 @@ const Calenderss: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    const formattedMonth = today.toLocaleString("default", {
-      year: "numeric",
-      month: "long",
-    });
+  const formatDate = (dateString: string): string => {
+    // Convert date from dd/mm/yyyy to yyyy-mm-dd
+    const [day, month, year] = dateString.split("/");
+    const formattedDate = `${year}-${month.padStart(2, "0")}-${day.padStart(
+      2,
+      "0"
+    )}`;
+    return formattedDate;
+  };
 
-    sendEventData(formattedMonth);
-  }, []);
+  useEffect(() => {
+    if (
+      !userFilteredAttendanceData ||
+      userFilteredAttendanceData.length === 0
+    ) {
+      console.log("No attendance data available.");
+      setEvents([]);
+      return;
+    }
+    console.log("userFilteredAttendanceData", userFilteredAttendanceData);
+
+    const transformedEvents = userFilteredAttendanceData
+      .filter((attendance) => {
+        const isValid = !isNaN(Date.parse(attendance.date));
+        if (!isValid) {
+          console.warn(`Invalid date detected: ${attendance.date}`);
+        }
+        return isValid;
+      })
+      .map((attendance) => ({
+        title: "Check-in",
+        start: formatDate(attendance.date),
+        allDay: true,
+      }));
+
+    console.log("transformedEvents", transformedEvents);
+    setEvents(transformedEvents);
+  }, [userFilteredAttendanceData]);
 
   return (
     <div className="w-full h-[75vh] bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200">
@@ -112,35 +137,9 @@ const Calenderss: React.FC = () => {
         validRange={{
           end: new Date(today.getFullYear(), today.getMonth() + 1, 0),
         }}
-        datesSet={(dateInfo) => {
-          const currentDate = new Date();
-          if (dateInfo.start.getMonth() > currentDate.getMonth()) {
-            alert("You cannot navigate beyond the current month.");
-          }
-
-          const currentMonth = dateInfo.view.title.split(" ")[0];
-          const currentYear = dateInfo.view.title.split(" ")[1];
-
-          const formattedMonth = new Date(dateInfo.view.title).toLocaleString(
-            "default",
-            { month: "long", year: "numeric" }
-          );
-
-          sendEventData(formattedMonth);
-
-          console.log(
-            `Current Month: ${currentMonth}, Current Year: ${currentYear}`
-          );
-        }}
+        events={events}
         dayHeaderClassNames="bg-f95005 text-white font-bold"
         dayCellClassNames="hover:bg-f95005 hover:text-white transition-all cursor-pointer"
-        events={[
-          {
-            title: eventData.title,
-            start: eventData.start,
-            color: eventData.color,
-          },
-        ]}
       />
     </div>
   );

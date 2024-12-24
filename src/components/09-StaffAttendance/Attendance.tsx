@@ -20,6 +20,7 @@ import Calenderss from "../10-Calender/Calenderss";
 import { View } from "@react-pdf/renderer";
 import { MultiSelect } from "primereact/multiselect";
 import { IoSearch } from "react-icons/io5";
+import axios from "axios";
 
 interface Customer {
   Username: string;
@@ -34,6 +35,32 @@ interface Customer {
   comments: string;
   classType: string;
 }
+
+interface RowData {
+  refStId: number;
+  refStFName: string;
+  refSCustId: string;
+  refStLName: string;
+  refPackageName: string;
+  refTime: string;
+  refCtMobile: string;
+  refCtEmail: string;
+}
+
+interface SelectedUser {
+  id: number;
+  userName: string;
+  userId: string;
+  userEmail: string;
+  refTime: string;
+  refPackageName: string;
+}
+
+type Attendance = {
+  sno: number;
+  date: string;
+  time: string;
+};
 
 const StaffAttendance: React.FC = () => {
   const [attendanceData, setAttendanceData] = useState<Customer[]>([]);
@@ -91,7 +118,6 @@ const StaffAttendance: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      console.log("data", data);
       if (data.token == false) {
         navigate("/expired");
       } else {
@@ -208,9 +234,67 @@ const StaffAttendance: React.FC = () => {
   const [classType, setClassType] = useState("1");
   const [startDate, setStartDate] = useState<Date | null>(null); // For Cust Date - start date
   const [endDate, setEndDate] = useState<Date | null>(null); // For Cust Date - end date
-  const [selectedMonth, setSelectedMonth] = useState<string>("");
   const [selectedSession, setSelectedSession] = useState<string>("Online");
   const [selectedClass, setSelectedClass] = useState<string>("Online");
+
+  const [selectedUser, setSelectedUser] = useState<SelectedUser | null>(null);
+
+  const [userFilteredAttendanceData, setUserFilteredAttendanceData] = useState<
+    Attendance[]
+  >([]);
+
+  const clearClick = () => {
+    setSelectedUser(null);
+    setSearchQuery("");
+    setFilteredAttendanceData([]);
+  };
+
+  const handleRowClick = async (rowData: RowData) => {
+    const response = await axios.post(
+      import.meta.env.VITE_API_URL + "/attendance/user",
+      {
+        refCustId: rowData.refSCustId,
+        month: "",
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("JWTtoken"),
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const data = decrypt(
+      response.data[1],
+      response.data[0],
+      import.meta.env.VITE_ENCRYPTION_KEY
+    );
+
+    console.log("data", data);
+
+    if (data.success) {
+      const mappedData = data.attendanceResult.map((item, index) => {
+        const [date, time] = item.formatted_punch_time.split(", ");
+        return {
+          sno: index + 1, // Assign a serial number
+          date: date.trim(),
+          time: time.trim(),
+        };
+      });
+      console.log("mappedData", mappedData);
+
+      setUserFilteredAttendanceData(mappedData);
+    }
+
+    setSelectedUser({
+      id: rowData.refStId,
+      userName: `${rowData.refStFName} ${rowData.refStLName}`,
+      userId: rowData.refSCustId,
+      refPackageName: rowData.refPackageName,
+      userEmail: rowData.refCtEmail,
+      refTime: rowData.refTime,
+    });
+  };
 
   const [sessionData, setSessionData] = useState({
     sessionName: "Weekend class",
@@ -881,26 +965,28 @@ const StaffAttendance: React.FC = () => {
                 }}
               >
                 <div className="flex flex-col w-full">
-                  <div className="flex flex-row w-full justify-between">
+                  <div className="flex flex-row align-items-center">
                     <div className="w-[40%] m-2">
                       <IconField iconPosition="left">
                         <InputIcon className="pi pi-search"></InputIcon>
                         <InputText
                           placeholder="Search"
+                          disabled={selectedUser}
                           value={searchQuery}
-                          onChange={handleSearchChange} // Update the search query
-                          // onClick={handleSubmit}
+                          onChange={handleSearchChange}
                         />
                       </IconField>
                     </div>
-                    {/* <div>
-              <button
-                className="w-[85px] h-[40px] text-white text-[18px] bg-[#f95005] border-none p-2 rounded-md"
-                onClick={handleSubmit} // Submit and reset visibility
-              >
-                Submit
-              </button>
-            </div> */}
+                    {selectedUser && (
+                      <div>
+                        <button
+                          className="w-[85px] h-[40px] text-white text-[18px] bg-[#f95005] border-none p-2 rounded-md cursor-pointer"
+                          onClick={clearClick}
+                        >
+                          Clear
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   {/* Conditional rendering for TabPanel content */}
@@ -914,116 +1000,159 @@ const StaffAttendance: React.FC = () => {
                       {/* User Data, DataTable, and Calendar */}
                       <div className="flex flex-col w-[48%] gap-3">
                         {/* DataTable */}
-                        {/* ATTENDANCE DATA TABLE - 985 */}
-                        <DataTable
-                          value={filteredAttendanceData}
-                          className="w-full mt-3"
-                          scrollable
-                          showGridlines
-                        >
-                          <Column
-                            field="fullName"
-                            header="Name"
-                            frozen
-                            body={(rowData) =>
-                              `${rowData.refStFName} ${rowData.refStLName}`
-                            }
-                            style={{ minWidth: "10rem" }}
-                          />
-                          <Column
-                            field="refCtMobile"
-                            header="Mobile"
-                            style={{ minWidth: "13rem" }}
-                          />
-                          <Column
-                            field="refCtEmail"
-                            header="Email"
-                            style={{ minWidth: "10rem" }}
-                          />
-                          <Column
-                            field="refStDOB"
-                            header="Date Of Birth"
-                            style={{ minWidth: "10rem" }}
-                          />
-                        </DataTable>
+                        {/* ATTENDANCE DATA TABLE - 917 */}
+                        {!selectedUser && (
+                          <DataTable
+                            value={filteredAttendanceData}
+                            className="w-full mt-3"
+                            scrollable
+                          >
+                            <Column
+                              field="fullName"
+                              header="Name"
+                              frozen
+                              body={(rowData: RowData) => (
+                                <span
+                                  onClick={() => handleRowClick(rowData)}
+                                  style={{
+                                    cursor: "pointer",
+                                    color: "blue",
+                                  }}
+                                >
+                                  {`${rowData.refStFName} ${rowData.refStLName}`}
+                                </span>
+                              )}
+                              style={{ minWidth: "10rem" }}
+                            />
+                            <Column
+                              field="refCtMobile"
+                              header="Mobile"
+                              style={{ minWidth: "13rem" }}
+                            />
+                            <Column
+                              field="refCtEmail"
+                              header="Email"
+                              style={{ minWidth: "10rem" }}
+                            />
+                            <Column
+                              field="refStDOB"
+                              header="Date Of Birth"
+                              style={{ minWidth: "10rem" }}
+                            />
+                          </DataTable>
+                        )}
 
                         {/* User data section */}
 
-                        <div
-                          className="flex flex-col justify-start p-4 w-full rounded-xl"
-                          style={{ border: "3px solid #f95005" }}
-                        >
-                          <div className="h-[25px] mt-[-30px] flex">
-                            <p
-                              style={{
-                                width: "30%",
-                                fontSize: "18px",
-                                fontWeight: "bold",
-                                color: "#f95005",
-                                textAlign: "left",
-                              }}
+                        {selectedUser && (
+                          <>
+                            <div
+                              className="flex flex-col justify-start p-4 w-full rounded-xl mt-4"
+                              style={{ border: "3px solid #f95005" }}
                             >
-                              User Name
-                            </p>
-                            <p
-                              style={{
-                                width: "60%",
-                                fontSize: "18px",
-                                paddingLeft: "10px",
-                              }}
+                              <div className="h-[25px] mt-[-30px] flex">
+                                <p
+                                  style={{
+                                    width: "30%",
+                                    fontSize: "18px",
+                                    fontWeight: "bold",
+                                    color: "#f95005",
+                                    textAlign: "left",
+                                  }}
+                                >
+                                  User Name
+                                </p>
+                                <p
+                                  style={{
+                                    width: "60%",
+                                    fontSize: "18px",
+                                    paddingLeft: "10px",
+                                  }}
+                                >
+                                  : {selectedUser.userName}
+                                </p>
+                              </div>
+                              <div className="w-full h-[25px] flex">
+                                <p
+                                  style={{
+                                    width: "30%",
+                                    fontSize: "18px",
+                                    fontWeight: "bold",
+                                    color: "#f95005",
+                                    textAlign: "left",
+                                  }}
+                                >
+                                  User ID
+                                </p>
+                                <p
+                                  style={{
+                                    width: "60%",
+                                    fontSize: "18px",
+                                    paddingLeft: "10px",
+                                  }}
+                                >
+                                  : {selectedUser.userId}
+                                </p>
+                              </div>
+                              <div className="w-full h-[25px] flex">
+                                <p
+                                  style={{
+                                    width: "30%",
+                                    fontSize: "18px",
+                                    fontWeight: "bold",
+                                    color: "#f95005",
+                                    textAlign: "left",
+                                  }}
+                                >
+                                  Session
+                                </p>
+                                <p
+                                  style={{
+                                    width: "60%",
+                                    fontSize: "18px",
+                                    paddingLeft: "10px",
+                                  }}
+                                >
+                                  : {selectedUser.refPackageName} -{" "}
+                                  {selectedUser.refTime}
+                                </p>
+                              </div>
+                            </div>
+                            <DataTable
+                              value={userFilteredAttendanceData}
+                              className="w-full mt-3"
+                              scrollHeight="350px"
+                              scrollable
                             >
-                              : {userData.userName}
-                            </p>
-                          </div>
-                          <div className="w-full h-[25px] flex">
-                            <p
-                              style={{
-                                width: "30%",
-                                fontSize: "18px",
-                                fontWeight: "bold",
-                                color: "#f95005",
-                                textAlign: "left",
-                              }}
-                            >
-                              User ID
-                            </p>
-                            <p
-                              style={{
-                                width: "60%",
-                                fontSize: "18px",
-                                paddingLeft: "10px",
-                              }}
-                            >
-                              : {userData.userId}
-                            </p>
-                          </div>
-                          <div className="w-full h-[25px] flex">
-                            <p
-                              style={{
-                                width: "30%",
-                                fontSize: "18px",
-                                fontWeight: "bold",
-                                color: "#f95005",
-                                textAlign: "left",
-                              }}
-                            >
-                              User Email
-                            </p>
-                            <p
-                              style={{
-                                width: "60%",
-                                fontSize: "18px",
-                                paddingLeft: "10px",
-                              }}
-                            >
-                              : {userData.userEmail}
-                            </p>
-                          </div>
-                        </div>
+                              <Column
+                                field="sno"
+                                header="S.No"
+                                style={{ minWidth: "3rem" }}
+                              />
+                              <Column
+                                field="date"
+                                header="Date"
+                                style={{ minWidth: "10rem" }}
+                              />
+                              <Column
+                                field="time"
+                                header="Time"
+                                style={{ minWidth: "10rem" }}
+                              />
+                            </DataTable>
+                          </>
+                        )}
                       </div>
 
                       <div className="w-[48%]">
-                        <Calenderss />
+                        {selectedUser && (
+                          <Calenderss
+                            selectedUser={selectedUser}
+                            userFilteredAttendanceData={
+                              userFilteredAttendanceData
+                            }
+                          />
+                        )}
                       </div>
                     </div>
                   )}
