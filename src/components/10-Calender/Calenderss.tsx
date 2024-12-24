@@ -78,9 +78,12 @@ const Calenderss: React.FC<CalenderssProps> = ({
         }
 
         return {
-          title: "Check-in",
+          title: `<i class="pi pi-check"></i>`, // Using PrimeReact icon
           start: formattedDate,
           allDay: true,
+          extendedProps: {
+            icon: "pi-check", // The icon used in the event
+          },
         };
       })
       .filter((event) => event !== null); // Remove invalid events
@@ -104,6 +107,13 @@ const Calenderss: React.FC<CalenderssProps> = ({
         events={events}
         dayHeaderClassNames="bg-f95005 text-white font-bold"
         dayCellClassNames="hover:bg-f95005 hover:text-white transition-all cursor-pointer"
+        eventContent={(eventInfo) => {
+          return (
+            <div className="fc-event-title">
+              <i className="pi pi-check"></i>{" "}
+            </div>
+          );
+        }}
       />
     </div>
   );

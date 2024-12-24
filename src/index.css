@@ -17,5 +17,13 @@
   .p-datatable-tbody
   > tr
   > td {
-  padding: 10px 15px !important;
+  padding: 10px 5px !important;
+}
+
+/* FULL CALENDAR CSS */
+.fc-h-event .fc-event-main {
+  color: green;
+  background: white;
+  font-weight: bold;
+  border: none;
 }
