@@ -4,8 +4,6 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import "./Calenderss.css";
-import axios from "axios";
-import CryptoJS from "crypto-js";
 
 type Attendance = {
   sno: number;
@@ -18,75 +16,38 @@ type CalenderssProps = {
   userFilteredAttendanceData: Attendance[];
 };
 
-type DecryptResult = any;
-
 const Calenderss: React.FC<CalenderssProps> = ({
   selectedUser,
   userFilteredAttendanceData,
 }) => {
-  console.log("selectedUser", selectedUser);
-  const today = new Date();
-
-  const decrypt = (
-    encryptedData: string,
-    iv: string,
-    key: string
-  ): DecryptResult => {
-    const cipherParams = CryptoJS.lib.CipherParams.create({
-      ciphertext: CryptoJS.enc.Hex.parse(encryptedData),
-    });
-
-    const decrypted = CryptoJS.AES.decrypt(
-      cipherParams,
-      CryptoJS.enc.Hex.parse(key),
-      {
-        iv: CryptoJS.enc.Hex.parse(iv),
-        mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.Pkcs7,
-      }
-    );
-
-    const decryptedString = decrypted.toString(CryptoJS.enc.Utf8);
-    return JSON.parse(decryptedString);
-  };
-
   const [events, setEvents] = useState<any[]>([]);
 
-  const sendEventData = async (formattedMonth: string) => {
-    try {
-      const token = localStorage.getItem("JWTtoken");
-      if (!token) {
-        return;
-      }
-
-      const response = await axios.post(
-        import.meta.env.VITE_API_URL + "/attendance/user",
-        {
-          month: formattedMonth,
-        },
-        {
-          headers: {
-            Authorization: localStorage.getItem("JWTtoken"),
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const data = decrypt(
-        response.data[1],
-        response.data[0],
-        import.meta.env.VITE_ENCRYPTION_KEY
-      );
-
-      console.log("Decrypted data:", data);
-    } catch (error) {
-      console.error("Error sending data:", error);
-    }
-  };
-
   const formatDate = (dateString: string): string => {
-    // Convert date from dd/mm/yyyy to yyyy-mm-dd
     const [day, month, year] = dateString.split("/");
+
+    if (
+      !day ||
+      !month ||
+      !year ||
+      isNaN(Number(day)) ||
+      isNaN(Number(month)) ||
+      isNaN(Number(year))
+    ) {
+      console.error(`Invalid date format: ${dateString}`);
+      return ""; // Return empty string for invalid date
+    }
+
+    // Validate month and day ranges
+    if (Number(month) < 1 || Number(month) > 12) {
+      console.error(`Invalid month value: ${month}`);
+      return ""; // Invalid month
+    }
+
+    if (Number(day) < 1 || Number(day) > 31) {
+      console.error(`Invalid day value: ${day}`);
+      return ""; // Invalid day
+    }
+
     const formattedDate = `${year}-${month.padStart(2, "0")}-${day.padStart(
       2,
       "0"
@@ -103,23 +64,29 @@ const Calenderss: React.FC<CalenderssProps> = ({
       setEvents([]);
       return;
     }
-    console.log("userFilteredAttendanceData", userFilteredAttendanceData);
+
+    console.log("userFilteredAttendanceData:", userFilteredAttendanceData);
 
     const transformedEvents = userFilteredAttendanceData
-      .filter((attendance) => {
-        const isValid = !isNaN(Date.parse(attendance.date));
-        if (!isValid) {
-          console.warn(`Invalid date detected: ${attendance.date}`);
-        }
-        return isValid;
-      })
-      .map((attendance) => ({
-        title: "Check-in",
-        start: formatDate(attendance.date),
-        allDay: true,
-      }));
+      .map((attendance, index) => {
+        console.log(`Processing attendance entry #${index + 1}:`, attendance);
 
-    console.log("transformedEvents", transformedEvents);
+        const formattedDate = formatDate(attendance.date);
+        if (!formattedDate) {
+          console.warn(`Skipping invalid date: ${attendance.date}`);
+          return null; // Skip invalid date
+        }
+
+        return {
+          title: "Check-in",
+          start: formattedDate,
+          allDay: true,
+        };
+      })
+      .filter((event) => event !== null); // Remove invalid events
+
+    console.log("transformedEvents before setting state:", transformedEvents);
+
     setEvents(transformedEvents);
   }, [userFilteredAttendanceData]);
 
@@ -134,9 +101,6 @@ const Calenderss: React.FC<CalenderssProps> = ({
         }}
         height={"65vh"}
         contentHeight={"auto"}
-        validRange={{
-          end: new Date(today.getFullYear(), today.getMonth() + 1, 0),
-        }}
         events={events}
         dayHeaderClassNames="bg-f95005 text-white font-bold"
         dayCellClassNames="hover:bg-f95005 hover:text-white transition-all cursor-pointer"
