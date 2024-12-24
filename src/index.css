@@ -10,3 +10,12 @@
   @tailwind components;
   @tailwind utilities;
 }
+
+.p-datatable.p-datatable-gridlines:has(.p-datatable-thead):has(
+    .p-datatable-tbody
+  )
+  .p-datatable-tbody
+  > tr
+  > td {
+  padding: 2px 5px !important;
+}
