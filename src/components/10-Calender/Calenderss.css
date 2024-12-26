@@ -1,9 +1,7 @@
-/* calendarStyles.css */
 .fc-toolbar {
   background-color: #f95005;
   color: white;
   padding: 10px;
-  border-radius: 6px;
 }
 
 .fc-toolbar-title {
@@ -28,45 +26,33 @@
   border: 1px solid #f95005;
 }
 
-.fc-daygrid-day:hover {
-  background-color: #f95005;
-  color: rgb(7, 219, 25);
-}
-
 .fc-day-today {
-  background-color: #f9500510; /* Light transparent background for today */
+  background-color: #f9500510;
   border-left: 4px solid #f95005;
 }
-.fc-scrollgrid-sync-inner{
-    color: #000000;
+.fc-scrollgrid-sync-inner {
+  color: #000000;
 }
 .fc-header-toolbar .fc-toolbar {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 .fc .fc-button-primary:disabled {
-    background-color: white !important;
-    border:none;
-    color: black;
-    font-weight: bolder;
-
+  background-color: white !important;
+  border: none;
+  color: black;
+  font-weight: bolder;
 }
 
 .fc .fc-button-primary:hover {
-    background-color: white !important;
-    border:none;
-    color:black;
-
-
+  background-color: white !important;
+  border: none;
+  color: black;
 }
 
 .fc .fc-button-primary {
-    background-color: #ffffff;
-    border:none;
-    color: Black;
-    font-weight: bolder;
-    text-transform: capitalize;
-
-
-   
+  background-color: #ffffff;
+  border: none;
+  color: Black;
+  font-weight: bolder;
+  text-transform: capitalize;
 }
-

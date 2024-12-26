@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
-import Fullcalendar from "@fullcalendar/react";
+import React, { useState, useEffect, useRef } from "react";
+import { EventInput } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import "./Calenderss.css";
+import FullCalendar from "@fullcalendar/react";
 
 type Attendance = {
   sno: number;
@@ -11,16 +12,32 @@ type Attendance = {
   time: string;
 };
 
+type RowData = {
+  refSCustId: string;
+};
+
+type User = {
+  id: number;
+  userName: string;
+  userId: string;
+  userEmail: string;
+  refTime: string;
+  refPackageName: string;
+};
+
 type CalenderssProps = {
-  selectedUser: any;
+  selectedUser: User | null;
   userFilteredAttendanceData: Attendance[];
+  handleRowClick: (rowData: RowData, month: string) => void;
 };
 
 const Calenderss: React.FC<CalenderssProps> = ({
   selectedUser,
   userFilteredAttendanceData,
+  handleRowClick,
 }) => {
-  const [events, setEvents] = useState<any[]>([]);
+  const calendarRef: React.MutableRefObject<FullCalendar | null> = useRef(null);
+  const [events, setEvents] = useState<EventInput[]>([]);
 
   const formatDate = (dateString: string): string => {
     const [day, month, year] = dateString.split("/");
@@ -34,18 +51,17 @@ const Calenderss: React.FC<CalenderssProps> = ({
       isNaN(Number(year))
     ) {
       console.error(`Invalid date format: ${dateString}`);
-      return ""; // Return empty string for invalid date
+      return "";
     }
 
-    // Validate month and day ranges
     if (Number(month) < 1 || Number(month) > 12) {
       console.error(`Invalid month value: ${month}`);
-      return ""; // Invalid month
+      return "";
     }
 
     if (Number(day) < 1 || Number(day) > 31) {
       console.error(`Invalid day value: ${day}`);
-      return ""; // Invalid day
+      return "";
     }
 
     const formattedDate = `${year}-${month.padStart(2, "0")}-${day.padStart(
@@ -55,57 +71,109 @@ const Calenderss: React.FC<CalenderssProps> = ({
     return formattedDate;
   };
 
-  useEffect(() => {
-    if (
-      !userFilteredAttendanceData ||
-      userFilteredAttendanceData.length === 0
-    ) {
-      console.log("No attendance data available.");
-      setEvents([]);
-      return;
+  const today = new Date();
+
+  const [calendarDate, setCalendarDate] = useState({
+    month: today.getMonth() + 1,
+    year: today.getFullYear(),
+  });
+
+  function getMonthNameFromNumber(monthNumber: number) {
+    const date = new Date();
+    date.setMonth(monthNumber - 1);
+    return date.toLocaleString("default", { month: "long" });
+  }
+
+  function adjustMonth(offset: number) {
+    const currentDate = new Date(calendarDate.year, calendarDate.month - 1);
+    const adjustedDate = new Date(currentDate);
+    adjustedDate.setMonth(currentDate.getMonth() + offset);
+
+    console.log(
+      getMonthNameFromNumber(adjustedDate.getMonth() + 1),
+      adjustedDate.getFullYear()
+    );
+
+    console.log(selectedUser);
+
+    if (selectedUser) {
+      handleRowClick(
+        { refSCustId: selectedUser.userId }, // Pass userId as refSCustId in rowData
+        getMonthNameFromNumber(adjustedDate.getMonth() + 1) +
+          " " +
+          adjustedDate.getFullYear()
+      );
     }
 
-    console.log("userFilteredAttendanceData:", userFilteredAttendanceData);
+    setCalendarDate({
+      month: adjustedDate.getMonth() + 1,
+      year: adjustedDate.getFullYear(),
+    });
+  }
 
+  useEffect(() => {
     const transformedEvents = userFilteredAttendanceData
-      .map((attendance, index) => {
-        console.log(`Processing attendance entry #${index + 1}:`, attendance);
-
+      .map((attendance) => {
         const formattedDate = formatDate(attendance.date);
-        if (!formattedDate) {
-          console.warn(`Skipping invalid date: ${attendance.date}`);
-          return null; // Skip invalid date
-        }
-
+        if (!formattedDate) return null;
         return {
-          title: `<i class="pi pi-check"></i>`, // Using PrimeReact icon
+          title: `<i class="pi pi-check"></i>`,
           start: formattedDate,
           allDay: true,
-          extendedProps: {
-            icon: "pi-check", // The icon used in the event
-          },
         };
       })
-      .filter((event) => event !== null); // Remove invalid events
-
-    console.log("transformedEvents before setting state:", transformedEvents);
+      .filter((event) => event !== null);
 
     setEvents(transformedEvents);
   }, [userFilteredAttendanceData]);
 
   return (
-    <div className="w-full h-[75vh] bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200">
-      <Fullcalendar
+    <div className="w-full h-[75vh] bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200 m-2">
+      <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         headerToolbar={{
           start: "today",
           center: "title",
-          end: "prev next",
+          end: "customPrev,customNext",
         }}
+        customButtons={{
+          customPrev: {
+            text: "Prev",
+            click: () => {
+              const calendarApi = calendarRef.current?.getApi();
+              if (calendarApi) {
+                calendarApi.prev();
+                adjustMonth(-1);
+                console.log("Moved to previous month");
+              } else {
+                console.error("Calendar API is not available");
+              }
+            },
+          },
+          customNext: {
+            text: "Next",
+            click: () => {
+              const calendarApi = calendarRef.current?.getApi();
+              if (calendarApi) {
+                calendarApi.next();
+                adjustMonth(1);
+                console.log("Moved to next month");
+              } else {
+                console.error("Calendar API is not available");
+              }
+            },
+          },
+        }}
+        ref={calendarRef}
         height={"65vh"}
         contentHeight={"auto"}
         events={events}
         dayHeaderClassNames="bg-f95005 text-white font-bold"
+        datesSet={(info) => {
+          const startDate = info.start;
+          const endDate = info.end;
+          console.log("View changed: ", startDate, endDate);
+        }}
         dayCellClassNames="hover:bg-f95005 hover:text-white transition-all cursor-pointer"
         eventContent={(eventInfo) => {
           return (
