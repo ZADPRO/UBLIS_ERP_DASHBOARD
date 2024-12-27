@@ -5,6 +5,7 @@ import { Calendar } from "primereact/calendar";
 import axios from "axios";
 import CryptoJS from "crypto-js";
 import { MultiSelect } from "primereact/multiselect";
+import { Button } from "primereact/button";
 
 interface SessionType {
   name: string;
@@ -87,34 +88,6 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
     return JSON.parse(decryptedString);
   };
 
-  // const handleApiCall = async (mode: number, date: string) => {
-  //   try {
-  //     const res = await axios.post(
-  //       import.meta.env.VITE_API_URL + "/attendance/reportOptions",
-  //       {
-  //         mode: mode,
-  //         date: date,
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: localStorage.getItem("JWTtoken"),
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     );
-
-  //     const data = decrypt(
-  //       res.data[1],
-  //       res.data[0],
-  //       import.meta.env.VITE_ENCRYPTION_KEY
-  //     );
-
-  //     console.log("Decrypted Data:", data);
-  //     setAttendanceOptions(data.options);
-  //   } catch (error) {
-  //     console.error("Error calling API:", error);
-  //   }
-  // };
   const handleApiCall = async (date: string) => {
     try {
       const sessionCodes = sessionMode.map((s) => s.code);
@@ -157,9 +130,9 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
         hour12: true,
       }).format(date);
 
-      handleApiCall(sessionMode?.code || 0, selectedDate);
+      handleApiCall(selectedDate);
     } else if (reportRange?.code === 2) {
-      handleApiCall(sessionMode?.code || 0, "");
+      handleApiCall("");
     }
   }, [reportRange, date, sessionMode]);
 
@@ -174,7 +147,7 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
       );
       if (existingGroup) {
         existingGroup.items.push({
-          label: `${curr.refTime} (${curr.refDays})`,
+          label: `${curr.refTime}`,
           value: curr.value,
         });
       } else {
@@ -182,7 +155,7 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
           label: curr.refPackageName,
           items: [
             {
-              label: `${curr.refTime} (${curr.refDays})`,
+              label: `${curr.refTime}`,
               value: curr.value,
             },
           ],
@@ -218,7 +191,7 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
       <label htmlFor="calendar-12h" className="font-bold block mb-2">
         Attendance Report Download
       </label>
-      <div className="flex gap-3">
+      <div className="flex gap-3 mt-3">
         <MultiSelect
           value={sessionMode}
           onChange={(e: DropdownChangeEvent) =>
@@ -276,19 +249,23 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
           />
         </div>
       )}
-
-      <MultiSelect
-        value={selectedDropdownValue}
-        options={groupedDropdownOptions}
-        onChange={handleDropdownChange}
-        optionLabel="label"
-        optionGroupLabel="label"
-        optionGroupChildren="items"
-        optionGroupTemplate={groupedItemTemplate}
-        placeholder="Select Package and Time"
-        display="chip"
-        className="w-full md:w-20rem mt-3"
-      />
+      {reportRange && date && groupedDropdownOptions && (
+        <div className="flex align-items-center gap-3">
+          <MultiSelect
+            value={selectedDropdownValue}
+            options={groupedDropdownOptions}
+            onChange={handleDropdownChange}
+            optionLabel="label"
+            optionGroupLabel="label"
+            optionGroupChildren="items"
+            optionGroupTemplate={groupedItemTemplate}
+            placeholder="Select Package and Time"
+            display="chip"
+            className="w-full md:w-20rem mt-3"
+          />
+          <Button label="Success" className="mt-3" severity="success" />
+        </div>
+      )}
     </div>
   );
 };

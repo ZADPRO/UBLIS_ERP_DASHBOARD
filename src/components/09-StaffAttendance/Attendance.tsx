@@ -741,9 +741,10 @@ const StaffAttendance: React.FC = () => {
                         <div className="flex flex-col gap-3">
                           {!selectedUser && (
                             <DataTable
-                              className="w-[400px]"
+                              className="w-[560px]"
                               value={filteredAttendanceData}
                               scrollable
+                              scrollHeight="400px"
                             >
                               <Column
                                 field="fullName"

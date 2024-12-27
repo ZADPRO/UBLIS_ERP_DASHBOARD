@@ -5,6 +5,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import "./Calenderss.css";
 import FullCalendar from "@fullcalendar/react";
+import { OverlayPanel } from "primereact/overlaypanel";
 
 type Attendance = {
   sno: number;
@@ -38,6 +39,7 @@ const Calenderss: React.FC<CalenderssProps> = ({
 }) => {
   const calendarRef: React.MutableRefObject<FullCalendar | null> = useRef(null);
   const [events, setEvents] = useState<EventInput[]>([]);
+  const op = useRef(null);
 
   const formatDate = (dateString: string): string => {
     const [day, month, year] = dateString.split("/");
@@ -98,7 +100,7 @@ const Calenderss: React.FC<CalenderssProps> = ({
 
     if (selectedUser) {
       handleRowClick(
-        { refSCustId: selectedUser.userId }, // Pass userId as refSCustId in rowData
+        { refSCustId: selectedUser.userId },
         getMonthNameFromNumber(adjustedDate.getMonth() + 1) +
           " " +
           adjustedDate.getFullYear()
@@ -120,12 +122,30 @@ const Calenderss: React.FC<CalenderssProps> = ({
           title: `<i class="pi pi-check"></i>`,
           start: formattedDate,
           allDay: true,
+          time: attendance.time,
         };
       })
       .filter((event) => event !== null);
 
     setEvents(transformedEvents);
   }, [userFilteredAttendanceData]);
+
+  const handleDateClick = (info: any) => {
+    const clickedDate = info.dateStr;
+    const clickedDateEvents = events.filter(
+      (event) => event.start === clickedDate
+    );
+
+    if (clickedDateEvents.length > 0) {
+      console.log(`Events on ${clickedDate}:`);
+      clickedDateEvents.forEach((event) => {
+        console.log(`- Event Time: ${event.time}`);
+        op.current.toggle(true);
+      });
+    } else {
+      console.log(`No events on ${clickedDate}`);
+    }
+  };
 
   return (
     <div className="w-full h-[75vh] bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200 m-2">
@@ -175,14 +195,24 @@ const Calenderss: React.FC<CalenderssProps> = ({
           console.log("View changed: ", startDate, endDate);
         }}
         dayCellClassNames="hover:bg-f95005 hover:text-white transition-all cursor-pointer"
-        eventContent={(eventInfo) => {
+        eventContent={() => {
           return (
             <div className="fc-event-title">
               <i className="pi pi-check"></i>{" "}
             </div>
           );
         }}
+        dateClick={handleDateClick}
       />
+
+      <OverlayPanel ref={op}>
+        <img
+          src={
+            "https://primefaces.org/cdn/primereact/images/product/bamboo-watch.jpg"
+          }
+          alt="Bamboo Watch"
+        ></img>
+      </OverlayPanel>
     </div>
   );
 };
