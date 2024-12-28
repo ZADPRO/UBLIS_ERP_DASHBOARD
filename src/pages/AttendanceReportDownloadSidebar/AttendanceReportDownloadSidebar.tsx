@@ -281,32 +281,7 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
       );
 
       console.log("Decrypted Data:", data);
-      // const flattened: FlattenedData[] = data.reportData.flatMap(
-      //   (report: any) => {
-      //     const attendance = report.attendance || [];
-      //     if (attendance.length === 0) {
-      //       return [
-      //         {
-      //           emp_code: "-",
-      //           punch_date: "-",
-      //           punch_time: "-",
-      //           interval_start: "-",
-      //           interval_end: "-",
-      //           packageName: report.packageName,
-      //           sessionMode: report.sessionMode,
-      //           timing: report.timing,
-      //         },
-      //       ];
-      //     }
-      //     return attendance.map((att: any) => ({
-      //       ...att,
-      //       packageName: report.packageName,
-      //       sessionMode: report.sessionMode,
-      //       timing: report.timing,
-      //     }));
-      //   }
-      // );
-      // console.log("flattened", flattened);
+
       const processData = (data: any) => {
         const flattened: FlattenedData[] = data.reportData.map(
           (report: any) => {
@@ -355,7 +330,38 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
   };
 
   const exportCSV = () => {
-    dt.current?.exportCSV();
+    if (!dt.current) return;
+
+    // Prepare the data for export with the packageName included in each row
+    const exportData = attendanceData.map((row) => ({
+      packageName: row.packageName, // Include package name explicitly
+      emp_code: row.emp_code || "-",
+      employee_name:
+        row.refStFName && row.refStLName
+          ? `${row.refStFName} ${row.refStLName}`
+          : "-",
+      punch_date: row.punch_date || "-",
+      punch_time: row.punch_time || "-",
+    }));
+
+    // Export as CSV
+    const csvContent = exportData
+      .map((row) =>
+        Object.values(row)
+          .map((value) => `"${value}"`) // Enclose each value in quotes for safety
+          .join(",")
+      )
+      .join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "attendance_report.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const rightToolbarTemplate = () => {
@@ -373,17 +379,6 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
     );
   };
 
-  const footerTemplate = (data: FlattenedData) => {
-    return (
-      <div className="font-bold">
-        Total Records:{" "}
-        {
-          attendanceData.filter((item) => item.packageName === data.packageName)
-            .length
-        }
-      </div>
-    );
-  };
   return (
     <div className="m-2">
       <label
@@ -475,6 +470,7 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
 
       {reportRange &&
         date &&
+        attendanceData &&
         groupedDropdownOptions &&
         selectedDropdownValue && (
           <>
@@ -491,7 +487,6 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
                 sortField="packageName"
                 sortOrder={1}
                 rowGroupHeaderTemplate={headerTemplate}
-                rowGroupFooterTemplate={footerTemplate}
                 scrollable
                 scrollHeight="400px"
                 tableStyle={{ minWidth: "50rem" }}
