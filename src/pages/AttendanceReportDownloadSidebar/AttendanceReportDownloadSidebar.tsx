@@ -47,19 +47,6 @@ interface GroupedOption {
 
 type DecryptResult = any;
 
-interface Product {
-  id: string | null;
-  code: string;
-  name: string;
-  description: string;
-  image: string | null;
-  price: number;
-  category: string | null;
-  quantity: number;
-  inventoryStatus: string;
-  rating: number;
-}
-
 interface Attendance {
   emp_code: string;
   punch_date: string;
@@ -78,7 +65,7 @@ interface FlattenedData extends Attendance {
 
 const AttendanceReportDownloadSidebar: React.FC = () => {
   const toast = useRef<Toast>(null);
-  const dt = useRef<DataTable<Product[]>>(null);
+  const dt = useRef<DataTable<FlattenedData[]>>(null);
   const [sessionMode, setSessionMode] = useState<SessionType[]>([]);
   const [reportRange, setReportRange] = useState<ReportRangeParams | null>(
     null
