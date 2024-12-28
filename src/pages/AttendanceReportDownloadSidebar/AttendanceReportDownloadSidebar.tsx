@@ -73,6 +73,7 @@ interface Attendance {
 interface FlattenedData extends Attendance {
   packageName: string;
   sessionMode: string;
+  timing: string;
 }
 
 const AttendanceReportDownloadSidebar: React.FC = () => {
@@ -193,8 +194,6 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
 
     return attendanceOptions.reduce(
       (acc: GroupedOption[], curr: AttendanceOption) => {
-        console.log("curr", curr);
-        console.log("acc", acc);
         const existingGroup = acc.find(
           (group) => group.label === curr.refPackageName
         );
@@ -282,17 +281,74 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
       );
 
       console.log("Decrypted Data:", data);
-      const flattened: FlattenedData[] = data.reportData.flatMap(
-        (report: any) =>
-          (report.attendance || []).map((att: any) => ({
-            ...att,
-            packageName: report.packageName,
-            sessionMode: report.sessionMode,
-          }))
-      );
-      console.log("flattened", flattened);
+      // const flattened: FlattenedData[] = data.reportData.flatMap(
+      //   (report: any) => {
+      //     const attendance = report.attendance || [];
+      //     if (attendance.length === 0) {
+      //       return [
+      //         {
+      //           emp_code: "-",
+      //           punch_date: "-",
+      //           punch_time: "-",
+      //           interval_start: "-",
+      //           interval_end: "-",
+      //           packageName: report.packageName,
+      //           sessionMode: report.sessionMode,
+      //           timing: report.timing,
+      //         },
+      //       ];
+      //     }
+      //     return attendance.map((att: any) => ({
+      //       ...att,
+      //       packageName: report.packageName,
+      //       sessionMode: report.sessionMode,
+      //       timing: report.timing,
+      //     }));
+      //   }
+      // );
+      // console.log("flattened", flattened);
+      const processData = (data: any) => {
+        const flattened: FlattenedData[] = data.reportData.map(
+          (report: any) => {
+            const uniqueKey = `${report.packageName} : ${report.timing} : ${report.sessionMode}`;
+            const attendance = report.attendance || [];
 
-      setAttendanceData(flattened);
+            // If attendance exists, map it to FlattenedData
+            if (attendance.length > 0) {
+              return attendance.map((att: any) => ({
+                ...att,
+                packageName: uniqueKey,
+                sessionMode: report.sessionMode,
+                timing: report.timing,
+              }));
+            }
+
+            return [
+              {
+                packageName: uniqueKey,
+                emp_code: "-",
+                punch_date: "-",
+                punch_time: "-",
+                interval_start: "-",
+                interval_end: "-",
+                sessionMode: report.sessionMode,
+                timing: report.timing,
+              },
+            ];
+          }
+        );
+
+        // Flatten the array of arrays
+        return flattened.flat();
+      };
+
+      // Example usage
+
+      const processedData = processData(data);
+
+      setAttendanceData(processedData);
+
+      // setAttendanceData(flattened);
     } catch (error) {
       console.error("Error calling API:", error);
     }
@@ -427,7 +483,7 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
               <Toolbar className="mb-4" right={rightToolbarTemplate}></Toolbar>
 
               <DataTable
-                // value={attendanceData}
+                value={attendanceData}
                 rowGroupMode="subheader"
                 groupRowsBy="packageName"
                 sortMode="single"
@@ -448,9 +504,11 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
                 ></Column>
                 <Column
                   field="refStFName"
-                  header="Employee Code"
+                  header="Employee Name"
                   body={(rowData) =>
-                    `${rowData.refStFName} ${rowData.refStLName}`
+                    rowData.refStFName && rowData.refStLName
+                      ? `${rowData.refStFName} ${rowData.refStLName}`
+                      : "-"
                   }
                   style={{ minWidth: "150px" }}
                 ></Column>
@@ -462,16 +520,6 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
                 <Column
                   field="punch_time"
                   header="Punch Time"
-                  style={{ minWidth: "150px" }}
-                ></Column>
-                <Column
-                  field="interval_start"
-                  header="Interval Start"
-                  style={{ minWidth: "150px" }}
-                ></Column>
-                <Column
-                  field="interval_end"
-                  header="Interval End"
                   style={{ minWidth: "150px" }}
                 ></Column>
               </DataTable>
