@@ -6,18 +6,18 @@ import React from "react";
 import { useState, useEffect } from "react";
 import CryptoJS from "crypto-js";
 import Axios from "axios";
-import { Sidebar } from "primereact/sidebar";
+// import { Sidebar } from "primereact/sidebar";
 import "./Attendance.css";
-import { Calendar } from "primereact/calendar";
-import SelectInput from "../../pages/Inputs/SelectInput";
+// import { Calendar } from "primereact/calendar";
+// import SelectInput from "../../pages/Inputs/SelectInput";
 import { TabPanel, TabView } from "primereact/tabview";
 import { Divider } from "primereact/divider";
 import { InputText } from "primereact/inputtext";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import Calenderss from "../10-Calender/Calenderss";
-import { MultiSelect } from "primereact/multiselect";
-import { IoSearch } from "react-icons/io5";
+// import { MultiSelect } from "primereact/multiselect";
+// import { IoSearch } from "react-icons/io5";
 import axios from "axios";
 import SessionTabs from "../../pages/SessionTabs/SessionTabs";
 
@@ -83,7 +83,7 @@ interface AttendanceItem {
 type DecryptResult = any;
 
 const StaffAttendance: React.FC = () => {
-  const [attendanceData, setAttendanceData] = useState<Customer[]>([]);
+  // const [attendanceData, setAttendanceData] = useState<Customer[]>([]);
 
   const [filteredAttendanceData, setFilteredAttendanceData] = useState<
     Customer[]
@@ -128,11 +128,11 @@ const StaffAttendance: React.FC = () => {
     usernameid: "",
     profileimg: { contentType: "", content: "" },
   });
-  const [visibleLeft, setVisibleLeft] = useState(false);
-  const [classType, setClassType] = useState("1");
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
-  const [selectedSession, setSelectedSession] = useState<string>("Online");
+  // const [visibleLeft, setVisibleLeft] = useState(false);
+  // const [classType, setClassType] = useState("1");
+  // const [startDate, setStartDate] = useState<Date | null>(null);
+  // const [endDate, setEndDate] = useState<Date | null>(null);
+  // const [selectedSession, setSelectedSession] = useState<string>("Online");
 
   const [selectedUser, setSelectedUser] = useState<SelectedUser | null>(null);
   const [rowData, setRowData] = useState<RowData | null>(null);
@@ -221,12 +221,12 @@ const StaffAttendance: React.FC = () => {
     }
   };
 
-  const [preferredTimes, setPreferredTimes] = useState<string[]>([]);
-  const preferredTimeOptions = [
-    { label: "8 AM - 10 AM", value: "Morning" },
-    { label: "12 PM - 2 PM", value: "Afternoon" },
-    { label: "6 PM - 8 PM", value: "Evening" },
-  ];
+  // const [preferredTimes, setPreferredTimes] = useState<string[]>([]);
+  // const preferredTimeOptions = [
+  //   { label: "8 AM - 10 AM", value: "Morning" },
+  //   { label: "12 PM - 2 PM", value: "Afternoon" },
+  //   { label: "6 PM - 8 PM", value: "Evening" },
+  // ];
   const decrypt = (
     encryptedData: string,
     iv: string,
@@ -313,159 +313,159 @@ const StaffAttendance: React.FC = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
 
-  const renderCalendar = () => {
-    switch (classType) {
-      case "1":
-        return (
-          <div className=" flex flex-row w-[100%] ">
-            <div className="w-[200%] px-3">
-              <Calendar
-                placeholder="Choose date"
-                value={startDate}
-                // onChange={(date: Date | Date[]) => setStartDate(date as Date)}
-                className="relative w-full h-10 placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
-              />
+  // const renderCalendar = () => {
+  //   switch (classType) {
+  //     case "1":
+  //       return (
+  //         <div className=" flex flex-row w-[100%] ">
+  //           <div className="w-[200%] px-3">
+  //             <Calendar
+  //               placeholder="Choose date"
+  //               value={startDate}
+  //               // onChange={(date: Date | Date[]) => setStartDate(date as Date)}
+  //               className="relative w-full h-10 placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
+  //             />
 
-              {/* <div>
-                <button className="w-[100%] h-[100%] text-white bg-[#f95005] border-none p-2 rounded-md">
-                  Submit
-                </button>
-              </div> */}
-            </div>
-            <div className="w-[200%] px-3">
-              <SelectInput
-                id="sessionSelect"
-                name="sessionSelect"
-                label="SessionType *"
-                onChange={handleSessionChange} // Handle dropdown changes
-                options={[
-                  { value: "Online", label: "Online" },
-                  { value: "Offline", label: "Offline" },
-                ]}
-                required
-              />
-            </div>
-            <div className="w-[100%] px-3">
-              <MultiSelect
-                id="preferredTime"
-                value={preferredTimes}
-                options={preferredTimeOptions}
-                onChange={(e) => setPreferredTimes(e.value)}
-                className="w-full"
-              />
-            </div>
-            <div className="w-[100%] px-3 text-[30px] text-[#f95005]">
-              <IoSearch />
-            </div>
-            {/* <div className="w-[100%]">
-                <button className="w-[100%] h-[100%] text-white bg-[#f95005] border-none p-2 rounded-md">
-                  Submit
-                </button>
-              </div> */}
-          </div>
-        );
-      case "2":
-        return (
-          <>
-            <div className=" flex flex-row w-[100%] ">
-              <div className="flex flex-row gap-3 justify-between w-[200%] px-3 ">
-                {/* Start Date */}
-                <div className="w-[100%]  ">
-                  <Calendar
-                    placeholder="Start Date"
-                    value={startDate}
-                    onChange={(e) => {
-                      const selectedDate = e.value as Date;
-                      setStartDate(selectedDate);
-                    }}
-                    className="relative w-full h-10 placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
-                  />
-                </div>
+  //             {/* <div>
+  //               <button className="w-[100%] h-[100%] text-white bg-[#f95005] border-none p-2 rounded-md">
+  //                 Submit
+  //               </button>
+  //             </div> */}
+  //           </div>
+  //           <div className="w-[200%] px-3">
+  //             <SelectInput
+  //               id="sessionSelect"
+  //               name="sessionSelect"
+  //               label="SessionType *"
+  //               onChange={handleSessionChange} // Handle dropdown changes
+  //               options={[
+  //                 { value: "Online", label: "Online" },
+  //                 { value: "Offline", label: "Offline" },
+  //               ]}
+  //               required
+  //             />
+  //           </div>
+  //           <div className="w-[100%] px-3">
+  //             <MultiSelect
+  //               id="preferredTime"
+  //               value={preferredTimes}
+  //               options={preferredTimeOptions}
+  //               onChange={(e) => setPreferredTimes(e.value)}
+  //               className="w-full"
+  //             />
+  //           </div>
+  //           <div className="w-[100%] px-3 text-[30px] text-[#f95005]">
+  //             <IoSearch />
+  //           </div>
+  //           {/* <div className="w-[100%]">
+  //               <button className="w-[100%] h-[100%] text-white bg-[#f95005] border-none p-2 rounded-md">
+  //                 Submit
+  //               </button>
+  //             </div> */}
+  //         </div>
+  //       );
+  //     case "2":
+  //       return (
+  //         <>
+  //           <div className=" flex flex-row w-[100%] ">
+  //             <div className="flex flex-row gap-3 justify-between w-[200%] px-3 ">
+  //               {/* Start Date */}
+  //               <div className="w-[100%]  ">
+  //                 <Calendar
+  //                   placeholder="Start Date"
+  //                   value={startDate}
+  //                   onChange={(e) => {
+  //                     const selectedDate = e.value as Date;
+  //                     setStartDate(selectedDate);
+  //                   }}
+  //                   className="relative w-full h-10 placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
+  //                 />
+  //               </div>
 
-                {/* End Date */}
-                <div className="w-[100%]">
-                  <Calendar
-                    placeholder="End Date"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.value as Date)}
-                    minDate={
-                      startDate
-                        ? new Date(startDate.getTime()) // Clone the startDate to avoid mutating it
-                        : undefined
-                    } // Set minDate to the selected start date
-                    maxDate={
-                      startDate
-                        ? new Date(
-                            startDate.getFullYear(),
-                            startDate.getMonth() + 1, // Next month
-                            0 // Last day of the next month
-                          )
-                        : undefined
-                    } // Set maxDate to the end of the next month
-                    monthNavigator
-                    yearNavigator
-                    className="relative w-full h-10 placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
-                  />
-                </div>
-                {/* <div>
-                <button className="w-[100%] h-[100%] text-white bg-[#f95005] border-none p-2 rounded-md">
-                  Submit
-                </button>
-              </div> */}
-              </div>
-              <div className="w-[150%] px-2 ">
-                <SelectInput
-                  id="sessionSelect"
-                  name="sessionSelect"
-                  label="SessionType *"
-                  onChange={handleSessionChange} // Handle dropdown changes
-                  options={[
-                    { value: "Online", label: "Online" },
-                    { value: "Offline", label: "Offline" },
-                  ]}
-                  required
-                />
-              </div>
-              <div className="w-[100%] px-3">
-                <MultiSelect
-                  id="preferredTime"
-                  value={preferredTimes}
-                  options={preferredTimeOptions}
-                  onChange={(e) => setPreferredTimes(e.value)}
-                  className="w-full"
-                />
-              </div>
-              <div className="w-[100%] text-[30px] px-3 text-[#f95005]">
-                <IoSearch />
-              </div>
-            </div>
-          </>
-          // <>
-          //   <div className="flex flex-row justify-between w-[30%] gap-3 px-3">
-          //     <Calendar
-          //       placeholder="Choose date"
-          //       value={startDate}
-          //       className="relative w-full h-10 placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
-          //       view="month"
-          //       dateFormat="mm/yy"
-          //     />
-          //     {/* <div>
-          //       <button className="w-[100%] h-[100%] text-white bg-[#f95005] border-none p-2 rounded-md">
-          //         Submit
-          //       </button>
-          //     </div> */}
-          //   </div>
-          // </>
-        );
+  //               {/* End Date */}
+  //               <div className="w-[100%]">
+  //                 <Calendar
+  //                   placeholder="End Date"
+  //                   value={endDate}
+  //                   onChange={(e) => setEndDate(e.value as Date)}
+  //                   minDate={
+  //                     startDate
+  //                       ? new Date(startDate.getTime()) // Clone the startDate to avoid mutating it
+  //                       : undefined
+  //                   } // Set minDate to the selected start date
+  //                   maxDate={
+  //                     startDate
+  //                       ? new Date(
+  //                           startDate.getFullYear(),
+  //                           startDate.getMonth() + 1, // Next month
+  //                           0 // Last day of the next month
+  //                         )
+  //                       : undefined
+  //                   } // Set maxDate to the end of the next month
+  //                   monthNavigator
+  //                   yearNavigator
+  //                   className="relative w-full h-10 placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
+  //                 />
+  //               </div>
+  //               {/* <div>
+  //               <button className="w-[100%] h-[100%] text-white bg-[#f95005] border-none p-2 rounded-md">
+  //                 Submit
+  //               </button>
+  //             </div> */}
+  //             </div>
+  //             <div className="w-[150%] px-2 ">
+  //               <SelectInput
+  //                 id="sessionSelect"
+  //                 name="sessionSelect"
+  //                 label="SessionType *"
+  //                 onChange={handleSessionChange} // Handle dropdown changes
+  //                 options={[
+  //                   { value: "Online", label: "Online" },
+  //                   { value: "Offline", label: "Offline" },
+  //                 ]}
+  //                 required
+  //               />
+  //             </div>
+  //             <div className="w-[100%] px-3">
+  //               <MultiSelect
+  //                 id="preferredTime"
+  //                 value={preferredTimes}
+  //                 options={preferredTimeOptions}
+  //                 onChange={(e) => setPreferredTimes(e.value)}
+  //                 className="w-full"
+  //               />
+  //             </div>
+  //             <div className="w-[100%] text-[30px] px-3 text-[#f95005]">
+  //               <IoSearch />
+  //             </div>
+  //           </div>
+  //         </>
+  //         // <>
+  //         //   <div className="flex flex-row justify-between w-[30%] gap-3 px-3">
+  //         //     <Calendar
+  //         //       placeholder="Choose date"
+  //         //       value={startDate}
+  //         //       className="relative w-full h-10 placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
+  //         //       view="month"
+  //         //       dateFormat="mm/yy"
+  //         //     />
+  //         //     {/* <div>
+  //         //       <button className="w-[100%] h-[100%] text-white bg-[#f95005] border-none p-2 rounded-md">
+  //         //         Submit
+  //         //       </button>
+  //         //     </div> */}
+  //         //   </div>
+  //         // </>
+  //       );
 
-      default:
-        return null;
-    }
-  };
+  //     default:
+  //       return null;
+  //   }
+  // };
   // Handle dropdown changes
-  const handleSessionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedSession(e.target.value);
-  };
+  // const handleSessionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   setSelectedSession(e.target.value);
+  // };
 
   const handleCalendarMonthChange = (month: number, year: number) => {
     const monthNames = [

@@ -159,14 +159,14 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
     }
   };
 
-  const formatMonthYear = (date: Nullable<Date>): string => {
-    return date
-      ? new Intl.DateTimeFormat("en-GB", {
-          month: "2-digit",
-          year: "numeric",
-        }).format(date)
-      : "";
-  };
+  // const formatMonthYear = (date: Nullable<Date>): string => {
+  //   return date
+  //     ? new Intl.DateTimeFormat("en-GB", {
+  //         month: "2-digit",
+  //         year: "numeric",
+  //       }).format(date)
+  //     : "";
+  // };
 
   useEffect(() => {
     if (reportRange?.code === 1 && date) {
@@ -187,34 +187,37 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
   }, [reportRange, date, sessionMode, toMonth]);
 
   const groupedData: GroupedOption[] = useMemo(() => {
-    if (!attendanceOptions) {
+    if (!attendanceOptions || !Array.isArray(attendanceOptions)) {
       return [];
     }
 
-    return attendanceOptions.reduce((acc, curr) => {
-      console.log("curr", curr);
-      console.log("acc", acc);
-      const existingGroup = acc.find(
-        (group) => group.label === curr.refPackageName
-      );
-      if (existingGroup) {
-        existingGroup.items.push({
-          label: `${curr.refTime}`,
-          value: curr.value,
-        });
-      } else {
-        acc.push({
-          label: curr.refPackageName,
-          items: [
-            {
-              label: `${curr.refTime}`,
-              value: curr.value,
-            },
-          ],
-        });
-      }
-      return acc;
-    }, [] as GroupedOption[]);
+    return attendanceOptions.reduce(
+      (acc: GroupedOption[], curr: AttendanceOption) => {
+        console.log("curr", curr);
+        console.log("acc", acc);
+        const existingGroup = acc.find(
+          (group) => group.label === curr.refPackageName
+        );
+        if (existingGroup) {
+          existingGroup.items.push({
+            label: `${curr.refTime}`,
+            value: curr.value,
+          });
+        } else {
+          acc.push({
+            label: curr.refPackageName,
+            items: [
+              {
+                label: `${curr.refTime}`,
+                value: curr.value,
+              },
+            ],
+          });
+        }
+        return acc;
+      },
+      []
+    );
   }, [attendanceOptions]);
 
   useEffect(() => {
@@ -279,12 +282,13 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
       );
 
       console.log("Decrypted Data:", data);
-      const flattened: FlattenedData[] = data.reportData.flatMap((report) =>
-        (report.attendance || []).map((att) => ({
-          ...att,
-          packageName: report.packageName,
-          sessionMode: report.sessionMode,
-        }))
+      const flattened: FlattenedData[] = data.reportData.flatMap(
+        (report: any) =>
+          (report.attendance || []).map((att: any) => ({
+            ...att,
+            packageName: report.packageName,
+            sessionMode: report.sessionMode,
+          }))
       );
       console.log("flattened", flattened);
 
@@ -423,7 +427,7 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
               <Toolbar className="mb-4" right={rightToolbarTemplate}></Toolbar>
 
               <DataTable
-                value={attendanceData}
+                // value={attendanceData}
                 rowGroupMode="subheader"
                 groupRowsBy="packageName"
                 sortMode="single"

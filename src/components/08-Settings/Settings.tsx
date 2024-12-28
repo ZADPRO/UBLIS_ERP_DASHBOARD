@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Axios from "axios";
 import { Skeleton } from "primereact/skeleton";
 import CryptoJS from "crypto-js";
-import { FaMoneyCheckDollar } from "react-icons/fa6";
+// import { FaMoneyCheckDollar } from "react-icons/fa6";
 import { BiSolidOffer } from "react-icons/bi";
 import { Sidebar } from "primereact/sidebar";
 import FeesStructure from "../../pages/FeesStructure/FeesStructure";
@@ -10,7 +10,7 @@ import FeesStructure from "../../pages/FeesStructure/FeesStructure";
 import Offers from "../../pages/Offers/Offers";
 // import session from "../../pages/Session/Session"
 import Session from "../../pages/Session/Session";
-import { FaUserClock } from "react-icons/fa6";
+// import { FaUserClock } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import Healthissues from "../../pages/Healthissues/Healthissues";
 import { FaClipboardList } from "react-icons/fa6";
