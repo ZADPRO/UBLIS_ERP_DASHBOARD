@@ -10,7 +10,6 @@
 
 // export default UserAttendance;
 
-
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { useNavigate } from "react-router-dom";
@@ -19,10 +18,11 @@ import React from "react";
 import { useState, useEffect } from "react";
 import CryptoJS from "crypto-js";
 import Axios from "axios";
-import { Sidebar } from "primereact/sidebar";
-import { Calendar } from "primereact/calendar";
-import { Button } from "primereact/button";
-import SelectInput from "../../pages/Inputs/SelectInput";
+// import { Sidebar } from "primereact/sidebar";
+// import { Calendar } from "primereact/calendar";
+// import { Button } from "primereact/button";
+// import SelectInput from "../../pages/Inputs/SelectInput";
+import "./Attendance.css";
 
 interface Customer {
   Username: string;
@@ -106,7 +106,7 @@ const StaffAttendance: React.FC = () => {
     usernameid: "",
     profileimg: { contentType: "", content: "" },
   });
-  const [visibleLeft, setVisibleLeft] = useState(true);
+  // const [visibleLeft, setVisibleLeft] = useState(true);
 
   const decrypt = (
     encryptedData: string,
@@ -305,7 +305,7 @@ const StaffAttendance: React.FC = () => {
               </div>
             </div>
           </div>
-          <Sidebar
+          {/* <Sidebar
             style={{ width: "70%" }}
             visible={visibleLeft}
             position="right"
@@ -375,7 +375,7 @@ const StaffAttendance: React.FC = () => {
                 style={{ inlineSize: "20rem" }}
               />
             </DataTable>
-          </Sidebar>
+          </Sidebar> */}
           {/* <Sidebar
             style={{ width: "70%" }}
             visible={visibleLeft}
@@ -392,4 +392,3 @@ const StaffAttendance: React.FC = () => {
 };
 
 export default StaffAttendance;
-

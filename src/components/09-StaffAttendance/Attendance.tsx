@@ -119,93 +119,6 @@ const StaffAttendance: React.FC = () => {
     });
   };
 
-  useEffect(() => {
-    const dummyData: Customer[] = [
-      {
-        Username: "001",
-        Sessionname: "U001",
-        Punchtime: "John",
-        Attend_not: "20",
-        Online_Offline: "john.doe@example.com",
-        NotAttend: "12",
-        Attend: "32",
-        Signup: "dad33",
-        status2: "",
-        comments: "No issues",
-        classType: "",
-      },
-      {
-        Username: "001",
-        Sessionname: "U001",
-        Punchtime: "John",
-        Attend_not: "10",
-        Online_Offline: "john.doe@example.com",
-        NotAttend: "12",
-        Attend: "32",
-        Signup: "dad33",
-        status2: "",
-
-        classType: "",
-        comments: "No issues",
-      },
-      {
-        Username: "001",
-        Sessionname: "U001",
-        Punchtime: "John",
-        Attend_not: "5",
-        Online_Offline: "john.doe@example.com",
-        NotAttend: "12",
-        Attend: "32",
-        Signup: "dad33",
-        classType: "",
-        status2: "",
-        comments: "No issues",
-      },
-      {
-        Username: "001",
-        Sessionname: "U001",
-        Punchtime: "John",
-        Attend_not: "3",
-        Online_Offline: "john.doe@example.com",
-        NotAttend: "12",
-        Attend: "32",
-        Signup: "dad33",
-        classType: "",
-        status2: "",
-        comments: "No issues",
-      },
-      {
-        Username: "001",
-        Sessionname: "U001",
-        Punchtime: "John",
-        Attend_not: "5",
-        Online_Offline: "john.doe@example.com",
-        NotAttend: "12",
-        Attend: "32",
-        Signup: "dad33",
-        classType: "",
-        status2: "",
-        comments: "No issues",
-      },
-      {
-        Username: "001",
-        Sessionname: "U001",
-        Punchtime: "John",
-        Attend_not: "5",
-        Online_Offline: "john.doe@example.com",
-        NotAttend: "12",
-        Attend: "32",
-        Signup: "dad33",
-        classType: "",
-        status2: "",
-        comments: "No issues",
-      },
-    ];
-
-    // Update state with dummy data inside useEffect
-    setAttendanceData(dummyData);
-  }, []);
-
   const [pageLoading, setPageLoading] = useState({
     verifytoken: false,
     pageData: false,
@@ -222,18 +135,40 @@ const StaffAttendance: React.FC = () => {
   const [selectedSession, setSelectedSession] = useState<string>("Online");
 
   const [selectedUser, setSelectedUser] = useState<SelectedUser | null>(null);
+  const [rowData, setRowData] = useState<RowData | null>(null);
+
+  const [searchList, setSearchList] = useState(false);
+  const [showData, setShowData] = useState(false);
 
   const [userFilteredAttendanceData, setUserFilteredAttendanceData] = useState<
     Attendance[]
   >([]);
 
   const clearClick = () => {
+    setShowData(false);
     setSelectedUser(null);
     setSearchQuery("");
     setFilteredAttendanceData([]);
   };
 
   const handleRowClick = async (rowData: RowData, month?: string) => {
+    setShowData(true), setSearchList(false);
+    console.log("rowData line ----- 151", rowData);
+
+    console.log("selectedUser", userFilteredAttendanceData);
+    console.log("line ---- 152", month);
+    if (rowData) {
+      setRowData({
+        refStId: rowData.refStId,
+        refStFName: rowData.refStFName,
+        refSCustId: rowData.refSCustId,
+        refStLName: rowData.refStLName,
+        refPackageName: rowData.refPackageName,
+        refTime: rowData.refTime,
+        refCtMobile: rowData.refCtMobile,
+        refCtEmail: rowData.refCtEmail,
+      });
+    }
     const response = await axios.post(
       import.meta.env.VITE_API_URL + "/attendance/user",
       {
@@ -255,31 +190,35 @@ const StaffAttendance: React.FC = () => {
     );
 
     console.log("data", data);
+    if (data.token == false) {
+      navigate("/expired");
+    } else {
+      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+      if (data.success) {
+        const mappedData = data.attendanceResult.map(
+          (item: AttendanceItem, index: number) => {
+            const [date, time] = item.formatted_punch_time.split(", ");
+            return {
+              sno: index + 1,
+              date: date.trim(),
+              time: time.trim(),
+            };
+          }
+        );
+        console.log("mappedData", mappedData);
 
-    if (data.success) {
-      const mappedData = data.attendanceResult.map(
-        (item: AttendanceItem, index: number) => {
-          const [date, time] = item.formatted_punch_time.split(", ");
-          return {
-            sno: index + 1,
-            date: date.trim(),
-            time: time.trim(),
-          };
-        }
-      );
-      console.log("mappedData", mappedData);
+        setUserFilteredAttendanceData(mappedData);
+      }
 
-      setUserFilteredAttendanceData(mappedData);
+      setSelectedUser({
+        id: rowData.refStId,
+        userName: `${rowData.refStFName} ${rowData.refStLName}`,
+        userId: rowData.refSCustId,
+        refPackageName: rowData.refPackageName,
+        userEmail: rowData.refCtEmail,
+        refTime: rowData.refTime,
+      });
     }
-
-    setSelectedUser({
-      id: rowData.refStId,
-      userName: `${rowData.refStFName} ${rowData.refStLName}`,
-      userId: rowData.refSCustId,
-      refPackageName: rowData.refPackageName,
-      userEmail: rowData.refCtEmail,
-      refTime: rowData.refTime,
-    });
   };
 
   const [preferredTimes, setPreferredTimes] = useState<string[]>([]);
@@ -363,8 +302,12 @@ const StaffAttendance: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-
-      setOverviewSessionData(data.attendanceCount);
+      if (data.token == false) {
+        navigate("/expired");
+      } else {
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+        setOverviewSessionData(data.attendanceCount);
+      }
     });
   }, []);
 
@@ -522,6 +465,34 @@ const StaffAttendance: React.FC = () => {
   // Handle dropdown changes
   const handleSessionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedSession(e.target.value);
+  };
+
+  const handleCalendarMonthChange = (month: number, year: number) => {
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    const monthName = monthNames[month - 1];
+
+    const formattedMonthYear = `${monthName},${year}`;
+    if (rowData) {
+      handleRowClick(rowData, formattedMonthYear);
+    } else {
+      console.error("rowData is null");
+    }
+
+    console.log(`Formatted Month & Year: ${formattedMonthYear}`);
   };
 
   return (
@@ -699,7 +670,7 @@ const StaffAttendance: React.FC = () => {
                 <SessionTabs />
               </TabPanel>
               <TabPanel
-                header="User"
+                header="User Attendance"
                 className=""
                 style={{
                   display: "flex",
@@ -710,154 +681,168 @@ const StaffAttendance: React.FC = () => {
                   marginTop: "-10px",
                 }}
               >
-                <div className="flex w-full justify-content-between">
-                  <div className="flex w-[50%] gap-10 flex-col align-items-center">
-                    <div className="flex flex-col w-full align-items-start">
-                      <div className="flex w-full align-items-center">
-                        <div className="m-3 w-full">
-                          <IconField iconPosition="left">
-                            <InputIcon className="pi pi-search"></InputIcon>
-                            <InputText
-                              placeholder="Search"
-                              disabled={selectedUser}
-                              value={searchQuery}
-                              onChange={handleSearchChange}
-                            />
-                          </IconField>
-                        </div>
-                        {selectedUser && (
-                          <div>
-                            <button
-                              className="text-white text-[18px] bg-[#f95005] border-none p-2 rounded-md cursor-pointer"
-                              onClick={clearClick}
-                            >
-                              Clear
-                            </button>
-                          </div>
-                        )}
+                {showData ? (
+                  <></>
+                ) : (
+                  <div className="w-full flex flex-col justify-center align-items-center">
+                    <div className="flex w-[60%] align-items-center">
+                      <div className="m-3 w-full">
+                        <IconField iconPosition="left">
+                          <InputIcon className="pi pi-search"></InputIcon>
+                          <InputText
+                            placeholder="Search By CustomerId, Firstname, Mobile, Email, DOB, Username"
+                            // disabled={selectedUser}
+                            value={searchQuery}
+                            onChange={(e) => {
+                              handleSearchChange(e);
+
+                              if (e.target.value.length > 0) {
+                                setSearchList(true);
+                              } else {
+                                setSearchList(false);
+                              }
+                            }}
+                          />
+                        </IconField>
                       </div>
+                      {selectedUser && <div></div>}
+                    </div>
+                    {searchList ? (
+                      <div className="flex w-full align-items-center justify-center ">
+                        <DataTable
+                          className="w-[60%] border-2 border-gray-500 custom-header"
+                          value={filteredAttendanceData}
+                          scrollable
+                          scrollHeight="400px"
+                          onRowClick={(e) => handleRowClick(e.data as RowData)} // Ensure e.data is typed as RowData
+                          rowClassName={() =>
+                            "hover:bg-gray-300 cursor-pointer"
+                          }
+                        >
+                          <Column
+                            field="fullName"
+                            header="Name"
+                            frozen
+                            body={(rowData: RowData) =>
+                              `${rowData.refStFName} ${rowData.refStLName}`
+                            }
+                            style={{ minWidth: "7rem" }}
+                          />
+                          <Column
+                            field="refCtMobile"
+                            header="Mobile"
+                            style={{ minWidth: "7rem" }}
+                          />
+                          <Column
+                            field="refCtEmail"
+                            header="Email"
+                            style={{ minWidth: "8rem" }}
+                          />
+                          <Column
+                            field="refStDOB"
+                            header="DOB"
+                            style={{ minWidth: "8rem" }}
+                          />
+                        </DataTable>
+                      </div>
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                )}
 
+                <div className="flex w-full justify-content-between">
+                  <div className="flex w-[50%] flex-col align-items-center">
+                    <div className="flex flex-col w-full">
                       <div className="flex flex-row w-full justify-center">
-                        <div className="flex flex-col gap-3">
-                          {!selectedUser && (
-                            <DataTable
-                              className="w-[560px]"
-                              value={filteredAttendanceData}
-                              scrollable
-                              scrollHeight="400px"
-                            >
-                              <Column
-                                field="fullName"
-                                header="Name"
-                                frozen
-                                body={(rowData: RowData) => (
-                                  <span
-                                    onClick={() => handleRowClick(rowData)}
-                                    style={{
-                                      cursor: "pointer",
-                                      color: "blue",
-                                    }}
-                                  >
-                                    {`${rowData.refStFName} ${rowData.refStLName}`}
-                                  </span>
-                                )}
-                                style={{ minWidth: "7rem" }}
-                              />
-                              <Column
-                                field="refCtMobile"
-                                header="Mobile"
-                                style={{ minWidth: "7rem" }}
-                              />
-                              <Column
-                                field="refCtEmail"
-                                header="Email"
-                                style={{ minWidth: "8rem" }}
-                              />
-                              <Column
-                                field="refStDOB"
-                                header="DOB"
-                                style={{ minWidth: "8rem" }}
-                              />
-                            </DataTable>
-                          )}
-
+                        <div className="flex flex-col w-[90%]">
                           {selectedUser && (
                             <div className="w-full flex flex-col align-items-center justify-center">
                               <div
                                 className="flex flex-col justify-start p-4 w-full rounded-md"
                                 style={{ border: "3px solid #f95005" }}
                               >
-                                <div className="h-[25px] mt-[-30px] flex">
-                                  <p
-                                    style={{
-                                      width: "30%",
-                                      fontSize: "18px",
-                                      fontWeight: "bold",
-                                      color: "#f95005",
-                                      textAlign: "left",
-                                    }}
-                                  >
-                                    User Name
-                                  </p>
-                                  <p
-                                    style={{
-                                      width: "60%",
-                                      fontSize: "18px",
-                                      paddingLeft: "10px",
-                                    }}
-                                  >
-                                    : {selectedUser.userName}
-                                  </p>
-                                </div>
-                                <div className="w-full h-[25px] flex">
-                                  <p
-                                    style={{
-                                      width: "30%",
-                                      fontSize: "18px",
-                                      fontWeight: "bold",
-                                      color: "#f95005",
-                                      textAlign: "left",
-                                    }}
-                                  >
-                                    User ID
-                                  </p>
-                                  <p
-                                    style={{
-                                      width: "60%",
-                                      fontSize: "18px",
-                                      paddingLeft: "10px",
-                                    }}
-                                  >
-                                    : {selectedUser.userId}
-                                  </p>
-                                </div>
-                                <div className="w-full h-[25px] flex">
-                                  <p
-                                    style={{
-                                      width: "30%",
-                                      fontSize: "18px",
-                                      fontWeight: "bold",
-                                      color: "#f95005",
-                                      textAlign: "left",
-                                    }}
-                                  >
-                                    Session
-                                  </p>
-                                  <p
-                                    style={{
-                                      width: "60%",
-                                      fontSize: "18px",
-                                      paddingLeft: "10px",
-                                    }}
-                                  >
-                                    : {selectedUser.refPackageName} -{" "}
-                                    {selectedUser.refTime}
-                                  </p>
+                                <div className="flex flex-row w-full align-items-center justify-center">
+                                  <div className="w-[95%]">
+                                    <div className="h-[25px] mt-[-30px] flex">
+                                      <p
+                                        style={{
+                                          width: "30%",
+                                          fontSize: "18px",
+                                          fontWeight: "bold",
+                                          color: "#f95005",
+                                          textAlign: "left",
+                                        }}
+                                      >
+                                        User Name
+                                      </p>
+                                      <p
+                                        style={{
+                                          width: "60%",
+                                          fontSize: "18px",
+                                          paddingLeft: "10px",
+                                        }}
+                                      >
+                                        : {selectedUser.userName}
+                                      </p>
+                                    </div>
+                                    <div className="w-full h-[25px] flex">
+                                      <p
+                                        style={{
+                                          width: "30%",
+                                          fontSize: "18px",
+                                          fontWeight: "bold",
+                                          color: "#f95005",
+                                          textAlign: "left",
+                                        }}
+                                      >
+                                        User ID
+                                      </p>
+                                      <p
+                                        style={{
+                                          width: "60%",
+                                          fontSize: "18px",
+                                          paddingLeft: "10px",
+                                        }}
+                                      >
+                                        : {selectedUser.userId}
+                                      </p>
+                                    </div>
+                                    <div className="w-full h-[25px] flex">
+                                      <p
+                                        style={{
+                                          width: "30%",
+                                          fontSize: "18px",
+                                          fontWeight: "bold",
+                                          color: "#f95005",
+                                          textAlign: "left",
+                                        }}
+                                      >
+                                        Session
+                                      </p>
+                                      <p
+                                        style={{
+                                          width: "60%",
+                                          fontSize: "18px",
+                                          paddingLeft: "10px",
+                                        }}
+                                      >
+                                        : {selectedUser.refPackageName} -{" "}
+                                        {selectedUser.refTime}
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <div className="w-[5%]">
+                                    <button
+                                      className="text-white text-[17px] bg-[#f95005] border-none p-2 rounded-md cursor-pointer pi pi-times"
+                                      onClick={clearClick}
+                                    ></button>
+                                  </div>
                                 </div>
                               </div>
                               <DataTable
                                 value={userFilteredAttendanceData}
-                                className="w-full mt-3"
+                                className="w-full mt-3 border-2 border-gray-400 custom-header"
                                 scrollHeight="350px"
                                 scrollable
                               >
@@ -888,71 +873,13 @@ const StaffAttendance: React.FC = () => {
                       <Calenderss
                         selectedUser={selectedUser}
                         userFilteredAttendanceData={userFilteredAttendanceData}
-                        handleRowClick={(rowData, month) => {
-                          handleRowClick(rowData, month);
-                        }}
+                        onMonthChange={handleCalendarMonthChange} // Pass the callback function
                       />
                     )}
                   </div>
                 </div>
               </TabPanel>
             </TabView>
-            <Sidebar
-              style={{ width: "70%" }}
-              visible={visibleLeft}
-              position="right"
-              onHide={() => setVisibleLeft(false)}
-            >
-              <h2>12 Classes in One month duration</h2>
-              <div className="flex flex-col justify-center align-middle w-[100%] ">
-                <div className="w-[100%]  mt-5 px-3 flex flex-row justify-evenly lg:m-5">
-                  <div className="w-[48%] gap-5">
-                    <SelectInput
-                      id="classtype"
-                      name="classtype"
-                      label=""
-                      // label="Class Type *"
-                      options={[
-                        { value: "1", label: "Per Day" },
-                        { value: "2", label: "Custom Date" },
-                        { value: "3", label: "Monthly" },
-                      ]}
-                      // {renderCalendar()}
-                      onChange={(e) => {
-                        setClassType(e.target.value);
-                        console.log(e.target.value);
-                      }}
-                      required
-                    />
-                  </div>
-                  {renderCalendar()}
-                </div>
-                <DataTable value={attendanceData} className="w-[100%]">
-                  <Column
-                    field="Sessionname"
-                    header="Session "
-                    frozen
-                    style={{ inlineSize: "15rem" }}
-                  />
-
-                  <Column
-                    field="Signup"
-                    header="Enrolled "
-                    style={{ inlineSize: "18rem" }}
-                  />
-                  <Column
-                    field="Attend"
-                    header="Attended"
-                    style={{ inlineSize: "14rem" }}
-                  />
-                  <Column
-                    field="NotAttend"
-                    header="Not Attended"
-                    style={{ inlineSize: "15rem" }}
-                  />
-                </DataTable>
-              </div>
-            </Sidebar>
           </div>
         </>
       )}

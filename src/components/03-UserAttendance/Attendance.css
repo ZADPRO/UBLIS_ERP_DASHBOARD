@@ -1,0 +1,62 @@
+.fc-h-event {
+  background-color: transparent;
+  border: none;
+}
+.custom-tooltip {
+  position: absolute;
+  background-color: #000;
+  color: #fff;
+  padding: 5px;
+  border-radius: 4px;
+  font-size: 12px;
+  z-index: 1000;
+  white-space: nowrap;
+}
+
+.p-inputtext:enabled:focus {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: 0 0 0 0.2rem #f95005;
+  border-color: #f95005;
+}
+
+.custom-header .p-datatable-thead > tr > th {
+  background-color: #f95005;
+  color: white !important;
+}
+
+.fc-scrollgrid-sync-inner > :not(.fc-col-header-cell.fc-day):not(:first-child) {
+  height: 1px;
+}
+
+.fc .fc-toolbar-title {
+  font-size: 1.2rem;
+}
+.fc .fc-button {
+  font-size: 0.8rem;
+}
+.p-button {
+  background-color: #f95005;
+  color: white;
+  box-shadow: 0 0 0 0.1rem #f95005;
+  border-color: #f95005;
+}
+.p-calendar:not(.p-calendar-disabled).p-focus > .p-inputtext {
+  border-color: #f95005;
+
+  box-shadow: 0 0 0 0.1rem #f95005;
+}
+
+.modeDropdown:focus-within {
+  border-color: #f95005 !important;
+  box-shadow: 0 0 0 0.1rem #f95005 !important;
+}
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight.p-focus,
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight {
+  background-color: #f95005;
+}
+.p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+  background: #f95005;
+  border-color: #f95005;
+  color: #ffffff;
+}

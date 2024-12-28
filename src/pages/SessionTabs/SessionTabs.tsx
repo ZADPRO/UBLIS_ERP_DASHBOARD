@@ -159,7 +159,7 @@ const SessionTabs: React.FC = () => {
             options={session}
             optionLabel="name"
             placeholder="Select a Mode"
-            className="w-full md:w-14rem"
+            className="w-full md:w-14rem modeDropdown"
           />
         </div>
       </div>

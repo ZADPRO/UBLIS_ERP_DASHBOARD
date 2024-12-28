@@ -3,18 +3,14 @@ import { EventInput } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import "./Calenderss.css";
-import FullCalendar from "@fullcalendar/react";
 import { OverlayPanel } from "primereact/overlaypanel";
+import FullCalendar from "@fullcalendar/react";
+import "./Calenderss.css";
 
 type Attendance = {
   sno: number;
   date: string;
   time: string;
-};
-
-type RowData = {
-  refSCustId: string;
 };
 
 type User = {
@@ -29,17 +25,17 @@ type User = {
 type CalenderssProps = {
   selectedUser: User | null;
   userFilteredAttendanceData: Attendance[];
-  handleRowClick: (rowData: RowData, month: string) => void;
+  onMonthChange: (month: number, year: number) => void; // Add this prop
 };
 
 const Calenderss: React.FC<CalenderssProps> = ({
   selectedUser,
   userFilteredAttendanceData,
-  handleRowClick,
+  onMonthChange, // Destructure the callback prop
 }) => {
-  const calendarRef: React.MutableRefObject<FullCalendar | null> = useRef(null);
+  const calendarRef = useRef<FullCalendar | null>(null);
   const [events, setEvents] = useState<EventInput[]>([]);
-  const op = useRef(null);
+  const op = useRef<OverlayPanel | null>(null); // OverlayPanel reference for hover
 
   const formatDate = (dateString: string): string => {
     const [day, month, year] = dateString.split("/");
@@ -73,56 +69,17 @@ const Calenderss: React.FC<CalenderssProps> = ({
     return formattedDate;
   };
 
-  const today = new Date();
-
-  const [calendarDate, setCalendarDate] = useState({
-    month: today.getMonth() + 1,
-    year: today.getFullYear(),
-  });
-
-  function getMonthNameFromNumber(monthNumber: number) {
-    const date = new Date();
-    date.setMonth(monthNumber - 1);
-    return date.toLocaleString("default", { month: "long" });
-  }
-
-  function adjustMonth(offset: number) {
-    const currentDate = new Date(calendarDate.year, calendarDate.month - 1);
-    const adjustedDate = new Date(currentDate);
-    adjustedDate.setMonth(currentDate.getMonth() + offset);
-
-    console.log(
-      getMonthNameFromNumber(adjustedDate.getMonth() + 1),
-      adjustedDate.getFullYear()
-    );
-
-    console.log(selectedUser);
-
-    if (selectedUser) {
-      handleRowClick(
-        { refSCustId: selectedUser.userId },
-        getMonthNameFromNumber(adjustedDate.getMonth() + 1) +
-          " " +
-          adjustedDate.getFullYear()
-      );
-    }
-
-    setCalendarDate({
-      month: adjustedDate.getMonth() + 1,
-      year: adjustedDate.getFullYear(),
-    });
-  }
-
   useEffect(() => {
     const transformedEvents = userFilteredAttendanceData
       .map((attendance) => {
         const formattedDate = formatDate(attendance.date);
         if (!formattedDate) return null;
         return {
-          title: `<i class="pi pi-check"></i>`,
+          title: "Event", // Placeholder for event title
           start: formattedDate,
           allDay: true,
           time: attendance.time,
+          extendedProps: { time: attendance.time }, // Storing time as extendedProps
         };
       })
       .filter((event) => event !== null);
@@ -130,25 +87,28 @@ const Calenderss: React.FC<CalenderssProps> = ({
     setEvents(transformedEvents);
   }, [userFilteredAttendanceData]);
 
-  const handleDateClick = (info: any) => {
-    const clickedDate = info.dateStr;
-    const clickedDateEvents = events.filter(
-      (event) => event.start === clickedDate
+  const renderEventContent = (_eventInfo: any) => {
+    return (
+      <div className="custom-event-content">
+        <span className="pi pi-check" style={{ fontSize: "20px" }}></span>
+        {/* Optionally add title here */}
+      </div>
     );
+  };
 
-    if (clickedDateEvents.length > 0) {
-      console.log(`Events on ${clickedDate}:`);
-      clickedDateEvents.forEach((event) => {
-        console.log(`- Event Time: ${event.time}`);
-        op.current.toggle(true);
-      });
-    } else {
-      console.log(`No events on ${clickedDate}`);
+  const handleCalendarChange = () => {
+    const calendarApi = calendarRef.current?.getApi();
+    if (calendarApi) {
+      const currentDate = calendarApi.getDate(); // Get current date in view
+      const month = currentDate.getMonth() + 1; // Get month (0-based index, so add 1)
+      const year = currentDate.getFullYear(); // Get the year
+      console.log(`Displayed Month: ${month}, Year: ${year}`);
+      onMonthChange(month, year); // Pass the month and year to the parent
     }
   };
 
   return (
-    <div className="w-full h-[75vh] bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200 m-2">
+    <div className="w-full max-h-[75vh] bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200">
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         headerToolbar={{
@@ -163,10 +123,7 @@ const Calenderss: React.FC<CalenderssProps> = ({
               const calendarApi = calendarRef.current?.getApi();
               if (calendarApi) {
                 calendarApi.prev();
-                adjustMonth(-1);
-                console.log("Moved to previous month");
-              } else {
-                console.error("Calendar API is not available");
+                handleCalendarChange(); // Log the month and year after going to prev
               }
             },
           },
@@ -176,10 +133,7 @@ const Calenderss: React.FC<CalenderssProps> = ({
               const calendarApi = calendarRef.current?.getApi();
               if (calendarApi) {
                 calendarApi.next();
-                adjustMonth(1);
-                console.log("Moved to next month");
-              } else {
-                console.error("Calendar API is not available");
+                handleCalendarChange(); // Log the month and year after going to next
               }
             },
           },
@@ -188,31 +142,11 @@ const Calenderss: React.FC<CalenderssProps> = ({
         height={"65vh"}
         contentHeight={"auto"}
         events={events}
-        dayHeaderClassNames="bg-f95005 text-white font-bold"
-        datesSet={(info) => {
-          const startDate = info.start;
-          const endDate = info.end;
-          console.log("View changed: ", startDate, endDate);
-        }}
-        dayCellClassNames="hover:bg-f95005 hover:text-white transition-all cursor-pointer"
-        eventContent={() => {
-          return (
-            <div className="fc-event-title">
-              <i className="pi pi-check"></i>{" "}
-            </div>
-          );
-        }}
-        dateClick={handleDateClick}
+        eventContent={renderEventContent}
+        initialView="dayGridMonth"
+        // Log the month and year when today button is clicked
+        datesSet={handleCalendarChange}
       />
-
-      <OverlayPanel ref={op}>
-        <img
-          src={
-            "https://primefaces.org/cdn/primereact/images/product/bamboo-watch.jpg"
-          }
-          alt="Bamboo Watch"
-        ></img>
-      </OverlayPanel>
     </div>
   );
 };

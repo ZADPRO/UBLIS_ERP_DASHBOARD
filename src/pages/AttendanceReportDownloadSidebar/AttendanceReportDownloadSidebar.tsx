@@ -326,7 +326,10 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
   };
   return (
     <div className="m-2">
-      <label htmlFor="calendar-12h" className="font-bold block mb-2">
+      <label
+        htmlFor="calendar-12h"
+        className="font-bold block mb-2 text-[#f95005]"
+      >
         Attendance Report Download
       </label>
       <div className="flex gap-3 mt-3">
