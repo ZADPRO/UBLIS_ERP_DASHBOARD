@@ -1,101 +1,64 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./OverallDashboard.css";
-import { Link } from "react-router-dom";
-
-import { DataTable } from "primereact/datatable";
-import { Chart } from "primereact/chart";
-import { Column } from "primereact/column";
-import { Divider } from "primereact/divider";
 
 import Axios from "axios";
 import { Skeleton } from "primereact/skeleton";
 import CryptoJS from "crypto-js";
 
-import { AiOutlineAudit } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import DashboardTiles from "../../pages/00-DashboardTiles/DashboardTiles";
 
 type DecryptResult = any;
-
-const lineData = {
-  labels: ["April", "May", "June", "July", "August", "September", "October  "],
-  datasets: [
-    {
-      label: "Fee Payment",
-      data: [28, 48, 40, 19, 86, 27, 90],
-      fill: false,
-      backgroundColor: "#00bb7e",
-      borderColor: "#00bb7e",
-      tension: 0.4,
-    },
-  ],
-};
 
 const OverallDashboard: React.FC = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
+  console.log("products", products);
 
   const [trialSampleData, setTrailSampleData] = useState([]);
+  console.log("trialSampleData", trialSampleData);
 
   const [paymentSampleData, setPaymentSampleData] = useState([]);
+  console.log("paymentSampleData", paymentSampleData);
 
   const [formSubmitted, setFormSubmitted] = useState({
     today: 0,
     futureToday: 0,
   });
+  console.log("formSubmitted", formSubmitted);
   const [futureClient, setFutureClient] = useState({
     today: 0,
     futureToday: 0,
   });
+  console.log("futureClient", futureClient);
   const [trailCount, setTrialCount] = useState({
     Trial: 0,
     FeesPending: 0,
   });
+  console.log("trailCount", trailCount);
   const [feesCount, setFeesCount] = useState({
     feesPaid: 0,
     feesPending: 0,
   });
+  console.log("feesCount", feesCount);
   const [overallUserStatus, setOverallUserStatus] = useState([]);
 
+  console.log("overallUserStatus", overallUserStatus);
   const [overallEmployeeStatus, setOverallEmployeeStatus] = useState([]);
+  console.log("overallEmployeeStatus", overallEmployeeStatus);
 
   const [studentaudit, setStudentAudit] = useState({
     approvalCount: 0,
     readCount: 0,
   });
+  console.log("studentaudit", studentaudit);
 
   const [employeeAudit, setEmployeeAudit] = useState({
     approvalCount: 0,
     readCount: 0,
   });
-
-  const lineOptions = {
-    plugins: {
-      legend: {
-        labels: {
-          color: "#495057",
-        },
-      },
-    },
-    scales: {
-      x: {
-        ticks: {
-          color: "#495057",
-        },
-        grid: {
-          color: "#ebedef",
-        },
-      },
-      y: {
-        ticks: {
-          color: "#495057",
-        },
-        grid: {
-          color: "#ebedef",
-        },
-      },
-    },
-  };
+  console.log("employeeAudit", employeeAudit);
 
   useEffect(() => {
     const token = localStorage.getItem("JWTtoken");
@@ -112,14 +75,14 @@ const OverallDashboard: React.FC = () => {
           response.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
-        if(data.token==false){
-          navigate("/expired")
-        }else{
+        if (data.token == false) {
+          navigate("/expired");
+        } else {
           setFutureClient({
             today: data.data.signUpCount[0].count_today,
             futureToday: data.data.signUpCount[0].count_other_days,
           });
-  
+
           if (
             localStorage.getItem("refUtId") === "7" ||
             localStorage.getItem("refUtId") === "4"
@@ -133,28 +96,30 @@ const OverallDashboard: React.FC = () => {
               feesPending: data.data.fessCount[0].feesPending,
             });
           }
-  
+
           if (localStorage.getItem("refUtId") === "7") {
             setStudentAudit({
               approvalCount:
                 data.data.getStudentChangesCountResult[0].ApproveCount,
               readCount: data.data.getStudentChangesCountResult[0].Student_Read,
             });
-  
+
             setEmployeeAudit({
               approvalCount:
                 data.data.getEmployeeChangesCountResult[0].ApproveCount,
-              readCount: data.data.getEmployeeChangesCountResult[0].Employee_Read,
+              readCount:
+                data.data.getEmployeeChangesCountResult[0].Employee_Read,
             });
           }
-  
+
           if (localStorage.getItem("refUtId") === "4") {
+            console.log("Line 153");
           } else {
             setFormSubmitted({
               today: data.data.registerCount[0].count_today,
               futureToday: data.data.registerCount[0].count_other_days,
             });
-  
+
             const recentData = data.data.registerSampleData;
             const mappedData = recentData.map((item: any, index: any) => ({
               sno: index + 1,
@@ -162,7 +127,7 @@ const OverallDashboard: React.FC = () => {
               transTime: item.transTime,
             }));
             setProducts(mappedData);
-  
+
             const trailSampleData = data.data.trailSampleData;
             const trailSampleDatamappedData = trailSampleData.map(
               (item: any, index: any) => ({
@@ -172,7 +137,7 @@ const OverallDashboard: React.FC = () => {
               })
             );
             setTrailSampleData(trailSampleDatamappedData);
-  
+
             const paymentPendingSampleData = data.data.paymentPendingSampleData;
             const paymentPendingSampleDatamappedData =
               paymentPendingSampleData.map((item: any, index: any) => ({
@@ -182,14 +147,11 @@ const OverallDashboard: React.FC = () => {
               }));
             setPaymentSampleData(paymentPendingSampleDatamappedData);
           }
-  
-          setOverallUserStatus(data.data.userTypeCount);
-  
-          setOverallEmployeeStatus(data.data.staffCount);
-          
-        }
 
-        
+          setOverallUserStatus(data.data.userTypeCount);
+
+          setOverallEmployeeStatus(data.data.staffCount);
+        }
       });
   }, []);
 
@@ -242,9 +204,9 @@ const OverallDashboard: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
-      }else{
+      if (data.token == false) {
+        navigate("/expired");
+      } else {
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
         setuserdata({
           username:
@@ -252,16 +214,12 @@ const OverallDashboard: React.FC = () => {
           usernameid: data.data[0].refusertype,
           profileimg: data.profileFile,
         });
-  
+
         setPageLoading({
           ...pageLoading,
           verifytoken: false,
         });
-
       }
-
-
-     
     });
   }, []);
 
@@ -298,7 +256,7 @@ const OverallDashboard: React.FC = () => {
         </>
       ) : (
         <div className="dashboardContext">
-          <div className="headerPrimary">
+          {/* <div className="headerPrimary">
             <h3>DASHBOARD</h3>
             <div className="quickAcces">
               {userdata.profileimg ? (
@@ -323,699 +281,25 @@ const OverallDashboard: React.FC = () => {
                 </span>
               </h3>
             </div>{" "}
+          </div> */}
+
+          <div className="primaryNav">
+            <p className="font-bold text-black">Dashboard</p>
+            <p className="text-[#f95005]">
+              Logged in as: {userdata.usernameid}
+            </p>
           </div>
-          <div className="cardTesting">
-            {localStorage.getItem("refUtId") === "4" ? (
-              <></>
-            ) : (
-              <Link
-                to="/therapist/approve"
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <div className="cardOutline card">
-                  <div className="header">
-                    <i className="pi pi-user-plus"></i>
-                    <h3>Registered Users</h3>
-                  </div>
-                  <div className="counts">
-                    <div className="countOne">
-                      <h3>{formSubmitted.today}</h3>
-                      <h5>Today</h5>
-                    </div>
-                    <div className="w-full md:w-2">
-                      <Divider
-                        layout="vertical"
-                        className="hidden md:flex"
-                      ></Divider>
-                      <Divider
-                        layout="horizontal"
-                        className="flex md:hidden"
-                        align="center"
-                      ></Divider>
-                    </div>
-                    <div className="countOne">
-                      <h3>{formSubmitted.futureToday}</h3>
-                      <h5>Previous Day</h5>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            )}
-            <Link
-              to="/staff/signedupUsers"
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <div className="cardOutline card">
-                <div className="header">
-                  <i className="pi pi-user"></i>
-                  <h3>Future Clients</h3>
-                </div>
-                <div className="counts">
-                  <div className="countOne">
-                    <h3>{futureClient.today}</h3>
-                    <h5>Today</h5>
-                  </div>
-                  <div className="w-full md:w-2">
-                    <Divider
-                      layout="vertical"
-                      className="hidden md:flex"
-                    ></Divider>
-                    <Divider
-                      layout="horizontal"
-                      className="flex md:hidden"
-                      align="center"
-                    ></Divider>
-                  </div>
-                  <div className="countOne">
-                    <h3>{futureClient.futureToday}</h3>
-                    <h5>Previous Day</h5>
-                  </div>
-                </div>
-              </div>
-            </Link>
-
-            <Link
-              to="/staff/registeredUsers"
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <div className="cardOutline card">
-                <div className="header">
-                  <i className="pi pi-money-bill"></i>
-                  <h3>Trial</h3>
-                </div>
-                <div className="counts">
-                  <div className="countOne">
-                    <h3>{trailCount.Trial}</h3>
-                    <h5>Trial</h5>
-                  </div>
-                  <div className="w-full md:w-2">
-                    <Divider
-                      layout="vertical"
-                      className="hidden md:flex"
-                    ></Divider>
-                    <Divider
-                      layout="horizontal"
-                      className="flex md:hidden"
-                      align="center"
-                    ></Divider>
-                  </div>
-                  <div className="countOne">
-                    <h3>{trailCount.FeesPending}</h3>
-                    <h5>Fees Pending</h5>
-                  </div>
-                </div>
-              </div>
-            </Link>
-
-            
-
-            {localStorage.getItem("refUtId") === "7" ? (
-              <Link
-                to="/dir/notify?user=student"
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <div className="cardOutline card">
-                  <div className="header">
-                    <AiOutlineAudit />
-                    <h3>Student Audit</h3>
-                  </div>
-                  <div className="counts">
-                    <div className="countOne">
-                      <h3>{studentaudit.approvalCount}</h3>
-                      <h5>Approval</h5>
-                    </div>
-                    <div className="w-full md:w-2">
-                      <Divider
-                        layout="vertical"
-                        className="hidden md:flex"
-                      ></Divider>
-                      <Divider
-                        layout="horizontal"
-                        className="flex md:hidden"
-                        align="center"
-                      ></Divider>
-                    </div>
-                    <div className="countOne">
-                      <h3>{studentaudit.readCount}</h3>
-                      <h5>Actions</h5>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            ) : null}
-
-            {/* <div className="cardOutline card">
-              <div className="header">
-                <i className="pi pi-calendar"></i>
-                <h3>Attendance</h3>
-              </div>
-              <div className="counts">
-                <div className="countOne">
-                  <h3>--</h3>
-                  <h5>Total</h5>
-                </div>
-                <div className="w-full md:w-2">
-                  <Divider
-                    layout="vertical"
-                    className="hidden md:flex"
-                  ></Divider>
-                  <Divider
-                    layout="horizontal"
-                    className="flex md:hidden"
-                    align="center"
-                  ></Divider>
-                </div>
-                <div className="countOne">
-                  <h3>--</h3>
-                  <h5>Current Batch</h5>
-                </div>
-              </div>
-            </div> */}
-            {/* 
-            <Link
-              to="/settings"
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <div className="cardOutline card">
-                <div className="header">
-                  <i className="pi pi-receipt"></i>
-                  <h3>Offers</h3>
-                </div>
-                <div className="counts">
-                  <div className="countOne">
-                    <h3>--</h3>
-                    <h5>Trial</h5>
-                  </div>
-                  <div className="w-full md:w-2">
-                    <Divider
-                      layout="vertical"
-                      className="hidden md:flex"
-                    ></Divider>
-                    <Divider
-                      layout="horizontal"
-                      className="flex md:hidden"
-                      align="center"
-                    ></Divider>
-                  </div>
-                  <div className="countOne">
-                    <h3>--</h3>
-                    <h5>Students</h5>
-                  </div>
-                </div>
-              </div>
-            </Link> */}
+          {/* DASHBOARD TILES START */}
+          <div className="showCardTiles ms-5">
+            <DashboardTiles
+              userData={{
+                username: userdata.username,
+                usernameId: userdata.usernameid,
+              }}
+            />
           </div>
 
-          <div className="cardTesting">
-            {localStorage.getItem("refUtId") === "7" ? (
-              <Link
-                to="/dir/notify?user=staff"
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <div className="cardOutline card">
-                  <div className="header">
-                    <AiOutlineAudit />
-                    <h3>Employee Audit</h3>
-                  </div>
-                  <div className="counts">
-                    <div className="countOne">
-                      <h3>{employeeAudit.approvalCount}</h3>
-                      <h5>Approval</h5>
-                    </div>
-                    <div className="w-full md:w-2">
-                      <Divider
-                        layout="vertical"
-                        className="hidden md:flex"
-                      ></Divider>
-                      <Divider
-                        layout="horizontal"
-                        className="flex md:hidden"
-                        align="center"
-                      ></Divider>
-                    </div>
-                    <div className="countOne">
-                      <h3>{employeeAudit.readCount}</h3>
-                      <h5>Actions</h5>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            ) : null}
-
-{(localStorage.getItem("refUtId") === "4" || localStorage.getItem("refUtId") === "7" || localStorage.getItem("refUtId") === "8" || localStorage.getItem("refUtId") === "11" ) ? (
-              <Link
-                to="/staff/payment"
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <div className="cardOutline card">
-                  <div className="header">
-                    <AiOutlineAudit />
-                    <h3>Fees Paid & Pending</h3>
-                  </div>
-                  <div className="counts">
-                    <div className="countOne">
-                      <h3>{feesCount.feesPaid}</h3>
-                      <h5>Fees Paid</h5>
-                    </div>
-                    <div className="w-full md:w-2">
-                      <Divider
-                        layout="vertical"
-                        className="hidden md:flex"
-                      ></Divider>
-                      <Divider
-                        layout="horizontal"
-                        className="flex md:hidden"
-                        align="center"
-                      ></Divider>
-                    </div>
-                    <div className="countOne">
-                      <h3>{feesCount.feesPending}</h3>
-                      <h5>Fees Pending</h5>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            ) : null}
-          </div>
-          <div className="overallComponent mt-3" style={{ inlineSize: "100%" }}>
-            <div className="dashboardContxt">
-              <div
-                className="dashboardCont"
-                style={{ display: "flex", justifyContent: "space-around" }}
-              >
-                {/* RECENT SALES & BEST SELLING PRODUCTS */}
-                <div className="col-12 xl:col-6 dashboardAnalytics">
-                  <div className="card mt-2">
-                    <div className="flex justify-content-between align-items-center mb-5">
-                      <h3 className="text-[#f95005]">Overall User Status</h3>
-                      <div>
-                        {/* <Button
-                          type="button"
-                          icon="pi pi-ellipsis-v"
-                          rounded
-                          text
-                          className="p-button-plain"
-                          onClick={(event: any) => menu1.current?.toggle(event)}
-                        /> */}
-                        {/* <Menu
-                          ref={menu1}
-                          popup
-                          model={[
-                            { label: "Option One", icon: "pi pi-fw pi-plus" },
-                            { label: "Option Two", icon: "pi pi-fw pi-minus" },
-                          ]}
-                        /> */}
-                      </div>
-                    </div>
-                    {overallUserStatus.length ? (
-                      <ul className="list-none p-0 m-0">
-                        {overallUserStatus.map(
-                          (element: any, index: number) => (
-                            <li
-                              key={index}
-                              className="flex flex-column md:flex-row md:align-items-center md:justify-content-between mb-4"
-                            >
-                              <div>
-                                <span className="text-900 font-medium mr-2 mb-1 md:mb-0 capitalize">
-                                  {element.user_type_label}
-                                </span>
-                                <div className="mt-1 text-600">
-                                   {element.count}
-                                </div>
-                              </div>
-                              <div className="mt-2 md:mt-0 flex align-items-center">
-                                <div
-                                  className="surface-300 border-round overflow-hidden w-10rem lg:w-6rem"
-                                  style={{ blockSize: "8px" }}
-                                >
-                                  <div
-                                    className="bg-orange-500 h-full"
-                                    style={{
-                                      inlineSize: element.percentage + "%",
-                                    }}
-                                  />
-                                </div>
-                                <span className="text-orange-500 ml-3 font-medium">
-                                  {element.percentage} %
-                                </span>
-                              </div>
-                            </li>
-                          )
-                        )}
-                      </ul>
-                    ) : (
-                      <p>No Data</p>
-                    )}
-                  </div>
-
-                  {localStorage.getItem("refUtId") === "4" ? (
-                    <></>
-                  ) : (
-                    <div className="mt-5">
-                      <Link
-                        to="/staff/registeredUsers"
-                        style={{ textDecoration: "none", color: "inherit" }}
-                      >
-                        <div className="card">
-                          <h3 className="text-[#f95005]">
-                            Today's Form Submissions
-                          </h3>
-                          <DataTable
-                            value={products}
-                            rows={5}
-                            paginator
-                            emptyMessage="No Data"
-                            responsiveLayout="scroll"
-                          >
-                            <Column
-                              field="sno"
-                              header="S.No"
-                              style={{ inlineSize: "35%" }}
-                            />
-                            <Column
-                              field="name"
-                              header="Name"
-                              style={{ inlineSize: "35%" }}
-                            />
-                            <Column
-                              field="transTime"
-                              header="Registered Date"
-                              style={{ inlineSize: "35%" }}
-                            />
-                          </DataTable>
-                        </div>
-                      </Link>
-                    </div>
-                  )}
-
-                  <div className="mt-5">
-                    <Link
-                      to="/staff/registeredUsers"
-                      style={{ textDecoration: "none", color: "inherit" }}
-                    >
-                      <div className="card">
-                        <h3 className="text-[#f95005]">Students on Trial</h3>
-                        <DataTable
-                          value={trialSampleData}
-                          rows={5}
-                          paginator
-                          responsiveLayout="scroll"
-                          emptyMessage="No Data"
-                        >
-                          <Column
-                            field="sno"
-                            header="S.No"
-                            style={{ inlineSize: "35%" }}
-                          />
-                          <Column
-                            field="name"
-                            header="Name"
-                            style={{ inlineSize: "35%" }}
-                          />
-                          <Column
-                            field="transTime"
-                            header="Registered Date"
-                            style={{ inlineSize: "35%" }}
-                          />
-                        </DataTable>
-                      </div>
-                    </Link>
-                  </div>
-
-                  {/* <div className="card mt-4">
-                <div className="flex justify-content-between align-items-center mb-5">
-                  <h5>Overall Employee Status</h5>
-                  <div>
-                    <Button
-                      type="button"
-                      icon="pi pi-ellipsis-v"
-                      rounded
-                      text
-                      className="p-button-plain"
-                      onClick={(event) => menu1.current?.toggle(event)}
-                    />
-                    <Menu
-                      ref={menu1}
-                      popup
-                      model={[
-                        { label: "Option One", icon: "pi pi-fw pi-plus" },
-                        { label: "Option Two", icon: "pi pi-fw pi-minus" },
-                      ]}
-                    />
-                  </div>
-                </div>
-                <ul className="list-none p-0 m-0">
-                  <li className="flex flex-column md:flex-row md:align-items-center md:justify-content-between mb-4">
-                    <div>
-                      <span className="text-900 font-medium mr-2 mb-1 md:mb-0">
-                        Finance
-                      </span>
-                      <div className="mt-1 text-600">Count : 1</div>
-                    </div>
-                    <div className="mt-2 md:mt-0 flex align-items-center">
-                      <div
-                        className="surface-300 border-round overflow-hidden w-10rem lg:w-6rem"
-                        style={{ blockSize: "8px" }}
-                      >
-                        <div
-                          className="bg-orange-500 h-full"
-                          style={{ inlineSize: "12.50%" }}
-                        />
-                      </div>
-                      <span className="text-orange-500 ml-3 font-medium">
-                        %12.50
-                      </span>
-                    </div>
-                  </li>
-                  <li className="flex flex-column md:flex-row md:align-items-center md:justify-content-between mb-4">
-                    <div>
-                      <span className="text-900 font-medium mr-2 mb-1 md:mb-0">
-                        Front Office
-                      </span>
-                      <div className="mt-1 text-600">Count : 2</div>
-                    </div>
-                    <div className="mt-2 md:mt-0 ml-0 md:ml-8 flex align-items-center">
-                      <div
-                        className="surface-300 border-round overflow-hidden w-10rem lg:w-6rem"
-                        style={{ blockSize: "8px" }}
-                      >
-                        <div
-                          className="bg-cyan-500 h-full"
-                          style={{ inlineSize: "25.00%" }}
-                        />
-                      </div>
-                      <span className="text-cyan-500 ml-3 font-medium">
-                        %25.00
-                      </span>
-                    </div>
-                  </li>
-                  <li className="flex flex-column md:flex-row md:align-items-center md:justify-content-between mb-4">
-                    <div>
-                      <span className="text-900 font-medium mr-2 mb-1 md:mb-0">
-                        Instructor
-                      </span>
-                      <div className="mt-1 text-600">Count : 5</div>
-                    </div>
-                    <div className="mt-2 md:mt-0 ml-0 md:ml-8 flex align-items-center">
-                      <div
-                        className="surface-300 border-round overflow-hidden w-10rem lg:w-6rem"
-                        style={{ blockSize: "8px" }}
-                      >
-                        <div
-                          className="bg-pink-500 h-full"
-                          style={{ inlineSize: "62.50%" }}
-                        />
-                      </div>
-                      <span className="text-pink-500 ml-3 font-medium">
-                        %62.50
-                      </span>
-                    </div>
-                  </li>
-                </ul>
-              </div> */}
-                </div>
-
-                {/* SALES OVERVIEW AND NOTIFICATIONS */}
-                <div className="col-12 xl:col-6 dashboardAnalytics">
-                  {localStorage.getItem("refUtId") === "4" ? (
-                    <></>
-                  ) : (
-                    <div className="card mt-2">
-                      <div className="flex justify-content-between align-items-center mb-5">
-                        <h3 className="text-[#f95005]">
-                          Overall Employee Status
-                        </h3>
-                        <div>
-                          {/* <Button
-                          type="button"
-                          icon="pi pi-ellipsis-v"
-                          rounded
-                          text
-                          className="p-button-plain"
-                          onClick={(event) => menu1.current?.toggle(event)}
-                        />
-                        <Menu
-                          ref={menu1}
-                          popup
-                          model={[
-                            { label: "Option One", icon: "pi pi-fw pi-plus" },
-                            { label: "Option Two", icon: "pi pi-fw pi-minus" },
-                          ]}
-                        /> */}
-                        </div>
-                      </div>
-                      {overallEmployeeStatus.length ? (
-                        <ul className="list-none p-0 m-0">
-                          {overallEmployeeStatus.map((element: any) => (
-                            <li className="flex flex-column md:flex-row md:align-items-center md:justify-content-between mb-4">
-                              <div>
-                                <span className="text-900 font-medium mr-2 mb-1 md:mb-0 capitalize">
-                                  {element.user_type_label}
-                                </span>
-                                <div className="mt-1 text-600">
-                                  {element.count}
-                                </div>
-                              </div>
-                              <div className="mt-2 md:mt-0 flex align-items-center">
-                                <div
-                                  className="surface-300 border-round overflow-hidden w-10rem lg:w-6rem"
-                                  style={{ blockSize: "8px" }}
-                                >
-                                  <div
-                                    className="bg-orange-500 h-full"
-                                    style={{
-                                      inlineSize: element.percentage + "%",
-                                    }}
-                                  />
-                                </div>
-                                <span className="text-orange-500 ml-3 font-medium">
-                                  {element.percentage} %
-                                </span>
-                              </div>
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p>No Data</p>
-                      )}
-                    </div>
-                  )}
-                  <div className="card">
-                    <h5>October Month Revenue</h5>
-                    <Chart type="line" data={lineData} options={lineOptions} />
-                  </div>
-
-                  <div className="mt-5">
-                    <Link
-                      to="/staff/registeredUsers"
-                      style={{ textDecoration: "none", color: "inherit" }}
-                    >
-                      <div className="card">
-                        <h3 className="text-[#f95005]">Fee Payment Dues</h3>
-                        <DataTable
-                          value={paymentSampleData}
-                          rows={5}
-                          paginator
-                          responsiveLayout="scroll"
-                          emptyMessage="No Data"
-                        >
-                          <Column
-                            field="sno"
-                            header="S.No"
-                            style={{ inlineSize: "35%" }}
-                          />
-                          <Column
-                            field="name"
-                            header="Name"
-                            style={{ inlineSize: "35%" }}
-                          />
-                          <Column
-                            field="transTime"
-                            header="Registered Date"
-                            style={{ inlineSize: "35%" }}
-                          />
-                        </DataTable>
-                      </div>
-                    </Link>
-                  </div>
-
-                  {/* <div className="card mt-4">
-                    <div className="flex align-items-center justify-content-between mb-4">
-                      <h5>Notifications</h5>
-                      <div>
-                      </div>
-                    </div>
-
-                    <span className="block text-600 font-medium mb-3">
-                      TODAY
-                    </span>
-                    <ul className="p-0 mx-0 mt-0 mb-4 list-none">
-                      <li className="flex align-items-center py-2 border-bottom-1 surface-border">
-                        <div className="w-3rem h-3rem flex align-items-center justify-content-center bg-blue-100 border-circle mr-3 flex-shrink-0">
-                          <i className="pi pi-dollar text-xl text-blue-500" />
-                        </div>
-                        <span className="text-900 line-blockSize-3">
-                          Revenue Report
-                          <span className="text-700">
-                            {" "}
-                            - Fee Payment{" "}
-                            <span className="text-blue-500">
-                              10 Verification Pending
-                            </span>
-                          </span>
-                        </span>
-                      </li>
-                      <li className="flex align-items-center py-2">
-                        <div className="w-3rem h-3rem flex align-items-center justify-content-center bg-orange-100 border-circle mr-3 flex-shrink-0">
-                          <i className="pi pi-download text-xl text-orange-500" />
-                        </div>
-                        <span className="text-700 line-blockSize-3">
-                          Revenue Report{" "}
-                          <span className="text-blue-500 font-medium">
-                            DD-MM-YYYY (Today)
-                          </span>{" "}
-                          has been initiated.
-                        </span>
-                      </li>
-                    </ul>
-
-                    <span className="block text-600 font-medium mb-3">
-                      YESTERDAY
-                    </span>
-                    <ul className="p-0 m-0 list-none">
-                      <li className="flex align-items-center py-2 border-bottom-1 surface-border">
-                        <div className="w-3rem h-3rem flex align-items-center justify-content-center bg-blue-100 border-circle mr-3 flex-shrink-0">
-                          <i className="pi pi-dollar text-xl text-blue-500" />
-                        </div>
-                        <span className="text-900 line-blockSize-3">
-                          Revenue Report
-                          <span className="text-700">
-                            {" "}
-                            - Fee Payment{" "}
-                            <span className="text-blue-500">
-                              3 Verification Pending
-                            </span>
-                          </span>
-                        </span>
-                      </li>
-                      <li className="flex align-items-center py-2">
-                        <div className="w-3rem h-3rem flex align-items-center justify-content-center bg-orange-100 border-circle mr-3 flex-shrink-0">
-                          <i className="pi pi-download text-xl text-orange-500" />
-                        </div>
-                        <span className="text-700 line-blockSize-3">
-                          Revenue Report{" "}
-                          <span className="text-blue-500 font-medium">
-                            DD-MM-YYYY (Today)
-                          </span>{" "}
-                          has been initiated.
-                        </span>
-                      </li>
-                    </ul>
-                  </div> */}
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* DASHBOARD TILES ENDS */}
         </div>
       )}
     </>

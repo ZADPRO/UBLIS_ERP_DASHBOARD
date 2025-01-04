@@ -128,14 +128,14 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
 
   const showAnimation = {
     hidden: {
-      inlineSize: 0,
+      minWidth: 0,
       opacity: 0,
       transition: {
         duration: 0.2,
       },
     },
     show: {
-      inlineSize: "auto",
+      minWidth: "auto",
       opacity: 1,
       transition: {
         duration: 0.2,
@@ -456,7 +456,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
           <div className="main_container">
             <motion.div
               animate={{
-                inlineSize: isOpen ? "250px" : "60px",
+                maxWidth: isOpen ? "15vw" : "5vw",
                 transition: {
                   duration: 0.2,
                   type: "spring",
@@ -511,7 +511,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
                 ))}
               </section>
             </motion.div>
-            <main style={{ inlineSize: isOpen ? "85vw" : "95vw" }}>
+            <main style={{ minWidth: isOpen ? "84vw" : "95vw" }}>
               {children}
             </main>
           </div>
