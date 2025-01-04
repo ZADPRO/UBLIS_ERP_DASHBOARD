@@ -28,7 +28,7 @@ import {
 } from "react-icons/io";
 import { BiMessage } from "react-icons/bi";
 
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 
 import "./Header.css";
 import Expired from "../../pages/Expired/Expired";
@@ -57,6 +57,8 @@ interface Route {
 
 const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [routes, setRoutes] = useState<Route[]>([]);
+
+  const navigate = useNavigate();
 
   const [isMobile, setIsMobile] = useState(false);
 
@@ -386,6 +388,11 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     }
   }, [location.pathname]);
 
+  const handleMobileNavigate = (path: string) => {
+    navigate(path);
+    setUserNavbarVisible(false);
+  };
+
   return (
     <>
       {location.pathname != "/expired" ? (
@@ -393,13 +400,15 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
           <div>
             {utId === "5" && isMobile ? (
               <div>
-                <div className="primaryNav">
+                <div className="primaryNav flex items-center">
                   <Button
                     icon="pi pi-bars"
+                    style={{ background: "#f95005", border: "none" }}
                     onClick={() => setUserNavbarVisible(true)}
                   />
                   <p className="text-[#f95005]">Logged in as: Username</p>
                 </div>
+                {children}
               </div>
             ) : (
               <div className="main_container">
@@ -444,14 +453,14 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
       >
         <div className="flex flex-col justify-between h-full">
           <ul className="list-none p-0 m-0 overflow-hidden">
-            <li>
+            <li onClick={() => handleMobileNavigate("/users/dashboard")}>
               <a className="p-ripple flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors w-full">
                 <LayoutGrid size={20} />
                 <span className="ml-2 font-medium">Dashboard</span>
                 <Ripple />
               </a>
             </li>
-            <li>
+            <li onClick={() => handleMobileNavigate("/users/attendance")}>
               <a className="p-ripple flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors w-full">
                 <ListChecks size={20} />{" "}
                 <span className="ml-2 font-medium">Attendance</span>
