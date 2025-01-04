@@ -1,4 +1,3 @@
-
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { useNavigate } from "react-router-dom";
@@ -9,7 +8,6 @@ import CryptoJS from "crypto-js";
 import Axios from "axios";
 import "./Attendance.css";
 import Calenderss from "../10-Calender/Calenderss";
-
 
 interface Customer {
   Username: string;
@@ -56,10 +54,8 @@ interface AttendanceItem {
   // Add other properties if they exist in the response
 }
 
-
 const StaffAttendance: React.FC = () => {
   const [attendanceData, setAttendanceData] = useState<Customer[]>([]);
-
 
   type DecryptResult = any;
   const [pageLoading, setPageLoading] = useState({
@@ -157,7 +153,6 @@ const StaffAttendance: React.FC = () => {
     } else {
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
       if (data.success) {
-
         setSelectedUser({
           id: data.data.refStId,
           userName: `${data.data.refStFName} ${data.data.refStLName}`,
@@ -165,11 +160,11 @@ const StaffAttendance: React.FC = () => {
           refPackageName: data.data.refPackageName,
           userEmail: data.data.refCtEmail,
           refTime: data.data.refTime,
-          refSCustId: data.data.refSCustId
+          refSCustId: data.data.refSCustId,
         });
       }
     }
-  }
+  };
 
   useEffect(() => {
     userData();
@@ -214,7 +209,6 @@ const StaffAttendance: React.FC = () => {
 
         setUserFilteredAttendanceData(mappedData);
       }
-
     }
   };
 
@@ -245,9 +239,6 @@ const StaffAttendance: React.FC = () => {
 
     console.log(`Formatted Month & Year: ${formattedMonthYear}`);
   };
-
-
-
 
   return (
     <>
@@ -283,35 +274,9 @@ const StaffAttendance: React.FC = () => {
       ) : (
         <>
           <div className="card m-1 AttendancePage" style={{ overflow: "auto" }}>
-            <div className="headerPrimary">
-              <h3>ATTENDANCE</h3>
-              <div className="quickAcces">
-                {userdata.profileimg ? (
-                  <div className="p-link layout-topbar-button">
-                    <img
-                      id="userprofileimg"
-                      className="w-[45px] h-[45px] object-cover rounded-full"
-                      src={`data:${userdata.profileimg.contentType};base64,${userdata.profileimg.content}`}
-                      alt=""
-                    />
-                  </div>
-                ) : (
-                  <div className="p-link layout-topbar-button">
-                    <i className="pi pi-user"></i>
-                  </div>
-                )}
-                <h3 className="text-[1rem] text-center ml-2 lg:ml-2 mr-0 lg:mr-5">
-                  <span>{userdata.username}</span>
-                  <br />
-                  <span className="text-[0.8rem] text-[#f95005]">
-                    {userdata.usernameid}
-                  </span>
-                </h3>
-              </div>{" "}
-            </div>
-            <div className="flex flex-row ">
-              <div className="flex w-full justify-content-between">
-                <div className="flex w-[50%] flex-col align-items-center">
+            <div className="flex flex-row">
+              <div className="flex lg:flex-row gap-10 flex-col w-full justify-content-between">
+                <div className="flex lg:w-[50%] flex-col align-items-center">
                   <div className="flex flex-col w-full">
                     <div className="flex flex-row w-full justify-center">
                       <div className="flex flex-col w-[90%]">
@@ -449,7 +414,7 @@ const StaffAttendance: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <div className="flex w-[50%]">
+                <div className="flex lg:w-[50%]">
                   {selectedUser && (
                     <Calenderss
                       selectedUser={selectedUser}

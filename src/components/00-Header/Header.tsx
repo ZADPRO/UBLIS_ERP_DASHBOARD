@@ -1,5 +1,5 @@
 import { useState, ReactNode, useEffect } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 
 import { CiUser } from "react-icons/ci";
 import {
@@ -35,6 +35,9 @@ import { NavLink, useLocation } from "react-router-dom";
 
 import "./Header.css";
 import Expired from "../../pages/Expired/Expired";
+// import UserDashboard from "../../pages/01-UserDashboard/UserDashboard";
+import { Sidebar } from "primereact/sidebar";
+import { Button } from "primereact/button";
 
 // Define types for the route structure
 interface Route {
@@ -43,105 +46,12 @@ interface Route {
   icon: JSX.Element;
 }
 
-// const routes: Route[] = [
-//   { path: "/users/dashboard", name: "Dashboard", icon: <IoGridOutline /> },
-//   { path: "/users/notes", name: "User Notes", icon: <IoMdBook /> },
-//   {
-//     path: "/users/attendance",
-//     name: "Attendance",
-//     icon: <IoIosCheckboxOutline />,
-//   },
-//   { path: "/users/payment", name: "Payment", icon: <IoIosSwap /> },
-//   { path: "/users/branch", name: "Branch", icon: <IoIosGitBranch /> },
-//   { path: "/users/profile", name: "Profile", icon: <CiUser /> },
-//   { path: "/users/support", name: "Support", icon: <IoIosHelpCircleOutline /> },
-
-//   {
-//     path: "/staff/Dashboard",
-//     name: "Common Dashboard",
-//     icon: <IoGridOutline />,
-//   },
-
-//   {
-//     path: "/staff/users",
-//     name: "FD / Dir - Users",
-//     icon: <HiOutlineUsers />,
-//   },
-//   {
-//     path: "/staff/registeredUsers",
-//     name: "FD / Dir - Registered",
-//     icon: <HiOutlineUsers />,
-//   },
-//   {
-//     path: "/dir/staff",
-//     name: "Dir - Staff",
-//     icon: <AiOutlineUser />,
-//   },
-//   {
-//     path: "/staff/signedupUsers",
-//     name: "FD / Dir - Signed Up",
-//     icon: <HiOutlineUserGroup />,
-//   },
-//   { path: "/staff/feedback", name: "FD / Dir - Feedback", icon: <BiMessage /> },
-
-//   {
-//     path: "/staff/transaction",
-//     name: "Fin / Dir - Transactions",
-//     icon: <IoIosSwap />,
-//   },
-//   {
-//     path: "/staff/payroll",
-//     name: "Fin / Dir - Payroll",
-//     icon: <PiCreditCard />,
-//   },
-
-//   {
-//     path: "/staff/employee",
-//     name: "Directors - Staff",
-//     icon: <HiOutlineUsers />,
-//   },
-//   {
-//     path: "/reports",
-//     name: "Directors - Reports",
-//     icon: <IoBarChartOutline />,
-//   },
-//   { path: "/blogs", name: "Directors - Blogs", icon: <TfiWrite /> },
-//   { path: "/editNotes", name: "Directors - Notes", icon: <CiPen /> },
-//   {
-//     path: "/restrictions",
-//     name: "Directors - Restrictions",
-//     icon: <RiSpam2Line />,
-//   },
-
-//   { path: "/fSettings", name: "Common Settings", icon: <IoSettingsOutline /> },
-
-//   { path: "/logout", name: "Common - Logout", icon: <IoIosLogOut /> },
-// ];
-
 const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [isOpen, setIsOpen] = useState(false);
   const [routes, setRoutes] = useState<Route[]>([]);
 
-  const toggle = () => setIsOpen(!isOpen);
+  const [visible, setVisible] = useState(false);
 
   const utId = localStorage.getItem("refUtId");
-
-  const showAnimation = {
-    hidden: {
-      minWidth: 0,
-      opacity: 0,
-      transition: {
-        duration: 0.2,
-      },
-    },
-    show: {
-      minWidth: "auto",
-      opacity: 1,
-      transition: {
-        duration: 0.2,
-      },
-    },
-  };
 
   // Define the routes based on refUtId
   const userRoutes: Route[] = [
@@ -420,6 +330,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
   }, [utId]);
 
   const [headername, setHeadername] = useState<string | undefined>(undefined);
+  console.log("headername", headername);
 
   const location = useLocation();
 
@@ -454,33 +365,10 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
       {location.pathname != "/expired" ? (
         <div>
           <div className="main_container">
-            <motion.div
-              animate={{
-                maxWidth: isOpen ? "15vw" : "5vw",
-                transition: {
-                  duration: 0.2,
-                  type: "spring",
-                  damping: 10,
-                },
-              }}
-              className="sidebar"
-            >
+            <motion.div className="sidebar">
               <div className="top_section">
-                <AnimatePresence>
-                  {isOpen && (
-                    <motion.h1
-                      className="logo"
-                      variants={showAnimation}
-                      initial="hidden"
-                      animate="show"
-                      exit="hidden"
-                    >
-                      {headername}
-                    </motion.h1>
-                  )}
-                </AnimatePresence>
                 <div className="bars pr-4">
-                  <IoMdMenu onClick={toggle} />
+                  <IoMdMenu onClick={() => setVisible(true)} />
                 </div>
               </div>
 
@@ -494,26 +382,17 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
                     }
                   >
                     <div className="icon">{route.icon}</div>
-                    <AnimatePresence>
-                      {isOpen && (
-                        <motion.div
-                          className="link_text"
-                          variants={showAnimation}
-                          initial="hidden"
-                          animate="show"
-                          exit="hidden"
-                        >
-                          {route.name}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
                   </NavLink>
                 ))}
               </section>
             </motion.div>
-            <main style={{ minWidth: isOpen ? "84vw" : "95vw" }}>
-              {children}
-            </main>
+            <main style={{ minWidth: "95vw" }}>{children}</main>
+          </div>
+
+          <div className="primaryNav">
+            <Button icon="pi pi-bars" onClick={() => setVisible(true)} />
+            <p className="font-bold text-black">Dashboard</p>
+            <p className="text-[#f95005]">Logged in as: Username</p>
           </div>
         </div>
       ) : (
@@ -521,6 +400,9 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
           <Expired />
         </>
       )}
+      <Sidebar visible={visible} onHide={() => setVisible(false)}>
+        <div className="flex flex-col justify-between h-full"></div>
+      </Sidebar>
     </>
   );
 };

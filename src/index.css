@@ -51,3 +51,21 @@
   box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
   z-index: 10;
 }
+
+/* dashbaord settings */
+/* Default: Show main_container, hide primaryNav */
+
+.primaryNav {
+  display: none !important;
+}
+
+/* Mobile view: Hide main_container, show primaryNav */
+@media (max-width: 768px) {
+  .main_container {
+    display: none;
+  }
+
+  .primaryNav {
+    display: flex !important;
+  }
+}

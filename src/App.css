@@ -81,7 +81,7 @@ main {
 }
 
 .p-button-icon {
-  margin-block-start: 25px;
+  /* margin-block-start: 25px; */
 }
 
 .p-button.p-component.p-button-icon-only.p-button-rounded {
