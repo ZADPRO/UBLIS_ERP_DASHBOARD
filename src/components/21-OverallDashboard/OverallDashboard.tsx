@@ -256,7 +256,7 @@ const OverallDashboard: React.FC = () => {
         </>
       ) : (
         <div className="dashboardContext">
-          {/* <div className="headerPrimary">
+          <div className="headerPrimary">
             <h3>DASHBOARD</h3>
             <div className="quickAcces">
               {userdata.profileimg ? (
@@ -281,14 +281,14 @@ const OverallDashboard: React.FC = () => {
                 </span>
               </h3>
             </div>{" "}
-          </div> */}
+          </div>
 
-          <div className="primaryNav">
+          {/* <div className="primaryNav">
             <p className="font-bold text-black">Dashboard</p>
             <p className="text-[#f95005]">
               Logged in as: {userdata.usernameid}
             </p>
-          </div>
+          </div> */}
           {/* DASHBOARD TILES START */}
           <div className="showCardTiles ms-5">
             <DashboardTiles

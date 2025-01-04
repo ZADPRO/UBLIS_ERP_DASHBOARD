@@ -42,7 +42,7 @@ interface Product {
 type DecryptResult = any;
 
 const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
-  const options = ["Profile", "Tiles", "Stats", "Finance"];
+  const options = ["Tiles", "Stats", "Finance", "Profile"];
   const [value, setValue] = useState(options[0]);
 
   const navigate = useNavigate();
