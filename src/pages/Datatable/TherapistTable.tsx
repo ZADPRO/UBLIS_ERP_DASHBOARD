@@ -93,7 +93,7 @@ export default function TherapistTable() {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [userDetails, setUserDetails] = useState<Customer | null>(null);
   const [UserDetailss, setUserDetailss] = useState<UserDetails[]>([]);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   console.log("testing", UserDetailss, userDetails);
   const [therapyStatus, setTherapyStatus] = useState<{
     [key: string]: boolean;
@@ -125,12 +125,11 @@ export default function TherapistTable() {
         import.meta.env.VITE_ENCRYPTION_KEY
       );
 
-      console.log('data line ------------------- 128', data)
-      if(data.token==false){
-        navigate("/expired")
+      console.log("data line ------------------- 128", data);
+      if (data.token == false) {
+        navigate("/expired");
       }
       console.log("Data line --------------- 227", data);
-
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
@@ -263,11 +262,10 @@ export default function TherapistTable() {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
+      if (data.token == false) {
+        navigate("/expired");
       }
       console.log("Data line --------------- 227", data);
-
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
       fetchCustomers();
@@ -299,11 +297,10 @@ export default function TherapistTable() {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
+      if (data.token == false) {
+        navigate("/expired");
       }
       console.log("Data line --------------- 227", data);
-
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
@@ -382,8 +379,8 @@ export default function TherapistTable() {
       response.data[0],
       import.meta.env.VITE_ENCRYPTION_KEY
     );
-    if(data.token==false){
-      navigate("/expired")
+    if (data.token == false) {
+      navigate("/expired");
     }
 
     localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
@@ -459,12 +456,7 @@ export default function TherapistTable() {
           style={{ inlineSize: "14rem" }}
           filterPlaceholder="Search by Mobile"
         />
-        <Column
-          field="email"
-          header="Email"
-          filter
-          style={{ inlineSize: "14rem" }}
-        />
+        <Column field="email" header="Email" style={{ inlineSize: "14rem" }} />
         <Column
           field="date"
           header="Application Submitted"

@@ -514,6 +514,7 @@ export default function RegisteredDataTable() {
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         rowsPerPageOptions={[10, 25, 50]}
         dataKey="id"
+        scrollable
         selectionMode="checkbox"
         selection={selectedCustomers}
         onSelectionChange={(e) => {
@@ -527,61 +528,61 @@ export default function RegisteredDataTable() {
         {/* <Column
           selectionMode="multiple"
           frozen
-          headerStyle={{ inlineSize: "3rem" }}
+          headerStyle={{ minWidth: "3rem" }}
         /> */}
         <Column
           field="fname"
           header="Name"
           body={userIdTemplate}
           frozen
-          style={{ inlineSize: "40rem" }}
+          style={{ minWidth: "12rem" }}
         />
         <Column
           field="mobile"
           header="Mobile"
-          style={{ inlineSize: "14rem" }}
+          style={{ minWidth: "14rem" }}
           filterPlaceholder="Search by Mobile"
         />
-        <Column field="email" header="Email" style={{ inlineSize: "14rem" }} />
+        <Column field="email" header="Email" style={{ minWidth: "14rem" }} />
         <Column
           field="date"
           header="Application Submitted"
           filterField="date"
           dataType="date"
-          style={{ inlineSize: "20rem" }}
+          style={{ minWidth: "20rem" }}
         />
         <Column
           field="therapist"
           body={therapyBody}
           header="Therapy / General"
-          style={{ inlineSize: "20rem" }}
+          style={{ minWidth: "20rem" }}
         />
         <Column
           field="currentStatus"
           header="Current Status"
-          style={{ inlineSize: "14rem" }}
+          style={{ minWidth: "14rem" }}
         />
         <Column
           field="nextStatus"
           header="Next Status"
-          style={{ inlineSize: "14rem" }}
+          style={{ minWidth: "14rem" }}
         />
         <Column
           header="Comments"
           body={commentsBodyTemplate}
-          style={{ inlineSize: "14rem" }}
+          style={{ minWidth: "14rem" }}
         />
         <Column
           header="Approved / Rejected"
           body={statusBodyTemplate}
-          style={{ inlineSize: "14rem" }}
+          style={{ minWidth: "14rem" }}
         />
       </DataTable>
       <Sidebar
         visible={visibleLeft}
         position="right"
         onHide={() => setVisibleLeft(false)}
-        style={{ inlineSize: "75vw" }}
+        style={{ minWidth: "75vw" }}
       >
         <h2>Form Submitted User</h2>
         {/* <p>
