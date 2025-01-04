@@ -153,10 +153,7 @@ const StaffAttendance: React.FC = () => {
 
   const handleRowClick = async (rowData: RowData, month?: string) => {
     setShowData(true), setSearchList(false);
-    console.log("rowData line ----- 151", rowData);
 
-    console.log("selectedUser", userFilteredAttendanceData);
-    console.log("line ---- 152", month);
     if (rowData) {
       setRowData({
         refStId: rowData.refStId,
@@ -182,13 +179,11 @@ const StaffAttendance: React.FC = () => {
         },
       }
     );
-
     const data = decrypt(
       response.data[1],
       response.data[0],
       import.meta.env.VITE_ENCRYPTION_KEY
     );
-
     console.log("data", data);
     if (data.token == false) {
       navigate("/expired");
@@ -783,9 +778,16 @@ const StaffAttendance: React.FC = () => {
                                           paddingLeft: "10px",
                                         }}
                                       >
-                                        : {selectedUser.userName}
+                                        :{" "}
+                                        {selectedUser.userName
+                                          .charAt(0)
+                                          .toUpperCase() +
+                                          selectedUser.userName
+                                            .slice(1)
+                                            .toLowerCase()}
                                       </p>
                                     </div>
+
                                     <div className="w-full h-[25px] flex">
                                       <p
                                         style={{
@@ -827,8 +829,29 @@ const StaffAttendance: React.FC = () => {
                                           paddingLeft: "10px",
                                         }}
                                       >
-                                        : {selectedUser.refPackageName} -{" "}
-                                        {selectedUser.refTime}
+                                        : {selectedUser.refPackageName}
+                                      </p>
+                                    </div>
+                                    <div className="w-full h-[25px] flex">
+                                      <p
+                                        style={{
+                                          width: "30%",
+                                          fontSize: "18px",
+                                          fontWeight: "bold",
+                                          color: "#f95005",
+                                          textAlign: "left",
+                                        }}
+                                      >
+                                        Timing
+                                      </p>
+                                      <p
+                                        style={{
+                                          width: "60%",
+                                          fontSize: "18px",
+                                          paddingLeft: "10px",
+                                        }}
+                                      >
+                                        : {selectedUser.refTime}
                                       </p>
                                     </div>
                                   </div>

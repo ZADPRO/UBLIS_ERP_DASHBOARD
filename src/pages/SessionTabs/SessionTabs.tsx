@@ -6,6 +6,7 @@ import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import { Nullable } from "primereact/ts-helpers";
 import React, { useEffect, useState } from "react";
 import CryptoJS from "crypto-js";
+import { Skeleton } from "primereact/skeleton";
 import { Sidebar } from "primereact/sidebar";
 import { Button } from "primereact/button";
 import AttendanceReportDownloadSidebar from "../AttendanceReportDownloadSidebar/AttendanceReportDownloadSidebar";
@@ -46,6 +47,7 @@ const SessionTabs: React.FC = () => {
   ];
 
   const [customers, setCustomers] = useState<Customer[]>([]);
+  const [loading, setLoading] = useState<boolean>(true); // Loading state
 
   const decrypt = (
     encryptedData: string,
@@ -72,6 +74,7 @@ const SessionTabs: React.FC = () => {
   };
 
   const fetchData = (selectedDate: Date, mode: Mode) => {
+    setLoading(true); // Set loading to true before fetching
     const formattedDate = selectedDate.toLocaleString("en-IN", {
       timeZone: "Asia/Kolkata",
       day: "2-digit",
@@ -107,7 +110,8 @@ const SessionTabs: React.FC = () => {
         console.log("Decrypted Data:", data);
         setCustomers(data.attendanceCount);
       })
-      .catch((error) => console.error("Error fetching data:", error));
+      .catch((error) => console.error("Error fetching data:", error))
+      .finally(() => setLoading(false)); // Set loading to false after fetching
   };
 
   useEffect(() => {
@@ -117,6 +121,7 @@ const SessionTabs: React.FC = () => {
   }, [date, sessionMode]);
 
   const renderHeader = () => {
+    const skeletonRows = Array.from({ length: 5 });
     return (
       <div className="flex flex-wrap gap-2 pt-2 pb-2 justify-content-between align-items-center">
         <h3 className="m-0">Customers</h3>
@@ -136,7 +141,7 @@ const SessionTabs: React.FC = () => {
   const header = renderHeader();
 
   return (
-    <div>
+    <div className="AttendancePage">
       <div className="card flex flex-wrap gap-3 p-fluid mb-5">
         <div className="">
           <Calendar
@@ -168,8 +173,9 @@ const SessionTabs: React.FC = () => {
         paginator
         header={header}
         rows={5}
-        scrollable
         rowsPerPageOptions={[5, 10, 25, 50]}
+        scrollable
+        scrollHeight="45vh"
         tableStyle={{ minWidth: "50rem" }}
       >
         <Column

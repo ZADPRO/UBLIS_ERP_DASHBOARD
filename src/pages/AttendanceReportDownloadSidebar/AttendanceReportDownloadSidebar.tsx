@@ -9,13 +9,16 @@ import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import { Nullable } from "primereact/ts-helpers";
 import { Calendar } from "primereact/calendar";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 import CryptoJS from "crypto-js";
 import { MultiSelect } from "primereact/multiselect";
 import { Button } from "primereact/button";
-import { Toast } from "primereact/toast";
-import { Toolbar } from "primereact/toolbar";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
+import { Toolbar } from "primereact/toolbar";
+
+import * as XLSX from "xlsx";
 
 interface SessionType {
   name: string;
@@ -47,41 +50,48 @@ interface GroupedOption {
 
 type DecryptResult = any;
 
-interface Attendance {
-  emp_code: string;
-  punch_date: string;
-  punch_time: string;
-  refStFName: string;
-  refStLName: string;
-  interval_start: string;
-  interval_end: string;
+interface FlattenedData {
+  refPaId: string;
+  displayName: string;
+  packageName?: string;
 }
 
-interface FlattenedData extends Attendance {
-  packageName: string;
-  sessionMode: string;
-  timing: string;
+interface User {
+  refStId: number;
+  refSCustId: string;
+  refStFName: string;
+  refStLName: string;
+  attendance?: string[];
+}
+
+interface PackageData {
+  refPaId: number;
+  refTime?: any;
+  refPackageName: string;
+  users: User[];
 }
 
 const AttendanceReportDownloadSidebar: React.FC = () => {
-  const toast = useRef<Toast>(null);
-  const dt = useRef<DataTable<FlattenedData[]>>(null);
+  const navigate = useNavigate();
+
+  const dt = useRef<DataTable<PackageData[]>>(null);
   const [sessionMode, setSessionMode] = useState<SessionType[]>([]);
+  const [reportType, setReportType] = useState<number>();
   const [reportRange, setReportRange] = useState<ReportRangeParams | null>(
     null
   );
+  const [dateChoose, setDateChoose] = useState(false);
   const [date, setDate] = useState<Nullable<Date>>(null);
   const [fromMonth, setFromMonth] = useState<Nullable<Date>>(null);
   const [toMonth, setToMonth] = useState<Nullable<Date>>(null);
-  const [groupedDropdownOptions, setGroupedDropdownOptions] = useState<
-    GroupedOption[]
+
+  const [reportOptions, setReportOptions] = useState([]);
+  const [optionValue, setOptionValue] = useState([]);
+
+  const [attendanceData, setAttendanceData] = useState<
+    PackageData[] | undefined
   >([]);
-  const [attendanceOptions, setAttendanceOptions] =
-    useState<AttendanceOption | null>(null);
-  const [selectedDropdownValue, setSelectedDropdownValue] = useState<string[]>(
-    []
-  );
-  const [attendanceData, setAttendanceData] = useState<FlattenedData[]>([]);
+  const [dataDisplay, setDataDisplay] = useState(false);
 
   const session: SessionType[] = [
     { name: "Online", code: 1 },
@@ -91,6 +101,10 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
   const range: ReportRangeParams[] = [
     { name: "Per Day", code: 1 },
     { name: "Per Month", code: 2 },
+  ];
+  const Type: ReportRangeParams[] = [
+    { name: "Package Wise", code: 1 },
+    { name: "Time Wise", code: 2 },
   ];
 
   const decrypt = (
@@ -124,6 +138,7 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
         import.meta.env.VITE_API_URL + "/attendance/reportOptions",
         {
           mode: sessionCodes,
+          reportType: reportType,
           date: date,
         },
         {
@@ -140,21 +155,114 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
         import.meta.env.VITE_ENCRYPTION_KEY
       );
 
-      console.log("Decrypted Data:", data);
-      setAttendanceOptions(data.options);
+      console.log("Decrypted Data: line -------  164", data);
+
+      setAttendanceData(data.options);
+
+      if (data.token == false) {
+        navigate("/expired");
+      } else {
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+        console.log("data.options", data.options);
+        const options = data.options.map((Data: any) => ({
+          label: Data.optionName,
+          value: Data.optionId,
+        }));
+        console.log("options", options);
+        setReportOptions(options);
+      }
     } catch (error) {
       console.error("Error calling API:", error);
     }
   };
 
-  // const formatMonthYear = (date: Nullable<Date>): string => {
-  //   return date
-  //     ? new Intl.DateTimeFormat("en-GB", {
-  //         month: "2-digit",
-  //         year: "numeric",
-  //       }).format(date)
-  //     : "";
-  // };
+  const flattenExpandedData = (): any[] => {
+    return transformedData.flatMap((data: any) =>
+      data.users.flatMap((user: any) => {
+        if (user.attendance && user.attendance.length > 0) {
+          return user.attendance.map((entry: any) => ({
+            PackageName: data.refPackageName || data.refTime,
+            CustomerID: user.refSCustId,
+            FirstName: user.refStFName,
+            LastName: user.refStLName,
+            Attendance: entry,
+          }));
+        } else {
+          return {
+            PackageName: data.refPackageName,
+            Timing: data.refTime || "-",
+            CustomerID: user.refSCustId,
+            FirstName: user.refStFName,
+            LastName: user.refStLName,
+            Attendance: "-",
+          };
+        }
+      })
+    );
+  };
+
+  const exportCSV = () => {
+    const exportData = flattenExpandedData();
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Export");
+
+    XLSX.writeFile(workbook, "export.xlsx");
+  };
+
+  const rightToolbarTemplate = () => {
+    return (
+      <Button label="Export" className="p-button-help" onClick={exportCSV} />
+    );
+  };
+
+  // DATA TABLE
+
+  const [expandedRows, setExpandedRows] = useState<any>(null);
+
+  console.log("attendanceData", attendanceData);
+  const transformedData: (PackageData & { displayName: string })[] = (
+    attendanceData || []
+  ).map((item) => ({
+    ...item,
+    displayName: item.refPackageName || item.refTime || "-",
+  }));
+
+  const rowExpansionTemplate = (data: PackageData) => {
+    const userEntries = data.users.map((user) => {
+      if (user.attendance && user.attendance.length > 0) {
+        return user.attendance.map((entry, index) => ({
+          refSCustId: user.refSCustId,
+          refStFName: user.refStFName,
+          refStLName: user.refStLName,
+          attendance: entry,
+          key: `${user.refStId}-${index}`,
+        }));
+      } else {
+        return [
+          {
+            refSCustId: user.refSCustId,
+            refStFName: user.refStFName,
+            refStLName: user.refStLName,
+            attendance: "-",
+          },
+        ];
+      }
+    });
+
+    const flatUserEntries = userEntries.flat();
+
+    return (
+      <div className="p-3">
+        <DataTable value={flatUserEntries} scrollHeight="250px" scrollable>
+          <Column field="refSCustId" header="Customer ID" sortable />
+          <Column field="refStFName" header="First Name" sortable />
+          <Column field="refStLName" header="Last Name" sortable />
+          <Column field="attendance" header="Attendance" sortable />
+        </DataTable>
+      </div>
+    );
+  };
 
   useEffect(() => {
     if (reportRange?.code === 1 && date) {
@@ -174,72 +282,47 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
     }
   }, [reportRange, date, sessionMode, toMonth]);
 
-  const groupedData: GroupedOption[] = useMemo(() => {
-    if (!attendanceOptions || !Array.isArray(attendanceOptions)) {
-      return [];
-    }
-
-    return attendanceOptions.reduce(
-      (acc: GroupedOption[], curr: AttendanceOption) => {
-        const existingGroup = acc.find(
-          (group) => group.label === curr.refPackageName
-        );
-        if (existingGroup) {
-          existingGroup.items.push({
-            label: `${curr.refTime}`,
-            value: curr.value,
-          });
-        } else {
-          acc.push({
-            label: curr.refPackageName,
-            items: [
-              {
-                label: `${curr.refTime}`,
-                value: curr.value,
-              },
-            ],
-          });
-        }
-        return acc;
-      },
-      []
-    );
-  }, [attendanceOptions]);
-
-  useEffect(() => {
-    setGroupedDropdownOptions(groupedData);
-  }, [groupedData]);
-
-  const handleDropdownChange = (e: DropdownChangeEvent) => {
-    setSelectedDropdownValue(e.value as string[]);
-    console.log("Selected Value:", e.value);
-  };
-
-  const groupedItemTemplate = (option: GroupedOption) => {
-    return (
-      <div className="flex align-items-center">
-        <span className="font-bold">{option.label}</span>
-      </div>
-    );
-  };
-
   const handleDateChange = useCallback((e: { value: Nullable<Date> }) => {
     setDate(e.value);
   }, []);
 
   const reportAPI = async () => {
     try {
-      const refRepDurationFormatted = date
-        ? new Intl.DateTimeFormat("en-GB", {
-            day: "2-digit",
+      let refRepDurationFormatted;
+      if (date) {
+        refRepDurationFormatted = date
+          ? new Intl.DateTimeFormat("en-GB", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+              hour12: true,
+            }).format(date)
+          : "";
+      }
+
+      let fromChooseDate;
+      let toChooseDate;
+
+      if (fromMonth && toMonth) {
+        console.log("toMonth", toMonth);
+        console.log("fromMonth", fromMonth);
+        const formatMonthYear = (date: any) =>
+          new Intl.DateTimeFormat("en-GB", {
             month: "2-digit",
             year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hour12: true,
-          }).format(date)
-        : "";
+          }).format(date);
+
+        fromChooseDate = formatMonthYear(fromMonth);
+        toChooseDate = formatMonthYear(toMonth);
+
+        console.log("toMonth formatted:", toChooseDate);
+        console.log("fromMonth formatted:", fromChooseDate);
+
+        refRepDurationFormatted = fromChooseDate + "," + toChooseDate;
+      }
 
       const refRepDuType = reportRange?.code;
 
@@ -248,9 +331,10 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
       const res = await axios.post(
         import.meta.env.VITE_API_URL + "/attendance/report",
         {
+          reportType: reportType,
           refRepDuration: refRepDurationFormatted,
-          refRepDuType: refRepDuType,
-          refPackageId: selectedDropdownValue,
+          refRepDurationType: refRepDuType,
+          refPackageId: optionValue,
           refSessionMod: refSessionMod,
         },
         {
@@ -266,248 +350,185 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      console.log("Decrypted Data: line -------- 330 vijay", data);
 
-      console.log("Decrypted Data:", data);
-
-      const processData = (data: any) => {
-        const flattened: FlattenedData[] = data.reportData.map(
-          (report: any) => {
-            const uniqueKey = `${report.packageName} : ${report.timing} : ${report.sessionMode}`;
-            const attendance = report.attendance || [];
-
-            // If attendance exists, map it to FlattenedData
-            if (attendance.length > 0) {
-              return attendance.map((att: any) => ({
-                ...att,
-                packageName: uniqueKey,
-                sessionMode: report.sessionMode,
-                timing: report.timing,
-              }));
-            }
-
-            return [
-              {
-                packageName: uniqueKey,
-                emp_code: "-",
-                punch_date: "-",
-                punch_time: "-",
-                interval_start: "-",
-                interval_end: "-",
-                sessionMode: report.sessionMode,
-                timing: report.timing,
-              },
-            ];
-          }
-        );
-
-        // Flatten the array of arrays
-        return flattened.flat();
-      };
-
-      // Example usage
-
-      const processedData = processData(data);
-
-      setAttendanceData(processedData);
-
-      // setAttendanceData(flattened);
+      if (data.token == false) {
+        navigate("/expired");
+      } else {
+        setDataDisplay(true);
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+        setAttendanceData(data.attendanceData);
+      }
     } catch (error) {
       console.error("Error calling API:", error);
     }
   };
 
-  const exportCSV = () => {
-    if (!dt.current) return;
-
-    // Prepare the data for export with the packageName included in each row
-    const exportData = attendanceData.map((row) => ({
-      packageName: row.packageName, // Include package name explicitly
-      emp_code: row.emp_code || "-",
-      employee_name:
-        row.refStFName && row.refStLName
-          ? `${row.refStFName} ${row.refStLName}`
-          : "-",
-      punch_date: row.punch_date || "-",
-      punch_time: row.punch_time || "-",
-    }));
-
-    // Export as CSV
-    const csvContent = exportData
-      .map((row) =>
-        Object.values(row)
-          .map((value) => `"${value}"`) // Enclose each value in quotes for safety
-          .join(",")
-      )
-      .join("\n");
-
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", "attendance_report.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const rightToolbarTemplate = () => {
-    return (
-      <Button label="Export" className="p-button-help" onClick={exportCSV} />
-    );
-  };
-
-  const headerTemplate = (data: FlattenedData) => {
-    return (
-      <div className="flex flex-column">
-        <div className="font-bold">{data.packageName}</div>
-        <small>Session Mode: {data.sessionMode}</small>
-      </div>
-    );
-  };
-
   return (
-    <div className="m-2">
-      <label
-        htmlFor="calendar-12h"
-        className="font-bold block mb-2 text-[#f95005]"
-      >
-        Attendance Report Download
-      </label>
-      <div className="flex gap-3 mt-3">
-        <MultiSelect
-          value={sessionMode}
-          onChange={(e: DropdownChangeEvent) =>
-            setSessionMode(e.value as SessionType[])
-          }
-          options={session}
-          optionLabel="name"
-          placeholder="Select Session Types"
-          className="w-full md:w-20rem"
-        />
-
-        <Dropdown
-          value={reportRange}
-          onChange={(e: DropdownChangeEvent) => setReportRange(e.value)}
-          options={range}
-          optionLabel="name"
-          placeholder="Select a Report Type"
-          className="w-full md:w-20rem"
-        />
-      </div>
-
-      {reportRange?.code === 1 && (
-        <div className="flex gap-3 mt-3">
-          <Calendar
-            id="buttondisplay"
-            placeholder="Select Date"
-            value={date}
-            className="w-full md:w-20rem"
-            dateFormat="dd/mm/yy"
-            onChange={handleDateChange}
-            showIcon
-          />
-        </div>
-      )}
-
-      {reportRange?.code === 2 && (
-        <div className="flex gap-3 mt-3">
-          <Calendar
-            value={fromMonth}
-            onChange={(e) => setFromMonth(e.value as Nullable<Date>)}
-            view="month"
-            placeholder="From Date"
-            className="w-full md:w-20rem"
-            showIcon
-            dateFormat="mm/yy"
-          />
-          <Calendar
-            value={toMonth}
-            onChange={(e) => setToMonth(e.value as Nullable<Date>)}
-            view="month"
-            placeholder="To Date"
-            className="w-full md:w-20rem"
-            showIcon
-            dateFormat="mm/yy"
-          />
-        </div>
-      )}
-      {reportRange && date && groupedDropdownOptions && (
-        <div className="flex align-items-center gap-3">
-          <MultiSelect
-            value={selectedDropdownValue}
-            options={groupedDropdownOptions}
-            onChange={handleDropdownChange}
-            optionLabel="label"
-            optionGroupLabel="label"
-            optionGroupChildren="items"
-            optionGroupTemplate={groupedItemTemplate}
-            placeholder="Select Package and Time"
-            display="chip"
-            className="w-full md:w-20rem mt-3"
-          />
+    <div className="m-2 w-[100%]  AttendancePage">
+      <div className="font-bold block mb-2 text-[#f95005] flex justify-between align-middle">
+        <p>Attendance Report Download</p>
+        {dataDisplay ? (
           <Button
-            onClick={reportAPI}
-            label="Submit"
+            onClick={(e) => {
+              e.preventDefault();
+              setDataDisplay(false);
+            }}
+            label="Clear"
             className="mt-3"
             severity="success"
+            type="submit"
           />
-        </div>
-      )}
-
-      {reportRange &&
-        date &&
-        attendanceData &&
-        groupedDropdownOptions &&
-        selectedDropdownValue && (
-          <>
-            <Toast ref={toast} />
-            <div className="card mt-4">
-              <Toolbar className="mb-4" right={rightToolbarTemplate}></Toolbar>
-
-              <DataTable
-                value={attendanceData}
-                rowGroupMode="subheader"
-                groupRowsBy="packageName"
-                sortMode="single"
-                ref={dt}
-                sortField="packageName"
-                sortOrder={1}
-                rowGroupHeaderTemplate={headerTemplate}
-                scrollable
-                scrollHeight="400px"
-                tableStyle={{ minWidth: "50rem" }}
-              >
-                <Column
-                  field="emp_code"
-                  frozen
-                  header="Employee Code"
-                  style={{ minWidth: "150px" }}
-                ></Column>
-                <Column
-                  field="refStFName"
-                  header="Employee Name"
-                  body={(rowData) =>
-                    rowData.refStFName && rowData.refStLName
-                      ? `${rowData.refStFName} ${rowData.refStLName}`
-                      : "-"
-                  }
-                  style={{ minWidth: "150px" }}
-                ></Column>
-                <Column
-                  field="punch_date"
-                  header="Punch Date"
-                  style={{ minWidth: "150px" }}
-                ></Column>
-                <Column
-                  field="punch_time"
-                  header="Punch Time"
-                  style={{ minWidth: "150px" }}
-                ></Column>
-              </DataTable>
-            </div>
-          </>
+        ) : (
+          <></>
         )}
+      </div>
+
+      {dataDisplay ? (
+        <div className="card mt-4">
+          <Toolbar className="mb-4" right={rightToolbarTemplate}></Toolbar>
+          <DataTable
+            value={transformedData}
+            ref={dt}
+            scrollHeight="400px"
+            expandedRows={expandedRows}
+            rowExpansionTemplate={rowExpansionTemplate}
+            onRowToggle={(e) => setExpandedRows(e.data)}
+            dataKey="refPaId"
+            tableStyle={{ minWidth: "60rem" }}
+          >
+            <Column expander style={{ width: "5rem" }} />
+            <Column
+              field="displayName"
+              header="Package Name / Timing"
+              sortable
+            />
+          </DataTable>
+        </div>
+      ) : (
+        <>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              reportAPI();
+            }}
+          >
+            <div className="flex w-[100%] justify-center  gap-5 mt-3 ">
+              <MultiSelect
+                value={sessionMode}
+                onChange={(e: DropdownChangeEvent) =>
+                  setSessionMode(e.value as SessionType[])
+                }
+                options={session}
+                optionLabel="name"
+                placeholder="Select Session Types"
+                className="w-[80%] md:w-20rem"
+                disabled={dataDisplay}
+              />
+
+              <Dropdown
+                value={reportType}
+                onChange={(e: DropdownChangeEvent) => setReportType(e.value)}
+                options={Type}
+                optionLabel="name"
+                placeholder="Select a Report Type"
+                className="w-[80%] md:w-20rem"
+                disabled={dataDisplay}
+              />
+              <Dropdown
+                value={reportRange}
+                onChange={(e: DropdownChangeEvent) => setReportRange(e.value)}
+                options={range}
+                optionLabel="name"
+                placeholder="Select a Duration Type"
+                className="w-[80%] md:w-20rem"
+                disabled={dataDisplay}
+              />
+            </div>
+
+            {reportRange?.code === 1 && (
+              <div className="flex justify-around gap-3 mt-3">
+                <Calendar
+                  id="buttondisplay"
+                  placeholder="Select Date"
+                  value={date}
+                  className="w-full md:w-20rem"
+                  dateFormat="dd/mm/yy"
+                  onChange={(e) => {
+                    handleDateChange(e);
+                    setDateChoose(true);
+                  }}
+                  showIcon
+                  disabled={dataDisplay}
+                />
+              </div>
+            )}
+
+            {reportRange?.code === 2 && (
+              <div className="flex justify-center gap-3 mt-3">
+                <Calendar
+                  value={fromMonth}
+                  onChange={(e) => setFromMonth(e.value as Nullable<Date>)}
+                  view="month"
+                  placeholder="Starting Month"
+                  className="w-full md:w-20rem"
+                  showIcon
+                  dateFormat="mm/yy"
+                  disabled={dataDisplay}
+                />
+                <Calendar
+                  value={toMonth}
+                  onChange={(e) => {
+                    setToMonth(e.value as Nullable<Date>);
+                    setDateChoose(true);
+                  }}
+                  view="month"
+                  placeholder="Ending Month"
+                  className="w-full md:w-20rem"
+                  showIcon
+                  dateFormat="mm/yy"
+                  disabled={dataDisplay}
+                />
+              </div>
+            )}
+
+            {!dateChoose ? (
+              <></>
+            ) : (
+              <div className="flex justify-center align-items-center mt-3 gap-3">
+                <MultiSelect
+                  value={optionValue}
+                  onChange={(e) => {
+                    setOptionValue(e.value);
+                  }}
+                  options={reportOptions}
+                  optionLabel="label"
+                  display="chip"
+                  placeholder="Select Package or Timing"
+                  maxSelectedLabels={3}
+                  className="w-full md:w-20rem"
+                  required
+                  disabled={dataDisplay}
+                />
+              </div>
+            )}
+
+            {!dateChoose ? (
+              <></>
+            ) : (
+              <div className="flex justify-center align-middle ">
+                <Button
+                  // onClick={reportAPI}
+                  label="Submit"
+                  className="mt-3 w-[20%]"
+                  severity="success"
+                  type="submit"
+                />
+              </div>
+            )}
+          </form>
+        </>
+      )}
     </div>
   );
 };

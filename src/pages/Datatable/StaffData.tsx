@@ -105,8 +105,8 @@ const StaffDatas: React.FC<StaffDatasProps> = ({ changes }) => {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
+      if (data.token == false) {
+        navigate("/expired");
       }
       console.log("Data line --------------- 227", data);
 
@@ -223,8 +223,8 @@ const StaffDatas: React.FC<StaffDatasProps> = ({ changes }) => {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
+      if (data.token == false) {
+        navigate("/expired");
       }
       console.log("Data line --------------- 227", data);
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");

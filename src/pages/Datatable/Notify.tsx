@@ -15,7 +15,6 @@ import Axios from "axios";
 
 import { FilterMatchMode } from "primereact/api";
 
-
 interface Customer {
   id: string;
   userId: string;
@@ -134,25 +133,23 @@ export default function Notify(selectedType: any) {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
+      if (data.token == false) {
+        navigate("/expired");
+      } else {
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+        const fetchedCustomers: Customer[] = data.data.map((customer: any) => ({
+          id: customer.refStId,
+          userId: customer.refSCustId,
+          fname: customer.refStFName + " " + customer.refStLName,
+          lname: customer.refStLName,
+          transactioncount: customer.unreadCount,
+          changedby: customer.groupType,
+          branch: customer.branchId,
+          requestdate: customer.refDate,
+          requesttime: customer.refTime,
+        }));
+        setCustomers(fetchedCustomers);
       }
-
-      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
-
-      console.log("response ---------", data);
-      const fetchedCustomers: Customer[] = data.data.map((customer: any) => ({
-        id: customer.refStId,
-        userId: customer.refSCustId,
-        fname: customer.refStFName + " " + customer.refStLName,
-        lname: customer.refStLName,
-        transactioncount: customer.unreadCount,
-        changedby: customer.groupType,
-        branch: customer.branchId,
-        requestdate: customer.refDate,
-        requesttime: customer.refTime,
-      }));
-      setCustomers(fetchedCustomers);
     } catch (error) {
       console.error("Error fetching customers:", error);
     }
@@ -224,8 +221,8 @@ export default function Notify(selectedType: any) {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
+      if (data.token == false) {
+        navigate("/expired");
       }
       console.log("Data line --------------- 227", data);
       console.log("Data line --------------- 227", data);
@@ -323,8 +320,8 @@ export default function Notify(selectedType: any) {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
+      if (data.token == false) {
+        navigate("/expired");
       }
       console.log("Data line --------------- 227", data);
 
@@ -367,8 +364,8 @@ export default function Notify(selectedType: any) {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
+      if (data.token == false) {
+        navigate("/expired");
       }
       console.log("Data line --------------- 227", data);
 
@@ -411,8 +408,8 @@ export default function Notify(selectedType: any) {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
+      if (data.token == false) {
+        navigate("/expired");
       }
       console.log("Data line --------------- 227", data);
 
@@ -567,12 +564,11 @@ export default function Notify(selectedType: any) {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
+      if (data.token == false) {
+        navigate("/expired");
       }
       console.log("Data line --------------- 227", data);
 
-      
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
       if (historyData[0].userid) {

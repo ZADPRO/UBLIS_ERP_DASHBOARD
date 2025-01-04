@@ -26,7 +26,6 @@ main {
   padding: 10px;
 }
 
-
 .navbar {
   display: flex;
   font-size: 1.2rem;
@@ -163,3 +162,24 @@ main {
 /* .p-dropdown.p-component.p-inputwrapper.p-inputwrapper-filled {
   inline-size: 100%;
 } */
+
+/* Enable scrollbar for PrimeReact DataTable */
+.p-datatable-wrapper {
+  scrollbar-width: auto; /* For Firefox */
+  -ms-overflow-style: auto; /* For IE and Edge */
+}
+
+.p-datatable-wrapper::-webkit-scrollbar {
+  display: block; /* For Chrome, Safari, and Edge */
+  width: 8px;
+  height: 8px;
+}
+
+.p-datatable-wrapper::-webkit-scrollbar-thumb {
+  background: #cccccc; /* Customize scrollbar thumb color */
+  border-radius: 4px;
+}
+
+.p-datatable-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #aaaaaa; /* Hover effect */
+}

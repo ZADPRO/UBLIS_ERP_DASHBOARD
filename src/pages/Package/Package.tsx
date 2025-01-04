@@ -15,7 +15,7 @@ import { GrEdit } from "react-icons/gr";
 import { MdDelete } from "react-icons/md";
 import { MdOutlineAddchart } from "react-icons/md";
 import { MultiSelect } from "primereact/multiselect";
-import "./Package.css"
+import "./Package.css";
 // import "./Session.css";
 
 import { useNavigate } from "react-router-dom";
@@ -912,7 +912,7 @@ const Package: React.FC = () => {
               <Column
                 header="Fee Type"
                 body={(rowData) =>
-                  rowData.refFeesType === 0 ? "Monthly" : "Perday"
+                  parseInt(rowData.refFeesType) === 0 ? "Monthly" : "Perday"
                 }
                 style={{ minWidth: "130px", width: "auto" }}
               ></Column>

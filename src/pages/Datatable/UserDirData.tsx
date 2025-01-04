@@ -9,6 +9,8 @@ import { Sidebar } from "primereact/sidebar";
 import { useNavigate } from "react-router-dom";
 import { TabView, TabPanel } from "primereact/tabview";
 import CryptoJS from "crypto-js";
+import TextInput from "../../pages/Inputs/TextInput";
+import SelectInput from "../../pages/Inputs/SelectInput";
 
 import Axios from "axios";
 
@@ -29,6 +31,19 @@ interface Customer {
   refStLName: string;
   comments?: string;
   commentEnabled?: boolean;
+}
+
+interface sessionDetails {
+  branchId?: string;
+  branchName?: string;
+  memberTypeId?: string;
+  memberTypeName?: string;
+  classMode?: string;
+  classModeId?: string;
+  packageId?: string;
+  packageName?: string;
+  classTimeId?: string;
+  classTime?: string;
 }
 
 interface UserDetails {
@@ -54,6 +69,43 @@ const UserDirData: React.FC = () => {
   const [userDetails, setUserDetails] = useState<Customer | null>(null);
   const [UserDetailss, setUserDetailss] = useState<UserDetails[]>([]);
   const [globalFilterValue, setGlobalFilterValue] = useState<string>("");
+  const [sessionData, setSessionData] = useState<sessionDetails>();
+  const [branchList, setBranchList] = useState([]);
+  const [userAge, setUserAge] = useState();
+  const [refStId, setRefStId] = useState();
+  const [sessionUpdate, setSessionUpdate] = useState<number>(1);
+  const [sessionUpdateLoad, setSessionUpdateLoad] = useState(false);
+  const branchOptions = Object.entries(branchList).map(([value, label]) => ({
+    value, // Key (e.g., '1')
+    label, // Value (e.g., 'Chennai')
+  }));
+  const [memberList, setMemberList] = useState([]);
+
+  const memberlistOptions = Object.entries(memberList).map(
+    ([value, label]) => ({
+      value, // Key (e.g., '1')
+      label, // Value (e.g., 'Chennai')
+    })
+  );
+  const [sessiontype, setSessionType] = useState([]);
+
+  const sessionTypeOption = Object.entries(sessiontype).map(
+    ([value, label]) => ({
+      value, // Key (e.g., '1')
+      label, // Value (e.g., 'Chennai')
+    })
+  );
+  const [preferTiming, setpreferTiming] = useState([]);
+
+  const preferTimingOption = Object.entries(preferTiming).map(
+    ([value, label]) => ({
+      value, // Key (e.g., '1')
+      label, // Value (e.g., 'Chennai')
+    })
+  );
+  const [edits, setEdits] = useState({
+    session: false,
+  });
   const navigate = useNavigate();
   const decrypt = (
     encryptedData: string,
@@ -107,8 +159,8 @@ const UserDirData: React.FC = () => {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
+      if (data.token == false) {
+        navigate("/expired");
       }
       console.log("Data line --------------- 227", data);
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
@@ -156,14 +208,31 @@ const UserDirData: React.FC = () => {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
+      if (data.token == false) {
+        navigate("/expired");
       }
       console.log("Data line --------------- 227", data);
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
       const userData = data.data.userTransaction;
       const userDetails = data.data.UserData[0];
+      console.log("userDetails line --- 181 ", userDetails);
+      setUserAge(userDetails.refStAge);
+      setRefStId(userDetails.refStId);
+      const session = {
+        branchId: "",
+        branchName: userDetails.refBranchName,
+        memberTypeId: "",
+        memberTypeName: userDetails.refTimeMembers,
+        classModeId: "",
+        classMode: userDetails.refClassMode,
+        packageId: "",
+        packageName: userDetails.refPackageName,
+        classTimeId: "",
+        classTime: userDetails.refTime,
+      };
+
+      setSessionData(session);
 
       setUserDetails(userDetails);
       setUserDetailss(userData);
@@ -171,6 +240,193 @@ const UserDirData: React.FC = () => {
       console.log("Testing Data---------------", data);
     } catch (error) {
       console.error("Error fetching user details:", error);
+    }
+  };
+  const fetchSessionOptions = async () => {
+    Axios.get(import.meta.env.VITE_API_URL + "/profile/passRegisterData", {
+      headers: {
+        Authorization: localStorage.getItem("JWTtoken"),
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => {
+        const data = decrypt(
+          res.data[1],
+          res.data[0],
+          import.meta.env.VITE_ENCRYPTION_KEY
+        );
+        if (data.token == false) {
+          navigate("/expired");
+        }
+        console.log("--------------  229", data);
+
+        if (data.success) {
+          localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+          setBranchList(data.data.branchList);
+        }
+      })
+      .catch((err) => {
+        // Catching any 400 status or general errors
+        console.error("Error: ", err);
+      });
+  };
+
+  const fetchMemberTypeOptions = async () => {
+    console.log("sessionData?.branchId", sessionData?.branchId);
+    console.log("userAge", userAge);
+    Axios.post(
+      import.meta.env.VITE_API_URL + "/profile/MemberList",
+      {
+        branchId: sessionData?.branchId || 1,
+        refAge: userAge,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("JWTtoken"),
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then((res) => {
+        const data = decrypt(
+          res.data[1],
+          res.data[0],
+          import.meta.env.VITE_ENCRYPTION_KEY
+        );
+        console.log("data line ------ 275", data);
+        if (data.token == false) {
+          navigate("/expired");
+        } else {
+          setMemberList(data.data); // Make sure this updates memberList
+        }
+        // setpreferTiming([]);
+        // setSessionType([]);
+      })
+      .catch((err) => {
+        console.error("Error: ", err);
+      });
+  };
+
+  const fetchPackageOptions = async () => {
+    Axios.post(
+      import.meta.env.VITE_API_URL + "/profile/sectionTime",
+      {
+        sectionId: parseInt(
+          (sessionData as { memberTypeId: string }).memberTypeId
+        ),
+        branch: parseInt((sessionData as { branchId: string }).branchId),
+        classType: parseInt(sessionData?.classMode == "Online" ? "1" : "2"),
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("JWTtoken"),
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then((res) => {
+        const data = decrypt(
+          res.data[1],
+          res.data[0],
+          import.meta.env.VITE_ENCRYPTION_KEY
+        );
+        console.log("data line ----------- 320", data);
+        if (data.token == false) {
+          navigate("/expired");
+        } else {
+          setSessionType(data.SectionTime);
+        }
+      })
+      .catch((err) => {
+        // Catching any 400 status or general errors
+        console.error("Error: ", err);
+      });
+  };
+
+  const fetchTimingOptions = async (value: any) => {
+    console.log("sessionData", sessionData?.packageId);
+    Axios.post(
+      import.meta.env.VITE_API_URL + "/profile/PackageTime",
+      {
+        packageId: parseInt(value),
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("JWTtoken"),
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then((res) => {
+        const data = decrypt(
+          res.data[1],
+          res.data[0],
+          import.meta.env.VITE_ENCRYPTION_KEY
+        );
+        if (data.token == false) {
+          navigate("/expired");
+        } else {
+          setpreferTiming(data.packageTiming);
+        }
+      })
+      .catch((err) => {
+        console.error("Error: ", err);
+      });
+  };
+
+  const updateSessionData = async () => {
+    setSessionUpdateLoad(true); // Show loading indicator
+    try {
+      const response = await Axios.post(
+        import.meta.env.VITE_API_URL + "/profile/SessionUpdate",
+        {
+          refStId: refStId,
+          personalData: {
+            refClassMode: parseInt(
+              (sessionData as { classModeId: string }).classModeId
+            ),
+            refSessionMode: parseInt(
+              (sessionData as { packageId: string }).packageId
+            ),
+            refTimingId: parseInt(
+              (sessionData as { classTimeId: string }).classTimeId
+            ),
+            refSPreferTimeId: parseInt(
+              (sessionData as { classTimeId: string }).classTimeId
+            ),
+            refSessionType: parseInt(
+              (sessionData as { memberTypeId: string }).memberTypeId
+            ),
+            refBranchId: parseInt(
+              (sessionData as { branchId: string }).branchId
+            ),
+          },
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("JWTtoken"),
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = decrypt(
+        response.data[1],
+        response.data[0],
+        import.meta.env.VITE_ENCRYPTION_KEY
+      );
+      console.log("Data received:", data);
+      if (data.token == false) {
+        navigate("/expired");
+      } else {
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+        setEdits({ session: false });
+      }
+    } catch (error) {
+      console.error("Error updating session data:", error);
+      // Handle error (e.g., showing an error message)
+    } finally {
+      setSessionUpdateLoad(false);
+      fetchCustomers();
     }
   };
 
@@ -244,6 +500,7 @@ const UserDirData: React.FC = () => {
   const onUserIdClick = (id: string, rowData: string) => {
     setSelectedUserId(rowData);
     fetchUserDetails(id);
+    fetchSessionOptions();
 
     setRefId(id);
 
@@ -376,16 +633,237 @@ const UserDirData: React.FC = () => {
                   <p>No user details available.</p>
                 )}
               </p>
-            </TabPanel >
-            {/* <TabPanel header="Medical details">
-
-
             </TabPanel>
             <TabPanel header="Session details">
-              
-
-              </TabPanel>
-             */}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  updateSessionData();
+                }}
+              >
+                <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
+                  <div className="w-[100%] flex justify-between items-center mb-5">
+                    <div className="text-[1.2rem] lg:text-[25px] font-bold">
+                      Yoga class
+                    </div>
+                    {edits.session ? (
+                      <button
+                        className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${
+                          sessionUpdateLoad
+                            ? "bg-gray-500 cursor-not-allowed"
+                            : "bg-[#f95005]"
+                        }`}
+                        type="submit"
+                        disabled={sessionUpdateLoad}
+                      >
+                        {sessionUpdateLoad ? (
+                          <>
+                            Loading&nbsp;&nbsp;
+                            <i className="pi pi-spin pi-spinner text-[15px]"></i>
+                          </>
+                        ) : (
+                          <>
+                            Save&nbsp;&nbsp;
+                            <i className="text-[15px] pi pi-check"></i>
+                          </>
+                        )}
+                      </button>
+                    ) : (
+                      <div
+                        onClick={() => {
+                          setEdits({ session: true });
+                        }}
+                        className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
+                      >
+                        Edit&nbsp;&nbsp;
+                        <i className="text-[15px] pi pi-pen-to-square"></i>
+                      </div>
+                    )}
+                  </div>
+                  <div className="w-[100%] flex justify-center items-center">
+                    {!edits.session ? (
+                      <div className="w-[100%] justify-center items-center flex flex-col">
+                        <div className="w-[100%] flex flex-row lg:flex-row gap-y-[20px] justify-between mb-[20px]">
+                          <div className="w-[100%] lg:w-[30%]">
+                            <TextInput
+                              label="Branch *"
+                              name="branchName"
+                              id="branch"
+                              type="text"
+                              value={sessionData?.branchName}
+                              readonly
+                            />
+                          </div>
+                          <div className="w-[100%] lg:w-[30%]">
+                            <TextInput
+                              label="Member Type *"
+                              name="memberTypeName"
+                              id="mtype"
+                              type="text"
+                              value={sessionData?.memberTypeName}
+                              readonly
+                            />
+                          </div>
+                          <div className="w-[100%] lg:w-[30%]">
+                            <TextInput
+                              label="Class Mode *"
+                              name="classMode"
+                              id="mtype"
+                              type="text"
+                              value={
+                                sessionData?.classMode === "1"
+                                  ? "Online"
+                                  : "Offline"
+                              }
+                              readonly
+                            />
+                          </div>
+                        </div>
+                        <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between">
+                          <div className="w-[100%] lg:w-[48%]">
+                            <TextInput
+                              label="Package Name *"
+                              id="mtype"
+                              name="packageName"
+                              type="text"
+                              value={sessionData?.packageName}
+                              readonly
+                            />
+                          </div>
+                          <div className="w-[100%] lg:w-[48%]">
+                            <TextInput
+                              label="Class Timing *"
+                              id="mtype"
+                              name="classTime"
+                              type="text"
+                              value={sessionData?.classTime}
+                              readonly
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="w-[100%] justify-center items-center flex flex-col">
+                        <div className="w-[100%] flex flex-row lg:flex-row gap-y-[20px] justify-between mb-[20px]">
+                          <div className="w-[30%]">
+                            <SelectInput
+                              id="branch"
+                              name="branchId"
+                              label="Branch *"
+                              options={branchOptions}
+                              required
+                              value={sessionData?.branchId || ""}
+                              onChange={(e) => {
+                                setSessionUpdate(2);
+                                fetchMemberTypeOptions();
+                                const { name, value } = e.target;
+                                setSessionData((prevData) => ({
+                                  ...prevData,
+                                  [name]: value,
+                                  memberTypeId: "",
+                                  classModeId: "",
+                                  packageId: "",
+                                  classTimeId: "",
+                                }));
+                              }}
+                            />
+                          </div>
+                          <div className="w-[30%]">
+                            <SelectInput
+                              id="membertype"
+                              name="memberTypeId"
+                              label="Member Type *"
+                              options={memberlistOptions}
+                              disabled={sessionUpdate <= 1}
+                              required
+                              value={sessionData?.memberTypeId || ""}
+                              onChange={(e) => {
+                                setSessionUpdate(3);
+                                const { name, value } = e.target;
+                                setSessionData((prevData) => ({
+                                  ...prevData,
+                                  [name]: value,
+                                  classModeId: "",
+                                  packageId: "",
+                                  classTimeId: "",
+                                }));
+                              }}
+                            />
+                          </div>
+                          <div className="w-[30%]">
+                            <SelectInput
+                              id="classtype"
+                              name="classModeId"
+                              label="Class Type *"
+                              options={[
+                                { value: "1", label: "Online" },
+                                { value: "2", label: "Offline" },
+                              ]}
+                              disabled={sessionUpdate <= 2}
+                              required
+                              value={sessionData?.classModeId || ""}
+                              onChange={(e) => {
+                                setSessionUpdate(4);
+                                fetchPackageOptions();
+                                const { name, value } = e.target;
+                                setSessionData((prevData) => ({
+                                  ...prevData,
+                                  [name]: value,
+                                  packageId: "",
+                                  classTimeId: "",
+                                }));
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between">
+                          <div className="w-[48%]">
+                            <SelectInput
+                              id="classtype"
+                              name="packageId"
+                              label="Class Package *"
+                              options={sessionTypeOption}
+                              disabled={sessionUpdate <= 3}
+                              required
+                              value={sessionData?.packageId || ""}
+                              onChange={(e) => {
+                                setSessionUpdate(5);
+                                fetchTimingOptions(e.target.value);
+                                const { name, value } = e.target;
+                                setSessionData((prevData) => ({
+                                  ...prevData,
+                                  [name]: value,
+                                  classTimeId: "",
+                                }));
+                              }}
+                            />
+                          </div>
+                          <div className="w-[48%]">
+                            <SelectInput
+                              id="classtype"
+                              name="classTimeId"
+                              label="Class Timing *"
+                              options={preferTimingOption}
+                              disabled={sessionUpdate <= 4}
+                              required
+                              value={sessionData?.classTimeId || ""}
+                              onChange={(e) => {
+                                setSessionUpdate(6);
+                                const { name, value } = e.target;
+                                setSessionData((prevData) => ({
+                                  ...prevData,
+                                  [name]: value,
+                                }));
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </form>
+            </TabPanel>
             <TabPanel header="Audit">
               <p className="m-0">
                 <DataTable

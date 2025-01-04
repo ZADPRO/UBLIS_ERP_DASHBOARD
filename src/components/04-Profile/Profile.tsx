@@ -271,7 +271,6 @@ const Profile: React.FC = () => {
       );
       if (data.token == false) {
         console.log("data.token", data.token);
-        alert("data get");
         navigate("/expired");
       } else {
         console.log("UserData Running --- ");
@@ -284,28 +283,31 @@ const Profile: React.FC = () => {
             (data.data as HealthProblemData).presentHealthProblem
           ).map(
             ([value, label]): Condition => ({
-              label, // Label as string
-              value: Number(value), // Ensure value is a number
-              checked: 0, // Default checked value
+              label,
+              value: Number(value),
+              checked: 0,
             })
           );
 
-          // Step 2: Update the mapped conditions to set `checked` to 1 if value matches
+
           const updatedConditions = healthConditions.map((condition) => {
-            // Check if the condition value is in `presenthealth.refPresentHealth`
+            console.log('healthConditions', healthConditions)
+            if (data.data.presentHealth.refPresentHealth == null) {
+              return condition;
+            }
             if (
               data.data.presentHealth.refPresentHealth.includes(condition.value)
             ) {
               return {
                 ...condition,
-                checked: 1, // Set `checked` to 1 if value matches
+                checked: 1,
               };
             }
-            return condition; // Return as is if no match
+            return condition;
           });
-
-          // Step 3: Set the final updated conditions in state
           setConditions(updatedConditions);
+
+
         } else {
           setEmployeeData({
             refExperence: data.data.EmployeeData.refExperence,
@@ -336,12 +338,16 @@ const Profile: React.FC = () => {
             : false,
         });
 
+        console.log('communication.refCtMobile', communication.refCtMobile)
+        console.log(typeof communication.refCtMobile);
+
+
         setInputs({
           profilefile: data.data.profileFile,
           fname: personaldata.refStFName,
           lname: personaldata.refStLName,
           dob: personaldata.refStDOB,
-          age: personaldata.refStAge,
+          age: calculateAge(personaldata.refStDOB),
           gender: personaldata.refStSex,
           maritalstatus: personaldata.refMaritalStatus,
           anniversarydate: personaldata.refWeddingDate,
@@ -564,16 +570,16 @@ const Profile: React.FC = () => {
       {
         address: {
           addresstype: options.address,
-          refAdFlat1:inputs.perdoorno,
-          refAdArea1:inputs.perstreetname,
+          refAdFlat1: inputs.perdoorno,
+          refAdArea1: inputs.perstreetname,
           refAdAdd1: inputs.peraddress,
           refAdCity1: inputs.percity,
           refAdState1: inputs.perstate,
 
           refAdPincode1: parseInt(inputs.perpincode),
           refAdAdd2: inputs.tempaddress,
-         refAdFlat2:inputs.tempdoorno,
-        refAdArea2:inputs.tempstreetname,
+          refAdFlat2: inputs.tempdoorno,
+          refAdArea2: inputs.tempstreetname,
           refAdCity2: inputs.tempcity,
           refAdState2: inputs.tempstate,
           refAdPincode2: parseInt(inputs.temppincode),
@@ -1396,7 +1402,7 @@ const Profile: React.FC = () => {
                         <div
                           className={
                             localStorage.getItem("refUtId") === "5" ||
-                            localStorage.getItem("refUtId") === "6"
+                              localStorage.getItem("refUtId") === "6"
                               ? "w-[48%]"
                               : "w-[100%]"
                           }
@@ -1415,7 +1421,7 @@ const Profile: React.FC = () => {
                         </div>
 
                         {localStorage.getItem("refUtId") === "5" ||
-                        localStorage.getItem("refUtId") === "6" ? (
+                          localStorage.getItem("refUtId") === "6" ? (
                           <div className="w-[48%]">
                             <TextInput
                               label="Occupation *"
@@ -1587,8 +1593,8 @@ const Profile: React.FC = () => {
                           } else {
                             setInputs({
                               ...inputs,
-                              tempdoorno:"",
-                              tempstreetname:"",
+                              tempdoorno: "",
+                              tempstreetname: "",
                               tempaddress: "",
                               temppincode: "",
                               tempstate: "",
@@ -1604,37 +1610,37 @@ const Profile: React.FC = () => {
                       Communication Address
                     </div>
                     <div
-                    className="w-[100%] mb-[20px] flex justify-between"
-                   
-                  >
-                    <div className="w-[48%]">
-                      <div className="relative w-full">
-                        <TextInput
-                          id="doorno"
-                          type="text"
-                          name="tempdoorno"
-                          label="Door no *"
-                          required
-                          value={inputs.tempdoorno}
-                          onChange={(e) => handleInputVal(e)}
-                        />
-                      </div>
-                    </div>
+                      className="w-[100%] mb-[20px] flex justify-between"
 
-                    <div className="w-[48%]">
-                      <div className="relative w-full">
-                        <TextInput
-                          id="streetname"
-                          type="text"
-                          name="tempstreetname"
-                          label="Street Name *"
-                          required
-                          value={inputs.tempstreetname}
-                          onChange={(e) => handleInputVal(e)}
-                        />
+                    >
+                      <div className="w-[48%]">
+                        <div className="relative w-full">
+                          <TextInput
+                            id="doorno"
+                            type="text"
+                            name="tempdoorno"
+                            label="Door no *"
+                            required
+                            value={inputs.tempdoorno}
+                            onChange={(e) => handleInputVal(e)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="w-[48%]">
+                        <div className="relative w-full">
+                          <TextInput
+                            id="streetname"
+                            type="text"
+                            name="tempstreetname"
+                            label="Street Name *"
+                            required
+                            value={inputs.tempstreetname}
+                            onChange={(e) => handleInputVal(e)}
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
                     <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between mb-[20px]">
                       <div className="w-[100%] lg:w-[48%]">
                         <TextInput
@@ -1725,7 +1731,7 @@ const Profile: React.FC = () => {
                     </div>
                   )}
                 </div>
-              
+
                 <div className="w-[100%] flex flex-col justify-center items-center">
                   <div className="w-[100%] flex justify-between mb-[20px]">
                     <div className="w-[100%]">
@@ -1811,7 +1817,7 @@ const Profile: React.FC = () => {
             </form>
 
             {localStorage.getItem("refUtId") === "5" ||
-            localStorage.getItem("refUtId") === "6" ? (
+              localStorage.getItem("refUtId") === "6" ? (
               <>
                 {/* Genderal Health */}
                 <form
@@ -2128,7 +2134,7 @@ const Profile: React.FC = () => {
                         <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between mb-[20px]">
                           <div className="w-[100%] lg:w-[48%]">
                             <TextInput
-                              label="Description "
+                              label="Others "
                               name="pastother"
                               id="others"
                               type="text"
@@ -2560,8 +2566,8 @@ const Profile: React.FC = () => {
                         </div>
 
                         {inputs.pancard &&
-                        inputs.aadhar &&
-                        inputs.certification ? null : (
+                          inputs.aadhar &&
+                          inputs.certification ? null : (
                           <div className="w-[100%] flex justify-start">
                             {uploadloading ? (
                               <div>

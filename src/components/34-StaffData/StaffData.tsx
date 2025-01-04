@@ -15,8 +15,6 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { useNavigate } from "react-router-dom";
 
-
-
 // interface City {
 //   name: string;
 //   code: string;
@@ -75,8 +73,8 @@ const StaffData: React.FC = () => {
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
-        if(data.token==false){
-          navigate("/expired")
+        if (data.token == false) {
+          navigate("/expired");
         }
 
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
@@ -134,8 +132,8 @@ const StaffData: React.FC = () => {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
+      if (data.token == false) {
+        navigate("/expired");
       }
       console.log("Data line --------------- 227", data);
 
@@ -221,15 +219,14 @@ const StaffData: React.FC = () => {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
-        navigate("/expired")
+      if (data.token == false) {
+        navigate("/expired");
       }
       console.log("Data line --------------- 227", data);
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
-    
-      if (data.success == true){
+      if (data.success == true) {
         setVisibleRight(false);
         setStaffName("");
         setStaffRole("");
@@ -240,33 +237,33 @@ const StaffData: React.FC = () => {
         setMobile("");
         setPanCard("");
         setAadharCard("");
-  
+
         setChnages(!changes);
 
-      toast.success("New Staff Added", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        // transition: Bounce,
-      });
-    }else{
-      toast.warning("can't Add New Health Issue", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        // transition: Bounce,
-      });
-    }
+        toast.success("New Staff Added", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          // transition: Bounce,
+        });
+      } else {
+        toast.warning("can't Add New Health Issue", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          // transition: Bounce,
+        });
+      }
 
       fetchUserTypeLabel();
     } catch (error) {

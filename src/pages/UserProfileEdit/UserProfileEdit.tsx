@@ -928,7 +928,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                             { value: "single", label: "Single" },
                             { value: "married", label: "Married" },
                           ]}
-                          disabled={!edits.personal && inputs.age > '18' ? false:true}
+                          disabled={!edits.personal && inputs.age > '18' ? true:false}
                           required
                         />
 
