@@ -2,11 +2,28 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 
+import coverImage from "../../assets/Dashboard/banner.jpg";
+import profileImage from "../../assets/Dashboard/profile.svg";
+import { Mail, Phone } from "lucide-react";
+import CryptoJS from "crypto-js";
 
 type DecryptResult = any;
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768); // Set mobile view if width <= 768px
+    };
+
+    handleResize(); // Check initial screen size
+    window.addEventListener("resize", handleResize); // Add resize listener
+
+    return () => {
+      window.removeEventListener("resize", handleResize); // Clean up listener
+    };
+  }, []);
 
   console.log("dfhbdf");
 
@@ -32,6 +49,7 @@ const Dashboard = () => {
   const [userdata, setuserdata] = useState({
     username: "",
     usernameid: "",
+    refUserName: "",
     profileimg: { contentType: "", content: "" },
   });
 
@@ -74,36 +92,96 @@ const Dashboard = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false)
-      {
-        navigate("/expired")
-
-      }
-      else{
+      console.log("data", data);
+      if (data.token == false) {
+        navigate("/expired");
+      } else {
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
         setuserdata({
           username:
             "" + data.data[0].refStFName + " " + data.data[0].refStLName + "",
           usernameid: data.data[0].refusertype,
+          refUserName: data.data[0].refUserName,
           profileimg: data.profileFile,
         });
-  
+
         setPageLoading({
           ...pageLoading,
           verifytoken: false,
         });
-  
+
         console.log("Verify Token  Running --- ");
       }
-      
     });
   }, []);
 
   return (
-    <div className="flex justify-center items-center w-[100%] h-screen">
-      <h1>Dashboard - Coming Soon</h1>
-    </div>
+    <>
+      {!isMobile && (
+        <div className="headerPrimary">
+          <h3>DASHBOARD</h3>
+          <div className="quickAcces">
+            {userdata.profileimg ? (
+              <div className="p-link layout-topbar-button">
+                <img
+                  id="userprofileimg"
+                  className="w-[45px] h-[45px] object-cover rounded-full"
+                  src={`data:${userdata.profileimg.contentType};base64,${userdata.profileimg.content}`}
+                  alt=""
+                />
+              </div>
+            ) : (
+              <div className="p-link layout-topbar-button">
+                <i className="pi pi-user"></i>
+              </div>
+            )}
+            <h3 className="text-[1rem] text-center ml-2 lg:ml-2 mr-0 lg:mr-5">
+              <span>{userdata.username}</span>
+              <br />
+              <span className="text-[0.8rem] text-[#f95005]">
+                {userdata.usernameid}
+              </span>
+            </h3>
+          </div>{" "}
+        </div>
+      )}
+      <div className="flex justify-center userContents m-3 items-center">
+        <div className="userContents w-full">
+          <div>
+            <div className="contents w-full">
+              <div className="userProfile">
+                <div className="coverImage">
+                  <img src={coverImage} alt="coverImage" />
+                </div>
+                <div className="coverContents">
+                  <img src={profileImage} alt="userProfile" />
+                  <div className="userDetails">
+                    <div className="">
+                      <div className="userDetPrimary mt-2 flex items-center justify-between w-full m-0">
+                        <p className="username">{userdata.username} </p>
+                        <p className="username">Student</p>
+                      </div>
+                    </div>
+                    <div className="flex justify-between">
+                      <p className="flex items-center gap-2">
+                        <Mail />
+                        {userdata.refUserName}
+                      </p>
+                      <p className="flex items-center gap-2">
+                        {" "}
+                        <Phone />
+                        N/A
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 

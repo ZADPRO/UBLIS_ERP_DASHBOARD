@@ -1,4 +1,4 @@
-import { useState, ReactNode, useEffect } from "react";
+import { useState, ReactNode, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
 import { CiUser } from "react-icons/ci";
@@ -47,6 +47,7 @@ import {
   User,
 } from "lucide-react";
 import { Ripple } from "primereact/ripple";
+import { Toast } from "primereact/toast";
 
 // Define types for the route structure
 interface Route {
@@ -59,6 +60,16 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [routes, setRoutes] = useState<Route[]>([]);
 
   const navigate = useNavigate();
+  const toast = useRef<Toast>(null);
+  const showWarn = () => {
+    toast.current?.show({
+      severity: "info",
+      summary: "Warning",
+      detail: "Coming Soon !!!",
+      life: 3000,
+    });
+    setUserNavbarVisible(false);
+  };
 
   const [isMobile, setIsMobile] = useState(false);
 
@@ -84,12 +95,12 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
   // Define the routes based on refUtId
   const userRoutes: Route[] = [
     { path: "/users/dashboard", name: "Dashboard", icon: <LayoutGrid /> },
-    { path: "/users/notes", name: "User Notes", icon: <ListChecks /> },
     {
       path: "/users/attendance",
       name: "Attendance",
       icon: <LibraryBig />,
     },
+    { path: "/users/notes", name: "User Notes", icon: <ListChecks /> },
     { path: "/users/payment", name: "Payment", icon: <IndianRupee /> },
     { path: "/users/branch", name: "Branch", icon: <Split /> },
     { path: "/users/profile", name: "Profile", icon: <User /> },
@@ -395,6 +406,8 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
 
   return (
     <>
+      <Toast ref={toast} />
+
       {location.pathname != "/expired" ? (
         <div>
           <div>
@@ -406,7 +419,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
                     style={{ background: "#f95005", border: "none" }}
                     onClick={() => setUserNavbarVisible(true)}
                   />
-                  <p className="text-[#f95005]">Logged in as: Username</p>
+                  <p className="text-[#f95005]">Logged in as: Student</p>
                 </div>
                 {children}
               </div>
@@ -467,21 +480,21 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
                 <Ripple />
               </a>
             </li>
-            <li>
+            <li onClick={() => showWarn()}>
               <a className="p-ripple flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors w-full">
                 <LibraryBig size={20} />{" "}
                 <span className="ml-2 font-medium">User Notes</span>
                 <Ripple />
               </a>
             </li>
-            <li>
+            <li onClick={() => showWarn()}>
               <a className="p-ripple flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors w-full">
                 <IndianRupee size={20} />{" "}
                 <span className="ml-2 font-medium">Payment</span>
                 <Ripple />
               </a>
             </li>
-            <li>
+            <li onClick={() => showWarn()}>
               <a className="p-ripple flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors w-full">
                 <Split size={20} />{" "}
                 <span className="ml-2 font-medium">Branch</span>
@@ -489,14 +502,14 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
               </a>
             </li>
 
-            <li>
+            <li onClick={() => showWarn()}>
               <a className="p-ripple flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors w-full">
                 <Headset size={20} />{" "}
                 <span className="ml-2 font-medium">Support</span>
                 <Ripple />
               </a>
             </li>
-            <li>
+            <li onClick={() => handleMobileNavigate("/logout")}>
               <a className="p-ripple flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors w-full">
                 <LogOut size={20} />{" "}
                 <span className="ml-2 font-medium">Logout</span>
@@ -506,7 +519,10 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
           </ul>
           <div className="mt-auto">
             <Divider />
-            <a className="flex align-items-center cursor-pointer p-3 gap-2 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple">
+            <a
+              onClick={() => handleMobileNavigate("/users/profile")}
+              className="flex align-items-center cursor-pointer p-3 gap-2 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
+            >
               <User size={20} />
               <span className="font-bold">Amy Elsner</span>
             </a>

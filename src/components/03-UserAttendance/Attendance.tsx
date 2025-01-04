@@ -8,6 +8,7 @@ import CryptoJS from "crypto-js";
 import Axios from "axios";
 import "./Attendance.css";
 import Calenderss from "../10-Calender/Calenderss";
+import { Panel } from "primereact/panel";
 
 interface Customer {
   Username: string;
@@ -240,6 +241,20 @@ const StaffAttendance: React.FC = () => {
     console.log(`Formatted Month & Year: ${formattedMonthYear}`);
   };
 
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768); // Set mobile view if width <= 768px
+    };
+
+    handleResize(); // Check initial screen size
+    window.addEventListener("resize", handleResize); // Add resize listener
+
+    return () => {
+      window.removeEventListener("resize", handleResize); // Clean up listener
+    };
+  }, []);
+
   return (
     <>
       {pageLoading.verifytoken && pageLoading.pageData ? (
@@ -273,6 +288,34 @@ const StaffAttendance: React.FC = () => {
         </>
       ) : (
         <>
+          {!isMobile && (
+            <div className="headerPrimary">
+              <h3>Attendance</h3>
+              <div className="quickAcces">
+                {userdata.profileimg ? (
+                  <div className="p-link layout-topbar-button">
+                    <img
+                      id="userprofileimg"
+                      className="w-[45px] h-[45px] object-cover rounded-full"
+                      src={`data:${userdata.profileimg.contentType};base64,${userdata.profileimg.content}`}
+                      alt=""
+                    />
+                  </div>
+                ) : (
+                  <div className="p-link layout-topbar-button">
+                    <i className="pi pi-user"></i>
+                  </div>
+                )}
+                <h3 className="text-[1rem] text-center ml-2 lg:ml-2 mr-0 lg:mr-5">
+                  <span>{userdata.username}</span>
+                  <br />
+                  <span className="text-[0.8rem] text-[#f95005]">
+                    {userdata.usernameid}
+                  </span>
+                </h3>
+              </div>{" "}
+            </div>
+          )}
           <div className="card m-1 AttendancePage" style={{ overflow: "auto" }}>
             <div className="flex flex-row">
               <div className="flex lg:flex-row gap-10 flex-col w-full justify-content-between">
@@ -282,110 +325,26 @@ const StaffAttendance: React.FC = () => {
                       <div className="flex flex-col w-[90%]">
                         {selectedUser && (
                           <div className="w-full flex flex-col align-items-center justify-center">
-                            <div
-                              className="flex flex-col justify-start p-4 w-full rounded-md"
-                              style={{ border: "3px solid #f95005" }}
-                            >
-                              <div className="flex flex-row w-full align-items-center justify-center">
-                                <div className="w-[95%]">
-                                  <div className="h-[25px] mt-[-30px] flex">
-                                    <p
-                                      style={{
-                                        width: "30%",
-                                        fontSize: "18px",
-                                        fontWeight: "bold",
-                                        color: "#f95005",
-                                        textAlign: "left",
-                                      }}
-                                    >
-                                      User Name
-                                    </p>
-                                    <p
-                                      style={{
-                                        width: "60%",
-                                        fontSize: "18px",
-                                        paddingLeft: "10px",
-                                      }}
-                                    >
-                                      :{" "}
-                                      {selectedUser.userName
-                                        .charAt(0)
-                                        .toUpperCase() +
-                                        selectedUser.userName
-                                          .slice(1)
-                                          .toLowerCase()}
-                                    </p>
-                                  </div>
-
-                                  <div className="w-full h-[25px] flex">
-                                    <p
-                                      style={{
-                                        width: "30%",
-                                        fontSize: "18px",
-                                        fontWeight: "bold",
-                                        color: "#f95005",
-                                        textAlign: "left",
-                                      }}
-                                    >
-                                      User ID
-                                    </p>
-                                    <p
-                                      style={{
-                                        width: "60%",
-                                        fontSize: "18px",
-                                        paddingLeft: "10px",
-                                      }}
-                                    >
-                                      : {selectedUser.userId}
-                                    </p>
-                                  </div>
-                                  <div className="w-full h-[25px] flex">
-                                    <p
-                                      style={{
-                                        width: "30%",
-                                        fontSize: "18px",
-                                        fontWeight: "bold",
-                                        color: "#f95005",
-                                        textAlign: "left",
-                                      }}
-                                    >
-                                      Session
-                                    </p>
-                                    <p
-                                      style={{
-                                        width: "60%",
-                                        fontSize: "18px",
-                                        paddingLeft: "10px",
-                                      }}
-                                    >
-                                      : {selectedUser.refPackageName}
-                                    </p>
-                                  </div>
-                                  <div className="w-full h-[25px] flex">
-                                    <p
-                                      style={{
-                                        width: "30%",
-                                        fontSize: "18px",
-                                        fontWeight: "bold",
-                                        color: "#f95005",
-                                        textAlign: "left",
-                                      }}
-                                    >
-                                      Timing
-                                    </p>
-                                    <p
-                                      style={{
-                                        width: "60%",
-                                        fontSize: "18px",
-                                        paddingLeft: "10px",
-                                      }}
-                                    >
-                                      : {selectedUser.refTime}
-                                    </p>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
+                            <Panel header="User Details" className="w-full">
+                              <p>
+                                Username:{" "}
+                                {selectedUser.userName.charAt(0).toUpperCase() +
+                                  selectedUser.userName.slice(1).toUpperCase()}
+                              </p>
+                              <p>User ID: {selectedUser.userId}</p>
+                              <p>
+                                Session:{" "}
+                                {selectedUser.refPackageName
+                                  ? selectedUser.refPackageName
+                                  : "Not Available"}
+                              </p>
+                              <p>
+                                Timing:{" "}
+                                {selectedUser.refTime
+                                  ? selectedUser.refTime
+                                  : "Not Available"}
+                              </p>
+                            </Panel>
                             <DataTable
                               value={userFilteredAttendanceData}
                               className="w-full mt-3 border-2 border-gray-400 custom-header"

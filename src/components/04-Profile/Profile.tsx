@@ -289,9 +289,8 @@ const Profile: React.FC = () => {
             })
           );
 
-
           const updatedConditions = healthConditions.map((condition) => {
-            console.log('healthConditions', healthConditions)
+            console.log("healthConditions", healthConditions);
             if (data.data.presentHealth.refPresentHealth == null) {
               return condition;
             }
@@ -306,8 +305,6 @@ const Profile: React.FC = () => {
             return condition;
           });
           setConditions(updatedConditions);
-
-
         } else {
           setEmployeeData({
             refExperence: data.data.EmployeeData.refExperence,
@@ -338,9 +335,8 @@ const Profile: React.FC = () => {
             : false,
         });
 
-        console.log('communication.refCtMobile', communication.refCtMobile)
+        console.log("communication.refCtMobile", communication.refCtMobile);
         console.log(typeof communication.refCtMobile);
-
 
         setInputs({
           profilefile: data.data.profileFile,
@@ -1150,7 +1146,7 @@ const Profile: React.FC = () => {
         </>
       ) : (
         <div className="bg-[#f6f5f5]">
-          <div className="headerPrimary">
+          {/* <div className="headerPrimary">
             <h3>PROFILE</h3>
             <div className="quickAcces">
               {userdata.profileimg ? (
@@ -1175,7 +1171,7 @@ const Profile: React.FC = () => {
                 </span>
               </h3>
             </div>{" "}
-          </div>
+          </div> */}
 
           <div className="userProfilePage">
             {/* Personal Information */}
@@ -1402,7 +1398,7 @@ const Profile: React.FC = () => {
                         <div
                           className={
                             localStorage.getItem("refUtId") === "5" ||
-                              localStorage.getItem("refUtId") === "6"
+                            localStorage.getItem("refUtId") === "6"
                               ? "w-[48%]"
                               : "w-[100%]"
                           }
@@ -1421,7 +1417,7 @@ const Profile: React.FC = () => {
                         </div>
 
                         {localStorage.getItem("refUtId") === "5" ||
-                          localStorage.getItem("refUtId") === "6" ? (
+                        localStorage.getItem("refUtId") === "6" ? (
                           <div className="w-[48%]">
                             <TextInput
                               label="Occupation *"
@@ -1482,8 +1478,7 @@ const Profile: React.FC = () => {
                     <div className="text-[1.2rem] lg:text-[25px] font-bold mb-5">
                       Permanent Address
                     </div>
-                    <div
-                      className="w-[100%] mb-[20px] flex justify-between">
+                    <div className="w-[100%] mb-[20px] flex justify-between">
                       <div className="w-[48%]">
                         <div className="relative w-full">
                           <TextInput
@@ -1609,10 +1604,7 @@ const Profile: React.FC = () => {
                     <div className="text-[1.2rem] lg:text-[25px] font-bold mb-5">
                       Communication Address
                     </div>
-                    <div
-                      className="w-[100%] mb-[20px] flex justify-between"
-
-                    >
+                    <div className="w-[100%] mb-[20px] flex justify-between">
                       <div className="w-[48%]">
                         <div className="relative w-full">
                           <TextInput
@@ -1817,7 +1809,7 @@ const Profile: React.FC = () => {
             </form>
 
             {localStorage.getItem("refUtId") === "5" ||
-              localStorage.getItem("refUtId") === "6" ? (
+            localStorage.getItem("refUtId") === "6" ? (
               <>
                 {/* Genderal Health */}
                 <form
@@ -2566,8 +2558,8 @@ const Profile: React.FC = () => {
                         </div>
 
                         {inputs.pancard &&
-                          inputs.aadhar &&
-                          inputs.certification ? null : (
+                        inputs.aadhar &&
+                        inputs.certification ? null : (
                           <div className="w-[100%] flex justify-start">
                             {uploadloading ? (
                               <div>

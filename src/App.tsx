@@ -33,7 +33,6 @@ import AddNotes from "./components/39-AddNotes/AddNotes";
 import AssignNotes from "./components/40-AssignNotes/AssignNotes";
 import Expired from "./pages/Expired/Expired";
 
-
 const App = () => {
   const urlParams = new URLSearchParams(window.location.search);
   const token = urlParams.get("JWTtoken");
@@ -65,9 +64,6 @@ const App = () => {
           <Route path="/yoganotes" element={<AddNotes />} />
 
           <Route path="/settings" element={<Settings />} />
-         
-        
-          
 
           {/* USER DASHBOARD */}
           <Route path="/users/dashboard" element={<Dashboard />} />
@@ -84,9 +80,8 @@ const App = () => {
           <Route path="/staff/registeredUsers" element={<RegisteredUsers />} />
           <Route path="/feedback" element={<Feedback />} />
           <Route path="/staff/feedback" element={<StaffFeedback />} />
-          <Route path="/staff/payment" element={<Payment/>} />
-          <Route path="/staff/attendance" element={<StaffAttendance/>} />
-
+          <Route path="/staff/payment" element={<Payment />} />
+          <Route path="/staff/attendance" element={<StaffAttendance />} />
 
           <Route path="/staff/transaction" element={<Transactions />} />
           <Route path="/staff/payroll" element={<Payroll />} />
@@ -97,7 +92,6 @@ const App = () => {
           <Route path="/restrictions" element={<Restrictions />} />
           <Route path="/fSettings" element={<OverallSettings />} />
           <Route path="/expired" element={<Expired />} />
-
         </Routes>
       </Header>
     </Router>
