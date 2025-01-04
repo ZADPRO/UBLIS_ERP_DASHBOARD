@@ -23,10 +23,7 @@ import { RiSpam2Line } from "react-icons/ri";
 import {
   IoIosLogOut,
   IoIosHelpCircleOutline,
-  IoIosGitBranch,
   IoIosSwap,
-  IoIosCheckboxOutline,
-  IoMdBook,
   IoMdMenu,
 } from "react-icons/io";
 import { BiMessage } from "react-icons/bi";
@@ -38,6 +35,18 @@ import Expired from "../../pages/Expired/Expired";
 // import UserDashboard from "../../pages/01-UserDashboard/UserDashboard";
 import { Sidebar } from "primereact/sidebar";
 import { Button } from "primereact/button";
+import { Divider } from "primereact/divider";
+import {
+  Headset,
+  IndianRupee,
+  LayoutGrid,
+  LibraryBig,
+  ListChecks,
+  LogOut,
+  Split,
+  User,
+} from "lucide-react";
+import { Ripple } from "primereact/ripple";
 
 // Define types for the route structure
 interface Route {
@@ -66,26 +75,28 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
 
   const [visible, setVisible] = useState(false);
 
+  const [userMobileNavbarVisibe, setUserNavbarVisible] = useState(false);
+
   const utId = localStorage.getItem("refUtId");
 
   // Define the routes based on refUtId
   const userRoutes: Route[] = [
-    { path: "/users/dashboard", name: "Dashboard", icon: <IoGridOutline /> },
-    { path: "/users/notes", name: "User Notes", icon: <IoMdBook /> },
+    { path: "/users/dashboard", name: "Dashboard", icon: <LayoutGrid /> },
+    { path: "/users/notes", name: "User Notes", icon: <ListChecks /> },
     {
       path: "/users/attendance",
       name: "Attendance",
-      icon: <IoIosCheckboxOutline />,
+      icon: <LibraryBig />,
     },
-    { path: "/users/payment", name: "Payment", icon: <IoIosSwap /> },
-    { path: "/users/branch", name: "Branch", icon: <IoIosGitBranch /> },
-    { path: "/users/profile", name: "Profile", icon: <CiUser /> },
+    { path: "/users/payment", name: "Payment", icon: <IndianRupee /> },
+    { path: "/users/branch", name: "Branch", icon: <Split /> },
+    { path: "/users/profile", name: "Profile", icon: <User /> },
     {
       path: "/users/support",
       name: "Support",
-      icon: <IoIosHelpCircleOutline />,
+      icon: <Headset />,
     },
-    { path: "/logout", name: "Logout", icon: <IoIosLogOut /> },
+    { path: "/logout", name: "Logout", icon: <LogOut /> },
   ];
 
   const staffRoutes: Route[] = [
@@ -383,13 +394,16 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
             {utId === "5" && isMobile ? (
               <div>
                 <div className="primaryNav">
-                  <Button icon="pi pi-bars" onClick={() => setVisible(true)} />
+                  <Button
+                    icon="pi pi-bars"
+                    onClick={() => setUserNavbarVisible(true)}
+                  />
                   <p className="text-[#f95005]">Logged in as: Username</p>
                 </div>
               </div>
             ) : (
               <div className="main_container">
-                <motion.div className="sidebar lg:w-[4vw]">
+                <motion.div className="sidebar lg:w-[60px]">
                   <div className="top_section">
                     <div className="bars pr-4">
                       <IoMdMenu onClick={() => setVisible(true)} />
@@ -422,6 +436,73 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
       )}
       <Sidebar visible={visible} onHide={() => setVisible(false)}>
         <div className="flex flex-col justify-between h-full"></div>
+      </Sidebar>
+
+      <Sidebar
+        visible={userMobileNavbarVisibe}
+        onHide={() => setUserNavbarVisible(false)}
+      >
+        <div className="flex flex-col justify-between h-full">
+          <ul className="list-none p-0 m-0 overflow-hidden">
+            <li>
+              <a className="p-ripple flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors w-full">
+                <LayoutGrid size={20} />
+                <span className="ml-2 font-medium">Dashboard</span>
+                <Ripple />
+              </a>
+            </li>
+            <li>
+              <a className="p-ripple flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors w-full">
+                <ListChecks size={20} />{" "}
+                <span className="ml-2 font-medium">Attendance</span>
+                <Ripple />
+              </a>
+            </li>
+            <li>
+              <a className="p-ripple flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors w-full">
+                <LibraryBig size={20} />{" "}
+                <span className="ml-2 font-medium">User Notes</span>
+                <Ripple />
+              </a>
+            </li>
+            <li>
+              <a className="p-ripple flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors w-full">
+                <IndianRupee size={20} />{" "}
+                <span className="ml-2 font-medium">Payment</span>
+                <Ripple />
+              </a>
+            </li>
+            <li>
+              <a className="p-ripple flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors w-full">
+                <Split size={20} />{" "}
+                <span className="ml-2 font-medium">Branch</span>
+                <Ripple />
+              </a>
+            </li>
+
+            <li>
+              <a className="p-ripple flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors w-full">
+                <Headset size={20} />{" "}
+                <span className="ml-2 font-medium">Support</span>
+                <Ripple />
+              </a>
+            </li>
+            <li>
+              <a className="p-ripple flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors w-full">
+                <LogOut size={20} />{" "}
+                <span className="ml-2 font-medium">Logout</span>
+                <Ripple />
+              </a>
+            </li>
+          </ul>
+          <div className="mt-auto">
+            <Divider />
+            <a className="flex align-items-center cursor-pointer p-3 gap-2 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple">
+              <User size={20} />
+              <span className="font-bold">Amy Elsner</span>
+            </a>
+          </div>
+        </div>{" "}
       </Sidebar>
     </>
   );
