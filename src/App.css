@@ -13,7 +13,7 @@ a {
 }
 
 main {
-  inline-size: 75vw;
+  /* inline-size: 75vw; */
   background-color: white;
 }
 

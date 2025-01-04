@@ -49,6 +49,21 @@ interface Route {
 const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [routes, setRoutes] = useState<Route[]>([]);
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768); // Set mobile view if width <= 768px
+    };
+
+    handleResize(); // Check initial screen size
+    window.addEventListener("resize", handleResize); // Add resize listener
+
+    return () => {
+      window.removeEventListener("resize", handleResize); // Clean up listener
+    };
+  }, []);
+
   const [visible, setVisible] = useState(false);
 
   const utId = localStorage.getItem("refUtId");
@@ -364,35 +379,40 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     <>
       {location.pathname != "/expired" ? (
         <div>
-          <div className="main_container">
-            <motion.div className="sidebar">
-              <div className="top_section">
-                <div className="bars pr-4">
-                  <IoMdMenu onClick={() => setVisible(true)} />
+          <div>
+            {utId === "5" && isMobile ? (
+              <div>
+                <div className="primaryNav">
+                  <Button icon="pi pi-bars" onClick={() => setVisible(true)} />
+                  <p className="text-[#f95005]">Logged in as: Username</p>
                 </div>
               </div>
+            ) : (
+              <div className="main_container">
+                <motion.div className="sidebar lg:w-[4vw]">
+                  <div className="top_section">
+                    <div className="bars pr-4">
+                      <IoMdMenu onClick={() => setVisible(true)} />
+                    </div>
+                  </div>
 
-              <section className="routes">
-                {routes.map((route) => (
-                  <NavLink
-                    to={route.path}
-                    key={route.name}
-                    className={({ isActive }) =>
-                      isActive ? "link active" : "link"
-                    }
-                  >
-                    <div className="icon">{route.icon}</div>
-                  </NavLink>
-                ))}
-              </section>
-            </motion.div>
-            <main style={{ minWidth: "95vw" }}>{children}</main>
-          </div>
-
-          <div className="primaryNav">
-            <Button icon="pi pi-bars" onClick={() => setVisible(true)} />
-            <p className="font-bold text-black">Dashboard</p>
-            <p className="text-[#f95005]">Logged in as: Username</p>
+                  <section className="routes">
+                    {routes.map((route) => (
+                      <NavLink
+                        to={route.path}
+                        key={route.name}
+                        className={({ isActive }) =>
+                          isActive ? "link active" : "link"
+                        }
+                      >
+                        <div className="icon">{route.icon}</div>
+                      </NavLink>
+                    ))}
+                  </section>
+                </motion.div>
+                <main className="lg:w-[95vw] w-[85vw]">{children}</main>
+              </div>
+            )}
           </div>
         </div>
       ) : (
