@@ -20,6 +20,7 @@ import Calenderss from "../10-Calender/Calenderss";
 // import { IoSearch } from "react-icons/io5";
 import axios from "axios";
 import SessionTabs from "../../pages/SessionTabs/SessionTabs";
+import OverviewAttendance from "../../pages/02-OverviewAttendnace/OverviewAttendance";
 
 interface Customer {
   Username: string;
@@ -61,19 +62,24 @@ type Attendance = {
   time: string;
 };
 
-interface SessionOverviewData {
-  attend_count: string;
-  refDays: string;
-  refPaID: number;
-  refPackageName: string;
-  refSDId: number;
-  refSessonDays: string;
-  refSessionMode: string;
-  refTime: string;
+interface RegularSession {
   refTimeId: number;
-  refTimingId: string;
-  user_count: string;
+  refTime: string;
+  usercount: number;
+  attendancecount: number;
 }
+
+interface NearestSession {
+  nearestRefTimeId: {
+    refTimeId: number;
+    refTime: string;
+    usercount: number;
+    attendancecount: number;
+    startTime: string;
+  };
+}
+
+type AttendanceData = RegularSession | NearestSession;
 
 interface AttendanceItem {
   formatted_punch_time: string;
@@ -283,7 +289,7 @@ const StaffAttendance: React.FC = () => {
   }, []);
 
   const [overviewSessionData, setOverviewSessionData] =
-    useState<SessionOverviewData | null>(null);
+    useState<AttendanceData | null>(null);
 
   useEffect(() => {
     Axios.get(import.meta.env.VITE_API_URL + "/attendance/overView", {
@@ -553,7 +559,8 @@ const StaffAttendance: React.FC = () => {
 
             <TabView className="overflow-hidden m-2">
               <TabPanel header="Overview">
-                <div className=" flex flex-row justify-evenly w-[100%]">
+                <OverviewAttendance overviewSessionData={overviewSessionData} />
+                {/* <div className=" flex flex-row justify-evenly w-[100%]">
                   <div className="cardTesting w-[100%]">
                     <div className="cardOutlines card">
                       <div className="header">
@@ -659,7 +666,7 @@ const StaffAttendance: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </TabPanel>
               <TabPanel header="Session">
                 <SessionTabs />
