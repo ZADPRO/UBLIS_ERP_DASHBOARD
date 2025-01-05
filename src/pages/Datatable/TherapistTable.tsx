@@ -422,6 +422,7 @@ export default function TherapistTable() {
         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
         rowsPerPageOptions={[10, 25, 50]}
         dataKey="id"
+        scrollable
         selectionMode="checkbox"
         selection={selectedCustomers}
         onSelectionChange={(e) => {
@@ -435,41 +436,36 @@ export default function TherapistTable() {
         <Column
           selectionMode="multiple"
           frozen
-          headerStyle={{ inlineSize: "3rem" }}
+          headerStyle={{ minWidth: "3rem" }}
         />
         <Column
           field="userId"
           header="Customer Id"
           body={userIdTemplate}
           frozen
-          style={{ inlineSize: "18rem" }}
+          style={{ minWidth: "12rem" }}
         />
-        <Column
-          field="fname"
-          header="Name"
-          frozen
-          style={{ inlineSize: "18rem" }}
-        />
+        <Column field="fname" header="Name" style={{ minWidth: "12rem" }} />
         <Column
           field="mobile"
           header="Mobile"
-          style={{ inlineSize: "14rem" }}
+          style={{ minWidth: "14rem" }}
           filterPlaceholder="Search by Mobile"
         />
-        <Column field="email" header="Email" style={{ inlineSize: "14rem" }} />
+        <Column field="email" header="Email" style={{ minWidth: "14rem" }} />
         <Column
           field="date"
           header="Application Submitted"
           filterField="date"
           dataType="date"
-          style={{ inlineSize: "23rem" }}
+          style={{ minWidth: "23rem" }}
         />
         <Column
           field="therapy"
           header="Therapy"
           body={therapyCheckboxTemplate}
           style={{
-            inlineSize: "9rem",
+            minWidth: "9rem",
           }}
         />
 
@@ -477,19 +473,19 @@ export default function TherapistTable() {
           field="currentStatus"
           header="Current Status"
           filter
-          style={{ inlineSize: "14rem" }}
+          style={{ minWidth: "14rem" }}
         /> */}
         <Column
           header="Approved / Rejected"
           body={statusBodyTemplate}
-          style={{ inlineSize: "20rem" }}
+          style={{ minWidth: "20rem" }}
         />
       </DataTable>
       <Sidebar
         visible={visibleLeft}
         position="right"
         onHide={() => setVisibleLeft(false)}
-        style={{ inlineSize: "75vw" }}
+        style={{ minWidth: "75vw" }}
       >
         <h2>Registered User</h2>
         {/* <p>

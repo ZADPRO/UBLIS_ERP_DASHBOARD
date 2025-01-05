@@ -557,6 +557,7 @@ const UserDirData: React.FC = () => {
         rowsPerPageOptions={[10, 25, 50]}
         dataKey="id"
         selectionMode="checkbox"
+        scrollable
         selection={selectedCustomers}
         onSelectionChange={(e) => {
           const customers = e.value as Customer[];
@@ -571,7 +572,7 @@ const UserDirData: React.FC = () => {
         <Column
           selectionMode="multiple"
           frozen
-          headerStyle={{ inlineSize: "3rem" }}
+          headerStyle={{ minWidth: "3rem" }}
         />
         <Column
           field="userId"
@@ -580,32 +581,32 @@ const UserDirData: React.FC = () => {
           frozen
           sortable
           filterPlaceholder="Search by User ID"
-          style={{ inlineSize: "14rem" }}
+          style={{ minWidth: "12rem" }}
         />
         <Column
           field="fname"
           header="Name"
           sortable
-          style={{ inlineSize: "14rem" }}
+          style={{ minWidth: "14rem" }}
         />
         <Column
           field="trial"
           header="Current Status"
           sortable
-          style={{ inlineSize: "14rem", textTransform: "capitalize" }}
+          style={{ minWidth: "14rem", textTransform: "capitalize" }}
         />
         <Column
           field="mobile"
           header="Mobile"
           sortable
-          style={{ inlineSize: "14rem" }}
+          style={{ minWidth: "14rem" }}
           filterPlaceholder="Search by Mobile"
         />
         <Column
           field="email"
           header="Email"
           sortable
-          style={{ inlineSize: "14rem" }}
+          style={{ minWidth: "14rem" }}
         />
       </DataTable>
 
@@ -868,7 +869,7 @@ const UserDirData: React.FC = () => {
               <p className="m-0">
                 <DataTable
                   value={UserDetailss}
-                  tableStyle={{ inlineSize: "50rem" }}
+                  tableStyle={{ minWidth: "50rem" }}
                 >
                   <Column
                     header="S.No"

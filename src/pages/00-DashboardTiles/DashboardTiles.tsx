@@ -502,7 +502,7 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
                 <div className="card statsDataTable">
                   <p>Overall User Stats</p>
                   {overallUserStatus.length ? (
-                    <ul className="list-none p-0 m-0">
+                    <ul className="list-none p-0 m-0 card">
                       {overallUserStatus.map((element: any, index: number) => (
                         <li
                           key={index}

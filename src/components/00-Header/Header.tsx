@@ -1,32 +1,9 @@
 import { useState, ReactNode, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
-import { CiUser } from "react-icons/ci";
-import {
-  IoGridOutline,
-  IoSettingsOutline,
-  IoBarChartOutline,
-} from "react-icons/io5";
-import { HiOutlineUserGroup, HiOutlineUsers } from "react-icons/hi2";
-import { PiCreditCard } from "react-icons/pi";
-import { TfiWrite } from "react-icons/tfi";
-import { CiPen } from "react-icons/ci";
-import { AiOutlineUser } from "react-icons/ai";
 import { SlOrganization } from "react-icons/sl";
-import { AiOutlineBell } from "react-icons/ai";
-import { GrDocumentNotes } from "react-icons/gr";
-import { MdAssignmentAdd } from "react-icons/md";
-import { FaFileInvoiceDollar } from "react-icons/fa6";
-import { LuNotebookTabs } from "react-icons/lu";
-import { RiSpam2Line } from "react-icons/ri";
 
-import {
-  IoIosLogOut,
-  IoIosHelpCircleOutline,
-  IoIosSwap,
-  IoMdMenu,
-} from "react-icons/io";
-import { BiMessage } from "react-icons/bi";
+import { IoIosLogOut, IoMdMenu } from "react-icons/io";
 
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 
@@ -37,14 +14,30 @@ import { Sidebar } from "primereact/sidebar";
 import { Button } from "primereact/button";
 import { Divider } from "primereact/divider";
 import {
+  ArrowRightLeft,
+  CircleUser,
+  FileClock,
+  FileStack,
   Headset,
   IndianRupee,
   LayoutGrid,
+  PencilLine,
   LibraryBig,
   ListChecks,
   LogOut,
+  TriangleAlert,
+  Settings,
+  ChartNoAxesCombined,
+  MessageCircle,
+  UserRoundPen,
+  IdCard,
+  NotebookPen,
   Split,
+  SquareUserRound,
   User,
+  UserPlus,
+  UserRoundCheck,
+  UserRoundPlus,
 } from "lucide-react";
 import { Ripple } from "primereact/ripple";
 import { Toast } from "primereact/toast";
@@ -116,33 +109,33 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     {
       path: "/staff/Dashboard",
       name: "Dashboard",
-      icon: <IoGridOutline />,
+      icon: <LayoutGrid />,
     },
     {
       path: "/staff/users",
       name: "All Users",
-      icon: <HiOutlineUsers />,
+      icon: <User />,
     },
     {
       path: "/staff/registeredUsers",
       name: "Trial & Fee Due",
-      icon: <HiOutlineUsers />,
+      icon: <User />,
     },
     {
       path: "/staff/signedupUsers",
       name: "Future Clients",
-      icon: <HiOutlineUserGroup />,
+      icon: <UserRoundCheck />,
     },
     {
       path: "/staff/feedback",
       name: "Feedback",
-      icon: <BiMessage />,
+      icon: <MessageCircle />,
     },
-    { path: "/users/profile", name: "Profile", icon: <CiUser /> },
+    { path: "/users/profile", name: "Profile", icon: <UserRoundPen /> },
     {
       path: "/users/support",
       name: "Support",
-      icon: <IoIosHelpCircleOutline />,
+      icon: <Headset />,
     },
     { path: "/logout", name: "Logout", icon: <IoIosLogOut /> },
   ];
@@ -151,129 +144,129 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     {
       path: "/staff/Dashboard",
       name: "Dashboard",
-      icon: <IoGridOutline />,
+      icon: <LayoutGrid />,
     },
     {
       path: "/staff/users",
       name: "All Users",
-      icon: <HiOutlineUsers />,
+      icon: <CircleUser />,
     },
     {
       path: "/therapist/approve",
       name: "Registered Users",
-      icon: <HiOutlineUserGroup />,
+      icon: <UserRoundCheck />,
     },
     {
       path: "/staff/registeredUsers",
       name: "Trial & Fee Due",
-      icon: <HiOutlineUsers />,
+      icon: <UserRoundPlus />,
     },
     {
       path: "/staff/payment",
       name: "Payment",
-      icon: <FaFileInvoiceDollar />,
+      icon: <IndianRupee />,
     },
     {
       path: "/staff/attendance",
       name: "Attendance",
-      icon: <LuNotebookTabs />,
+      icon: <LibraryBig />,
     },
 
     {
       path: "/staff/signedupUsers",
       name: "Future Clients",
-      icon: <HiOutlineUserGroup />,
+      icon: <UserPlus />,
     },
 
     {
       path: "/dir/staff",
       name: "Staff / Employee",
-      icon: <AiOutlineUser />,
+      icon: <SquareUserRound />,
     },
     {
       path: "/dir/notify",
       name: "User Audit Page",
-      icon: <AiOutlineBell />,
+      icon: <FileClock />,
     },
     {
       path: "/yoganotes",
       name: "Add Notes",
-      icon: <MdAssignmentAdd />,
+      icon: <ListChecks />,
     },
     {
       path: "/assignnotes",
       name: "Assign Notes",
-      icon: <GrDocumentNotes />,
+      icon: <FileStack />,
     },
     {
       path: "/staff/transaction",
       name: "Transactions",
-      icon: <IoIosSwap />,
+      icon: <ArrowRightLeft />,
     },
     {
       path: "/staff/feedback",
       name: "Feedback",
-      icon: <BiMessage />,
+      icon: <MessageCircle />,
     },
 
     {
       path: "/staff/payroll",
       name: "Payroll",
-      icon: <PiCreditCard />,
+      icon: <IdCard />,
     },
     {
       path: "/reports",
-      name: "Directors - Reports",
-      icon: <IoBarChartOutline />,
+      name: "Reports",
+      icon: <ChartNoAxesCombined />,
     },
-    { path: "/blogs", name: "Directors - Blogs", icon: <TfiWrite /> },
-    { path: "/editNotes", name: "Directors - Notes", icon: <CiPen /> },
+    { path: "/blogs", name: "Blogs", icon: <NotebookPen /> },
+    { path: "/editNotes", name: "Directors - Notes", icon: <PencilLine /> },
     {
       path: "/restrictions",
       name: "Directors - Restrictions",
-      icon: <RiSpam2Line />,
+      icon: <TriangleAlert />,
     },
     {
       path: "/dir/organization",
       name: "Organization Chart",
       icon: <SlOrganization />,
     },
-    { path: "/users/profile", name: "Profile", icon: <CiUser /> },
-    { path: "/settings", name: "Settings", icon: <IoSettingsOutline /> },
+    { path: "/users/profile", name: "Profile", icon: <UserRoundPen /> },
+    { path: "/settings", name: "Settings", icon: <Settings /> },
     {
       path: "/users/support",
       name: "Support",
-      icon: <IoIosHelpCircleOutline />,
+      icon: <Headset />,
     },
-    { path: "/logout", name: "Logout", icon: <IoIosLogOut /> },
+    { path: "/logout", name: "Logout", icon: <LogOut /> },
   ];
 
   const financeRoutes: Route[] = [
     {
       path: "/staff/Dashboard",
       name: "Dashboard",
-      icon: <IoGridOutline />,
+      icon: <LayoutGrid />,
     },
     {
       path: "/staff/transaction",
       name: "Transactions",
-      icon: <IoIosSwap />,
+      icon: <ArrowRightLeft />,
     },
     {
       path: "/staff/payroll",
       name: "Payroll",
-      icon: <PiCreditCard />,
+      icon: <IdCard />,
     },
     {
       path: "/reports",
       name: "Reports",
-      icon: <IoBarChartOutline />,
+      icon: <ChartNoAxesCombined />,
     },
-    { path: "/users/profile", name: "Profile", icon: <CiUser /> },
+    { path: "/users/profile", name: "Profile", icon: <UserRoundPen /> },
     {
       path: "/users/support",
       name: "Support",
-      icon: <IoIosHelpCircleOutline />,
+      icon: <Headset />,
     },
     { path: "/logout", name: "Logout", icon: <IoIosLogOut /> },
   ];
@@ -282,70 +275,70 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     {
       path: "/staff/Dashboard",
       name: "Dashboard",
-      icon: <IoGridOutline />,
+      icon: <LayoutGrid />,
     },
     {
       path: "/staff/users",
       name: "All Users",
-      icon: <HiOutlineUsers />,
+      icon: <User />,
     },
     // {
     //   path: "/staff/registeredUsers",
     //   name: "Trial & Fee Due Users",
-    //   icon: <HiOutlineUsers />,
+    //   icon: <User />,
     // },
     // {
     //   path: "/staff/signedupUsers",
     //   name: "Future Clients",
-    //   icon: <HiOutlineUserGroup />,
+    //   icon: <UserRoundCheck  />,
     // },
     {
       path: "/therapist/approve",
       name: "Registered Users",
-      icon: <HiOutlineUserGroup />,
+      icon: <UserRoundCheck />,
     },
     // {
     //   path: "/dir/staff",
     //   name: "Staff / Employee",
-    //   icon: <AiOutlineUser />,
+    //   icon: <SquareUserRound  />,
     // },
     {
       path: "/staff/feedback",
       name: "Feedback",
-      icon: <BiMessage />,
+      icon: <MessageCircle />,
     },
     // {
     //   path: "/staff/transaction",
     //   name: "Transactions",
-    //   icon: <IoIosSwap />,
+    //   icon: <ArrowRightLeft />,
     // },
     // {
     //   path: "/staff/payroll",
     //   name: "Payroll",
-    //   icon: <PiCreditCard />,
+    //   icon: <IdCard />,
     // },
     // {
     //   path: "/reports",
     //   name: "Directors - Reports",
-    //   icon: <IoBarChartOutline />,
+    //   icon: <ChartNoAxesCombined />,
     // },
-    // { path: "/blogs", name: "Directors - Blogs", icon: <TfiWrite /> },
-    // { path: "/editNotes", name: "Directors - Notes", icon: <CiPen /> },
+    // { path: "/blogs", name: "Directors - Blogs", icon: <NotebookPen  /> },
+    // { path: "/editNotes", name: "Directors - Notes", icon: <PencilLine /> },
     // {
     //   path: "/restrictions",
     //   name: "Directors - Restrictions",
-    //   icon: <RiSpam2Line />,
+    //   icon: <TriangleAlert />,
     // },
     // {
     //   path: "/dir/organization",
     //   name: "Organization Chart",
     //   icon: <SlOrganization />,
     // },
-    { path: "/users/profile", name: "Profile", icon: <CiUser /> },
+    { path: "/users/profile", name: "Profile", icon: <UserRoundPen /> },
     {
       path: "/users/support",
       name: "Support",
-      icon: <IoIosHelpCircleOutline />,
+      icon: <Headset />,
     },
     { path: "/logout", name: "Logout", icon: <IoIosLogOut /> },
   ];
@@ -456,10 +449,34 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
           <Expired />
         </>
       )}
-      <Sidebar visible={visible} onHide={() => setVisible(false)}>
-        <div className="flex flex-col justify-between h-full"></div>
-      </Sidebar>
-
+      <div className="newSideBarBtn">
+        <Sidebar
+          visible={visible}
+          onHide={() => setVisible(false)}
+          style={{
+            background: "#f95005",
+          }}
+        >
+          <div className="flex flex-col justify-between h-full">
+            {routes.map((route) => (
+              <NavLink
+                to={route.path}
+                key={route.name}
+                className={({ isActive }) =>
+                  isActive ? "link active" : "link"
+                }
+              >
+                <div className="sideBarRoute">
+                  <div className="routePath flex icon items-center gap-2">
+                    {route.icon}
+                    {route.name}
+                  </div>
+                </div>
+              </NavLink>
+            ))}
+          </div>
+        </Sidebar>
+      </div>
       <Sidebar
         visible={userMobileNavbarVisibe}
         onHide={() => setUserNavbarVisible(false)}
