@@ -269,7 +269,7 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
 
             <div className="userDashboard grid-container">
               <div className="grid-item">
-                <div className="card">
+                <div className="card cardContentsss">
                   <Fieldset legend="Your Actions">
                     <div className="actions">
                       <p className="flex items-baseline">
@@ -463,9 +463,9 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
               )}
 
               {localStorage.getItem("refUtId") === "4" ||
-              localStorage.getItem("refUtId") === "7" ||
-              localStorage.getItem("refUtId") === "8" ||
-              localStorage.getItem("refUtId") === "11" ? (
+                localStorage.getItem("refUtId") === "7" ||
+                localStorage.getItem("refUtId") === "8" ||
+                localStorage.getItem("refUtId") === "11" ? (
                 <Link
                   to="/staff/payment"
                   style={{ textDecoration: "none", color: "inherit" }}

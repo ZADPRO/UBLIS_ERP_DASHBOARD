@@ -1,7 +1,6 @@
 import React, {
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -30,31 +29,31 @@ interface ReportRangeParams {
   code: number;
 }
 
-interface AttendanceOption {
-  refPaId: number;
-  refPackageName: string;
-  refTimeId: number;
-  refTime: string;
-  value: string;
-  refSDId: number;
-  refDays: string;
-}
+// interface AttendanceOption {
+//   refPaId: number;
+//   refPackageName: string;
+//   refTimeId: number;
+//   refTime: string;
+//   value: string;
+//   refSDId: number;
+//   refDays: string;
+// }
 
-interface GroupedOption {
-  label: string;
-  items: {
-    label: string;
-    value: string;
-  }[];
-}
+// interface GroupedOption {
+//   label: string;
+//   items: {
+//     label: string;
+//     value: string;
+//   }[];
+// }
 
 type DecryptResult = any;
 
-interface FlattenedData {
-  refPaId: string;
-  displayName: string;
-  packageName?: string;
-}
+// interface FlattenedData {
+//   refPaId: string;
+//   displayName: string;
+//   packageName?: string;
+// }
 
 interface User {
   refStId: number;

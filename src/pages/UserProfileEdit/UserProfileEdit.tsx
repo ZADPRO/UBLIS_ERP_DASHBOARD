@@ -252,7 +252,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
         fname: personaldata.refStFName,
         lname: personaldata.refStLName,
         dob: personaldata.refStDOB,
-        age: personaldata.refStAge,
+        age: calculateAge(personaldata.refStDOB),
         gender: personaldata.refStSex,
         maritalstatus: personaldata.refMaritalStatus,
         anniversarydate: personaldata.refWeddingDate,
