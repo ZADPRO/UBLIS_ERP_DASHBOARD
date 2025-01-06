@@ -122,8 +122,13 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
       icon: <User />,
     },
     {
+      path: "/staff/attendance",
+      name: "Attendance",
+      icon: <LibraryBig />,
+    },
+    {
       path: "/staff/signedupUsers",
-      name: "Future Clients",
+      name: "Future Clients", 
       icon: <UserRoundCheck />,
     },
     {

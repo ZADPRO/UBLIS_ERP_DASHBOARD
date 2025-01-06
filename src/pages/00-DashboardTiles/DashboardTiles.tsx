@@ -204,7 +204,8 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
           console.log("data.data", data.data);
           setOverallUserStatus(data.data.userTypeCount);
 
-          setOverallEmployeeStatus(data.data.staffCount);
+          console.log("data.data.staffCount", data.data);
+          // setOverallEmployeeStatus(data.data.staffCount);
         }
       });
   }, []);
@@ -540,37 +541,43 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
 
                 <div className="card statsDataTable">
                   <p>Overall Employee Stats</p>
-                  {overallEmployeeStatus.length ? (
-                    <ul className="list-none p-0 m-0">
-                      {overallEmployeeStatus.map((element: any) => (
-                        <li className="flex flex-column md:flex-row md:align-items-center md:justify-content-between mb-4">
-                          <div>
-                            <span className="text-900 font-medium mr-2 mb-1 md:mb-0 capitalize">
-                              {element.user_type_label}
-                            </span>
-                            <div className="mt-1 text-600">{element.count}</div>
-                          </div>
-                          <div className="mt-2 md:mt-0 flex align-items-center">
-                            <div
-                              className="surface-300 border-round overflow-hidden w-10rem lg:w-6rem"
-                              style={{ blockSize: "8px" }}
-                            >
-                              <div
-                                className="bg-orange-500 h-full"
-                                style={{
-                                  inlineSize: element.percentage + "%",
-                                }}
-                              />
-                            </div>
-                            <span className="text-orange-500 ml-3 font-medium">
-                              {element.percentage} %
-                            </span>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p>No Data</p>
+                  {overallEmployeeStatus && (
+                    <div>
+                      {overallEmployeeStatus.length ? (
+                        <ul className="list-none p-0 m-0">
+                          {overallEmployeeStatus.map((element: any) => (
+                            <li className="flex flex-column md:flex-row md:align-items-center md:justify-content-between mb-4">
+                              <div>
+                                <span className="text-900 font-medium mr-2 mb-1 md:mb-0 capitalize">
+                                  {element.user_type_label}
+                                </span>
+                                <div className="mt-1 text-600">
+                                  {element.count}
+                                </div>
+                              </div>
+                              <div className="mt-2 md:mt-0 flex align-items-center">
+                                <div
+                                  className="surface-300 border-round overflow-hidden w-10rem lg:w-6rem"
+                                  style={{ blockSize: "8px" }}
+                                >
+                                  <div
+                                    className="bg-orange-500 h-full"
+                                    style={{
+                                      inlineSize: element.percentage + "%",
+                                    }}
+                                  />
+                                </div>
+                                <span className="text-orange-500 ml-3 font-medium">
+                                  {element.percentage} %
+                                </span>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p>No Data</p>
+                      )}
+                    </div>
                   )}
                 </div>
 
