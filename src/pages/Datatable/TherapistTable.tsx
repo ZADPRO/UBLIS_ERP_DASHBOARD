@@ -491,7 +491,8 @@ export default function TherapistTable() {
         {/* <p>
           {selectedUserId ? `User ID: ${selectedUserId}` : "No user selected"}
         </p> */}
-        <UserProfileView refid={selectedUserId} />
+        {/* kandippa varanum */}
+        <UserProfileView refid={selectedUserId} viewProfile={true} />
       </Sidebar>
     </div>
   );
