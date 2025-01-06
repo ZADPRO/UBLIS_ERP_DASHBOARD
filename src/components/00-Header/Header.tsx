@@ -546,7 +546,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
               className="flex align-items-center cursor-pointer p-3 gap-2 border-round text-700 hover:surface-100 transition-duration-150 transition-colors p-ripple"
             >
               <User size={20} />
-              <span className="font-bold">Amy Elsner</span>
+              <span className="font-bold">Profile</span>
             </a>
           </div>
         </div>{" "}

@@ -67,7 +67,7 @@
 }
 
 .p-sidebar-content {
-  padding: 0;
+  /* padding: 0; */
 }
 
 .link.active .sideBarRoute .routePath .icon {
@@ -105,4 +105,8 @@ fieldset {
   background-color: white;
   color: #f95005;
   border: 1px solid #f95005;
+}
+
+.approveButtons .p-button .p-button-icon {
+  margin-top: 15px;
 }

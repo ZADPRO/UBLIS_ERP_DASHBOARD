@@ -11,7 +11,7 @@ import "./Attendance.css";
 // import { Calendar } from "primereact/calendar";
 // import SelectInput from "../../pages/Inputs/SelectInput";
 import { TabPanel, TabView } from "primereact/tabview";
-import { Divider } from "primereact/divider";
+// import { Divider } from "primereact/divider";
 import { InputText } from "primereact/inputtext";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";

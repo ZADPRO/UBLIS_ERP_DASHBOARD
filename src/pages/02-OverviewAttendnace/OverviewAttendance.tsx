@@ -62,16 +62,16 @@ const OverviewAttendance: React.FC<OverviewAttendanceProps> = ({
 
   return (
     <div>
-      <div className="userDashboard grid-container">
+      <div className="userDashboard grid-container flex justify-center">
         <div
-          className="grid-item flex flex-col justify-start items-center"
+          className="grid-item flex flex-col justify-start items-center lg:w-[40vw] mt-[-20px]"
           style={{ justifyContent: "start" }}
         >
           {" "}
           <div className="card mb-3">
             <Fieldset legend="Offline" className="">
               <div className="leaveBalance flex flex-col">
-                <p className="m-2">{nearestSessionRefTime}</p>
+                <p className="m-2" style={{ color: "#f95005", fontWeight: "bold", fontSize: "20px" }}>{nearestSessionRefTime}</p>
                 <div className="flex">
                   <div className="consumed">
                     <p className="m-0">{attendedTimeCount}</p>
@@ -88,7 +88,7 @@ const OverviewAttendance: React.FC<OverviewAttendanceProps> = ({
                       {" "}
                       {Math.max(
                         Number(attendedTimeCount) -
-                          Number(notAttendedTimeCount),
+                        Number(notAttendedTimeCount),
                         0
                       )}{" "}
                     </p>
@@ -102,12 +102,12 @@ const OverviewAttendance: React.FC<OverviewAttendanceProps> = ({
             value={userData}
             stripedRows
             scrollable
-            scrollHeight="300px"
+            scrollHeight="250px"
             emptyMessage="No Data Found"
           >
             <Column
               header="S.No"
-              body={(rowData, options) => options.rowIndex + 1}
+              body={(_rowData, options) => options.rowIndex + 1}
               style={{ minWidth: "2rem" }}
             ></Column>
             <Column
@@ -137,13 +137,13 @@ const OverviewAttendance: React.FC<OverviewAttendanceProps> = ({
           </DataTable>
         </div>
         <div
-          className="grid-item flex flex-col justify-start items-center"
+          className="grid-item flex flex-col justify-start items-center lg:w-[40vw] mt-[-20px]"
           style={{ justifyContent: "start" }}
         >
           <div className="card mb-3">
             <Fieldset legend="Offline">
               <div className="leaveBalance flex flex-col">
-                <p className="m-2">{nearestSessionRefTime}</p>
+                <p className="m-2" style={{ color: "#f95005", fontWeight: "bold", fontSize: "20px" }}>{nearestSessionRefTime}</p>
                 <div className="flex">
                   <div className="consumed">
                     <p className="m-0">0</p>
@@ -165,13 +165,13 @@ const OverviewAttendance: React.FC<OverviewAttendanceProps> = ({
           </div>
           <DataTable
             stripedRows
-            scrollHeight="300px"
+            scrollHeight="250px"
             scrollable
             emptyMessage="No Data Found"
           >
             <Column
               header="S.No"
-              body={(rowData, options) => options.rowIndex + 1}
+              body={(_rowData, options) => options.rowIndex + 1}
               style={{ minWidth: "2rem" }}
             ></Column>
             <Column

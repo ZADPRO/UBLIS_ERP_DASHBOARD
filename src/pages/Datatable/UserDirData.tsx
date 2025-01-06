@@ -215,6 +215,7 @@ const UserDirData: React.FC = () => {
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
       const userData = data.data.userTransaction;
+      console.log('userData', userData)
       const userDetails = data.data.UserData[0];
       console.log("userDetails line --- 181 ", userDetails);
       setUserAge(userDetails.refStAge);

@@ -47,10 +47,10 @@ interface ApprovalData {
   label: string;
   olddata: string;
   newdata:
-    | {
-        content?: string;
-      }
-    | any;
+  | {
+    content?: string;
+  }
+  | any;
   timing: string;
 }
 
@@ -266,7 +266,7 @@ export default function Notify(selectedType: any) {
 
   const OverallBtn = (rowData: ApprovalData) => {
     return (
-      <div className="flex gap-2">
+      <div className="flex gap-2 approveButtons">
         <Button
           icon="pi pi-check"
           rounded
@@ -667,7 +667,7 @@ export default function Notify(selectedType: any) {
         position="right"
         onHide={() => setVisibleLeft(false)}
         className="w-[90vw] lg:w-[70vw]"
-        // style={{ inlineSize: "60vw" }}
+      // style={{ inlineSize: "60vw" }}
       >
         <h2>User Details</h2>
         <div className="flex justify-start items-center">
@@ -679,16 +679,16 @@ export default function Notify(selectedType: any) {
         <TabView>
           <TabPanel header="Request">
             <div className="flex justify-end">
-              <div className="card pb-3 flex gap-x-3 justify-content-center">
+              <div className="card pb-3 flex gap-x-3 justify-content-end">
                 <Button
                   severity="danger"
-                  className="h-10 p-0"
+                  className="h-10 p-2"
                   label="Reject All"
                   onClick={rejectallbtn}
                 />
                 <Button
                   severity="success"
-                  className="h-10 p-0"
+                  className="h-10 p-2"
                   label="Approve All"
                   onClick={approveallbtn}
                 />

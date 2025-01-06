@@ -6,7 +6,9 @@ import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
 import { Nullable } from "primereact/ts-helpers";
 import React, { useEffect, useState } from "react";
 import CryptoJS from "crypto-js";
-import { Skeleton } from "primereact/skeleton";
+// import { Skeleton } from "primereact/skeleton";
+import { useNavigate } from "react-router-dom";
+
 import { Sidebar } from "primereact/sidebar";
 import { Button } from "primereact/button";
 import AttendanceReportDownloadSidebar from "../AttendanceReportDownloadSidebar/AttendanceReportDownloadSidebar";
@@ -46,8 +48,9 @@ const SessionTabs: React.FC = () => {
     { name: "Offline", code: 2 },
   ];
 
-  const [customers, setCustomers] = useState<Customer[]>([]);
-  const [loading, setLoading] = useState<boolean>(true); // Loading state
+  const [_customers, setCustomers] = useState<Customer[]>([]);
+  const [sessionAttendance, setSessionAttendance] = useState([])
+  const [_loading, setLoading] = useState<boolean>(true); // Loading state
 
   const decrypt = (
     encryptedData: string,
@@ -107,11 +110,18 @@ const SessionTabs: React.FC = () => {
           import.meta.env.VITE_ENCRYPTION_KEY
         );
 
-        console.log("Decrypted Data:", data);
-        setCustomers(data.attendanceCount);
+        if (data.token == false) {
+          navigate("/expired");
+        } else {
+          localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+          console.log("Decrypted Data: line ----- 116", data);
+          setSessionAttendance(data.attendanceCount)
+          setCustomers(data.attendanceCount);
+        }
+
       })
       .catch((error) => console.error("Error fetching data:", error))
-      .finally(() => setLoading(false)); // Set loading to false after fetching
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -121,7 +131,7 @@ const SessionTabs: React.FC = () => {
   }, [date, sessionMode]);
 
   const renderHeader = () => {
-    const skeletonRows = Array.from({ length: 5 });
+    // const skeletonRows = Array.from({ length: 5 });
     return (
       <div className="flex flex-wrap gap-2 pt-2 pb-2 justify-content-between align-items-center">
         <h3 className="m-0">Customers</h3>
@@ -139,10 +149,11 @@ const SessionTabs: React.FC = () => {
   };
 
   const header = renderHeader();
+  const navigate = useNavigate();
 
   return (
     <div className="AttendancePage">
-      <div className="card flex flex-wrap gap-3 p-fluid mb-5">
+      <div className="card flex flex-wrap gap-3 p-fluid mb-5 ">
         <div className="">
           <Calendar
             id="buttondisplay"
@@ -168,53 +179,45 @@ const SessionTabs: React.FC = () => {
           />
         </div>
       </div>
-      <DataTable
-        value={customers}
-        paginator
-        header={header}
-        rows={5}
-        rowsPerPageOptions={[5, 10, 25, 50]}
-        scrollable
-        scrollHeight="45vh"
-        tableStyle={{ minWidth: "50rem" }}
-      >
-        <Column
-          frozen
-          field="name"
-          header="Session"
-          body={(rowData: Customer) => (
-            <span
-              style={{
-                cursor: "pointer",
-              }}
-            >
-              {`${rowData.refPackageName} - ${rowData.refTime}`}
-            </span>
-          )}
-          style={{ minWidth: "7rem" }}
-        ></Column>
-        <Column
-          field="user_count"
-          header="Enrolled"
-          style={{ minWidth: "10rem" }}
-        ></Column>
-        <Column
-          field="attend_count"
-          header="Attended"
-          style={{ minWidth: "10rem" }}
-        ></Column>
-        <Column
-          field="company"
-          header="Not Attended"
-          body={(rowData: Customer) => (
-            <span>
-              {Number(rowData?.user_count || 0) -
-                Number(rowData?.attend_count || 0)}
-            </span>
-          )}
-          style={{ minWidth: "10rem" }}
-        ></Column>
-      </DataTable>
+      <div className="w-[100%] flex justify-center">
+        <DataTable
+          className="w-[80%]"
+          value={sessionAttendance}
+          paginator
+          header={header}
+          rows={5}
+          rowsPerPageOptions={[5, 10, 25, 50]}
+          scrollable
+          scrollHeight="45vh"
+          tableStyle={{ minWidth: "50rem" }}
+        >
+          <Column
+            field="refpackagename"
+            header="Package Name"
+            style={{ minWidth: "10rem" }}
+          ></Column>
+          <Column
+            field="usercount"
+            header="Enrolled"
+            style={{ minWidth: "10rem" }}
+          ></Column>
+          <Column
+            field="match_count"
+            header="Attended"
+            style={{ minWidth: "10rem" }}
+          ></Column>
+          <Column
+            header="Not Attended"
+            body={(rowData) => (
+              <span>
+                {Number(rowData?.usercount || 0) - Number(rowData?.match_count || 0)}
+              </span>
+            )}
+            style={{ minWidth: "10rem" }}
+          ></Column>
+        </DataTable></div>
+
+
       <Sidebar
         style={{ width: "70%" }}
         visible={visibleLeft}

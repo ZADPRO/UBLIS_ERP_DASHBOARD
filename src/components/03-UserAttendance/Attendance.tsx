@@ -10,18 +10,18 @@ import "./Attendance.css";
 import Calenderss from "../10-Calender/Calenderss";
 import { Panel } from "primereact/panel";
 
-interface Customer {
-  Username: string;
-  Sessionname: string;
-  Punchtime: string;
-  Attend_not: string;
-  Online_Offline: string;
-  NotAttend: string;
-  Attend: string;
-  Signup: string;
-  status2: string;
-  comments: string;
-}
+// interface Customer {
+//   Username: string;
+//   Sessionname: string;
+//   Punchtime: string;
+//   Attend_not: string;
+//   Online_Offline: string;
+//   NotAttend: string;
+//   Attend: string;
+//   Signup: string;
+//   status2: string;
+//   comments: string;
+// }
 
 type Attendance = {
   sno: number;
@@ -39,16 +39,16 @@ interface SelectedUser {
   refSCustId: string;
 }
 
-interface Data {
-  refStId: number;
-  refStFName: string;
-  refSCustId: string;
-  refStLName: string;
-  refPackageName: string;
-  refTime: string;
-  refCtMobile: string;
-  refCtEmail: string;
-}
+// interface Data {
+//   refStId: number;
+//   refStFName: string;
+//   refSCustId: string;
+//   refStLName: string;
+//   refPackageName: string;
+//   refTime: string;
+//   refCtMobile: string;
+//   refCtEmail: string;
+// }
 
 interface AttendanceItem {
   formatted_punch_time: string;
@@ -56,7 +56,7 @@ interface AttendanceItem {
 }
 
 const StaffAttendance: React.FC = () => {
-  const [attendanceData, setAttendanceData] = useState<Customer[]>([]);
+  // const [attendanceData, setAttendanceData] = useState<Customer[]>([]);
 
   type DecryptResult = any;
   const [pageLoading, setPageLoading] = useState({
