@@ -203,6 +203,7 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
 
           console.log("data.data", data.data);
           setOverallUserStatus(data.data.userTypeCount);
+          setOverallEmployeeStatus(data.data.staffCount)
 
           console.log("data.data.staffCount", data.data);
           // setOverallEmployeeStatus(data.data.staffCount);
@@ -351,7 +352,7 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
                 >
                   <div className="grid-item">
                     <div className="card">
-                      <Fieldset legend="Registered users">
+                      <Fieldset legend="Future Clients">
                         <div className="leaveBalance">
                           <div className="consumed">
                             <p>{formSubmitted.today}</p>
@@ -374,7 +375,7 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
               >
                 <div className="grid-item">
                   <div className="card">
-                    <Fieldset legend="Future Clients">
+                    <Fieldset legend="Signed Up Users">
                       <div className="leaveBalance">
                         <div className="consumed">
                           <p>{futureClient.today ?? 0}</p>
@@ -538,10 +539,10 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
                     <p>No Data</p>
                   )}
                 </div>
+                {overallEmployeeStatus && (
+                  <div className="card statsDataTable">
+                    <p>Overall Employee Stats</p>
 
-                <div className="card statsDataTable">
-                  <p>Overall Employee Stats</p>
-                  {overallEmployeeStatus && (
                     <div>
                       {overallEmployeeStatus.length ? (
                         <ul className="list-none p-0 m-0">
@@ -578,9 +579,9 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
                         <p>No Data</p>
                       )}
                     </div>
-                  )}
-                </div>
 
+                  </div>
+                )}
                 <div className="card statsDataTable">
                   <p>Today's Form Submission</p>
                   <DataTable value={products} showGridlines>

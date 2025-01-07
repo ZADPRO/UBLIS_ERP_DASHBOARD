@@ -904,7 +904,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                       </div>
                       <div className="w-[100%] md:w-[48%] lg:w-[48%]">
                         <TextInput
-                          label="Father / Husband Name *"
+                          label="Father / Spouse's Name *"
                           name="guardianname"
                           id="guardianname"
                           type="text"
