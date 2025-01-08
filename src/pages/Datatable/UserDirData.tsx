@@ -71,7 +71,7 @@ const UserDirData: React.FC = () => {
   const [globalFilterValue, setGlobalFilterValue] = useState<string>("");
   const [sessionData, setSessionData] = useState<sessionDetails>();
   const [branchList, setBranchList] = useState([]);
-  const [userAge, setUserAge] = useState();
+  const [userAge, setUserAge] = useState<any>();
   const [refStId, setRefStId] = useState();
   const [sessionUpdate, setSessionUpdate] = useState<number>(1);
   const [sessionUpdateLoad, setSessionUpdateLoad] = useState(false);
@@ -208,17 +208,36 @@ const UserDirData: React.FC = () => {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      console.log('data', data)
       if (data.token == false) {
         navigate("/expired");
       }
       console.log("Data line --------------- 227", data);
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
+      const calculateAge = (dob: string) => {
+        const dobDate = new Date(dob);
+        const today = new Date();
+        let age = today.getFullYear() - dobDate.getFullYear();
+        const monthDifference = today.getMonth() - dobDate.getMonth();
+
+        // Adjust age if the birthday hasn't occurred this year yet
+        if (
+          monthDifference < 0 ||
+          (monthDifference === 0 && today.getDate() < dobDate.getDate())
+        ) {
+          age--;
+        }
+
+        return age.toString(); // Return age as a string
+      };
+
       const userData = data.data.userTransaction;
       console.log('userData', userData)
       const userDetails = data.data.UserData[0];
       console.log("userDetails line --- 181 ", userDetails);
-      setUserAge(userDetails.refStAge);
+      const age = calculateAge(userDetails.refStDOB)
+      setUserAge(age);
       setRefStId(userDetails.refStId);
       const session = {
         branchId: "",
@@ -650,11 +669,10 @@ const UserDirData: React.FC = () => {
                     </div>
                     {edits.session ? (
                       <button
-                        className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${
-                          sessionUpdateLoad
-                            ? "bg-gray-500 cursor-not-allowed"
-                            : "bg-[#f95005]"
-                        }`}
+                        className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${sessionUpdateLoad
+                          ? "bg-gray-500 cursor-not-allowed"
+                          : "bg-[#f95005]"
+                          }`}
                         type="submit"
                         disabled={sessionUpdateLoad}
                       >
