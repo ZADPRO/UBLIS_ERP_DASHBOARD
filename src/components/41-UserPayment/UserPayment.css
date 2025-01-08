@@ -1,0 +1,42 @@
+.paymentUIUser .p-toggleable-content .p-fieldset-content {
+  block-size: auto;
+}
+
+.p-metergroup-label-list.p-metergroup-label-list-end.p-metergroup-label-list-horizontal {
+  display: none;
+}
+
+.userPaymentDataTable
+  .p-datatable-wrapper
+  .p-datatable-table.p-datatable-scrollable-table
+  .p-datatable-thead
+  tr
+  th {
+  background-color: #f95005;
+}
+
+.userPaymentDataTable
+  .p-datatable-wrapper
+  .p-datatable-table.p-datatable-scrollable-table
+  .p-datatable-thead
+  tr
+  th
+  .p-column-header-content {
+  color: white;
+}
+
+.downloadBtn .p-button-icon.p-c.pi.pi-download {
+  margin-top: 15px;
+}
+
+.stepperForPayment .p-stepper .p-stepper-nav {
+  display: none;
+}
+
+.userPaymentSidebar .p-sidebar-content {
+  padding: 0;
+}
+
+.stepperForPayment .p-stepper .p-stepper-panels {
+  padding-top: 0;
+}

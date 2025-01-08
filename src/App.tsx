@@ -32,6 +32,7 @@ import StaffFeedback from "./components/38-Feedback/Feedback";
 import AddNotes from "./components/39-AddNotes/AddNotes";
 import AssignNotes from "./components/40-AssignNotes/AssignNotes";
 import Expired from "./pages/Expired/Expired";
+import UserPayment from "./components/41-UserPayment/UserPayment";
 
 const App = () => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -56,7 +57,7 @@ const App = () => {
           <Route path="/" element={<OverallDashboard />} />
           <Route path="/users/notes" element={<UserNotes />} />
           <Route path="/users/attendance" element={<UserAttendance />} />
-          <Route path="/users/payment" element={<Payment />} />
+          <Route path="/users/payment" element={<UserPayment />} />
           <Route path="/users/branch" element={<Branch />} />
           <Route path="/users/profile" element={<Profile />} />
           <Route path="users/support" element={<Support />} />

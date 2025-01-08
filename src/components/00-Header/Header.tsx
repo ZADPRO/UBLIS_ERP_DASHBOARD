@@ -128,7 +128,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     },
     {
       path: "/staff/signedupUsers",
-      name: "Future Clients", 
+      name: "Future Clients",
       icon: <UserRoundCheck />,
     },
     {
@@ -509,7 +509,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
                 <Ripple />
               </a>
             </li>
-            <li onClick={() => showWarn()}>
+            <li onClick={() => handleMobileNavigate("/users/payment")}>
               <a className="p-ripple flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors w-full">
                 <IndianRupee size={20} />{" "}
                 <span className="ml-2 font-medium">Payment</span>
