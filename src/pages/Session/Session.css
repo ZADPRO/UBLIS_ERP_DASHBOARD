@@ -1,0 +1,13 @@
+.p-multiselect-item.p-highlight{
+    background-color: #f9500552;
+}
+.p-checkbox.p-highlight .p-checkbox-box {
+    background-color: #f9500552;
+}
+.p-multiselect-panel .p-multiselect-items .p-multiselect-item.p-highlight{
+    color: black;
+    background: #f9500552;
+}
+.p-hidden-accessible{
+    scrollbar-highlight-color: none;
+}

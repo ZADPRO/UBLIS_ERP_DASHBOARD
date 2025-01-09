@@ -1,0 +1,254 @@
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
+  overflow: hidden;
+}
+
+.select-button-container {
+  position: sticky;
+  top: 0;
+  overflow: hidden;
+  z-index: 99;
+  background-color: white;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.scrollable-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.contents {
+  height: 100%;
+  background: #f7f9fc;
+  width: 100%;
+  min-width: 85vw;
+  padding: 20px 25px;
+}
+
+.userProfile img {
+  margin-top: -100px;
+  height: 150px;
+  width: 150px;
+}
+
+.userDetPrimary p {
+  margin: 0;
+}
+
+.coverImage img {
+  width: 100%;
+  height: 250px;
+  margin: 0;
+  object-fit: cover;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.coverContents {
+  padding: 5px 30px 10px 30px;
+  background-color: white;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.userProfile {
+  margin-top: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.538);
+  border-radius: 10px;
+}
+
+.userDetOne {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+}
+
+.userDetPrimary p:first-child {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.userDetTwo {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  padding: 10px 20px;
+}
+
+.userDetTwo span {
+  font-weight: bold;
+}
+
+.username {
+  font-size: 18px;
+}
+.useremail {
+  font-size: 14px;
+}
+
+.empPosition {
+  font-size: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.39);
+  border-radius: 7px;
+  padding: 2px 15px;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.userDashboard {
+  margin: 20px 0px;
+}
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.grid-item {
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  width: 100%;
+}
+
+.cardContentsss fieldset {
+  border: 1px solid rgba(0, 0, 0, 0.137);
+}
+
+.attendance {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+  justify-content: space-evenly;
+  text-align: center;
+}
+
+.avgWorkHrs p:first-child span {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 0;
+}
+
+.actions {
+  text-align: center;
+}
+
+.actions p:first-child span {
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.actions p:nth-child(2) {
+  border: 1px solid rgba(0, 0, 0, 0.137);
+  padding: 5px 20px;
+  border-radius: 8px;
+  margin-top: 5px;
+}
+
+.cardContentsss .p-fieldset-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.p-avatar.p-component {
+  margin-left: -20px;
+}
+
+.outToday {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.outToday p {
+  margin-top: 14px;
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+.holiday {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  text-align: center;
+}
+
+.holidayContents {
+  display: flex;
+  justify-content: space-evenly;
+  gap: 25px;
+}
+
+.date {
+  display: flex;
+}
+
+.dateOne {
+  font-size: 3em;
+  font-weight: bold;
+}
+
+.dateOne,
+.dateTwo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.leaveBalance {
+  display: flex;
+  text-align: center;
+  width: 100%;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.consumed p:first-child {
+  font-weight: bolder;
+  font-size: 2.5rem;
+}
+
+.balance p:first-child {
+  font-weight: bolder;
+  font-size: 2.5rem;
+}
+
+/* FINANCE GRID */
+
+.statsDataTable .p-datatable .p-datatable-tbody > tr > td {
+  padding: 10px 1rem;
+}
+
+.statsDataTable p {
+  margin: 10px 0px;
+  font-weight: bold;
+  color: black;
+}
+
+.statsDataTable .p-datatable.p-component.p-datatable-responsive-scroll {
+  border: 1px solid rgba(0, 0, 0, 0.368);
+}
+
+.stats-section {
+  padding: 20px;
+}
+
+.grid-containers {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.card {
+  padding: 4px;
+}

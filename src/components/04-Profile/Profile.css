@@ -1,0 +1,15 @@
+.userProfilePage .basicProfileCont .card {
+  display: flex;
+  justify-content: space-between;
+}
+
+.basicProfileCont {
+  background-color: #fff;
+  /* margin: 30px; */
+  /* padding: 40px; */
+  border-radius: 10px;
+}
+
+.personalDet .userName {
+  display: flex;
+}

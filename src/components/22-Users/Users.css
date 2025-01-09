@@ -1,0 +1,92 @@
+.componentHeader {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  width: 100%;
+  z-index: 99;
+  border-block-end: 1px solid rgba(0, 0, 0, 0.114);
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: space-between;
+}
+
+.componentHeader .componentTitle {
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 20px;
+  display: flex;
+  /* padding-inline-start: 85px; */
+  align-items: center;
+}
+
+.componentHeader .quickAcces .p-link i {
+  font-size: 1rem;
+  padding: 10px;
+  border: 1px solid black;
+  border-radius: 50%;
+  margin-inline-start: 10px;
+}
+
+.componentHeader .quickAcces {
+  display: flex;
+  padding: 10px;
+  align-items: center;
+}
+
+.componentHeader .quickAcces h3 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.componentHeader .quickAcces .button {
+  border: none !important;
+}
+
+.routesCont {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-block-start: 10px;
+}
+
+.filterContents {
+  justify-content: space-between !important;
+}
+
+.routeContents {
+  inline-size: 95%;
+}
+
+.p-multiselect-panel {
+  inline-size: 16rem !important;
+}
+
+.filterContents {
+  justify-content: space-evenly;
+  display: flex;
+}
+
+.filterContents .filter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media only screen and (max-width: 600px) {
+  .filterContents {
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+    padding: 30px;
+  }
+  .filterContents .filter {
+    padding: 10px 0px;
+  }
+  .routeContents {
+    margin-block-start: 60px;
+  }
+}

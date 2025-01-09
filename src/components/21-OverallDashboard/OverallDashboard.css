@@ -1,0 +1,96 @@
+.dashboardContents {
+  display: grid;
+  inline-size: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+  padding: 16px;
+}
+
+.dashboardContents .card {
+  display: flex;
+  color: black;
+  border: 1px solid rgba(0, 0, 0, 0.093);
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  justify-content: center;
+  align-items: center;
+}
+
+.componentHeader {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline-start: auto;
+  inset-inline-end: auto;
+  z-index: 99;
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  padding: 5px;
+  justify-content: space-evenly;
+}
+
+.componentHeader .componentTitle {
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 20px;
+  display: flex;
+  margin-inline-start: 100px !important;
+  align-items: center;
+}
+
+.componentHeader .quickAcces .p-link i {
+  font-size: 1.3rem;
+  padding: 10px;
+  border: 1px solid black;
+  border-radius: 50%;
+  margin-inline-start: 10px;
+}
+
+.componentHeader .quickAcces {
+  display: flex;
+}
+
+.dashboardAnalytics .card {
+  border: 1px solid rgba(0, 0, 0, 0.093);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  border-radius: 7px;
+  margin: 8px;
+}
+
+.cardTesting .cardOutline .counts {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  text-align: center;
+}
+
+.cardTesting .cardOutline .header {
+  display: flex;
+  align-items: center;
+}
+
+.cardTesting .cardOutline .header i {
+  /* border: 1px solid black; */
+  border-radius: 50%;
+  padding: 5px;
+}
+
+.cardTesting .cardOutline .header h3 {
+  padding-inline-start: 10px;
+}
+
+.cardTesting .cardOutline {
+  padding: 10px 30px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  inline-size: 18rem;
+  border-inline-start: 5px solid rgb(255, 119, 0);
+  border-radius: 6px;
+  margin: 15px;
+}
+
+.cardTesting {
+  display: flex;
+}
