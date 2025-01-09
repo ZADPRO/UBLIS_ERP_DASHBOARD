@@ -110,8 +110,7 @@ fieldset {
 .approveButtons .p-button .p-button-icon {
   margin-top: 15px;
 }
-<<<<<<< HEAD
-=======
+
 
 @media print {
   html,
@@ -119,4 +118,3 @@ fieldset {
     display: none;
   }
 }
->>>>>>> c9d0386b317eaf99c858aaae047f1d6b9d60220f

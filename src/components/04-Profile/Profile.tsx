@@ -1404,11 +1404,8 @@ const Profile: React.FC = () => {
                           }
                         >
                           <TextInput
-<<<<<<< HEAD
+
                             label="Qualification"
-=======
-                            label="Qualification *"
->>>>>>> c9d0386b317eaf99c858aaae047f1d6b9d60220f
                             name="qualification"
                             id="qualification"
                             type="text"
@@ -1416,10 +1413,6 @@ const Profile: React.FC = () => {
                             onChange={handleInputVal}
                             value={inputs.qualification}
                             readonly={!edits.personal}
-<<<<<<< HEAD
-=======
-                            required
->>>>>>> c9d0386b317eaf99c858aaae047f1d6b9d60220f
                           />
                         </div>
 
@@ -1427,11 +1420,8 @@ const Profile: React.FC = () => {
                         localStorage.getItem("refUtId") === "6" ? (
                           <div className="w-[48%]">
                             <TextInput
-<<<<<<< HEAD
                               label="Occupation"
-=======
-                              label="Occupation *"
->>>>>>> c9d0386b317eaf99c858aaae047f1d6b9d60220f
+
                               name="occupation"
                               id="Occupation"
                               type="text"
@@ -1439,10 +1429,6 @@ const Profile: React.FC = () => {
                               onChange={handleInputVal}
                               value={inputs.occupation}
                               readonly={!edits.personal}
-<<<<<<< HEAD
-=======
-                              required
->>>>>>> c9d0386b317eaf99c858aaae047f1d6b9d60220f
                             />
                           </div>
                         ) : (

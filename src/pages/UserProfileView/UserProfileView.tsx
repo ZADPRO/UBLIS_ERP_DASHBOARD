@@ -1211,41 +1211,27 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                             }
                           >
                             <TextInput
-<<<<<<< HEAD
                               label="Qualification"
-=======
-                              label="Qualification *"
->>>>>>> c9d0386b317eaf99c858aaae047f1d6b9d60220f
+
                               name="qualification"
                               id="qualification"
                               type="text"
                               onChange={handleInputVal}
                               value={inputs.qualification}
                               readonly={!edits.personal}
-<<<<<<< HEAD
-=======
-                              required
->>>>>>> c9d0386b317eaf99c858aaae047f1d6b9d60220f
+
                             />
                           </div>
                           {type === "staff" ? null : (
                             <div className="w-[48%]">
                               <TextInput
-<<<<<<< HEAD
                                 label="Occupation"
-=======
-                                label="Occupation *"
->>>>>>> c9d0386b317eaf99c858aaae047f1d6b9d60220f
                                 name="occupation"
                                 id="Occupation"
                                 type="text"
                                 onChange={handleInputVal}
                                 value={inputs.occupation}
                                 readonly={!edits.personal}
-<<<<<<< HEAD
-=======
-                                required
->>>>>>> c9d0386b317eaf99c858aaae047f1d6b9d60220f
                               />
                             </div>
                           )}
@@ -2406,8 +2392,8 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                     {edits.session ? (
                       <button
                         className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${sessionUpdateLoad
-                            ? "bg-gray-500 cursor-not-allowed"
-                            : "bg-[#f95005]"
+                          ? "bg-gray-500 cursor-not-allowed"
+                          : "bg-[#f95005]"
                           }`}
                         type="submit"
                         disabled={sessionUpdateLoad}
