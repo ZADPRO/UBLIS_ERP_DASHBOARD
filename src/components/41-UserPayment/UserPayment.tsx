@@ -16,6 +16,7 @@ import { Calendar } from "primereact/calendar";
 import { InputText } from "primereact/inputtext";
 
 import { differenceInCalendarMonths } from "date-fns";
+import { Divider } from "primereact/divider";
 
 type DecryptResult = any;
 
@@ -42,6 +43,15 @@ const UserPayment: React.FC = () => {
   const [cgst, setCgst] = useState(0);
   const [sgst, setSgst] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
+  const [coupon, setCoupon] = useState("");
+
+  const [receiptFromDate, setReceiptFromDate] = useState<Nullable<Date>>(null);
+  const [receiptToDate, setReceiptToDate] = useState<Nullable<Date>>(null);
+  const [receiptFinalfee, setReceiptFinalFee] = useState("");
+  const [receiptOfferType, setReceiptOfferType] = useState("");
+  const [receiptPackageEndDate, setReceiptPackageEndDate] = useState("");
+  console.log("receiptPackageEndDate", receiptPackageEndDate);
+  const [receiptOfferName, setReceiptOfferName] = useState("");
 
   const [userInitialData, setUserInitialData] = useState({
     refClassMode: 0,
@@ -472,6 +482,88 @@ const UserPayment: React.FC = () => {
     );
   };
 
+  const handlePayment = () => {
+    const options = {
+      key: "rzp_live_vpVNHNDB6ECdoH",
+      amount: totalAmount * 100,
+      currency: "INR",
+      name: "Testing da venna",
+      description: "Subscription Payment",
+      // image: "https://example.com/your-logo.png",
+      handler: function (response: any) {
+        alert(
+          `Payment Successful! Payment ID: ${response.razorpay_payment_id}`
+        );
+        // stepperRef.current && stepperRef.current.nextCallback();
+      },
+      prefill: {
+        // name: userInitialData.refStFName + " " + userInitialData.refStLName,
+      },
+      theme: {
+        color: "#f95005",
+      },
+    };
+
+    const rzp = new (window as any).Razorpay(options);
+    rzp.open();
+
+    rzp.on("payment.failed", function (response: any) {
+      alert(`Payment Failed: ${response.error.description}`);
+    });
+  };
+
+  const handleCoupon = async (couponValue: string) => {
+    const couponVerifyPayload = await Axios.post(
+      import.meta.env.VITE_API_URL + "/userPayment/verifyCoupon",
+      {
+        refFees: fee,
+        refExDate: toDate,
+        refCoupon: couponValue,
+        refStartDate: fromDate,
+        refEndDate: toDate,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("JWTtoken"),
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const couponVerifyResponse = decrypt(
+      couponVerifyPayload.data[1],
+      couponVerifyPayload.data[0],
+      import.meta.env.VITE_ENCRYPTION_KEY
+    );
+
+    console.log("couponVerifyResponse", couponVerifyResponse);
+    if (couponVerifyResponse.token === false) {
+      console.log("data.token", couponVerifyResponse.token);
+      navigate("/expired");
+    } else {
+      console.log("UserData Running --- ");
+
+      localStorage.setItem(
+        "JWTtoken",
+        "Bearer " + couponVerifyResponse.token + ""
+      );
+
+      if (couponVerifyResponse.data) {
+        setReceiptFromDate(couponVerifyResponse.data.refStartDate);
+        setReceiptToDate(couponVerifyResponse.data.refEndDate);
+        setReceiptPackageEndDate(couponVerifyResponse.data.refExDate);
+        setReceiptFinalFee(couponVerifyResponse.data.refFees);
+        setReceiptOfferType(couponVerifyResponse.data.refOfferName);
+        setReceiptOfferName(couponVerifyResponse.data.refOfferValue);
+
+        const taxFee = (couponVerifyResponse.data.refFees * 9) / 100;
+        setCgst(taxFee);
+        setSgst(taxFee);
+        setTotalAmount(couponVerifyResponse.data.refFees + 2 * taxFee);
+      }
+    }
+  };
+
   return (
     <div>
       <div className="headerPrimary hidden md:flex">
@@ -544,17 +636,8 @@ const UserPayment: React.FC = () => {
                   scrollable
                 >
                   <Column
-                    field="sno"
-                    header="S.No"
-                    style={{
-                      minWidth: "3rem",
-                    }}
-                    body={(rowData, options) => options.rowIndex + 1}
-                  ></Column>
-                  <Column
                     field="refPackageName"
                     header="Package Name"
-                    frozen
                     style={{ minWidth: "13rem" }}
                   ></Column>
                   <Column
@@ -574,7 +657,7 @@ const UserPayment: React.FC = () => {
                   ></Column>
                   <Column
                     field="category"
-                    header="Member Type"
+                    header="Batch"
                     style={{ minWidth: "16rem" }}
                     body={(rowData) => rowData.reftimemembersarray.join(", ")}
                   />
@@ -600,15 +683,26 @@ const UserPayment: React.FC = () => {
               body={(rowData, options) => options.rowIndex + 1}
             ></Column>
             <Column
+              body={actionBodyTemplate}
+              exportable={false}
+              header="Receipt"
+              frozen
+              style={{
+                minWidth: "3rem",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            ></Column>
+            <Column
               field="name"
               header="Date"
-              frozen
               style={{ minWidth: "10rem" }}
             ></Column>
             <Column
               field="quantity"
-              header="Price"
-              style={{ minWidth: "5rem" }}
+              header="Fee Paid"
+              style={{ minWidth: "8rem" }}
             ></Column>
             <Column
               field="category"
@@ -616,20 +710,24 @@ const UserPayment: React.FC = () => {
               style={{ minWidth: "10rem" }}
             ></Column>
             <Column
+              field="category"
+              header="Mode"
+              style={{ minWidth: "10rem" }}
+            ></Column>
+            <Column
+              field="category"
+              header="Expired"
+              style={{ minWidth: "10rem" }}
+            ></Column>
+            <Column
+              field="category"
+              header="Duration"
+              style={{ minWidth: "10rem" }}
+            ></Column>
+            <Column
               field="status"
               header="Status"
               style={{ minWidth: "6rem" }}
-            ></Column>
-            <Column
-              body={actionBodyTemplate}
-              exportable={false}
-              header="Receipt"
-              style={{
-                minWidth: "3rem",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
             ></Column>
           </DataTable>
         </>
@@ -642,8 +740,8 @@ const UserPayment: React.FC = () => {
         position={isMobile ? "bottom" : "right"}
         className="userPaymentSidebar"
         style={{
-          height: isMobile ? "70vh" : "100vh",
-          width: isMobile ? "100vw" : "70vw",
+          height: isMobile ? "80vh" : "100vh",
+          width: isMobile ? "100vw" : "50vw",
         }}
         onHide={() => setVisibleBottom(false)}
       >
@@ -655,14 +753,21 @@ const UserPayment: React.FC = () => {
                   <h3 className="" style={{ textTransform: "uppercase" }}>
                     Session Name : {userInitialData.refPackageName}
                   </h3>
+                  <p className="mt-0">
+                    {" "}
+                    <span className="font-bold">ID: </span>
+                    {userInitialData.refSCustId}
+                  </p>
+                  <p className="mt-0">
+                    <span className="font-bold">Username</span>{" "}
+                    {userInitialData.refStFName} {userInitialData.refStLName}
+                  </p>
                   <div className="flex justify-between">
-                    <p className="mt-0">{userInitialData.refSCustId}</p>
                     <p className="mt-0">
-                      {userInitialData.refStFName} {userInitialData.refStLName}
+                      {" "}
+                      <span className="font-bold">Batch</span>{" "}
+                      {userInitialData.refTimeMembers}
                     </p>
-                  </div>
-                  <div className="flex justify-between">
-                    <p className="mt-0">{userInitialData.refTimeMembers}</p>
                     <p className="mt-0">
                       {" "}
                       {userInitialData.refClassMode === 1
@@ -720,6 +825,7 @@ const UserPayment: React.FC = () => {
                   label="Next"
                   icon="pi pi-arrow-right"
                   iconPos="right"
+                  raised
                   onClick={() =>
                     stepperRef.current && stepperRef.current.nextCallback()
                   }
@@ -739,66 +845,181 @@ const UserPayment: React.FC = () => {
 
                   {showCouponInput && (
                     <div className="p-inputgroup lg:mt-0 flex-1">
-                      <InputText placeholder="Coupon" />
+                      <InputText
+                        placeholder="Coupon"
+                        onChange={(e) => setCoupon(e.target.value)}
+                        value={coupon}
+                      />
                       <span className="p-inputgroup-addon">
-                        <i className="pi pi-check"></i>
+                        <i
+                          className="pi pi-check"
+                          onClick={() => handleCoupon(coupon)}
+                        ></i>
                       </span>
                     </div>
                   )}
                 </div>
 
-                <div className="totalFee">
-                  <div className="flex items-center gap-3">
-                    <h4>Session Details</h4>
-                    <p style={{ textTransform: "uppercase" }}>
-                      {userInitialData.refPackageName}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-3 mt-[-14px]">
-                    <h4>Duration</h4>
-                    <p>
-                      {fromDate && toDate
-                        ? `${fromDate.toLocaleDateString("en-GB", {
-                            month: "2-digit",
-                            year: "numeric",
-                          })} to ${toDate.toLocaleDateString("en-GB", {
-                            month: "2-digit",
-                            year: "numeric",
-                          })}`
-                        : "From date to To date"}
-                    </p>{" "}
-                  </div>
-                  <div className="flex items-center gap-3 mt-[-14px]">
-                    <h4>Sub Total</h4>
-                    <p>{fee > 0 ? `₹ ${fee}` : "-"}</p>
-                  </div>
-                  <div className="flex items-center gap-3 mt-[-14px]">
-                    <h4>Offers</h4>
-                    <p>--Nil--</p>
-                  </div>
-                  <div className="flex items-center gap-3 mt-[-14px]">
-                    <h4>Offer Discount</h4>
-                    <p>--Nil--</p>
-                  </div>
+                <div className="totalFee mt-4">
+                  <table
+                    style={{
+                      borderCollapse: "collapse",
+                      width: "100%",
+                    }}
+                  >
+                    <tbody>
+                      {/* Session Details */}
+                      <tr>
+                        <th
+                          style={{
+                            padding: "8px",
+                            textAlign: "start",
+                          }}
+                        >
+                          Session Details
+                        </th>
+                        <td
+                          style={{
+                            padding: "8px",
+                            textTransform: "capitalize",
+                          }}
+                        >
+                          : {userInitialData.refPackageName}
+                        </td>
+                      </tr>
 
-                  <div className="flex justify-between items-center">
-                    <div className="flex flex-col mt-[-14px]">
-                      <h4>Offer Fee</h4>
-                      <p className="mt-0"> --Nil--</p>
-                    </div>
-                    <div className="flex flex-col">
-                      <h4>CGST (9%)</h4>
-                      <p className="mt-0">
-                        {fee > 0 ? `₹ ${cgst.toFixed(2)}` : "0"}
-                      </p>
-                    </div>
-                    <div className="flex flex-col">
-                      <h4>SGST (9%)</h4>
-                      <p className="mt-0">
-                        {fee > 0 ? `₹ ${sgst.toFixed(2)}` : "0"}
-                      </p>
-                    </div>
-                  </div>
+                      {/* Duration */}
+                      <tr>
+                        <th
+                          style={{
+                            padding: "8px",
+                            textAlign: "start",
+                          }}
+                        >
+                          Duration
+                        </th>
+                        <td style={{ padding: "8px" }}>
+                          :{" "}
+                          {receiptFromDate && receiptToDate
+                            ? `${receiptFromDate} to ${receiptToDate}`
+                            : fromDate && toDate
+                            ? `${fromDate.toLocaleDateString("en-GB", {
+                                month: "2-digit",
+                                year: "numeric",
+                              })} to ${toDate.toLocaleDateString("en-GB", {
+                                month: "2-digit",
+                                year: "numeric",
+                              })}`
+                            : "From date to To date"}
+                        </td>
+                      </tr>
+
+                      {/* Sub Total */}
+                      <tr>
+                        <th
+                          style={{
+                            padding: "8px",
+                            textAlign: "start",
+                          }}
+                        >
+                          Sub Total
+                        </th>
+                        <td style={{ padding: "8px" }}>
+                          : {fee > 0 ? `₹ ${fee}` : "-"}
+                        </td>
+                      </tr>
+
+                      {/* Offers */}
+                      <tr>
+                        <th
+                          style={{
+                            padding: "8px",
+                            textAlign: "start",
+                          }}
+                        >
+                          Offers
+                        </th>
+                        <td style={{ padding: "8px" }}>
+                          : {receiptOfferType ? receiptOfferType : "--Nil--"}
+                        </td>
+                      </tr>
+
+                      {/* Offer Discount */}
+                      <tr>
+                        <th
+                          style={{
+                            padding: "8px",
+                            textAlign: "start",
+                          }}
+                        >
+                          Offer Discount
+                        </th>
+                        <td style={{ padding: "8px" }}>
+                          :{" "}
+                          {receiptOfferName === "Percentage"
+                            ? `${receiptOfferName} %`
+                            : receiptOfferName === "Discount"
+                            ? `₹ ${receiptOfferName}`
+                            : receiptOfferName
+                            ? receiptOfferName
+                            : "--Nil--"}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <table
+                    style={{
+                      borderCollapse: "collapse",
+                      width: "100%",
+                      border: "1px solid black",
+                      marginTop: "15px",
+                    }}
+                  >
+                    <thead>
+                      <tr>
+                        <th
+                          style={{ border: "1px solid black", padding: "8px" }}
+                        >
+                          Offer Fee
+                        </th>
+                        <th
+                          style={{ border: "1px solid black", padding: "8px" }}
+                        >
+                          CGST (9%)
+                        </th>
+                        <th
+                          style={{ border: "1px solid black", padding: "8px" }}
+                        >
+                          SGST (9%)
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td
+                          style={{ border: "1px solid black", padding: "8px" }}
+                        >
+                          ₹{" "}
+                          {receiptFinalfee
+                            ? receiptFinalfee
+                            : fee > 0
+                            ? fee
+                            : "-"}
+                        </td>
+                        <td
+                          style={{ border: "1px solid black", padding: "8px" }}
+                        >
+                          ₹ {fee > 0 ? cgst.toFixed(2) : "0"}
+                        </td>
+                        <td
+                          style={{ border: "1px solid black", padding: "8px" }}
+                        >
+                          ₹ {fee > 0 ? sgst.toFixed(2) : "0"}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
 
                   <div className="flex items-center gap-3">
                     <h4>Total</h4>
@@ -806,33 +1027,33 @@ const UserPayment: React.FC = () => {
                       {totalAmount > 0 ? `₹ ${totalAmount.toFixed(2)}` : "-"}
                     </p>
                   </div>
-
-                  <h5 className="mb-2">Terms & Conditions</h5>
-                  <h6 className="text-justify m-0">
-                    User has to be complete their sessions on the subscribed
-                    month itself, the sessions cannot be compensate or carry
-                    forward to the next month.
-                  </h6>
-                  <h5 className="mb-2">Compensation Classes:</h5>
-                  <h6 className="text-justify m-0">
-                    {" "}
-                    All subscription sessions purchased by User are
-                    non-refundable, non exchangeable, non- saleable and non-
-                    transferrable. User wishes to disconitinue with its
-                    subscription, User will not receive the refund.
-                  </h6>
-                  <h5 className="mb-2">Refund:</h5>
-                  <h6 className="text-justify m-0">
-                    All subscription sessions are non-refundable,
-                    non-exchangeable and non-transferable. If a user decides to
-                    discontinue the subscription, no refund will be issued.
-                  </h6>
                 </div>
               </div>
+              <h5 className="mb-2">Terms & Conditions</h5>
+              <h6 className="text-justify m-0">
+                User has to be complete their sessions on the subscribed month
+                itself, the sessions cannot be compensate or carry forward to
+                the next month.
+              </h6>
+              <h5 className="mb-2">Compensation Classes:</h5>
+              <h6 className="text-justify m-0">
+                {" "}
+                All subscription sessions purchased by User are non-refundable,
+                non exchangeable, non- saleable and non- transferrable. User
+                wishes to disconitinue with its subscription, User will not
+                receive the refund.
+              </h6>
+              <h5 className="mb-2">Refund:</h5>
+              <h6 className="text-justify m-0">
+                All subscription sessions are non-refundable, non-exchangeable
+                and non-transferable. If a user decides to discontinue the
+                subscription, no refund will be issued.
+              </h6>
               <div className="flex pt-4 justify-content-between">
                 <Button
                   label="Back"
-                  severity="secondary"
+                  severity="danger"
+                  raised
                   icon="pi pi-arrow-left"
                   onClick={() =>
                     stepperRef.current && stepperRef.current.prevCallback()
@@ -840,11 +1061,11 @@ const UserPayment: React.FC = () => {
                 />
                 <Button
                   label="Pay"
-                  icon="pi pi-arrow-right"
+                  icon="pi pi-check"
+                  raised
                   iconPos="right"
-                  onClick={() =>
-                    stepperRef.current && stepperRef.current.nextCallback()
-                  }
+                  severity="success"
+                  onClick={handlePayment}
                 />
               </div>
             </StepperPanel>
