@@ -1,0 +1,7 @@
+.userTilesDashboard
+  .grid-item
+  fieldset
+  .p-toggleable-content
+  .p-fieldset-content {
+  block-size: auto;
+}

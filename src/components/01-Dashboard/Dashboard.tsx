@@ -6,6 +6,12 @@ import coverImage from "../../assets/Dashboard/banner.jpg";
 import profileImage from "../../assets/Dashboard/profile.svg";
 import { Mail, Phone } from "lucide-react";
 import CryptoJS from "crypto-js";
+<<<<<<< HEAD
+=======
+import { Fieldset } from "primereact/fieldset";
+
+import "./Dashboard.css";
+>>>>>>> c9d0386b317eaf99c858aaae047f1d6b9d60220f
 
 type DecryptResult = any;
 
@@ -116,6 +122,19 @@ const Dashboard = () => {
     });
   }, []);
 
+<<<<<<< HEAD
+=======
+  const handleMobileNavigate = (path: string) => {
+    const token = localStorage.getItem("JWTtoken");
+    if (token) {
+      const url = `${path}?token=${encodeURIComponent(token)}`;
+      window.open(url, "_blank");
+    } else {
+      console.error("Token not found in localStorage");
+    }
+  };
+
+>>>>>>> c9d0386b317eaf99c858aaae047f1d6b9d60220f
   return (
     <>
       {!isMobile && (
@@ -146,7 +165,11 @@ const Dashboard = () => {
           </div>{" "}
         </div>
       )}
+<<<<<<< HEAD
       <div className="flex justify-center userContents m-3 items-center">
+=======
+      <div className="flex flex-col justify-center userContents m-3 items-center">
+>>>>>>> c9d0386b317eaf99c858aaae047f1d6b9d60220f
         <div className="userContents w-full">
           <div>
             <div className="contents w-full">
@@ -180,6 +203,23 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+<<<<<<< HEAD
+=======
+        <div className="userTilesDashboard grid-container mt-4 mb-4">
+          <div className="grid-item">
+            <Fieldset
+              legend="Intro Video"
+              onClick={() => handleMobileNavigate("/introVideo")}
+            >
+              <p className="m-0">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+                enim ad minim veniam.
+              </p>
+            </Fieldset>
+          </div>
+        </div>
+>>>>>>> c9d0386b317eaf99c858aaae047f1d6b9d60220f
       </div>
     </>
   );

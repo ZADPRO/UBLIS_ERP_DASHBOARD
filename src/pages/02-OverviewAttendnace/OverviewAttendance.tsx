@@ -71,7 +71,20 @@ const OverviewAttendance: React.FC<OverviewAttendanceProps> = ({
           <div className="card mb-3">
             <Fieldset legend="Offline" className="">
               <div className="leaveBalance flex flex-col">
+<<<<<<< HEAD
                 <p className="m-2" style={{ color: "#f95005", fontWeight: "bold", fontSize: "20px" }}>{nearestSessionRefTime}</p>
+=======
+                <p
+                  className="m-2"
+                  style={{
+                    color: "#f95005",
+                    fontWeight: "bold",
+                    fontSize: "20px",
+                  }}
+                >
+                  {nearestSessionRefTime}
+                </p>
+>>>>>>> c9d0386b317eaf99c858aaae047f1d6b9d60220f
                 <div className="flex">
                   <div className="consumed">
                     <p className="m-0">{attendedTimeCount}</p>
@@ -88,7 +101,11 @@ const OverviewAttendance: React.FC<OverviewAttendanceProps> = ({
                       {" "}
                       {Math.max(
                         Number(attendedTimeCount) -
+<<<<<<< HEAD
                         Number(notAttendedTimeCount),
+=======
+                          Number(notAttendedTimeCount),
+>>>>>>> c9d0386b317eaf99c858aaae047f1d6b9d60220f
                         0
                       )}{" "}
                     </p>
@@ -143,7 +160,20 @@ const OverviewAttendance: React.FC<OverviewAttendanceProps> = ({
           <div className="card mb-3">
             <Fieldset legend="Offline">
               <div className="leaveBalance flex flex-col">
+<<<<<<< HEAD
                 <p className="m-2" style={{ color: "#f95005", fontWeight: "bold", fontSize: "20px" }}>{nearestSessionRefTime}</p>
+=======
+                <p
+                  className="m-2"
+                  style={{
+                    color: "#f95005",
+                    fontWeight: "bold",
+                    fontSize: "20px",
+                  }}
+                >
+                  {nearestSessionRefTime}
+                </p>
+>>>>>>> c9d0386b317eaf99c858aaae047f1d6b9d60220f
                 <div className="flex">
                   <div className="consumed">
                     <p className="m-0">0</p>

@@ -953,7 +953,11 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                     <div className="w-[100%] flex justify-between">
                       <div className="w-[48%]">
                         <TextInput
+<<<<<<< HEAD
                           label="Qualification"
+=======
+                          label="Qualification *"
+>>>>>>> c9d0386b317eaf99c858aaae047f1d6b9d60220f
                           name="qualification"
                           id="qualification"
                           type="text"
@@ -961,11 +965,19 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                           disabled={inputs.age > '18'? false : true}
                           value={inputs.qualification}
                           readonly={!edits.personal}
+<<<<<<< HEAD
+=======
+                          required
+>>>>>>> c9d0386b317eaf99c858aaae047f1d6b9d60220f
                         />
                       </div>
                       <div className="w-[48%]">
                         <TextInput
+<<<<<<< HEAD
                           label="Occupation"
+=======
+                          label="Occupation *"
+>>>>>>> c9d0386b317eaf99c858aaae047f1d6b9d60220f
                           name="occupation"
                           id="Occupation"
                           type="text"
@@ -973,6 +985,10 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                           disabled={inputs.age > '18'? false : true}
                           value={inputs.occupation}
                           readonly={!edits.personal}
+<<<<<<< HEAD
+=======
+                          required
+>>>>>>> c9d0386b317eaf99c858aaae047f1d6b9d60220f
                         />
                       </div>
                     </div>

@@ -21,6 +21,10 @@
     "axios": "^1.7.7",
     "chart.js": "^4.4.5",
     "crypto-js": "^4.2.0",
+<<<<<<< HEAD
+=======
+    "date-fns": "^4.1.0",
+>>>>>>> c9d0386b317eaf99c858aaae047f1d6b9d60220f
     "file-saver": "^2.0.5",
     "framer-motion": "^11.11.8",
     "jspdf": "^2.5.2",
@@ -32,6 +36,10 @@
     "primeicons": "^7.0.0",
     "primereact": "^10.8.4",
     "quill": "^2.0.2",
+<<<<<<< HEAD
+=======
+    "razorpay": "^2.9.5",
+>>>>>>> c9d0386b317eaf99c858aaae047f1d6b9d60220f
     "react": "^18.3.1",
     "react-calendar": "^5.1.0",
     "react-dom": "^18.3.1",

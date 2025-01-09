@@ -32,6 +32,11 @@ import StaffFeedback from "./components/38-Feedback/Feedback";
 import AddNotes from "./components/39-AddNotes/AddNotes";
 import AssignNotes from "./components/40-AssignNotes/AssignNotes";
 import Expired from "./pages/Expired/Expired";
+<<<<<<< HEAD
+=======
+import UserPayment from "./components/41-UserPayment/UserPayment";
+import IntroVideo from "./pages/03-IntroVideo/IntroVideo";
+>>>>>>> c9d0386b317eaf99c858aaae047f1d6b9d60220f
 
 const App = () => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -56,12 +61,20 @@ const App = () => {
           <Route path="/" element={<OverallDashboard />} />
           <Route path="/users/notes" element={<UserNotes />} />
           <Route path="/users/attendance" element={<UserAttendance />} />
+<<<<<<< HEAD
           <Route path="/users/payment" element={<Payment />} />
+=======
+          <Route path="/users/payment" element={<UserPayment />} />
+>>>>>>> c9d0386b317eaf99c858aaae047f1d6b9d60220f
           <Route path="/users/branch" element={<Branch />} />
           <Route path="/users/profile" element={<Profile />} />
           <Route path="users/support" element={<Support />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/yoganotes" element={<AddNotes />} />
+<<<<<<< HEAD
+=======
+          <Route path="/introVideo" element={<IntroVideo />} />
+>>>>>>> c9d0386b317eaf99c858aaae047f1d6b9d60220f
 
           <Route path="/settings" element={<Settings />} />
 
