@@ -483,18 +483,19 @@ const UserPayment: React.FC = () => {
   };
 
   const handlePayment = () => {
+    const amountInPaise = Math.round(totalAmount * 100);
     const options = {
-      key: "rzp_live_vpVNHNDB6ECdoH",
-      amount: totalAmount * 100,
+      key: "rzp_test_JqdIktzG8fnGWd",
+      amount: amountInPaise,
       currency: "INR",
-      name: "Testing da venna",
+      name: "Testing da magane",
       description: "Subscription Payment",
       // image: "https://example.com/your-logo.png",
       handler: function (response: any) {
-        alert(
+        console.log("response", response);
+        console.log(
           `Payment Successful! Payment ID: ${response.razorpay_payment_id}`
         );
-        // stepperRef.current && stepperRef.current.nextCallback();
       },
       prefill: {
         // name: userInitialData.refStFName + " " + userInitialData.refStLName,
@@ -508,7 +509,10 @@ const UserPayment: React.FC = () => {
     rzp.open();
 
     rzp.on("payment.failed", function (response: any) {
-      alert(`Payment Failed: ${response.error.description}`);
+      console.log("response", response);
+      console.log(
+        `Payment Failed! Reason: ${response.error.description}\nCode: ${response.error.code}`
+      );
     });
   };
 

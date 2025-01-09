@@ -71,7 +71,16 @@ const OverviewAttendance: React.FC<OverviewAttendanceProps> = ({
           <div className="card mb-3">
             <Fieldset legend="Offline" className="">
               <div className="leaveBalance flex flex-col">
-                <p className="m-2" style={{ color: "#f95005", fontWeight: "bold", fontSize: "20px" }}>{nearestSessionRefTime}</p>
+                <p
+                  className="m-2"
+                  style={{
+                    color: "#f95005",
+                    fontWeight: "bold",
+                    fontSize: "20px",
+                  }}
+                >
+                  {nearestSessionRefTime}
+                </p>
                 <div className="flex">
                   <div className="consumed">
                     <p className="m-0">{attendedTimeCount}</p>
@@ -88,7 +97,7 @@ const OverviewAttendance: React.FC<OverviewAttendanceProps> = ({
                       {" "}
                       {Math.max(
                         Number(attendedTimeCount) -
-                        Number(notAttendedTimeCount),
+                          Number(notAttendedTimeCount),
                         0
                       )}{" "}
                     </p>
@@ -143,7 +152,16 @@ const OverviewAttendance: React.FC<OverviewAttendanceProps> = ({
           <div className="card mb-3">
             <Fieldset legend="Offline">
               <div className="leaveBalance flex flex-col">
-                <p className="m-2" style={{ color: "#f95005", fontWeight: "bold", fontSize: "20px" }}>{nearestSessionRefTime}</p>
+                <p
+                  className="m-2"
+                  style={{
+                    color: "#f95005",
+                    fontWeight: "bold",
+                    fontSize: "20px",
+                  }}
+                >
+                  {nearestSessionRefTime}
+                </p>
                 <div className="flex">
                   <div className="consumed">
                     <p className="m-0">0</p>

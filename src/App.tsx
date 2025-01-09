@@ -33,6 +33,7 @@ import AddNotes from "./components/39-AddNotes/AddNotes";
 import AssignNotes from "./components/40-AssignNotes/AssignNotes";
 import Expired from "./pages/Expired/Expired";
 import UserPayment from "./components/41-UserPayment/UserPayment";
+import IntroVideo from "./pages/03-IntroVideo/IntroVideo";
 
 const App = () => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -63,6 +64,7 @@ const App = () => {
           <Route path="users/support" element={<Support />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/yoganotes" element={<AddNotes />} />
+          <Route path="/introVideo" element={<IntroVideo />} />
 
           <Route path="/settings" element={<Settings />} />
 
