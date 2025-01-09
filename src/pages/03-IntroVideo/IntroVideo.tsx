@@ -81,16 +81,32 @@ const IntroVideo: React.FC = () => {
         e.preventDefault();
         alert("Developer tools are disabled.");
       }
+
+      // Detect Print Screen key (Windows)
+      if (e.key === "PrintScreen") {
+        e.preventDefault();
+        alert("Screenshots are not allowed.");
+      }
+
+      // Detect Ctrl + Print Screen key (Windows)
+      if (e.ctrlKey && e.key === "PrintScreen") {
+        e.preventDefault();
+        alert("Screenshots are not allowed.");
+      }
+
+      // Detect Cmd + Shift + 4 key combination (Mac)
+      if (e.metaKey && e.shiftKey && e.key === "4") {
+        e.preventDefault();
+        alert("Screenshots are not allowed.");
+      }
     };
 
-    // Disable right-click on the entire page
     const handleContextMenu = (e: MouseEvent) => {
       e.preventDefault();
       alert("Right-click is disabled.");
     };
 
     window.addEventListener("keydown", handleKeydown);
-
     document.addEventListener("contextmenu", handleContextMenu);
 
     return () => {
@@ -110,7 +126,7 @@ const IntroVideo: React.FC = () => {
               <p>Course Name</p>
               <p>Start Time: {startTime || "Not started"}</p>
               <p>End Time: {endTime || "Not calculated"}</p>
-              <p>
+              <p className="text-justify">
                 Description: Lorem ipsum dolor sit amet consectetur adipisicing
                 elit. Praesentium magni esse ea, reprehenderit sunt quasi. Ipsam
                 voluptate veniam facere saepe corrupti repellendus excepturi
