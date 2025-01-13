@@ -5,6 +5,7 @@ import CryptoJS from "crypto-js";
 import video from "../../assets/video/REC.mp4";
 import { useNavigate } from "react-router-dom";
 
+import Swal from "sweetalert2"; // Import SweetAlert
 
 const IntroVideo: React.FC = () => {
   const navigate = useNavigate();
@@ -45,9 +46,11 @@ const IntroVideo: React.FC = () => {
 
   const handleClick = () => {
     if (startTime) {
-      //   alert(
-      //     `You already started the video at: ${startTime}. It will be valid until: ${endTime}`
-      //   );
+      Swal.fire({
+        icon: "info",
+        title: "Video Already Started",
+        text: `You started the video at: ${startTime}. It will be valid until: ${endTime}.`,
+      });
       if (videoRef.current) {
         if (isPaused) {
           videoRef.current.play();
@@ -64,9 +67,11 @@ const IntroVideo: React.FC = () => {
       endDate.setHours(currentTime.getHours() + 2);
       setEndTime(endDate.toLocaleString());
 
-      alert(
-        `Start Time: ${currentTime.toLocaleString()}.\nEnd Time: ${endDate.toLocaleString()}`
-      );
+      Swal.fire({
+        icon: "success",
+        title: "Video Started",
+        html: `Start Time: <b>${currentTime.toLocaleString()}</b><br>End Time: <b>${endDate.toLocaleString()}</b>`,
+      });
 
       setIsPaused(false);
       if (videoRef.current) {
@@ -110,19 +115,20 @@ const IntroVideo: React.FC = () => {
     const token: any = urlParams.get("token");
     localStorage.setItem("JWTtoken", token);
 
-    axios.get(import.meta.env.VITE_API_URL + "/trailVideo/linkGeneration",
-      {
+    axios
+      .get(import.meta.env.VITE_API_URL + "/trailVideo/linkGeneration", {
         headers: {
           Authorization: localStorage.getItem("JWTtoken"),
           "Content-Type": "application/json",
         },
-      }).then((res) => {
+      })
+      .then((res) => {
         const data = decrypt(
           res.data[1],
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
-        console.log('data', data)
+        console.log("data", data);
         if (data.token == false) {
           navigate("/expired");
         } else {
@@ -131,14 +137,14 @@ const IntroVideo: React.FC = () => {
       });
 
     const handleKeydown = (e: KeyboardEvent) => {
-      if (
-        e.key === "F12" ||
-        (e.ctrlKey && e.shiftKey && e.key === "I") ||
-        (e.ctrlKey && e.shiftKey && e.key === "J")
-      ) {
-        e.preventDefault();
-        alert("Developer tools are disabled.");
-      }
+      // if (
+      //   e.key === "F12" ||
+      //   (e.ctrlKey && e.shiftKey && e.key === "I") ||
+      //   (e.ctrlKey && e.shiftKey && e.key === "J")
+      // ) {
+      //   e.preventDefault();
+      //   alert("Developer tools are disabled.");
+      // }
 
       // Detect Print Screen key (Windows)
       if (e.key === "PrintScreen") {
@@ -179,24 +185,75 @@ const IntroVideo: React.FC = () => {
         <div className="flex flex-column md:flex-row justify-evenly lg:h-[90vh]">
           <div className="w-full md:w-4 flex flex-column gap-3 py-5 px-3">
             <div className="userDetails">
-              <p>User Name</p>
-              <p>Email</p>
-              <p>Course Name</p>
-              <p>Start Time: {startTime || "Not started"}</p>
-              <p>End Time: {endTime || "Not calculated"}</p>
-              <p className="text-justify">
-                Description: Lorem ipsum dolor sit amet consectetur adipisicing
-                elit. Praesentium magni esse ea, reprehenderit sunt quasi. Ipsam
-                voluptate veniam facere saepe corrupti repellendus excepturi
-                deleniti, dolores sequi, maiores a, ab animi!
-              </p>
+              <h2
+                style={{
+                  textAlign: "center",
+                  marginBottom: "20px",
+                  fontWeight: "bold",
+                  color: "#f95005",
+                }}
+              >
+                Ublis Yoga Introduction Tutorial
+              </h2>
+              <table className="detailsTable">
+                <tbody>
+                  <tr>
+                    <td style={{ fontSize: "18px" }}>
+                      <b>User Name</b>
+                    </td>
+                    <td style={{ fontSize: "18px" }}>Sara Shan B</td>
+                  </tr>
+                  <tr>
+                    <td style={{ fontSize: "18px" }}>
+                      <b>Email</b>
+                    </td>
+                    <td style={{ fontSize: "18px" }}>smsara2201@gmail.com</td>
+                  </tr>
+                  <tr>
+                    <td style={{ fontSize: "18px" }}>
+                      <b>Course Name</b>
+                    </td>
+                    <td style={{ fontSize: "18px" }}>
+                      Introduction - Ublis Yoga
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ fontSize: "18px" }}>
+                      <b>Start Time</b>
+                    </td>
+                    <td style={{ fontSize: "18px" }}>
+                      {startTime || "Not started"}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style={{ fontSize: "18px" }}>
+                      <b>End Time</b>
+                    </td>
+                    <td style={{ fontSize: "18px" }}>
+                      {endTime || "Not calculated"}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
 
           <div
             ref={videoContainerRef}
-            className="w-full md:w-7 flex flex-col align-items-center justify-content-center py-5"
+            className="w-full md:w-7 flex flex-col align-items-end justify-content py-5"
           >
+            <p
+              className="flex items-center justify-end"
+              style={{
+                border: "2px solid #f95005",
+                padding: "10px",
+                borderRadius: "10px",
+                color: "#f95005",
+                fontWeight: "bold",
+              }}
+            >
+              118 mins left
+            </p>
             <video
               ref={videoRef}
               className="jw-video jw-reset w-full"
@@ -208,7 +265,7 @@ const IntroVideo: React.FC = () => {
               style={{ cursor: "pointer" }}
               controls={false}
               autoPlay={false}
-            // paused={isPaused}
+              // paused={isPaused}
             ></video>
             <div className="custom-controls flex justify-center gap-3 py-4">
               <button
