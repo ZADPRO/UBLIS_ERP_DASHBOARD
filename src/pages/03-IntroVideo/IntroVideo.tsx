@@ -1,8 +1,42 @@
 import React, { useState, useRef, useEffect } from "react";
+import axios from "axios";
+import CryptoJS from "crypto-js";
 
 import video from "../../assets/video/REC.mp4";
+import { useNavigate } from "react-router-dom";
+
 
 const IntroVideo: React.FC = () => {
+  const navigate = useNavigate();
+
+  type DecryptResult = any;
+
+  const decrypt = (
+    encryptedData: string,
+    iv: string,
+    key: string
+  ): DecryptResult => {
+    // Create CipherParams with ciphertext
+    const cipherParams = CryptoJS.lib.CipherParams.create({
+      ciphertext: CryptoJS.enc.Hex.parse(encryptedData),
+    });
+
+    // Perform decryption
+    const decrypted = CryptoJS.AES.decrypt(
+      cipherParams,
+      CryptoJS.enc.Hex.parse(key),
+      {
+        iv: CryptoJS.enc.Hex.parse(iv),
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7,
+      }
+    );
+
+    const decryptedString = decrypted.toString(CryptoJS.enc.Utf8);
+
+    return JSON.parse(decryptedString);
+  };
+
   const [startTime, setStartTime] = useState<string | null>(null);
   const [endTime, setEndTime] = useState<string | null>(null);
   const [isPaused, setIsPaused] = useState(true);
@@ -72,6 +106,30 @@ const IntroVideo: React.FC = () => {
   };
 
   useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token: any = urlParams.get("token");
+    localStorage.setItem("JWTtoken", token);
+
+    axios.get(import.meta.env.VITE_API_URL + "/trailVideo/linkGeneration",
+      {
+        headers: {
+          Authorization: localStorage.getItem("JWTtoken"),
+          "Content-Type": "application/json",
+        },
+      }).then((res) => {
+        const data = decrypt(
+          res.data[1],
+          res.data[0],
+          import.meta.env.VITE_ENCRYPTION_KEY
+        );
+        console.log('data', data)
+        if (data.token == false) {
+          navigate("/expired");
+        } else {
+          localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+        }
+      });
+
     const handleKeydown = (e: KeyboardEvent) => {
       if (
         e.key === "F12" ||
@@ -150,7 +208,7 @@ const IntroVideo: React.FC = () => {
               style={{ cursor: "pointer" }}
               controls={false}
               autoPlay={false}
-              paused={isPaused}
+            // paused={isPaused}
             ></video>
             <div className="custom-controls flex justify-center gap-3 py-4">
               <button

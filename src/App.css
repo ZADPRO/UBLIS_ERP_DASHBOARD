@@ -182,3 +182,42 @@ main {
 .p-datatable-wrapper::-webkit-scrollbar-thumb:hover {
   background: #aaaaaa; /* Hover effect */
 }
+
+.inputCalander .p-button:not(:disabled) {
+  background: #f95005;
+  color: #ffffff;
+  border-color: #f95005;
+}
+
+.inputCalander .p-button {
+  border: none;
+}
+
+.p-calendar:not(.p-calendar-disabled).p-focus > .p-inputtext {
+  outline: 0 none;
+  outline-offset: 0;
+  box-shadow: none;
+  border-color: none;
+  border-color: none;
+}
+
+.p-datepicker table td.p-datepicker-today > span.p-highlight {
+  color: #ffffff;
+  background: #f95005;
+}
+
+.p-datepicker
+  .p-datepicker-header
+  .p-datepicker-title
+  .p-datepicker-year:enabled:hover,
+.p-datepicker
+  .p-datepicker-header
+  .p-datepicker-title
+  .p-datepicker-month:enabled:hover {
+  color: #f95005 !important;
+}
+
+.p-datepicker .p-yearpicker .p-yearpicker-year.p-highlight {
+  color: #ffffff;
+  background: #f95005;
+}

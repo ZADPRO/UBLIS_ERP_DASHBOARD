@@ -34,7 +34,7 @@ interface SelectedUser {
   userName: string;
   userId: string;
   userEmail: string;
-  refTime: string;
+  reftime: string;
   refPackageName: string;
   refSCustId: string;
 }
@@ -160,7 +160,7 @@ const StaffAttendance: React.FC = () => {
           userId: data.data.refSCustId,
           refPackageName: data.data.refPackageName,
           userEmail: data.data.refCtEmail,
-          refTime: data.data.refTime,
+          reftime: data.data.refTime,
           refSCustId: data.data.refSCustId,
         });
       }
@@ -340,8 +340,8 @@ const StaffAttendance: React.FC = () => {
                               </p>
                               <p>
                                 Timing:{" "}
-                                {selectedUser.refTime
-                                  ? selectedUser.refTime
+                                {selectedUser.reftime
+                                  ? selectedUser.reftime
                                   : "Not Available"}
                               </p>
                             </Panel>

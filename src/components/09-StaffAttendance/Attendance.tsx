@@ -42,7 +42,7 @@ interface RowData {
   refSCustId: string;
   refStLName: string;
   refPackageName: string;
-  refTime: string;
+  reftime: string;
   refCtMobile: string;
   refCtEmail: string;
 }
@@ -52,7 +52,7 @@ interface SelectedUser {
   userName: string;
   userId: string;
   userEmail: string;
-  refTime: string;
+  reftime: string;
   refPackageName: string;
 }
 
@@ -64,18 +64,23 @@ type Attendance = {
 
 interface RegularSession {
   refTimeId: number;
-  refTime: string;
+  reftime: string;
   usercount: number;
   attendancecount: number;
+  kidscount: number;
+  malecount: number;
+  femalecount: number;
 }
-
 interface NearestSession {
   nearestRefTimeId: {
     refTimeId: number;
-    refTime: string;
+    reftime: string;
     usercount: number;
     attendancecount: number;
     startTime: string;
+    kidscount: number;
+    malecount: number;
+    femalecount: number;
   };
 }
 
@@ -114,6 +119,8 @@ const StaffAttendance: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      console.log('data', data)
+
       if (data.token == false) {
         navigate("/expired");
       } else {
@@ -167,7 +174,7 @@ const StaffAttendance: React.FC = () => {
         refSCustId: rowData.refSCustId,
         refStLName: rowData.refStLName,
         refPackageName: rowData.refPackageName,
-        refTime: rowData.refTime,
+        reftime: rowData.reftime,
         refCtMobile: rowData.refCtMobile,
         refCtEmail: rowData.refCtEmail,
       });
@@ -217,7 +224,7 @@ const StaffAttendance: React.FC = () => {
         userId: rowData.refSCustId,
         refPackageName: rowData.refPackageName,
         userEmail: rowData.refCtEmail,
-        refTime: rowData.refTime,
+        reftime: rowData.reftime,
       });
     }
   };
@@ -303,6 +310,7 @@ const StaffAttendance: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      console.log('data', data)
       if (data.token == false) {
         navigate("/expired");
       } else {
@@ -313,160 +321,6 @@ const StaffAttendance: React.FC = () => {
   }, []);
 
   const [searchQuery, setSearchQuery] = useState("");
-
-  // const renderCalendar = () => {
-  //   switch (classType) {
-  //     case "1":
-  //       return (
-  //         <div className=" flex flex-row w-[100%] ">
-  //           <div className="w-[200%] px-3">
-  //             <Calendar
-  //               placeholder="Choose date"
-  //               value={startDate}
-  //               // onChange={(date: Date | Date[]) => setStartDate(date as Date)}
-  //               className="relative w-full h-10 placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
-  //             />
-
-  //             {/* <div>
-  //               <button className="w-[100%] h-[100%] text-white bg-[#f95005] border-none p-2 rounded-md">
-  //                 Submit
-  //               </button>
-  //             </div> */}
-  //           </div>
-  //           <div className="w-[200%] px-3">
-  //             <SelectInput
-  //               id="sessionSelect"
-  //               name="sessionSelect"
-  //               label="SessionType *"
-  //               onChange={handleSessionChange} // Handle dropdown changes
-  //               options={[
-  //                 { value: "Online", label: "Online" },
-  //                 { value: "Offline", label: "Offline" },
-  //               ]}
-  //               required
-  //             />
-  //           </div>
-  //           <div className="w-[100%] px-3">
-  //             <MultiSelect
-  //               id="preferredTime"
-  //               value={preferredTimes}
-  //               options={preferredTimeOptions}
-  //               onChange={(e) => setPreferredTimes(e.value)}
-  //               className="w-full"
-  //             />
-  //           </div>
-  //           <div className="w-[100%] px-3 text-[30px] text-[#f95005]">
-  //             <IoSearch />
-  //           </div>
-  //           {/* <div className="w-[100%]">
-  //               <button className="w-[100%] h-[100%] text-white bg-[#f95005] border-none p-2 rounded-md">
-  //                 Submit
-  //               </button>
-  //             </div> */}
-  //         </div>
-  //       );
-  //     case "2":
-  //       return (
-  //         <>
-  //           <div className=" flex flex-row w-[100%] ">
-  //             <div className="flex flex-row gap-3 justify-between w-[200%] px-3 ">
-  //               {/* Start Date */}
-  //               <div className="w-[100%]  ">
-  //                 <Calendar
-  //                   placeholder="Start Date"
-  //                   value={startDate}
-  //                   onChange={(e) => {
-  //                     const selectedDate = e.value as Date;
-  //                     setStartDate(selectedDate);
-  //                   }}
-  //                   className="relative w-full h-10 placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
-  //                 />
-  //               </div>
-
-  //               {/* End Date */}
-  //               <div className="w-[100%]">
-  //                 <Calendar
-  //                   placeholder="End Date"
-  //                   value={endDate}
-  //                   onChange={(e) => setEndDate(e.value as Date)}
-  //                   minDate={
-  //                     startDate
-  //                       ? new Date(startDate.getTime()) // Clone the startDate to avoid mutating it
-  //                       : undefined
-  //                   } // Set minDate to the selected start date
-  //                   maxDate={
-  //                     startDate
-  //                       ? new Date(
-  //                           startDate.getFullYear(),
-  //                           startDate.getMonth() + 1, // Next month
-  //                           0 // Last day of the next month
-  //                         )
-  //                       : undefined
-  //                   } // Set maxDate to the end of the next month
-  //                   monthNavigator
-  //                   yearNavigator
-  //                   className="relative w-full h-10 placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
-  //                 />
-  //               </div>
-  //               {/* <div>
-  //               <button className="w-[100%] h-[100%] text-white bg-[#f95005] border-none p-2 rounded-md">
-  //                 Submit
-  //               </button>
-  //             </div> */}
-  //             </div>
-  //             <div className="w-[150%] px-2 ">
-  //               <SelectInput
-  //                 id="sessionSelect"
-  //                 name="sessionSelect"
-  //                 label="SessionType *"
-  //                 onChange={handleSessionChange} // Handle dropdown changes
-  //                 options={[
-  //                   { value: "Online", label: "Online" },
-  //                   { value: "Offline", label: "Offline" },
-  //                 ]}
-  //                 required
-  //               />
-  //             </div>
-  //             <div className="w-[100%] px-3">
-  //               <MultiSelect
-  //                 id="preferredTime"
-  //                 value={preferredTimes}
-  //                 options={preferredTimeOptions}
-  //                 onChange={(e) => setPreferredTimes(e.value)}
-  //                 className="w-full"
-  //               />
-  //             </div>
-  //             <div className="w-[100%] text-[30px] px-3 text-[#f95005]">
-  //               <IoSearch />
-  //             </div>
-  //           </div>
-  //         </>
-  //         // <>
-  //         //   <div className="flex flex-row justify-between w-[30%] gap-3 px-3">
-  //         //     <Calendar
-  //         //       placeholder="Choose date"
-  //         //       value={startDate}
-  //         //       className="relative w-full h-10 placeholder-transparent transition-all border-2 rounded outline-none peer border-bg-[#f95005] box-border-[#f95005] border-[#b3b4b6] text-[#4c4c4e] autofill:bg-white dateInput"
-  //         //       view="month"
-  //         //       dateFormat="mm/yy"
-  //         //     />
-  //         //     {/* <div>
-  //         //       <button className="w-[100%] h-[100%] text-white bg-[#f95005] border-none p-2 rounded-md">
-  //         //         Submit
-  //         //       </button>
-  //         //     </div> */}
-  //         //   </div>
-  //         // </>
-  //       );
-
-  //     default:
-  //       return null;
-  //   }
-  // };
-  // Handle dropdown changes
-  // const handleSessionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-  //   setSelectedSession(e.target.value);
-  // };
 
   const handleCalendarMonthChange = (month: number, year: number) => {
     const monthNames = [
@@ -530,7 +384,7 @@ const StaffAttendance: React.FC = () => {
       ) : (
         <>
           <div className="card m-1" style={{ overflow: "hidden" }}>
-            <div className="headerPrimary">
+            <div className="headerPrimary fixed w-[95.5%]">
               <h3>ATTENDANCE</h3>
               <div className="quickAcces">
                 {userdata.profileimg ? (
@@ -557,116 +411,10 @@ const StaffAttendance: React.FC = () => {
               </div>{" "}
             </div>
 
-            <TabView className="overflow-hidden m-2">
+            <TabView className="overflow-hidden m-2 pt-[10vh]">
               <TabPanel header="Overview">
                 <OverviewAttendance overviewSessionData={overviewSessionData} />
-                {/* <div className=" flex flex-row justify-evenly w-[100%]">
-                  <div className="cardTesting w-[100%]">
-                    <div className="cardOutlines card">
-                      <div className="header">
-                        <h3 className="text-[#f95005]">Offline</h3>
-                        <div className="flex flex-row gap-10 w-[100%]">
-                          <h3>{overviewSessionData?.refPackageName}</h3>
-                          <h3>{overviewSessionData?.refTime}</h3>
-                        </div>
-                        <Divider
-                          layout="horizontal"
-                          className="flex"
-                          align="center"
-                        ></Divider>
-                        <div className="flex flex-row w-[full]">
-                          <div
-                            className="text-center"
-                            style={{ inlineSize: "15rem" }}
-                          >
-                            <h4>Registered Count</h4>
-                            <h3>{overviewSessionData?.user_count}</h3>
-                          </div>
-                          <div className="w-full md:w-2">
-                            <Divider
-                              layout="vertical"
-                              className="hidden md:flex"
-                            ></Divider>
-                          </div>
-                          <div
-                            className="text-center"
-                            style={{ inlineSize: "10rem" }}
-                          >
-                            <h4>Live Count</h4>
-                            <h3>{overviewSessionData?.attend_count}</h3>
-                          </div>
 
-                          <div className="w-full md:w-2">
-                            <Divider
-                              layout="vertical"
-                              className="hidden md:flex"
-                            ></Divider>
-                          </div>
-                          <div
-                            className="text-center"
-                            style={{ inlineSize: "10rem" }}
-                          >
-                            <h4>Not Attended</h4>
-                            <h3>
-                              {Number(overviewSessionData?.user_count || 0) -
-                                Number(overviewSessionData?.attend_count || 0)}
-                            </h3>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="cardOutlines card">
-                      <div className="header">
-                        <h3 className="text-[#f95005]">Online</h3>
-                        <div className="flex flex-row gap-10 w-[100%]">
-                          <h3>{overviewSessionData?.refPackageName}</h3>
-                          <h3>{overviewSessionData?.refTime}</h3>
-                        </div>
-                        <Divider
-                          layout="horizontal"
-                          className="flex"
-                          align="center"
-                        ></Divider>
-                        <div className="flex flex-row w-[full]">
-                          <div
-                            className="text-center"
-                            style={{ inlineSize: "15rem" }}
-                          >
-                            <h4>Registered Count</h4>
-                            <h3>0</h3>
-                          </div>
-                          <div className="w-full md:w-2">
-                            <Divider
-                              layout="vertical"
-                              className="hidden md:flex"
-                            ></Divider>
-                          </div>
-                          <div
-                            className="text-center"
-                            style={{ inlineSize: "10rem" }}
-                          >
-                            <h4>Live Count</h4>
-                            <h3>0</h3>
-                          </div>
-
-                          <div className="w-full md:w-2">
-                            <Divider
-                              layout="vertical"
-                              className="hidden md:flex"
-                            ></Divider>
-                          </div>
-                          <div
-                            className="text-center"
-                            style={{ inlineSize: "10rem" }}
-                          >
-                            <h4>Not Attended</h4>
-                            <h3>0</h3>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div> */}
               </TabPanel>
               <TabPanel header="Session">
                 <SessionTabs />
@@ -858,7 +606,7 @@ const StaffAttendance: React.FC = () => {
                                           paddingLeft: "10px",
                                         }}
                                       >
-                                        : {selectedUser.refTime}
+                                        : {selectedUser.reftime}
                                       </p>
                                     </div>
                                   </div>

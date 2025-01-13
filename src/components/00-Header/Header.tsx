@@ -6,6 +6,7 @@ import { SlOrganization } from "react-icons/sl";
 import { IoIosLogOut, IoMdMenu } from "react-icons/io";
 
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import logo from "../../assets/Images/Logo/logo.png"
 
 import "./Header.css";
 import Expired from "../../pages/Expired/Expired";
@@ -557,12 +558,15 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
         <>
           <div>
             <div className="primaryNav flex items-center">
-              <Button
+              {/* <Button
                 icon="pi pi-arrow-left"
                 label="Back"
                 style={{ background: "#f95005", border: "none" }}
-              />
-              <p className="text-[#f95005]">Logged in as: Student</p>
+              /> */}
+
+              <img src={logo} className="w-[5%] mx-[5%] h-[auto]" alt="" />
+
+              <p className="text-[#f95005]" style={{color:"#f95005", marginRight:"5%"}}>Logged in as: Student</p>
             </div>
             {children}
           </div>

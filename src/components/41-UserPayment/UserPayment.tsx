@@ -16,7 +16,6 @@ import { Calendar } from "primereact/calendar";
 import { InputText } from "primereact/inputtext";
 
 import { differenceInCalendarMonths } from "date-fns";
-import { Divider } from "primereact/divider";
 
 type DecryptResult = any;
 
@@ -469,7 +468,7 @@ const UserPayment: React.FC = () => {
     }
   }, [fromDate, toDate, userInitialData.refFees]);
 
-  const actionBodyTemplate = (rowData: Product) => {
+  const actionBodyTemplate = (_rowData: Product) => {
     return (
       <React.Fragment>
         <Button
@@ -649,8 +648,7 @@ const UserPayment: React.FC = () => {
                     header="Price"
                     style={{ minWidth: "8rem" }}
                     body={(rowData) =>
-                      `${rowData.refFees} ${
-                        rowData.refFeesType === "0" ? "Per Month" : "Per Day"
+                      `${rowData.refFees} ${rowData.refFeesType === "0" ? "Per Month" : "Per Day"
                       }`
                     }
                   />
@@ -684,7 +682,7 @@ const UserPayment: React.FC = () => {
               style={{
                 minWidth: "3rem",
               }}
-              body={(rowData, options) => options.rowIndex + 1}
+              body={(_rowData, options) => options.rowIndex + 1}
             ></Column>
             <Column
               body={actionBodyTemplate}
@@ -907,14 +905,14 @@ const UserPayment: React.FC = () => {
                           {receiptFromDate && receiptToDate
                             ? `${receiptFromDate} to ${receiptToDate}`
                             : fromDate && toDate
-                            ? `${fromDate.toLocaleDateString("en-GB", {
+                              ? `${fromDate.toLocaleDateString("en-GB", {
                                 month: "2-digit",
                                 year: "numeric",
                               })} to ${toDate.toLocaleDateString("en-GB", {
                                 month: "2-digit",
                                 year: "numeric",
                               })}`
-                            : "From date to To date"}
+                              : "From date to To date"}
                         </td>
                       </tr>
 
@@ -963,10 +961,10 @@ const UserPayment: React.FC = () => {
                           {receiptOfferName === "Percentage"
                             ? `${receiptOfferName} %`
                             : receiptOfferName === "Discount"
-                            ? `₹ ${receiptOfferName}`
-                            : receiptOfferName
-                            ? receiptOfferName
-                            : "--Nil--"}
+                              ? `₹ ${receiptOfferName}`
+                              : receiptOfferName
+                                ? receiptOfferName
+                                : "--Nil--"}
                         </td>
                       </tr>
                     </tbody>
@@ -1008,8 +1006,8 @@ const UserPayment: React.FC = () => {
                           {receiptFinalfee
                             ? receiptFinalfee
                             : fee > 0
-                            ? fee
-                            : "-"}
+                              ? fee
+                              : "-"}
                         </td>
                         <td
                           style={{ border: "1px solid black", padding: "8px" }}

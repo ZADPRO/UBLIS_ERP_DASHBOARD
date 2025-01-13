@@ -18,7 +18,7 @@ type User = {
   userName: string;
   userId: string;
   userEmail: string;
-  refTime: string;
+  reftime: string;
   refPackageName: string;
 };
 

@@ -60,6 +60,7 @@ interface User {
   refSCustId: string;
   refStFName: string;
   refStLName: string;
+  refCtMobile: string;
   attendance?: string[];
 }
 
@@ -184,6 +185,7 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
             CustomerID: user.refSCustId,
             FirstName: user.refStFName,
             LastName: user.refStLName,
+            refCtMobile: user.refCtMobile,
             Attendance: entry,
           }));
         } else {
@@ -193,7 +195,8 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
             CustomerID: user.refSCustId,
             FirstName: user.refStFName,
             LastName: user.refStLName,
-            Attendance: "-",
+            refCtMobile: user.refCtMobile,
+            Attendance: "Not Attend",
           };
         }
       })
@@ -234,6 +237,7 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
           refSCustId: user.refSCustId,
           refStFName: user.refStFName,
           refStLName: user.refStLName,
+          refCtMobile: user.refCtMobile,
           attendance: entry,
           key: `${user.refStId}-${index}`,
         }));
@@ -243,7 +247,8 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
             refSCustId: user.refSCustId,
             refStFName: user.refStFName,
             refStLName: user.refStLName,
-            attendance: "-",
+            refCtMobile: user.refCtMobile,
+            attendance: "Not Attend",
           },
         ];
       }
@@ -257,7 +262,17 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
           <Column field="refSCustId" header="Customer ID" sortable />
           <Column field="refStFName" header="First Name" sortable />
           <Column field="refStLName" header="Last Name" sortable />
-          <Column field="attendance" header="Attendance" sortable />
+          <Column field="refCtMobile" header="Mobile" sortable />
+          <Column
+            field="attendance"
+            header="Attendance"
+            sortable
+            body={(rowData) => (
+              <span style={{ color: rowData.attendance === "Not Attend" ? "red" : "green" }}>
+                {rowData.attendance}
+              </span>
+            )}
+          />
         </DataTable>
       </div>
     );
@@ -291,14 +306,14 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
       if (date) {
         refRepDurationFormatted = date
           ? new Intl.DateTimeFormat("en-GB", {
-              day: "2-digit",
-              month: "2-digit",
-              year: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-              second: "2-digit",
-              hour12: true,
-            }).format(date)
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true,
+          }).format(date)
           : "";
       }
 
