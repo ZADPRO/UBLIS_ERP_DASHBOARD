@@ -8,6 +8,22 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2"; // Import SweetAlert
 
 const IntroVideo: React.FC = () => {
+  const [timeLeft, setTimeLeft] = useState(120 * 60);
+  useEffect(() => {
+    let timer: any;
+    if (timeLeft > 0) {
+      timer = setInterval(() => {
+        setTimeLeft((prevTime) => prevTime - 1);
+      }, 1000);
+    }
+    return () => clearInterval(timer); // Cleanup interval on unmount
+  }, [timeLeft]);
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes} mins ${seconds} sec`;
+  };
+
   const navigate = useNavigate();
 
   type DecryptResult = any;
@@ -252,7 +268,7 @@ const IntroVideo: React.FC = () => {
                 fontWeight: "bold",
               }}
             >
-              118 mins left
+              {formatTime(timeLeft)} left{" "}
             </p>
             <video
               ref={videoRef}
