@@ -35,6 +35,10 @@ interface sessionDetails {
   packageName?: string;
   classTimeId?: string;
   classTime?: string;
+  weekEndTiming?: string;
+  weekDaysTiming?: string
+  weekEndTimingId?: string;
+  weekDaysTimingId?: string
 }
 
 interface DecryptResult {
@@ -230,9 +234,16 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
       label, // Value (e.g., 'Chennai')
     })
   );
-  const [preferTiming, setpreferTiming] = useState([]);
+  const [weekDaysTiming, setWeekDaysTiming] = useState([]);
+  const [weekEndTiming, setWeekEndTiming] = useState([]);
 
-  const preferTimingOption = Object.entries(preferTiming).map(
+  const weekDaysTimingOption = Object.entries(weekDaysTiming).map(
+    ([value, label]) => ({
+      value, // Key (e.g., '1')
+      label, // Value (e.g., 'Chennai')
+    })
+  );
+  const weekEndTimingOption = Object.entries(weekEndTiming).map(
     ([value, label]) => ({
       value, // Key (e.g., '1')
       label, // Value (e.g., 'Chennai')
@@ -395,9 +406,12 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
         classMode: personaldata.refClassMode,
         packageId: "",
         packageName: personaldata.refPackageName,
-        classTimeId: "",
-        classTime: personaldata.refTime,
+        weekDaysTimingId: "",
+        weekDaysTiming: personaldata.weekDaysTiming,
+        weekEndTimingId: "",
+        weekEndTiming: personaldata.weekEndTiming,
       };
+      console.log('session line ---------- 414', session)
 
       console.log("######################>", personaldata);
 
@@ -914,7 +928,8 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
         if (data.token == false) {
           navigate("/expired");
         } else {
-          setpreferTiming(data.packageTiming);
+          setWeekEndTiming(data.packageWeTiming);
+          setWeekDaysTiming(data.packageWTiming);
         }
       })
       .catch((err) => {
@@ -930,19 +945,19 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
         {
           refStId: refStId,
           personalData: {
-            refClassMode: parseInt(
+            refClMode: parseInt(
               (sessionData as { classModeId: string }).classModeId
             ),
-            refSessionMode: parseInt(
+            refPaId: parseInt(
               (sessionData as { packageId: string }).packageId
             ),
-            refTimingId: parseInt(
-              (sessionData as { classTimeId: string }).classTimeId
+            refWeekTiming: parseInt(
+              (sessionData as { weekEndTimingId: string }).weekEndTimingId
             ),
-            refSPreferTimeId: parseInt(
-              (sessionData as { classTimeId: string }).classTimeId
+            refWeekDaysTiming: parseInt(
+              (sessionData as { weekDaysTimingId: string }).weekDaysTimingId
             ),
-            refSessionType: parseInt(
+            refBatchId: parseInt(
               (sessionData as { memberTypeId: string }).memberTypeId
             ),
             refBranchId: parseInt(
@@ -2429,7 +2444,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                     {!edits.session ? (
                       <div className="w-[100%] justify-center items-center flex flex-col">
                         <div className="w-[100%] flex flex-row lg:flex-row gap-y-[20px] justify-between mb-[20px]">
-                          <div className="w-[100%] lg:w-[30%]">
+                          <div className="w-[100%] lg:w-[48%]">
                             <TextInput
                               label="Branch *"
                               name="branchName"
@@ -2439,7 +2454,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                               readonly
                             />
                           </div>
-                          <div className="w-[100%] lg:w-[30%]">
+                          <div className="w-[100%] lg:w-[48%]">
                             <TextInput
                               label="Member Type *"
                               name="memberTypeName"
@@ -2449,7 +2464,10 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                               readonly
                             />
                           </div>
-                          <div className="w-[100%] lg:w-[30%]">
+
+                        </div>
+                        <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between">
+                          <div className="w-[100%] lg:w-[48%]">
                             <TextInput
                               label="Class Mode *"
                               name="classMode"
@@ -2463,8 +2481,6 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                               readonly
                             />
                           </div>
-                        </div>
-                        <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between">
                           <div className="w-[100%] lg:w-[48%]">
                             <TextInput
                               label="Package Name *"
@@ -2475,22 +2491,39 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                               readonly
                             />
                           </div>
-                          <div className="w-[100%] lg:w-[48%]">
+
+                        </div>
+                        <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] mt-[20px] justify-between">
+
+                          {sessionData?.weekDaysTiming?.length || 0 > 0 ? <><div className="w-[100%] lg:w-[48%]">
                             <TextInput
-                              label="Class Timing *"
+                              label="Weekdays Timing"
                               id="mtype"
                               name="classTime"
                               type="text"
-                              value={sessionData?.classTime}
+                              value={sessionData?.weekDaysTiming}
                               readonly
                             />
-                          </div>
+                          </div></> : <> </>}
+
+                          {sessionData?.weekEndTiming?.length || 0 > 0 ? <><div className="w-[100%] lg:w-[48%]">
+                            <TextInput
+                              label="Weekend Timing"
+                              id="mtype"
+                              name="classTime"
+                              type="text"
+                              value={sessionData?.weekEndTiming}
+                              readonly
+                            />
+                          </div></> : <></>}
+
+
                         </div>
                       </div>
                     ) : (
                       <div className="w-[100%] justify-center items-center flex flex-col">
                         <div className="w-[100%] flex flex-row lg:flex-row gap-y-[20px] justify-between mb-[20px]">
-                          <div className="w-[30%]">
+                          <div className="w-[45%]">
                             <SelectInput
                               id="branch"
                               name="branchId"
@@ -2509,11 +2542,14 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                                   classModeId: "",
                                   packageId: "",
                                   classTimeId: "",
+                                  weekEndTimingId: "",
+                                  weekDaysTimingId: ""
+
                                 }));
                               }}
                             />
                           </div>
-                          <div className="w-[30%]">
+                          <div className="w-[45%]">
                             <SelectInput
                               id="membertype"
                               name="memberTypeId"
@@ -2531,11 +2567,16 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                                   classModeId: "",
                                   packageId: "",
                                   classTimeId: "",
+                                  weekEndTimingId: "",
+                                  weekDaysTimingId: ""
                                 }));
                               }}
                             />
                           </div>
-                          <div className="w-[30%]">
+
+                        </div>
+                        <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between">
+                          <div className="w-[45%]">
                             <SelectInput
                               id="classtype"
                               name="classModeId"
@@ -2560,9 +2601,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                               }}
                             />
                           </div>
-                        </div>
-                        <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between">
-                          <div className="w-[48%]">
+                          <div className="w-[45%]">
                             <SelectInput
                               id="classtype"
                               name="packageId"
@@ -2575,28 +2614,30 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                                 setSessionUpdate(5);
                                 fetchTimingOptions(e.target.value);
                                 const { name, value } = e.target;
-                                console.log("value", value);
-                                console.log("name", name);
-
                                 setSessionData((prevData) => ({
                                   ...prevData,
                                   [name]: value,
                                   classTimeId: "",
+                                  weekEndTimingId: "",
+                                  weekDaysTimingId: ""
                                 }));
                               }}
                             />
                           </div>
-                          <div className="w-[48%]">
+
+                        </div>
+                        <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] mt-[20px] justify-between">
+
+                          {weekDaysTimingOption.length > 0 ? <><div className="w-[45%]">
                             <SelectInput
-                              id="classtype"
-                              name="classTimeId"
-                              label="Class Timing *"
-                              options={preferTimingOption}
+                              id="weekDaysTimingId"
+                              name="weekDaysTimingId"
+                              label="weekdays Timing*"
+                              options={weekDaysTimingOption}
                               disabled={sessionUpdate <= 4}
                               required
-                              value={sessionData?.classTimeId || ""}
+                              value={sessionData?.weekDaysTimingId || ""}
                               onChange={(e) => {
-                                console.log("session Data", sessionData);
                                 setSessionUpdate(6);
                                 const { name, value } = e.target;
                                 setSessionData((prevData) => ({
@@ -2605,7 +2646,29 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                                 }));
                               }}
                             />
-                          </div>
+                          </div></> : <></>}
+
+                          {weekEndTimingOption.length > 0 ? <><div className="w-[45%]">
+                            <SelectInput
+                              id="weekEndTimingId"
+                              name="weekEndTimingId"
+                              label="Weekend Timing *"
+                              options={weekEndTimingOption}
+                              disabled={sessionUpdate <= 4}
+                              required
+                              value={sessionData?.weekEndTimingId || ""}
+                              onChange={(e) => {
+                                setSessionUpdate(6);
+                                const { name, value } = e.target;
+                                setSessionData((prevData) => ({
+                                  ...prevData,
+                                  [name]: value,
+                                }));
+                              }}
+                            />
+                          </div></> : <></>}
+
+
                         </div>
                       </div>
                     )}

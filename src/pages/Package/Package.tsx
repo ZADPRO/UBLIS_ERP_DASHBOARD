@@ -92,7 +92,8 @@ const Package: React.FC = () => {
 
   const [newPackageData, setNewPackageData] = useState<{
     packageName?: string;
-    Timing?: number[];
+    WTiming?: number[];
+    WeTiming?: number[];
     sessionmode?: number[];
     sessiondays?: number[];
     membertype?: number[];
@@ -101,7 +102,8 @@ const Package: React.FC = () => {
     amount?: number;
   }>({
     packageName: "",
-    Timing: [],
+    WTiming: [],
+    WeTiming: [],
     sessionmode: [],
     sessiondays: [],
     membertype: [],
@@ -400,9 +402,11 @@ const Package: React.FC = () => {
           //   setSessionAdd(true);
           //   setSessionUpdate(true);
 
+          console.log('rowData line ------ 405', rowData)
           setNewPackageData({
             packageName: rowData.refPackageName,
-            Timing: rowData.refTimingId,
+            WTiming: rowData.refWTimingId,
+            WeTiming: rowData.refWeTimingId,
             sessionmode: rowData.refSessionMode,
             sessiondays: rowData.refSessionDays,
             membertype: rowData.refMemberType,
@@ -621,23 +625,23 @@ const Package: React.FC = () => {
                       />
                     </div>
 
-                    <div className="flex flex-column gap-2  w-[30%] ">
-                      <label htmlFor="username">Timing</label>
+                    <div className="flex flex-column gap-2  w-[30%]  ">
+                      <label htmlFor="username">Member Type</label>
 
                       <MultiSelect
-                        value={newPackageData.Timing}
+                        value={newPackageData.membertype}
                         onChange={(e) => {
                           setNewPackageData({
                             ...newPackageData,
-                            Timing: e.value, // e.value will be of type Nullable<Date>
+                            membertype: e.value,
                           });
                         }}
-                        options={timingOptions}
+                        options={sessionMemberTypeOptions}
                         optionLabel="label"
                         display="chip"
-                        placeholder="Select Timing"
+                        placeholder="Select a Member Type"
                         maxSelectedLabels={3}
-                        className="w-full md:w-20rem"
+                        className="w-full"
                         required
                       />
                     </div>
@@ -687,56 +691,50 @@ const Package: React.FC = () => {
                       />
                     </div>
 
-                    <div className="flex flex-column gap-2  w-[30%]  ">
-                      <label htmlFor="username">Member Type</label>
+                    <div className="flex flex-column gap-2  w-[30%] ">
+                      <label htmlFor="username">Weekdays Timing</label>
 
                       <MultiSelect
-                        value={newPackageData.membertype}
+                        value={newPackageData.WTiming}
                         onChange={(e) => {
                           setNewPackageData({
                             ...newPackageData,
-                            membertype: e.value,
+                            WTiming: e.value, // e.value will be of type Nullable<Date>
                           });
                         }}
-                        options={sessionMemberTypeOptions}
+                        options={timingOptions}
                         optionLabel="label"
                         display="chip"
-                        placeholder="Select a Member Type"
+                        placeholder="Select Timing"
                         maxSelectedLabels={3}
-                        className="w-full"
+                        className="w-full md:w-20rem"
                         required
                       />
                     </div>
 
-                    <div className="flex flex-col gap-2  w-[30%] ">
-                      <label htmlFor="username">Branch</label>
+                    <div className="flex flex-column gap-2  w-[30%] ">
+                      <label htmlFor="username">WeekEnd Timing</label>
 
-                      {packageUpdate ? (
-                        <InputText
-                          placeholder="Branch Name"
-                          value={newPackageData.branch}
-                          required
-                          readOnly
-                        />
-                      ) : (
-                        <MultiSelect
-                          value={newPackageData.branch}
-                          onChange={(e) => {
-                            setNewPackageData({
-                              ...newPackageData,
-                              branch: e.value,
-                            });
-                          }}
-                          options={sessionBranchOptions}
-                          optionLabel="label"
-                          display="chip"
-                          placeholder="Select a Branch"
-                          maxSelectedLabels={3}
-                          className="w-full md:w-20rem"
-                          required
-                        />
-                      )}
+                      <MultiSelect
+                        value={newPackageData.WeTiming}
+                        onChange={(e) => {
+                          setNewPackageData({
+                            ...newPackageData,
+                            WeTiming: e.value, // e.value will be of type Nullable<Date>
+                          });
+                        }}
+                        options={timingOptions}
+                        optionLabel="label"
+                        display="chip"
+                        placeholder="Select Timing"
+                        maxSelectedLabels={3}
+                        className="w-full md:w-20rem"
+                        required
+                      />
                     </div>
+
+
+
                   </div>
                   <div className="flex flex-row gap-6  w-[100%] mt-4">
                     <div className="flex flex-column gap-2  w-[30%]  ">
@@ -774,6 +772,36 @@ const Package: React.FC = () => {
                         }}
                         required
                       />
+                    </div>
+
+                    <div className="flex flex-col gap-2  w-[30%] ">
+                      <label htmlFor="username">Branch</label>
+
+                      {packageUpdate ? (
+                        <InputText
+                          placeholder="Branch Name"
+                          value={newPackageData.branch}
+                          required
+                          readOnly
+                        />
+                      ) : (
+                        <MultiSelect
+                          value={newPackageData.branch}
+                          onChange={(e) => {
+                            setNewPackageData({
+                              ...newPackageData,
+                              branch: e.value,
+                            });
+                          }}
+                          options={sessionBranchOptions}
+                          optionLabel="label"
+                          display="chip"
+                          placeholder="Select a Branch"
+                          maxSelectedLabels={3}
+                          className="w-full md:w-20rem"
+                          required
+                        />
+                      )}
                     </div>
                   </div>
                   <div className="flex justify-end gap-3 mt-4">
@@ -817,10 +845,30 @@ const Package: React.FC = () => {
               ></Column>
 
               <Column
-                header="Time"
+                header="WeekDays Timing"
                 body={(rowData) => (
                   <ul className="list-none p-0 m-0">
-                    {rowData.timingDetails?.map((time: any, index: any) => (
+                    {rowData.wTimingDetails?.map((time: any, index: any) => (
+                      <li
+                        key={index}
+                        style={{
+                          paddingTop: "5px",
+                          paddingBottom: "5px",
+                        }}
+                      >
+                        {time}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                style={{ minWidth: "200px", width: "auto" }}
+              ></Column>
+
+              <Column
+                header="Weekend Timing"
+                body={(rowData) => (
+                  <ul className="list-none p-0 m-0">
+                    {rowData.weTimingDetails?.map((time: any, index: any) => (
                       <li
                         key={index}
                         style={{

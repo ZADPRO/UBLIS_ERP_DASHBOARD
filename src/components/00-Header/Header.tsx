@@ -246,6 +246,106 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     },
     { path: "/logout", name: "Logout", icon: <LogOut /> },
   ];
+  const adminRoutes: Route[] = [
+    {
+      path: "/staff/Dashboard",
+      name: "Dashboard",
+      icon: <LayoutGrid />,
+    },
+    {
+      path: "/staff/users",
+      name: "All Users",
+      icon: <CircleUser />,
+    },
+    {
+      path: "/therapist/approve",
+      name: "Registered Users",
+      icon: <UserRoundCheck />,
+    },
+    {
+      path: "/staff/registeredUsers",
+      name: "Trial & Fee Due",
+      icon: <UserRoundPlus />,
+    },
+    {
+      path: "/staff/payment",
+      name: "Payment",
+      icon: <IndianRupee />,
+    },
+    {
+      path: "/staff/attendance",
+      name: "Attendance",
+      icon: <LibraryBig />,
+    },
+
+    {
+      path: "/staff/signedupUsers",
+      name: "Future Clients",
+      icon: <UserPlus />,
+    },
+
+    {
+      path: "/dir/staff",
+      name: "Staff / Employee",
+      icon: <SquareUserRound />,
+    },
+    {
+      path: "/dir/notify",
+      name: "User Audit Page",
+      icon: <FileClock />,
+    },
+    {
+      path: "/yoganotes",
+      name: "Add Notes",
+      icon: <ListChecks />,
+    },
+    {
+      path: "/assignnotes",
+      name: "Assign Notes",
+      icon: <FileStack />,
+    },
+    {
+      path: "/staff/transaction",
+      name: "Transactions",
+      icon: <ArrowRightLeft />,
+    },
+    {
+      path: "/staff/feedback",
+      name: "Feedback",
+      icon: <MessageCircle />,
+    },
+
+    {
+      path: "/staff/payroll",
+      name: "Payroll",
+      icon: <IdCard />,
+    },
+    {
+      path: "/reports",
+      name: "Reports",
+      icon: <ChartNoAxesCombined />,
+    },
+    { path: "/blogs", name: "Blogs", icon: <NotebookPen /> },
+    { path: "/editNotes", name: "Directors - Notes", icon: <PencilLine /> },
+    {
+      path: "/restrictions",
+      name: "Directors - Restrictions",
+      icon: <TriangleAlert />,
+    },
+    {
+      path: "/dir/organization",
+      name: "Organization Chart",
+      icon: <SlOrganization />,
+    },
+    { path: "/users/profile", name: "Profile", icon: <UserRoundPen /> },
+    { path: "/settings", name: "Settings", icon: <Settings /> },
+    {
+      path: "/users/support",
+      name: "Support",
+      icon: <Headset />,
+    },
+    { path: "/logout", name: "Logout", icon: <LogOut /> },
+  ];
 
   const financeRoutes: Route[] = [
     {
@@ -362,6 +462,8 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
       setRoutes(financeRoutes);
     } else if (parsedUtId === 11) {
       setRoutes(therapist);
+    } else if (parsedUtId === 12) {
+      setRoutes(adminRoutes);
     } else {
       console.warn("Unknown refUtId:", parsedUtId);
     }
@@ -566,7 +668,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
 
               <img src={logo} className="w-[5%] mx-[5%] h-[auto]" alt="" />
 
-              <p className="text-[#f95005]" style={{color:"#f95005", marginRight:"5%"}}>Logged in as: Student</p>
+              <p className="text-[#f95005]" style={{ color: "#f95005", marginRight: "5%" }}>Logged in as: Student</p>
             </div>
             {children}
           </div>

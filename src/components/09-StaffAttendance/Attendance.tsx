@@ -45,6 +45,8 @@ interface RowData {
   reftime: string;
   refCtMobile: string;
   refCtEmail: string;
+  weekDaysTiming: string;
+  weekEndTiming: string
 }
 
 interface SelectedUser {
@@ -54,6 +56,8 @@ interface SelectedUser {
   userEmail: string;
   reftime: string;
   refPackageName: string;
+  weekDaysTiming: string;
+  weekEndTiming: string
 }
 
 type Attendance = {
@@ -177,6 +181,8 @@ const StaffAttendance: React.FC = () => {
         reftime: rowData.reftime,
         refCtMobile: rowData.refCtMobile,
         refCtEmail: rowData.refCtEmail,
+        weekDaysTiming: rowData.weekDaysTiming,
+        weekEndTiming: rowData.weekEndTiming
       });
     }
     const response = await axios.post(
@@ -225,6 +231,8 @@ const StaffAttendance: React.FC = () => {
         refPackageName: rowData.refPackageName,
         userEmail: rowData.refCtEmail,
         reftime: rowData.reftime,
+        weekEndTiming: rowData.weekEndTiming,
+        weekDaysTiming: rowData.weekDaysTiming,
       });
     }
   };
@@ -597,7 +605,7 @@ const StaffAttendance: React.FC = () => {
                                           textAlign: "left",
                                         }}
                                       >
-                                        Timing
+                                        Weekdays
                                       </p>
                                       <p
                                         style={{
@@ -606,7 +614,29 @@ const StaffAttendance: React.FC = () => {
                                           paddingLeft: "10px",
                                         }}
                                       >
-                                        : {selectedUser.reftime}
+                                        : {selectedUser.weekDaysTiming}
+                                      </p>
+                                    </div>
+                                    <div className="w-full h-[25px] flex">
+                                      <p
+                                        style={{
+                                          width: "30%",
+                                          fontSize: "18px",
+                                          fontWeight: "bold",
+                                          color: "#f95005",
+                                          textAlign: "left",
+                                        }}
+                                      >
+                                        Weekend
+                                      </p>
+                                      <p
+                                        style={{
+                                          width: "60%",
+                                          fontSize: "18px",
+                                          paddingLeft: "10px",
+                                        }}
+                                      >
+                                        : {selectedUser.weekEndTiming}
                                       </p>
                                     </div>
                                   </div>

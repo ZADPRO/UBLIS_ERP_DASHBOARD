@@ -16,6 +16,10 @@ import Healthissues from "../../pages/Healthissues/Healthissues";
 import { FaClipboardList } from "react-icons/fa6";
 import { SiGoogleclassroom } from "react-icons/si";
 import Package from "../../pages/Package/Package";
+import { PiVideoBold } from "react-icons/pi";
+import TrialVideo from "../../pages/TrialVideo/trialvideo";
+import { GrDocumentTime } from "react-icons/gr";
+import Browsher from "../../pages/Browsher/Browsher";
 type DecryptResult = any;
 
 const Settings: React.FC = () => {
@@ -101,6 +105,8 @@ const Settings: React.FC = () => {
   const [packageCard, setPackageCard] = useState(false);
 
   const [healthissue, setHealthissue] = useState(false);
+  const [trialVideo, setTrialVideo] = useState(false);
+  const [browsher, setBrowsher] = useState(false);
 
   return (
     <>
@@ -226,6 +232,32 @@ const Settings: React.FC = () => {
                   <FaClipboardList />
                 </div>
               </div>
+              <div
+                className="w-[250px] h-[100px] rounded-[5px] flex flex-col justify-center bg-[#fff] shadow-lg p-3 cursor-pointer"
+                onClick={() => {
+                  setTrialVideo(true);
+                }}
+              >
+                <div className="text-[20px] font-bold font-serif">
+                  Trial Video
+                </div>
+                <div className="text-[#f95005] text-[40px] text-end">
+                  <PiVideoBold />
+                </div>
+              </div>
+              <div
+                className="w-[250px] h-[100px] rounded-[5px] flex flex-col justify-center bg-[#fff] shadow-lg p-3 cursor-pointer"
+                onClick={() => {
+                  setBrowsher(true);
+                }}
+              >
+                <div className="text-[20px] font-bold font-serif">
+                  Browsher
+                </div>
+                <div className="text-[#f95005] text-[40px] text-end">
+                  <GrDocumentTime />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -276,6 +308,24 @@ const Settings: React.FC = () => {
         onHide={() => setHealthissue(false)}
       >
         <Healthissues />
+      </Sidebar>
+
+      <Sidebar
+        style={{ width: "70%", background: "#f6f5f5" }}
+        visible={trialVideo}
+        position="right"
+        onHide={() => setTrialVideo(false)}
+      >
+        <TrialVideo />
+      </Sidebar>
+
+      <Sidebar
+        style={{ width: "70%", background: "#f6f5f5" }}
+        visible={browsher}
+        position="right"
+        onHide={() => setBrowsher(false)}
+      >
+        <Browsher />
       </Sidebar>
     </>
   );
