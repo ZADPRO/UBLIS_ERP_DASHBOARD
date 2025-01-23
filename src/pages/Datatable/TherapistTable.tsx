@@ -320,6 +320,7 @@ export default function TherapistTable() {
   };
 
   const onUserIdClick = (id: string) => {
+    console.log('id', id)
     setSelectedUserId(id);
     fetchUserDetails(id);
 
@@ -332,7 +333,10 @@ export default function TherapistTable() {
         label={rowData.userId}
         className="p-button-link"
         style={{ textAlign: "start" }}
-        onClick={() => onUserIdClick(rowData.id)}
+        onClick={() =>{
+          
+          console.log('rowData line ----- 338',rowData )
+          onUserIdClick(rowData.id)}}
       />
     );
   };

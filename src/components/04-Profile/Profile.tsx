@@ -34,6 +34,7 @@ interface ModeOfContact {
 }
 
 const Profile: React.FC = () => {
+  const [formVisible, setFormVisible] = useState(false);
   const navigate = useNavigate();
 
   const decrypt = (
@@ -121,6 +122,9 @@ const Profile: React.FC = () => {
     caredoctorname: "",
     caredoctorhospital: "",
     backpainscale: "",
+    BackPainValue: "",
+    ifbp: "",
+    bpValue: "",
     therapydurationproblem: "",
     therapypasthistory: "",
     therapyfamilyhistory: "",
@@ -159,6 +163,7 @@ const Profile: React.FC = () => {
     personal: false,
     address: false,
     communitcation: false,
+    medicalIssue: false,
     gendrel: false,
     present: false,
     therapy: false,
@@ -179,6 +184,9 @@ const Profile: React.FC = () => {
     breaks: false,
     care: false,
     backpain: false,
+    medicalIssue: false,
+    bpValue:false,
+    ifbp: false,
   });
 
   const [userdata, setuserdata] = useState({
@@ -324,6 +332,7 @@ const Profile: React.FC = () => {
 
         setOptions({
           ...options,
+          medicalIssue: personaldata.refHealthIssue,
           address: addressdata ? addressdata.addresstype : false,
           accident: generalhealth ? generalhealth.refRecentInjuries : false,
           breaks: generalhealth ? generalhealth.refRecentFractures : false,
@@ -333,7 +342,15 @@ const Profile: React.FC = () => {
               ? false
               : true
             : false,
+            ifbp: generalhealth?generalhealth.refIfBP === "no"
+              ? false
+              : true
+              : false,
         });
+
+        if (personaldata.refHealthIssue) {
+          setFormVisible(true);
+        } else setFormVisible(false);
 
         console.log("communication.refCtMobile", communication.refCtMobile);
         console.log(typeof communication.refCtMobile);
@@ -398,6 +415,9 @@ const Profile: React.FC = () => {
           caredoctorname: presenthealth ? presenthealth.refDoctor : null,
           caredoctorhospital: presenthealth ? presenthealth.refHospital : null,
           backpainscale: presenthealth ? presenthealth.refBackPain : null,
+          BackPainValue: presenthealth ? presenthealth.refBackPainValue : null,
+          bpValue: presenthealth ? generalhealth.refBpType : null,
+          ifbp: presenthealth ? generalhealth.refIfBp : null,
           therapydurationproblem: presenthealth
             ? presenthealth.refProblem
             : null,
@@ -783,6 +803,8 @@ const Profile: React.FC = () => {
 
       {
         presentHealth: {
+          refIfBp: inputs.ifbp,
+          refBackPainValue: inputs.BackPainValue,
           refBackpain: inputs.backpainscale,
           refDrName: inputs.caredoctorname,
           refHospital: inputs.caredoctorhospital,
@@ -1185,7 +1207,7 @@ const Profile: React.FC = () => {
               <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
                 <div className="w-[100%] flex justify-between items-center mb-5">
                   <div className="text-[1.2rem] lg:text-[25px] font-bold">
-                    Personal Information
+                    Personal Information 
                   </div>
                   {edits.personal ? (
                     <button
@@ -1420,12 +1442,12 @@ const Profile: React.FC = () => {
                         localStorage.getItem("refUtId") === "6" ? (
                           <div className="w-[48%]">
                             <TextInput
-                              label="Occupation"
+                              label="Occupation *"
 
                               name="occupation"
                               id="Occupation"
                               type="text"
-                              disabled={inputs.age > "18" ? false : true}
+                              disabled={inputs.age > "20" ? false : true}
                               onChange={handleInputVal}
                               value={inputs.occupation}
                               readonly={!edits.personal}
@@ -1905,22 +1927,139 @@ const Profile: React.FC = () => {
                           />
                         </div>
                       </div>
-
-                      <div className="w-[100%] flex justify-between mb-[20px]">
-                        <div className="w-[100%]">
-                          <TextInput
-                            label="BP"
-                            name="bp"
-                            id="bp"
-                            type="number"
-                            onChange={handleInputVal}
-                            value={inputs.bp}
-                            readonly={!edits.gendrel}
+                      <div className="w-[100%] lg:w-[100%] my-[1%]">
+                      <label className="w-[100%] text-[#f95005] font-bold text-[1.0rem] lg:text-[20px] text-start">
+                        Medical Issue *{" "}
+                      </label>
+                      <div className="w-[100%] flex justify-start mt-[10px]">
+                        <div className="mr-10">
+                          <RadiobuttonInput
+                            id="medicalIssueYes"
+                            value="yes"
+                            name="medicalIssue"
+                            selectedOption={options.medicalIssue ? "yes" : ""}
+                            // onChange={() => {
+                            //   setOptions({ ...options, medicalIssue: true });
+                            //   // handleFormToggle("yes");
+                            // }}
+                            label="Yes"
+                            required
+                          />
+                        </div>
+                        <div className="">
+                          <RadiobuttonInput
+                            id="medicalIssueNo"
+                            value="no"
+                            name="medicalIssue"
+                            label="No"
+                            onChange={() => {
+                              setOptions({ ...options, medicalIssue: false });
+                              // handleFormToggle("no");
+                            }}
+                            selectedOption={!options.medicalIssue ? "no" : ""}
+                            required
                           />
                         </div>
                       </div>
+                      {/* <div className="mt-2 text-[#ff621b] flex flex-row justify-center align-middle gap-5">
+        <p>
+          Note * : If you have any medical history, any medical problems, or
+          feel that you have any body pain or other health issues, click 'Yes.'
+          Otherwise, click 'No'.
+        </p>
+      </div> */}
+                    </div>
+                      {/* <div className="w-[90%] md:w-[100%]  mt-[20px]">
+                  <label className="w-[100%] text-[#f95005]  text-[1.0rem] lg:text-[18px] text-start">
+                    Recent Injuries / Accidents / Surgeries / Fractures /
+                    Sprains *
+                  </label>
+                  <div className="w-[100%] flex justify-start mt-[10px]">
+                    <div className="mr-10">
+                      <RadiobuttonInput
+                        id="breaksyes"
+                        value="yes"
+                        name="breaks"
+                        label="Yes"
+                        selectedOption={options.breaks ? "yes" : ""}
+                        onChange={() => {
+                          setOptions({
+                            ...options,
+                            breaks: true,
+                          });
+                        }}
+                        readonly={!edits.gendrel}
+                        required
+                      />
+                    </div>
+                    <div className="">
+                      <RadiobuttonInput
+                        id="breaksno"
+                        value="no"
+                        name="breaks"
+                        label="No"
+                        selectedOption={!options.breaks ? "no" : ""}
+                        onChange={() => {
+                          setOptions({
+                            ...options,
+                            breaks: false,
+                          });
+                          setInputs({
+                            ...inputs,
+                            breaksdetails: "",
+                            breaksotheractivities: "",
+                          });
+                        }}
+                        readonly={!edits.gendrel}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="w-[100%] flex flex-col  mt-[20px]">
+                    <div className="w-[100%] mb-[20px]">
+                      <TextInput
+                        label="Details"
+                        name="breaksdetails"
+                        id="details"
+                        type="text"
+                        onChange={handleInputVal}
+                        value={inputs.breaksdetails}
+                        disabled={!options.breaks}
+                        readonly={!edits.gendrel}
+                        required
+                      />
+                    </div>
+                    <div className="w-[100%] mb-[20px]">
+                      <TextInput
+                        label="Other Activities"
+                        name="breaksotheractivities"
+                        id="otheractivities"
+                        type="text"
+                        onChange={handleInputVal}
+                        value={inputs.breaksotheractivities}
+                        disabled={!options.breaks}
+                        readonly={!edits.gendrel}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="w-[100%] flex justify-between mb-[20px]">
+                  <div className="w-[100%]">
+                    <TextInput
+                      label="Anything else"
+                      name="genderalanything"
+                      id="anythingelse"
+                      type="text"
+                      onChange={handleInputVal}
+                      value={inputs.genderalanything}
+                      readonly={!edits.gendrel}
+                    />
+                  </div>
+                </div> */}
+                     
 
-                      <div className="w-[100%] flex flex-col lg:flex-row gap-y-[25px] justify-between mb-[25px]">
+                      {/* <div className="w-[100%] flex flex-col lg:flex-row gap-y-[25px] justify-between mb-[25px]">
                         <div className="w-[100%] lg:w-[48%]">
                           <label className="w-[100%] text-[#f95005] font-bold text-[1.0rem] lg:text-[20px] text-start">
                             Recent injuries / Accidents / Operations *{" "}
@@ -2070,7 +2209,7 @@ const Profile: React.FC = () => {
                             readonly={!edits.gendrel}
                           />
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </form>
@@ -2085,7 +2224,7 @@ const Profile: React.FC = () => {
                   <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
                     <div className="w-[100%] flex justify-between items-center mb-5">
                       <div className="text-[1.2rem] lg:text-[25px] font-bold">
-                        Past or Present Health
+                      Past or Present Health Problems
                       </div>
                       {edits.present ? (
                         <button
@@ -2147,8 +2286,237 @@ const Profile: React.FC = () => {
                             />
                           </div>
                         </div>
+                        <div className="w-[100%] mb-5 flex flex-col gap-y-[20px] md:flex-row justify-between">
+                        <div className="w-[100%] md:w-[100%]">
+                          <label className="w-[100%] text-[#f95005]  text-[1.0rem] lg:text-[18px] text-start">
+                            Under Physician's Care *
+                          </label>
+                          <div className="w-[100%] flex justify-start mt-[10px]">
+                            <div className="mr-10">
+                              <RadiobuttonInput
+                                id="careyes"
+                                value="yes"
+                                name="care"
+                                label="Yes"
+                                selectedOption={options.care ? "yes" : ""}
+                                onChange={() => {
+                                  setOptions({
+                                    ...options,
+                                    care: true,
+                                  });
+                                }}
+                                readonly={!edits.present}
+                                required
+                              />
+                            </div>
+                            <div className="">
+                              <RadiobuttonInput
+                                id="careno"
+                                value="no"
+                                name="care"
+                                label="No"
+                                selectedOption={!options.care ? "no" : ""}
+                                onChange={() => {
+                                  setOptions({
+                                    ...options,
+                                    care: false,
+                                  });
+                                }}
+                                readonly={!edits.present}
+                                required
+                              />
+                            </div>
+                          </div>
+                          <div className="w-[100%] flex justify-between mt-[20px]">
+                            <div className="w-[48%]">
+                              <TextInput
+                                label="Doctor Name"
+                                name="caredoctorname"
+                                id="doctorname"
+                                type="text"
+                                onChange={handleInputVal}
+                                value={inputs.caredoctorname}
+                                disabled={!options.care}
+                                readonly={!edits.present}
+                                required
+                              />
+                            </div>
+                            <div className="w-[48%]">
+                              <TextInput
+                                label="Hospital"
+                                name="caredoctorhospital"
+                                id="hospital"
+                                type="text"
+                                onChange={handleInputVal}
+                                value={inputs.caredoctorhospital}
+                                disabled={!options.care}
+                                readonly={!edits.present}
+                                required
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                   
+                     
+                      <div className="w-[100%] mb-5 flex flex-col gap-y-[20px] md:flex-row justify-between">
+                        <div className="w-[100%] md:w-[100%]">
+                          <label className="w-[100%] text-[#f95005]  text-[1.0rem] lg:text-[18px] text-start">
+                          Back Pain *
+                        </label>
+                        <div className="w-[100%] flex justify-start mt-[10px]">
+                            <div className="mr-10">
+                            <RadiobuttonInput
+                              id="painyes"
+                              value="yes"
+                              name="pain"
+                              label="Yes"
+                              selectedOption={options.backpain ? "yes" : ""}
+                              onChange={() => {
+                                setOptions({
+                                  ...options,
+                                  backpain: true,
+                                });
+                              }}
+                              readonly={!edits.present}
+                              required
+                            />
+                          </div>
+                          <div className="">
+                            <RadiobuttonInput
+                              id="painno"
+                              value="no"
+                              name="pain"
+                              label="No"
+                              selectedOption={!options.backpain ? "no" : ""}
+                              onChange={() => {
+                                setOptions({
+                                  ...options,
+                                  backpain: false,
+                                });
+                              }}
+                              readonly={!edits.present}
+                              required
+                            />
+                          </div>
+                        </div>
 
-                        <div className="w-[100%] flex flex-col gap-y-[20px] lg:flex-row justify-between">
+                        
+                        <div className="w-[100%] flex justify-between mt-[20px]">
+                        <div className="w-[48%]">
+                            <SelectInput
+                              id="painscale"
+                              name="backpainscale"
+                              label="Pain Scale"
+                              disabled={!options.backpain || !edits.present}
+                              // readonly={!edits.present}
+                              required
+                              onChange={handleInputVal}
+                              value={inputs.backpainscale}
+                              options={[
+                                { value: "upper", label: "Upper" },
+                                { value: "middle", label: "Middle" },
+                                { value: "lower", label: "Lower" },
+                              ]}
+                            
+                            />
+                          </div>
+                          <div className="w-[48%]">
+                            
+
+                        <TextInput
+                        id="painValue"
+                        name="BackPainValue"
+                        label="Additional Content (Back Pain)"
+                         disabled={!options.backpain}
+                              readonly={!edits.present}
+                        required
+                        type=""
+                          value={inputs.BackPainValue}
+                        onChange={(e) => handleInputVal(e)}
+                      />
+                          </div>
+                        </div>
+                      </div>
+                      </div>
+                      <div className="w-[100%] flex flex-col gap-y-[20px] md:flex-row justify-between">
+                        <div className="w-[100%] md:w-[100%]">
+                          <label className="w-[100%] text-[#f95005]  text-[1.0rem] lg:text-[18px] text-start">
+                          BP *
+                        </label>
+                        <div className="w-[100%] flex justify-start mt-[10px]">
+                        <div className="mr-10">
+                            <RadiobuttonInput
+                              id="bpyes"
+                              value="yes"
+                              name="bp"
+                              label="Yes"
+                              selectedOption={options.ifbp ? "yes" : ""}
+                              onChange={() => {
+                                setOptions({
+                                  ...options,
+                                  ifbp: true,
+                                });
+                              }}
+                              readonly={!edits.present}
+                              required
+                            />
+                          </div>
+                          <div className="">
+                            <RadiobuttonInput
+                              id="bpno"
+                              value="no"
+                              name="bp"
+                              label="No"
+                              selectedOption={!options.ifbp ? "no" : ""}
+                              onChange={() => {
+                                setOptions({
+                                  ...options,
+                                  ifbp: false,
+                                });
+                              }}
+                              readonly={!edits.present}
+                              required
+                            />
+                          </div>
+                        </div>
+
+                        <div className="w-[100%] flex justify-between mt-[20px]">
+                        <div className="w-[48%]">
+                      <SelectInput
+                        id="bp"
+                        name="bp"
+                        label="BP" 
+                        options={[
+                          { value: "low", label: "Low" },
+                          { value: "high", label: "High" },
+                        ]}
+                        disabled={!options.ifbp || !edits.present}
+                        required
+                        value={inputs.bp}
+                        onChange={(e) => handleInputVal(e)}
+                      />
+                    </div>
+                    <div className="w-[48%]">
+                      <TextInput
+                        id="bp"
+                        name="bpValue"
+                        label="BP Value (120/80)"
+                        disabled={!options.ifbp}
+                        readonly={!edits.present}
+                        required
+                        type=""
+                        value={inputs.bpValue}
+                        onChange={(e) => handleInputVal(e)}
+                      />
+                    </div>
+                  </div>
+                </div>
+                </div>
+                </div>
+                
+
+                        {/* <div className="w-[100%] flex flex-col gap-y-[20px] lg:flex-row justify-between">
                           <div className="w-[100%] lg:w-[48%]">
                             <label className="w-[100%] text-[#f95005] font-bold text-[1rem] lg:text-[20px] text-start">
                               Under Physician's Care *
@@ -2278,92 +2646,161 @@ const Profile: React.FC = () => {
                               </div>
                             </div>
                           </div>
-                        </div>
-                      </div>
-                    </div>
+                        </div> */}
+                    
+                   </div>
                   </div>
                 </form>
 
                 {/* Therapy */}
                 <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
-                  <div className="w-[100%] flex justify-between items-center mb-5">
-                    <div className="text-[1.2rem] lg:text-[25px] font-bold">
-                      Therapy
-                    </div>
-                    {edits.therapy ? (
-                      <div
-                        className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
-                        onClick={handletherapy}
-                      >
-                        Save&nbsp;&nbsp;
-                        <i className="text-[15px] pi pi-check"></i>
-                      </div>
-                    ) : (
-                      <div
-                        onClick={() => {
-                          editform("therapy");
-                        }}
-                        className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
-                      >
-                        Edit&nbsp;&nbsp;
-                        <i className="text-[15px] pi pi-pen-to-square"></i>
-                      </div>
-                    )}
+                    <div className="w-[100%] flex justify-between items-center mb-5">
+                      <div className="text-[1.2rem] lg:text-[25px] font-bold">
+                    Health Problem History
                   </div>
-                  <div className="w-[100%] flex justify-center items-center">
-                    <div className="w-[100%] justify-center items-center flex flex-col">
-                      <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between mb-[20px]">
-                        <div className="w-[100%] lg:w-[48%]">
-                          <TextInput
-                            label="Duration of the Problem"
-                            name="therapydurationproblem"
-                            id="durationproblem"
-                            type="text"
-                            onChange={handleInputVal}
-                            value={inputs.therapydurationproblem}
-                            readonly={!edits.therapy}
-                          />
-                        </div>
-                        <div className="w-[100%] lg:w-[48%]">
-                          <TextInput
-                            label="Relevant Past History"
-                            name="therapypasthistory"
-                            id="relevantpasthistory"
-                            type="text"
-                            onChange={handleInputVal}
-                            value={inputs.therapypasthistory}
-                            readonly={!edits.therapy}
-                          />
-                        </div>
+                </div>
+                <div className="w-[100%] flex justify-center items-center">
+                  <div className="w-[100%] justify-center items-center flex flex-col">
+                    <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
+                      <div className="w-[100%] md:w-[48%]">
+                        <TextInput
+                          label="Duration of the Problem *"
+                          name="therapydurationproblem"
+                          id="durationproblem"
+                          type="text"
+                          onChange={handleInputVal}
+                          value={inputs.therapydurationproblem}
+                          readonly={!edits.therapy}
+                        />
                       </div>
+                      <div className="w-[100%] md:w-[48%]">
+                        <TextInput
+                          label="Relevant Past History"
+                          name="therapypasthistory"
+                          id="relevantpasthistory"
+                          type="text"
+                          onChange={handleInputVal}
+                          value={inputs.therapypasthistory}
+                          readonly={!edits.therapy}
+                        />
+                      </div>
+                    </div>
 
-                      <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between">
-                        <div className="w-[100%] lg:w-[48%]">
-                          <TextInput
-                            label="Relevant Family History"
-                            name="therapyfamilyhistory"
-                            id="relevantfamilyhistory"
-                            type="text"
-                            onChange={handleInputVal}
-                            value={inputs.therapyfamilyhistory}
-                            readonly={!edits.therapy}
-                          />
-                        </div>
-                        <div className="w-[100%] lg:w-[48%]">
-                          <TextInput
-                            label="Anything else"
-                            name="therapyanythingelse"
-                            id="anythingelse"
-                            type="text"
-                            onChange={handleInputVal}
-                            value={inputs.therapyanythingelse}
-                            readonly={!edits.therapy}
-                          />
-                        </div>
+                    <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between">
+                      <div className="w-[100%] md:w-[48%]">
+                        <TextInput
+                          label="Relevant Family History"
+                          name="therapyfamilyhistory"
+                          id="relevantfamilyhistory"
+                          type="text"
+                          onChange={handleInputVal}
+                          value={inputs.therapyfamilyhistory}
+                          readonly={!edits.therapy}
+                        />
+                      </div>
+                      <div className="w-[100%] md:w-[48%]">
+                        <TextInput
+                          label="Anything else"
+                          name="therapyanythingelse"
+                          id="anythingelse"
+                          type="text"
+                          onChange={handleInputVal}
+                          value={inputs.therapyanythingelse}
+                          readonly={!edits.therapy}
+                        />
                       </div>
                     </div>
                   </div>
                 </div>
+                <div className="w-[90%] md:w-[100%]  mt-[20px]">
+                  <label className="w-[100%] text-[#f95005]  text-[1.0rem] lg:text-[18px] text-start">
+                    Recent Injuries / Accidents / Surgeries / Fractures /
+                    Sprains *
+                  </label>
+                  <div className="w-[100%] flex justify-start mt-[10px]">
+                    <div className="mr-10">
+                      <RadiobuttonInput
+                        id="breaksyes"
+                        value="yes"
+                        name="breaks"
+                        label="Yes"
+                        selectedOption={options.breaks ? "yes" : ""}
+                        onChange={() => {
+                          setOptions({
+                            ...options,
+                            breaks: true,
+                          });
+                        }}
+                        readonly={!edits.gendrel}
+                        required
+                      />
+                    </div>
+                    <div className="">
+                      <RadiobuttonInput
+                        id="breaksno"
+                        value="no"
+                        name="breaks"
+                        label="No"
+                        selectedOption={!options.breaks ? "no" : ""}
+                        onChange={() => {
+                          setOptions({
+                            ...options,
+                            breaks: false,
+                          });
+                          setInputs({
+                            ...inputs,
+                            breaksdetails: "",
+                            breaksotheractivities: "",
+                          });
+                        }}
+                        readonly={!edits.gendrel}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="w-[100%] flex flex-col  mt-[20px]">
+                    <div className="w-[100%] mb-[20px]">
+                      <TextInput
+                        label="Details"
+                        name="breaksdetails"
+                        id="details"
+                        type="text"
+                        onChange={handleInputVal}
+                        value={inputs.breaksdetails}
+                        disabled={!options.breaks}
+                        readonly={!edits.gendrel}
+                        required
+                      />
+                    </div>
+                    <div className="w-[100%] mb-[20px]">
+                      <TextInput
+                        label="Other Activities"
+                        name="breaksotheractivities"
+                        id="otheractivities"
+                        type="text"
+                        onChange={handleInputVal}
+                        value={inputs.breaksotheractivities}
+                        disabled={!options.breaks}
+                        readonly={!edits.gendrel}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="w-[100%] flex justify-between">
+                  <div className="w-[100%] ">
+                    <TextInput
+                      label="Anything else"
+                      name="genderalanything"
+                      id="anythingelse"
+                      type="text"
+                      onChange={handleInputVal}
+                      value={inputs.genderalanything}
+                      readonly={!edits.gendrel}
+                    />
+                  </div>
+                </div>
+              </div>
               </>
             ) : (
               <>
