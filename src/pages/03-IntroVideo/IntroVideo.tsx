@@ -35,15 +35,11 @@ const IntroVideo: React.FC = () => {
 
 
   const [Data, setData] = useState<userData>();
-  const [timeLeft, setTimeLeft] = useState(14400 * 60);
+  const [timeLeft, setTimeLeft] = useState<number>(0);
   const [videoData, setVideoData] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState<VideoOption | null>(null);
 
-  const formatTime = (time: any) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = time % 60;
-    return `${minutes} mins ${seconds} sec`;
-  };
+
 
   const navigate = useNavigate();
 
@@ -116,7 +112,7 @@ const IntroVideo: React.FC = () => {
       }
     }
   };
-  
+
 
   useEffect(() => {
     let timer: any;
@@ -176,12 +172,10 @@ const IntroVideo: React.FC = () => {
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
-        console.log("data", data);
         if (data.token == false) {
           navigate("/expired");
         } else {
           localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
-          console.log('data.data', data.data.video)
           setData(data.data);
 
           setSelectedVideo(data.data.video[0])
@@ -189,7 +183,7 @@ const IntroVideo: React.FC = () => {
           setVideoData(data.data.video);
         }
       });
-      
+
 
     const handleKeydown = (e: KeyboardEvent) => {
       if (
@@ -234,8 +228,68 @@ const IntroVideo: React.FC = () => {
     };
   }, []);
 
-  console.log('videoData', videoData)
   const videoSrc = selectedVideo ? selectedVideo.refVdLink : null;
+
+  useEffect(() => {
+    if (!Data?.refEndTime) {
+      return; // Exit early if refEndTime is undefined
+    }
+
+    // Parse the custom date format (DD/MM/YYYY, hh:mm:ss A)
+    const parseCustomDate = (dateString: string): number => {
+      const [datePart, timePart] = dateString.split(", ");
+      const [day, month, year] = datePart.split("/").map(Number);
+      const [time, meridian] = timePart.split(" ");
+      const [hours, minutes, seconds] = time.split(":").map(Number);
+
+      // Convert hours based on AM/PM
+      const parsedHours =
+        meridian === "PM" && hours !== 12
+          ? hours + 12
+          : meridian === "AM" && hours === 12
+            ? 0
+            : hours;
+
+      // Create the date object
+      return new Date(year, month - 1, day, parsedHours, minutes, seconds).getTime();
+    };
+
+    const endTime = parseCustomDate(Data.refEndTime); // Convert refEndTime to a timestamp
+    const currentTime = Date.now(); // Get the current system timestamp
+    const initialTimeLeft = Math.max(0, Math.floor((endTime - currentTime) / 1000)); // Difference in seconds
+
+    setTimeLeft(initialTimeLeft); // Set the initial time left
+
+    // Start the interval to update the time left
+    let timer: NodeJS.Timeout | undefined;
+    if (initialTimeLeft > 0) {
+      timer = setInterval(() => {
+        setTimeLeft((prevTime) => {
+          if (prevTime <= 1) {
+            clearInterval(timer); // Clear the interval when the timer reaches 0
+            return 0;
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
+    }
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(timer);
+  }, [Data?.refEndTime]);
+
+
+
+
+  // Format timeLeft into HH:mm:ss format
+  const formatTime = (seconds: number) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
 
   return (
     <div>
@@ -243,18 +297,19 @@ const IntroVideo: React.FC = () => {
         <div className="flex flex-column md:flex-row justify-evenly lg:h-[90vh]">
           <div className="w-full md:w-4 flex flex-column gap-3 py-5 px-3 align-items-center justify-center">
             <div className="flex md:w-[60%] w-[100%] justify-center">
-              <Dropdown
-                value={selectedVideo}
-                options={Data?.video}
-                optionLabel="refVdLang"
-                placeholder="Select a Language"
-                className="w-[80%] md:w-20rem"
-                onChange={(e) => {
-                  console.log('line ------- 248', e.value)
-                  setSelectedVideo(e.value)
+              <div className="flex flex-col gap-2 text-[1.1rem] text-[#f95005]"><label>Select Language</label>
+                <Dropdown
+                  value={selectedVideo}
+                  options={Data?.video}
+                  optionLabel="refVdLang"
+                  placeholder="Select a Language"
+                  className="w-[80%] md:w-20rem"
+                  onChange={(e) => {
+                    setSelectedVideo(e.value)
 
-                }}
-              />
+                  }}
+                /></div>
+
 
             </div>
             <div className="userDetails">
@@ -347,7 +402,22 @@ const IntroVideo: React.FC = () => {
               <>
                 {videoData && (
 
-                  <video
+                  <div><video
+                    src={videoSrc || undefined}
+                    width="100%"
+                    height="auto"
+                    ref={videoRef}
+                    className="jw-video jw-reset w-full"
+                    title="Intro Video"
+                    onClick={handleClick}
+                    onContextMenu={handleRightClick}
+                    style={{ cursor: "pointer" }}
+                    controls
+                    autoPlay={false}
+                    controlsList="nodownload" // Disable download option
+                  />
+                    {/* <video
+
                     ref={videoRef}
                     className="jw-video jw-reset w-full"
                     webkit-playsinline=""
@@ -358,10 +428,14 @@ const IntroVideo: React.FC = () => {
                     style={{ cursor: "pointer" }}
                     controls={false}
                     autoPlay={false}
-                  // paused={isPaused}
-                  ></video>
+                  ></video> */}
+                  </div>
+
+
+
+
                 )}
-                <div className="custom-controls flex justify-center gap-3 py-4">
+                {/* <div className="custom-controls flex justify-center gap-3 py-4">
                   <button
                     onClick={handlePlayPause}
                     className="p-button p-button-primary"
@@ -374,7 +448,7 @@ const IntroVideo: React.FC = () => {
                   >
                     Fullscreen
                   </button>
-                </div>
+                </div> */}
               </>
             )}
           </div>

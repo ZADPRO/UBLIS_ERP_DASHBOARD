@@ -89,7 +89,7 @@ const Therapist: React.FC = () => {
         <>
           <div className="bg-[#f6f5f5]">
             <div className="headerPrimary">
-              <h3>REGISTERED USERS</h3>
+              <h3>REGISTERED USERS (With Medical Issue) </h3>
               <div className="quickAcces">
                 <Skeleton
                   shape="circle"
@@ -117,7 +117,7 @@ const Therapist: React.FC = () => {
       ) : (
         <div className="usersTable">
           <div className="headerPrimary">
-            <h3>REGISTERED USERS</h3>
+            <h3>REGISTERED USERS (With Medical Issue) </h3>
             <div className="quickAcces">
               {userdata.profileimg ? (
                 <div className="p-link layout-topbar-button">

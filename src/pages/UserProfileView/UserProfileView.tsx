@@ -305,6 +305,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
 
   const getProfileData = () => {
     let url = "/user/profileData";
+    
 
     if (type === "staff") {
       url = "/staff/ProfileData";

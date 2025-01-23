@@ -71,11 +71,23 @@ interface PackageData {
   users: User[];
 }
 
+interface reportShow {
+  classMode?: string;
+  reportType?: string;
+  durationType?: string;
+  date?: any;
+}
+
 const AttendanceReportDownloadSidebar: React.FC = () => {
   const navigate = useNavigate();
 
   const dt = useRef<DataTable<PackageData[]>>(null);
-  const [sessionMode, setSessionMode] = useState<SessionType[]>([]);
+  const [showData, setShowData] = useState<reportShow>({
+    classMode: "",
+    reportType: "",
+    durationType: "",
+    date: "",
+  }); const [sessionMode, setSessionMode] = useState<SessionType[]>([]);
   const [reportType, setReportType] = useState<number>();
   const [reportRange, setReportRange] = useState<ReportRangeParams | null>(
     null
@@ -212,9 +224,27 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
     XLSX.writeFile(workbook, "export.xlsx");
   };
 
+  const startToolbarTemplate = () => {
+    return (
+      <div className="flex justify-center flex-col bg-black]">
+        <div className="flex flex-row gap-10">
+          <p>Class Mode: {showData.classMode}</p>
+          <p>Report Type: {showData.reportType}</p>
+          <p>Duration Type: {showData.durationType}</p>
+        </div>
+
+        <div>
+          Date : {showData.date}
+        </div>
+      </div>
+    );
+  };
   const rightToolbarTemplate = () => {
     return (
-      <Button label="Export" className="p-button-help" onClick={exportCSV} />
+      <div className="flex justify-center flex-row bg-black]">
+        <Button label="Export" className="p-button-help" onClick={exportCSV} />
+
+      </div>
     );
   };
 
@@ -302,7 +332,7 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
 
   const reportAPI = async () => {
     try {
-      let refRepDurationFormatted;
+      let refRepDurationFormatted:any;
       if (date) {
         refRepDurationFormatted = date
           ? new Intl.DateTimeFormat("en-GB", {
@@ -339,6 +369,10 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
       }
 
       const refRepDuType = reportRange?.code;
+      setShowData((prevState) => ({
+        ...prevState,
+        date: refRepDurationFormatted,
+      }));
 
       const refSessionMod = sessionMode.map((session) => session.code);
 
@@ -400,7 +434,8 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
 
       {dataDisplay ? (
         <div className="card mt-4">
-          <Toolbar className="mb-4" right={rightToolbarTemplate}></Toolbar>
+
+          <Toolbar className="mb-4" start={startToolbarTemplate} end={rightToolbarTemplate}></Toolbar>
           <DataTable
             value={transformedData}
             ref={dt}
@@ -430,9 +465,16 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
             <div className="flex w-[100%] justify-center  gap-5 mt-3 ">
               <MultiSelect
                 value={sessionMode}
-                onChange={(e: DropdownChangeEvent) =>
-                  setSessionMode(e.value as SessionType[])
-                }
+                onChange={(e: DropdownChangeEvent) => {
+                  const selectedLabels = (e.value as SessionType[]).map((option) => option.name).join(" & ");
+
+                  setShowData((prevState) => ({
+                    ...prevState,
+                    classMode: selectedLabels,
+                  }));
+
+                  setSessionMode(e.value as SessionType[]);
+                }}
                 options={session}
                 optionLabel="name"
                 placeholder="Select Session Types"
@@ -440,9 +482,18 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
                 disabled={dataDisplay}
               />
 
+
+
               <Dropdown
                 value={reportType}
-                onChange={(e: DropdownChangeEvent) => setReportType(e.value)}
+                onChange={(e: DropdownChangeEvent) => {
+                  const selectedLabel = e.value?.name || "";
+                  setShowData((prevState) => ({
+                    ...prevState,
+                    reportType: selectedLabel,
+                  }));
+                  setReportType(e.value)
+                }}
                 options={Type}
                 optionLabel="name"
                 placeholder="Select a Report Type"
@@ -451,7 +502,14 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
               />
               <Dropdown
                 value={reportRange}
-                onChange={(e: DropdownChangeEvent) => setReportRange(e.value)}
+                onChange={(e: DropdownChangeEvent) => {
+                  const selectedLabel = e.value?.name || "";                  
+                  setShowData((prevState) => ({
+                    ...prevState,
+                    durationType: selectedLabel,
+                  }));
+                  setReportRange(e.value)
+                }}
                 options={range}
                 optionLabel="name"
                 placeholder="Select a Duration Type"
@@ -469,6 +527,7 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
                   className="w-full md:w-20rem"
                   dateFormat="dd/mm/yy"
                   onChange={(e) => {
+                    console.log('e', e.value)
                     handleDateChange(e);
                     setDateChoose(true);
                   }}

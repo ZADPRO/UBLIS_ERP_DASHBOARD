@@ -264,20 +264,10 @@ export default function RegisteredDataTable() {
   const handleApprove = async (customer: Customer) => {
     console.log("customer", customer);
     try {
-      const mappedStatus = Object.keys(statusMapping).find(
-        (key) => statusMapping[Number(key)] === customer.currentStatus
-      );
-
-      const nextStatus = Object.keys(statusMapping).find(
-        (key) => statusMapping[Number(key)] === customer.nextStatus
-      );
-
       const response = await Axios.post(
         import.meta.env.VITE_API_URL + `/staff/Approvalbtn`,
         {
           refStId: customer.id,
-          currentStatus: mappedStatus ? Number(mappedStatus) : undefined,
-          nextStatus: nextStatus ? Number(nextStatus) : undefined,
         },
         {
           headers: {
@@ -302,10 +292,10 @@ export default function RegisteredDataTable() {
         const updatedCustomers = customers.map((c) =>
           c.id === customer.id
             ? {
-                ...c,
-                currentStatus: c.nextStatus,
-                nextStatus: getNextStatus(c.refUtId + 1),
-              }
+              ...c,
+              currentStatus: c.nextStatus,
+              nextStatus: getNextStatus(c.refUtId + 1),
+            }
             : c
         );
 
@@ -318,13 +308,44 @@ export default function RegisteredDataTable() {
     }
   };
 
-  const handleReject = async (customerId: string) => {
-    const updatedCustomers = customers.map((customer) =>
-      customer.id === customerId
-        ? { ...customer, commentEnabled: true }
-        : customer
+  // const handleReject = async (customerId: string) => {
+  //   const updatedCustomers = customers.map((customer) =>
+  //     customer.id === customerId
+  //       ? { ...customer, commentEnabled: true }
+  //       : customer
+  //   );
+  //   setCustomers(updatedCustomers);
+  // };
+
+  const handleReject = async (id: any) => {
+    const response = await Axios.post(
+      import.meta.env.VITE_API_URL + `/staff/rejectionbtn`,
+      {
+        refStId: id,
+        comment: "Frontoffice Reject The Application",
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("JWTtoken"),
+          "Content-Type": "application/json",
+        },
+      }
     );
-    setCustomers(updatedCustomers);
+
+    const data = decrypt(
+      response.data[1],
+      response.data[0],
+      import.meta.env.VITE_ENCRYPTION_KEY
+    );
+    if (data.token == false) {
+      navigate("/expired");
+    }
+
+    localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+
+    if (data.success) {
+      fetchCustomers();
+    }
   };
 
   const handleCommentChange = (customerId: string, value: string) => {
@@ -418,6 +439,47 @@ export default function RegisteredDataTable() {
     }
   };
 
+  const passFromToThreapist = async (customerId: string) => {
+    const customer = customers.find((customer) => customer.id === customerId);
+    if (customer) {
+      try {
+
+        const response = await Axios.post(
+          import.meta.env.VITE_API_URL + `/staff/passToThreapist`,
+          {
+            refStId: customer.id,
+          },
+          {
+            headers: {
+              Authorization: localStorage.getItem("JWTtoken"),
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        const data = decrypt(
+          response.data[1],
+          response.data[0],
+          import.meta.env.VITE_ENCRYPTION_KEY
+        );
+
+        if (data.token == false) {
+          navigate("/expired")
+        } else {
+          localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+
+          if (data.success) {
+            fetchCustomers();
+          }
+        }
+
+
+      } catch (error) {
+        console.error(`Error in passing the form of ${customerId}:`, error);
+      }
+    }
+  };
+
   const onUserIdClick = (id: string) => {
     setSelectedUserId(id);
     fetchUserDetails(id);
@@ -428,7 +490,7 @@ export default function RegisteredDataTable() {
   const userIdTemplate = (rowData: Customer) => {
     return (
       <Button
-        label={rowData.fname}
+        label={rowData.userId}
         className="p-button-link"
         style={{ textAlign: "start" }}
         onClick={() => onUserIdClick(rowData.id)}
@@ -451,9 +513,10 @@ export default function RegisteredDataTable() {
             label="Pay"
           />
         ) : (
-          <div className="flex gap-2">
+          <div className="flex gap-2 ">
             <Button
               icon="pi pi-check"
+              className="flex justify-center align-items-center text-[1.1rem] border rounded"
               rounded
               severity="success"
               aria-label="Approve"
@@ -468,6 +531,26 @@ export default function RegisteredDataTable() {
               onClick={() => handleReject(rowData.id)}
             />
           </div>
+        )}
+      </>
+    );
+  };
+  const threapistRequestTemplate = (rowData: Customer) => {
+    console.log("New ----------", rowData);
+
+    return (
+      <>
+        {rowData.currentStatus === "Payment Pending" ? (
+          <></>
+        ) : (
+          <div className="flex justify-center w-[80%]"><Button
+            severity="info"
+            onClick={() => {
+              passFromToThreapist(rowData.id);
+            }}
+            label="Pass"
+          /></div>
+
         )}
       </>
     );
@@ -531,11 +614,17 @@ export default function RegisteredDataTable() {
           headerStyle={{ minWidth: "3rem" }}
         /> */}
         <Column
-          field="fname"
-          header="Name"
+          field="userId"
+          header="Customer Id"
           body={userIdTemplate}
           frozen
           style={{ minWidth: "12rem" }}
+        />
+        <Column
+          field="fname"
+          header="Name"
+          style={{ minWidth: "14rem" }}
+          filterPlaceholder="Search by Mobile"
         />
         <Column
           field="mobile"
@@ -551,29 +640,14 @@ export default function RegisteredDataTable() {
           dataType="date"
           style={{ minWidth: "20rem" }}
         />
+
         <Column
-          field="therapist"
-          body={therapyBody}
-          header="Therapy / General"
-          style={{ minWidth: "20rem" }}
-        />
-        <Column
-          field="currentStatus"
-          header="Current Status"
+          header="Pass To Therapist"
+          body={threapistRequestTemplate}
           style={{ minWidth: "14rem" }}
         />
         <Column
-          field="nextStatus"
-          header="Next Status"
-          style={{ minWidth: "14rem" }}
-        />
-        <Column
-          header="Comments"
-          body={commentsBodyTemplate}
-          style={{ minWidth: "14rem" }}
-        />
-        <Column
-          header="Approved / Rejected"
+          header="Approve"
           body={statusBodyTemplate}
           style={{ minWidth: "14rem" }}
         />

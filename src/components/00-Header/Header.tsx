@@ -119,7 +119,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     },
     {
       path: "/staff/registeredUsers",
-      name: "Trial & Fee Due",
+      name: "Register User & Fee Due",
       icon: <User />,
     },
     {
@@ -159,12 +159,12 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     },
     {
       path: "/therapist/approve",
-      name: "Registered Users",
+      name: "Registered Users With Medical Issue",
       icon: <UserRoundCheck />,
     },
     {
       path: "/staff/registeredUsers",
-      name: "Trial & Fee Due",
+      name: "Register User & Fee Due",
       icon: <UserRoundPlus />,
     },
     {
@@ -259,12 +259,12 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     },
     {
       path: "/therapist/approve",
-      name: "Registered Users",
+      name: "Registered Users With Medical Issue",
       icon: <UserRoundCheck />,
     },
     {
       path: "/staff/registeredUsers",
-      name: "Trial & Fee Due",
+      name: "Register User & Fee Due",
       icon: <UserRoundPlus />,
     },
     {
@@ -390,7 +390,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     },
     // {
     //   path: "/staff/registeredUsers",
-    //   name: "Trial & Fee Due Users",
+    //   name: "Register User & Fee Due Users",
     //   icon: <User />,
     // },
     // {
@@ -400,7 +400,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     // },
     {
       path: "/therapist/approve",
-      name: "Registered Users",
+      name: "Registered Users With Medical Issue",
       icon: <UserRoundCheck />,
     },
     // {
@@ -666,7 +666,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
                 style={{ background: "#f95005", border: "none" }}
               /> */}
 
-              <img src={logo} className="w-[5%] mx-[5%] h-[auto]" alt="" />
+              <img src={logo} className="lg:w-[5%] w-[65px] ms-3" alt="" />
 
               <p className="text-[#f95005]" style={{ color: "#f95005", marginRight: "5%" }}>Logged in as: Student</p>
             </div>
