@@ -95,30 +95,33 @@ const Payment: React.FC = () => {
   }, []);
 
   interface Customer {
-    refCtEmail: string;
-    refCtMobile: number;
-    refCtWhatsapp: number;
-    refCustTimeData: string;
-    refExpiry: string;
-    refFeesAmtOf: number;
-    refFeesPaid: number;
-    refGstPaid: number;
-    refOfferType?: string;
-    refOfferValue?: number;
-    refPaymentFrom: string;
-    refPaymentTo: string;
-    refSCustId: string;
-    refStFName: string;
-    refStId: number;
-    refStLName: string;
-    refTime: string;
-    refTimeDays: string;
-    refTimeMembers: string;
-    refTimeMode: string;
-    refToAmt: number;
-    row_num: number;
-    refDate: string;
-    refPaymentMode: string;
+    refStId:number;
+    refSCustId : string;
+    refStFName : string;
+    refStLName : string;
+    refCtMobile : string;
+    refCtEmail : string;
+    refCtWhatsapp : string;
+    refTimeMembers : string;
+    refWeekDaysTiming : string;
+    refWeekEndTiming : string;
+    refClMode : string;
+    refPayId : string;
+    refOrderId : string;
+    refTransId : string;
+    refPagId : string;
+    refPayFrom : string;
+    refPayTo : string;
+    refPagExp : string;
+    refOffId : string;
+    refFeesType : string;
+    refPagFees : string;
+    refFeesPaid : string;
+    refCollectedBy : string;
+    refPayDate : string;
+    refPayStatus : string;
+    refPackageName : string;
+
   }
 
   const [dataType, setDataType] = useState<number>(6);
@@ -178,30 +181,32 @@ const Payment: React.FC = () => {
   
         const fetchedCustomers: Customer[] = data.feeData.map(
           (customer: any) => ({
-            refCtEmail: customer.refCtEmail,
-            refCtMobile: capitalizeString(customer.refCtMobile),
-            refCtWhatsapp: capitalizeString(customer.refCtWhatsapp),
-            refCustTimeData: capitalizeString(customer.refCustTimeData),
-            refExpiry: capitalizeString(customer.refExpiry),
-            refFeesAmtOf: capitalizeString(customer.refFeesAmtOf),
-            refFeesPaid: capitalizeString(customer.refFeesPaid),
-            refGstPaid: capitalizeString(customer.refGstPaid),
-            refOfferType: capitalizeString(customer.refOfferType),
-            refOfferValue: capitalizeString(customer.refOfferValue),
-            refPaymentFrom: capitalizeString(customer.refPaymentFrom),
-            refPaymentTo: capitalizeString(customer.refPaymentTo),
-            refSCustId: capitalizeString(customer.refSCustId),
-            refStFName: capitalizeString(customer.refStFName),
             refStId: capitalizeString(customer.refStId),
-            refStLName: capitalizeString(customer.refStLName),
-            refTime: capitalizeString(customer.refTime),
-            refTimeDays: capitalizeString(customer.refTimeDays),
-            refTimeMembers: capitalizeString(customer.refTimeMembers),
-            refTimeMode: capitalizeString(customer.refTimeMode),
-            refToAmt: capitalizeString(customer.refToAmt),
-            row_num: customer.row_num,
-            refDate: capitalizeString(customer.refDate),
-            refPaymentMode: capitalizeString(customer.refPaymentMode),
+            refSCustId :  capitalizeString(customer.refSCustId),
+            refStFName : capitalizeString(customer.refStFName),
+            refStLName : capitalizeString(customer.refStLName),
+            refCtMobile :  capitalizeString(customer.refCtMobile),
+            refCtEmail : customer.refCtEmail,
+            refCtWhatsapp :  capitalizeString(customer.refCtWhatsapp),
+            refTimeMembers : capitalizeString(customer.refTimeMembers),
+            refWeekDaysTiming : capitalizeString(customer.refWeekDaysTiming),
+            refWeekEndTiming : capitalizeString(customer.refWeekEndTiming),
+            refClMode : capitalizeString(customer.refClMode),
+            refPayId : capitalizeString(customer.refPayId),
+            refOrderId : capitalizeString(customer.refOrderId),
+            refTransId : capitalizeString(customer.refTransId),
+            refPagId : capitalizeString(customer.refPagId),
+            refPayFrom : capitalizeString(customer.refPayFrom),
+            refPayTo : capitalizeString(customer.refPayTo),
+            refPagExp : capitalizeString(customer.refPagExp),
+            refOffId : capitalizeString(customer.refOffId),
+            refFeesType : capitalizeString(customer.refFeesType),
+            refPagFees : capitalizeString(customer.refPagFees),
+            refFeesPaid : capitalizeString(customer.refFeesPaid),
+            refCollectedBy : capitalizeString(customer.refCollectedBy),
+            refPayDate : capitalizeString(customer.refPayDate),
+            refPayStatus : capitalizeString(customer.refPayStatus),
+            refPackageName : capitalizeString(customer.refPackageName),
           })
         );
   
@@ -382,19 +387,30 @@ const Payment: React.FC = () => {
                 style={{ inlineSize: "14rem" }}
               />
               <Column
-                field="refExpiry"
-                header="Expire On"
-                style={{ inlineSize: "14rem" }}
-              />
-              <Column
+  field="refPagExp"
+  header="Expire On"
+  style={{ inlineSize: "14rem" }}
+  body={(rowData) => (rowData.refPagExp ? rowData.refPagExp : "-")}
+/>
+
+              {/* <Column
                 field="refDate"
                 header="Last Payment"
                 style={{ inlineSize: "14rem" }}
-              />
+              /> */}
               <Column
-                field="refPaymentMode"
+  field="refDate"
+  header="Last Payment"
+  style={{ inlineSize: "14rem" }}
+  body={(rowData) => (rowData.refDate ? rowData.refDate : "-")}
+/>
+
+              <Column
+                field="refFeesType"
                 header="Last Payment Mode"
                 style={{ inlineSize: "14rem" }}
+                body={(rowData) => (rowData.refFeesType ? rowData.refFeesType : "-")}
+
               />
             </DataTable>
           </div>
@@ -407,7 +423,7 @@ const Payment: React.FC = () => {
             <h2>Profile Data</h2>
             <p className="m-0">
               <Fieldset
-                className="border-2 border-[#f95005] fieldData"
+                className="border-2 border-[#f95005] fieldData pb-[2rem]"
                 legend={info[0] ? `${info[0].refSCustId}` : "No user selected"}
               >
                 {info[0] ? (
@@ -450,7 +466,7 @@ const Payment: React.FC = () => {
                     <div>
                       <tr>
                         <td className="text-900 font-bold p-2">
-                          Members Session
+                          Batch
                         </td>
                         <td className="text-[#000] p-2">
                           {info[0].refTimeMembers
@@ -459,25 +475,35 @@ const Payment: React.FC = () => {
                         </td>
                       </tr>
                       <tr>
-                        <td className="text-900 font-bold p-2">Session Type</td>
+                        <td className="text-900 font-bold p-2">Package </td>
                         <td className="text-[#000] p-2">
-                          {info[0].refCustTimeData
-                            ? info[0].refCustTimeData
+                          {info[0].refPackageName
+                            ? info[0].refPackageName
+                            : "null"}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="text-900 font-bold p-2">Weekdays Timing</td>
+                        <td className="text-[#000] p-2">
+                          {info[0].refWeekDaysTiming
+                            ? info[0].refWeekDaysTiming
+                            : "null"}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="text-900 font-bold p-2">Weekend Timing</td>
+                        <td className="text-[#000] p-2">
+                          {info[0].refWeekEndTiming
+                            ? info[0].refWeekEndTiming
                             : "null"}
                         </td>
                       </tr>
                       <tr>
                         <td className="text-900 font-bold p-2">
-                          Preferable Timing
+                          Class Mode
                         </td>
                         <td className="text-[#000] p-2">
-                          {info[0].refTime
-                            ? info[0].refTime +
-                              " | " +
-                              info[0].refTimeDays +
-                              " | " +
-                              info[0].refTimeMode
-                            : "null"}
+                        {info[0]?.refClMode ? (info[0].refClMode === "1" ? "Online" : "Offline") : "null"}
                         </td>
                       </tr>
                     </div>
@@ -495,16 +521,16 @@ const Payment: React.FC = () => {
                       <tr>
                         <td className="text-900 font-bold p-2">Payment From</td>
                         <td className="text-[#000] p-2">
-                          {info[0].refPaymentFrom
-                            ? info[0].refPaymentFrom
+                          {info[0].refPayFrom
+                            ? info[0].refPayFrom
                             : "No Payment"}
                         </td>
                       </tr>
                       <tr>
                         <td className="text-900 font-bold p-2">Payment To</td>
                         <td className="text-[#000] p-2">
-                          {info[0].refPaymentTo
-                            ? info[0].refPaymentTo
+                          {info[0].refPayTo
+                            ? info[0].refPayTo
                             : "No Payment"}
                         </td>
                       </tr>
@@ -513,7 +539,7 @@ const Payment: React.FC = () => {
                           Payment Expire
                         </td>
                         <td className="text-[#000] p-2">
-                          {info[0].refExpiry ? info[0].refExpiry : "No Payment"}
+                          {info[0].refPagExp ? info[0].refPagExp : "No Payment"}
                         </td>
                       </tr>
                       <tr>
@@ -521,14 +547,14 @@ const Payment: React.FC = () => {
                           Last Payment Date
                         </td>
                         <td className="text-[#000] p-2">
-                          {info[0].refDate ? info[0].refDate : "No Payment"}
+                          {info[0].refPayDate ? info[0].refPayDate : "No Payment"}
                         </td>
                       </tr>
                       <tr>
                         <td className="text-900 font-bold p-2">Payment Mode</td>
                         <td className="text-[#000] p-2">
-                          {info[0].refPaymentMode
-                            ? info[0].refPaymentMode
+                          {info[0].refFeesType
+                            ? info[0].refFeesType
                             : "No Payment"}
                         </td>
                       </tr>
@@ -536,15 +562,18 @@ const Payment: React.FC = () => {
                         <td className="text-900 font-bold p-2">Amount</td>
                         <td className="text-[#000] p-2">
                           {info[0].refFeesPaid
-                            ? "Net: " +
-                              info[0].refFeesPaid +
-                              " + GST: " +
-                              info[0].refGstPaid +
-                              " : Total = " +
-                              info[0].refToAmt
+                            ? info[0].refFeesPaid
                             : "No Payment"}
                         </td>
                       </tr>
+                      {/* <tr>
+                        <td className="text-900 font-bold p-2">Amount Collectedby</td>
+                        <td className="text-[#000] p-2">
+                          {info[0].refCollectedBy
+                            ? info[0].refCollectedBy
+                            : "No Payment"}
+                        </td>
+                      </tr> */}
                     </div>
                   ) : (
                     <p>No user details available.</p>

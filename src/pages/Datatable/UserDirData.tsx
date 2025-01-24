@@ -16,6 +16,7 @@ import Axios from "axios";
 
 import { FilterMatchMode } from "primereact/api";
 import UserProfileEdit from "../UserProfileEdit/UserProfileEdit";
+import MedicalTabs from "../MedicalTab/MedicalTabs";
 
 interface Customer {
   id: string;
@@ -673,6 +674,19 @@ const UserDirData: React.FC = () => {
                   <>
                     <div className="mt-10">
                       <UserProfileEdit refid={refid} />
+                    </div>
+                  </>
+                ) : (
+                  <p>No user details available.</p>
+                )}
+              </p>
+            </TabPanel>
+            <TabPanel header="Medical Details">
+              <p className="m-0">
+                {userDetails ? (
+                  <>
+                    <div className="mt-10">
+                      <MedicalTabs refid={refid} />
                     </div>
                   </>
                 ) : (

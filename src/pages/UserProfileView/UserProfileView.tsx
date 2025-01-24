@@ -482,8 +482,8 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
         bmi: type === "staff" ? "" : generalhealth.refBMI,
         BackPainValue: presenthealth ? presenthealth.refBackPainValue : null,
         bp: type === "staff" ? "" : generalhealth.refBP,
-        bpValue: presenthealth ? generalhealth.refBpType : null,
-        ifbp: presenthealth ? generalhealth.refIfBp : null,
+        bpValue: type === "staff" ? "" : presenthealth ? generalhealth.refBpType : null,
+        ifbp: type === "staff" ? "" : presenthealth ? generalhealth.refIfBp : null,
         accidentdetails:
           type === "staff" ? "" : generalhealth.refRecentInjuriesReason,
         breaksdetails:
@@ -2544,8 +2544,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                 </div>
                 <div className="w-[90%] md:w-[100%]  mt-[20px]">
                   <label className="w-[100%] text-[#f95005]  text-[1.0rem] lg:text-[18px] text-start">
-                    Recent Injuries / Accidents / Surgeries / Fractures /
-                    Sprains *
+                    Recent Injuries / Accidents / Surgeries / Fractures / Sprains *
                   </label>
                   <div className="w-[100%] flex justify-start mt-[10px]">
                     <div className="mr-10">

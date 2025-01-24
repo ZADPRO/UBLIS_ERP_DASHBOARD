@@ -118,3 +118,8 @@ fieldset {
     display: none;
   }
 }
+
+
+.fieldData .p-toggleable-content .p-fieldset-content{
+  block-size: auto;
+}
