@@ -644,6 +644,7 @@ const MedicalTabs: React.FC<UserProfileEditProps> = ({ refid }) => {
   const handlepresenthealth = () => {
     let updatedHealthProblem: any[] = [];
     conditions.forEach((element) => {
+      
       if (element.checked === 1) {
         updatedHealthProblem.push(element.value);
       }

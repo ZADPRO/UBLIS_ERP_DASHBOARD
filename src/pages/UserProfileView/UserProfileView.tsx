@@ -999,6 +999,8 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+
+      console.log('', )
       console.log("Data received:", data);
       if (data.token == false) {
         navigate("/expired");
