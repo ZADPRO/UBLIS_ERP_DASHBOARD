@@ -345,30 +345,7 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
         {value === "Tiles" && (
           <div>
             <div className="userDashboard grid-container">
-              {localStorage.getItem("refUtId") !== "4" && (
-                <Link
-                  to="/therapist/approve"
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  <div className="grid-item">
-                    <div className="card">
-                      <Fieldset legend="Future Clients">
-                        <div className="leaveBalance">
-                          <div className="consumed">
-                            <p>{formSubmitted.today}</p>
-                            <p>Today</p>
-                          </div>
-                          <Divider layout="vertical" />
-                          <div className="balance">
-                            <p>{formSubmitted.futureToday}</p>
-                            <p>Previous</p>
-                          </div>
-                        </div>
-                      </Fieldset>
-                    </div>
-                  </div>
-                </Link>
-              )}
+
               <Link
                 to="/staff/signedupUsers"
                 style={{ textDecoration: "none", color: "inherit" }}
@@ -391,13 +368,38 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
                   </div>
                 </div>
               </Link>
+              {localStorage.getItem("refUtId") !== "4" && (
+                <Link
+                  to="/therapist/approve"
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <div className="grid-item">
+                    <div className="card">
+                      <Fieldset legend="Future Clients (Threapy)">
+                        <div className="leaveBalance">
+                          <div className="consumed">
+                            <p>{formSubmitted.today}</p>
+                            <p>Today</p>
+                          </div>
+                          <Divider layout="vertical" />
+                          <div className="balance">
+                            <p>{formSubmitted.futureToday}</p>
+                            <p>Previous</p>
+                          </div>
+                        </div>
+                      </Fieldset>
+                    </div>
+                  </div>
+                </Link>
+              )}
+
               <Link
                 to="/staff/registeredUsers"
                 style={{ textDecoration: "none", color: "inherit" }}
               >
                 <div className="grid-item">
                   <div className="card">
-                    <Fieldset legend="Trial">
+                    <Fieldset legend="Future Clients & Payment">
                       <div className="leaveBalance">
                         <div className="consumed">
                           <p>{trailCount.Trial}</p>

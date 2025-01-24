@@ -35,6 +35,7 @@ interface HistoryData {
   userid: string;
   id: string;
   changes: string;
+  label: string;
   olddata: string;
   newdata: string;
   timing: string;
@@ -422,6 +423,7 @@ export default function Notify(selectedType: any) {
             userid: HistoryData.refStId,
             id: HistoryData.transId,
             changes: HistoryData.transTypeText,
+            label: transData.label,
             olddata: transData.data.oldValue,
             newdata: transData.data.newValue,
             timing: HistoryData.transTime,
@@ -706,7 +708,7 @@ export default function Notify(selectedType: any) {
                 tableStyle={{ minWidth: "50rem" }}
               >
                 <Column field="id" header="ID"></Column>
-                <Column field="label" header="Changes Column"></Column>
+                <Column field="label" header="Label"></Column>
                 <Column field="olddata" header="Old Data"></Column>
                 <Column
                   field="id"
@@ -737,7 +739,8 @@ export default function Notify(selectedType: any) {
               tableStyle={{ minWidth: "50rem" }}
             >
               <Column field="id" header="ID"></Column>
-              <Column field="changes" header="Changes Column"></Column>
+              <Column field="changes" header="Changes Type"></Column>
+              <Column field="label" header="Label"></Column>
               <Column field="olddata" header="Old Data"></Column>
               <Column field="newdata" header="New Data"></Column>
               <Column field="timing" header="Data & Time"></Column>

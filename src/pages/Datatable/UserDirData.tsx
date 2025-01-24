@@ -101,6 +101,7 @@ const UserDirData: React.FC = () => {
   );
   const [weekDaysTiming, setWeekDaysTiming] = useState([]);
   const [weekEndTiming, setWeekEndTiming] = useState([]);
+  const [refUtId, setUtId] = useState("")
 
   const weekDaysTimingOption = Object.entries(weekDaysTiming).map(
     ([value, label]) => ({
@@ -470,6 +471,11 @@ const UserDirData: React.FC = () => {
   };
 
   useEffect(() => {
+    const token = localStorage.getItem("refUtId");
+    console.log('token line ------- 475', token)
+    if (token) {
+      setUtId(token);
+    }
     fetchCustomers();
   }, []);
 
@@ -655,7 +661,7 @@ const UserDirData: React.FC = () => {
         position="right"
         onHide={() => setVisibleLeft(false)}
       >
-        <h2>User Details</h2>
+        <h2>User Detail</h2>
         <p>
           {selectedUserId ? `User ID: ${selectedUserId}` : "No user selected"}
         </p>
@@ -783,7 +789,7 @@ const UserDirData: React.FC = () => {
                             />
                           </div></> : <> </>}
 
-                          {sessionData?.weekEndTiming?.length || 0 > 0  ? <><div className="w-[100%] lg:w-[48%]">
+                          {sessionData?.weekEndTiming?.length || 0 > 0 ? <><div className="w-[100%] lg:w-[48%]">
                             <TextInput
                               label="Weekend Timing"
                               id="mtype"
@@ -955,31 +961,43 @@ const UserDirData: React.FC = () => {
             </TabPanel>
             <TabPanel header="Audit">
               <p className="m-0">
-                <DataTable
-                  value={UserDetailss}
-                  tableStyle={{ minWidth: "50rem" }}
-                >
+                <DataTable value={UserDetailss} tableStyle={{ minWidth: "50rem" }}>
                   <Column
                     header="S.No"
                     body={(_data, options) => options.rowIndex + 1}
-                  />{" "}
+                  />
+                  <Column
+                    field="transTypeText"
+                    header="Transaction Type"
+                    style={{ textTransform: "capitalize" }}
+                  />
                   <Column
                     field="transData"
                     header="Action"
                     body={actionBody}
                     style={{ textTransform: "capitalize" }}
-                  ></Column>
+                  />
                   <Column
                     field="transTime"
                     header="Date"
                     style={{ textTransform: "capitalize" }}
-                  ></Column>
+                  />
                   <Column
-                    field="refUpdatedBy"
+                    field="refUserType"
                     header="Performed By"
                     style={{ textTransform: "capitalize" }}
-                  ></Column>
+                  />
+                  {/* Conditional rendering for Performer Name */}
+                  {parseInt(refUtId) == 7 && (
+                    <Column
+                      header="Performer Name"
+                      body={(rowData) => `${rowData.refStFName} ${rowData.refStLName}`}
+                      style={{ textTransform: "capitalize" }}
+                    />
+                  )}
                 </DataTable>
+
+
               </p>
             </TabPanel>
           </TabView>
