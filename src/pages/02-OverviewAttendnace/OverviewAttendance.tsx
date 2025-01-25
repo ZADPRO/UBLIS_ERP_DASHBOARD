@@ -8,7 +8,6 @@ import { Nullable } from "primereact/ts-helpers";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CryptoJS from "crypto-js";
-import { InputOtp } from 'primereact/inputotp';
 
 
 

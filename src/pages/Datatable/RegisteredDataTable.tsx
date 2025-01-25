@@ -348,54 +348,54 @@ export default function RegisteredDataTable() {
     }
   };
 
-  const handleCommentChange = (customerId: string, value: string) => {
-    const updatedCustomers = customers.map((customer) =>
-      customer.id === customerId ? { ...customer, comments: value } : customer
-    );
-    setCustomers(updatedCustomers);
-  };
+  // const handleCommentChange = (customerId: string, value: string) => {
+  //   const updatedCustomers = customers.map((customer) =>
+  //     customer.id === customerId ? { ...customer, comments: value } : customer
+  //   );
+  //   setCustomers(updatedCustomers);
+  // };
 
-  const handleSaveComment = async (customerId: string) => {
-    const customer = customers.find((customer) => customer.id === customerId);
-    if (customer) {
-      try {
-        // Log the current and next status before saving the comment
-        const status1 = customer.currentStatus; // Assuming currentStatus is status1
-        const status2 = customer.nextStatus; // Assuming nextStatus is status2
-        console.log(`Saving comment for ${customerId}:`);
-        console.log(`Status 1: ${status1}, Status 2: ${status2}`);
+  // const handleSaveComment = async (customerId: string) => {
+  //   const customer = customers.find((customer) => customer.id === customerId);
+  //   if (customer) {
+  //     try {
+  //       // Log the current and next status before saving the comment
+  //       const status1 = customer.currentStatus; // Assuming currentStatus is status1
+  //       const status2 = customer.nextStatus; // Assuming nextStatus is status2
+  //       console.log(`Saving comment for ${customerId}:`);
+  //       console.log(`Status 1: ${status1}, Status 2: ${status2}`);
 
-        const response = await Axios.post(
-          import.meta.env.VITE_API_URL + `/staff/rejectionbtn`,
-          {
-            refStId: customer.id,
-            comment: customer.comments,
-          },
-          {
-            headers: {
-              Authorization: localStorage.getItem("JWTtoken"),
-              "Content-Type": "application/json",
-            },
-          }
-        );
+  //       const response = await Axios.post(
+  //         import.meta.env.VITE_API_URL + `/staff/rejectionbtn`,
+  //         {
+  //           refStId: customer.id,
+  //           comment: customer.comments,
+  //         },
+  //         {
+  //           headers: {
+  //             Authorization: localStorage.getItem("JWTtoken"),
+  //             "Content-Type": "application/json",
+  //           },
+  //         }
+  //       );
 
-        const data = decrypt(
-          response.data[1],
-          response.data[0],
-          import.meta.env.VITE_ENCRYPTION_KEY
-        );
+  //       const data = decrypt(
+  //         response.data[1],
+  //         response.data[0],
+  //         import.meta.env.VITE_ENCRYPTION_KEY
+  //       );
 
-        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+  //       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
-        if (data.success) {
-          console.log(`Rejection saved for ${customerId}:`, data.data);
-          fetchCustomers();
-        }
-      } catch (error) {
-        console.error(`Error saving rejection for ${customerId}:`, error);
-      }
-    }
-  };
+  //       if (data.success) {
+  //         console.log(`Rejection saved for ${customerId}:`, data.data);
+  //         fetchCustomers();
+  //       }
+  //     } catch (error) {
+  //       console.error(`Error saving rejection for ${customerId}:`, error);
+  //     }
+  //   }
+  // };
 
   const fetchUserDetails = async (id: string) => {
     try {
@@ -556,30 +556,30 @@ export default function RegisteredDataTable() {
     );
   };
 
-  const commentsBodyTemplate = (rowData: Customer) => {
-    return (
-      <div className="flex align-items-center gap-2">
-        <InputText
-          value={rowData.comments || ""}
-          onChange={(e) => handleCommentChange(rowData.id, e.target.value)}
-          disabled={!rowData.commentEnabled}
-          className="p-inputtext-sm"
-          placeholder="Enter comments"
-        />
-        {rowData.commentEnabled && (
-          <Button
-            label="Save"
-            className="p-button-primary p-button-sm"
-            onClick={() => handleSaveComment(rowData.id)}
-          />
-        )}
-      </div>
-    );
-  };
+  // const commentsBodyTemplate = (rowData: Customer) => {
+  //   return (
+  //     <div className="flex align-items-center gap-2">
+  //       <InputText
+  //         value={rowData.comments || ""}
+  //         onChange={(e) => handleCommentChange(rowData.id, e.target.value)}
+  //         disabled={!rowData.commentEnabled}
+  //         className="p-inputtext-sm"
+  //         placeholder="Enter comments"
+  //       />
+  //       {rowData.commentEnabled && (
+  //         <Button
+  //           label="Save"
+  //           className="p-button-primary p-button-sm"
+  //           onClick={() => handleSaveComment(rowData.id)}
+  //         />
+  //       )}
+  //     </div>
+  //   );
+  // };
 
-  const therapyBody = (rowData: any) => {
-    return <>{rowData.therapist === "Yes" ? <>Therapist</> : <>General</>}</>;
-  };
+  // const therapyBody = (rowData: any) => {
+  //   return <>{rowData.therapist === "Yes" ? <>Therapist</> : <>General</>}</>;
+  // };
 
   const header = renderHeader();
 

@@ -34,7 +34,7 @@ interface ModeOfContact {
 }
 
 const Profile: React.FC = () => {
-  const [formVisible, setFormVisible] = useState(false);
+  const [_formVisible, setFormVisible] = useState(false);
   const navigate = useNavigate();
 
   const decrypt = (
@@ -848,65 +848,65 @@ const Profile: React.FC = () => {
       });
   };
 
-  const handletherapy = () => {
-    let updatedHealthProblem: any[] = [];
-    conditions.forEach((element) => {
-      if (element.checked === 1) {
-        updatedHealthProblem.push(element.value);
-      }
-    });
+  // const handletherapy = () => {
+  //   let updatedHealthProblem: any[] = [];
+  //   conditions.forEach((element) => {
+  //     if (element.checked === 1) {
+  //       updatedHealthProblem.push(element.value);
+  //     }
+  //   });
 
-    Axios.post(
-      import.meta.env.VITE_API_URL + "/user/updateProfile",
+  //   Axios.post(
+  //     import.meta.env.VITE_API_URL + "/user/updateProfile",
 
-      {
-        presentHealth: {
-          refBackpain: inputs.backpainscale,
-          refDrName: inputs.caredoctorname,
-          refHospital: inputs.caredoctorhospital,
-          refMedicalDetails: inputs.pastmedicaldetails,
-          refOtherActivities: inputs.pastother,
-          refPresentHealth: updatedHealthProblem,
-          refUnderPhysCare: options.care,
-          refAnythingelse: inputs.therapyanythingelse,
-          refFamilyHistory: inputs.therapyfamilyhistory,
-          refProblem: inputs.therapydurationproblem,
-          refPastHistory: inputs.therapypasthistory,
-        },
-      },
-      {
-        headers: {
-          Authorization: localStorage.getItem("JWTtoken"),
-          "Content-Type": "application/json", // Ensure the content type is set
-        },
-      }
-    )
-      .then((res) => {
-        const data = decrypt(
-          res.data[1],
-          res.data[0],
-          import.meta.env.VITE_ENCRYPTION_KEY
-        );
-        if (data.token == false) {
-          navigate("/expired");
-        } else {
-          localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+  //     {
+  //       presentHealth: {
+  //         refBackpain: inputs.backpainscale,
+  //         refDrName: inputs.caredoctorname,
+  //         refHospital: inputs.caredoctorhospital,
+  //         refMedicalDetails: inputs.pastmedicaldetails,
+  //         refOtherActivities: inputs.pastother,
+  //         refPresentHealth: updatedHealthProblem,
+  //         refUnderPhysCare: options.care,
+  //         refAnythingelse: inputs.therapyanythingelse,
+  //         refFamilyHistory: inputs.therapyfamilyhistory,
+  //         refProblem: inputs.therapydurationproblem,
+  //         refPastHistory: inputs.therapypasthistory,
+  //       },
+  //     },
+  //     {
+  //       headers: {
+  //         Authorization: localStorage.getItem("JWTtoken"),
+  //         "Content-Type": "application/json", // Ensure the content type is set
+  //       },
+  //     }
+  //   )
+  //     .then((res) => {
+  //       const data = decrypt(
+  //         res.data[1],
+  //         res.data[0],
+  //         import.meta.env.VITE_ENCRYPTION_KEY
+  //       );
+  //       if (data.token == false) {
+  //         navigate("/expired");
+  //       } else {
+  //         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
-          console.log(data.success);
+  //         console.log(data.success);
 
-          if (data.success) {
-            setEdits({
-              ...edits,
-              therapy: false,
-            });
-          }
-        }
-      })
-      .catch((err) => {
-        // Catching any 400 status or general errors
-        console.log("Error: ", err);
-      });
-  };
+  //         if (data.success) {
+  //           setEdits({
+  //             ...edits,
+  //             therapy: false,
+  //           });
+  //         }
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       // Catching any 400 status or general errors
+  //       console.log("Error: ", err);
+  //     });
+  // };
 
   const [documents, setDocuments] = useState({
     aadhar: "",

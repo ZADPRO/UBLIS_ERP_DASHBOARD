@@ -681,7 +681,7 @@ const UserDirData: React.FC = () => {
                 )}
               </p>
             </TabPanel>
-            <TabPanel header="Medical Details">
+           { localStorage.getItem("refUtId") !="4" && (<TabPanel header="Medical Details">
               <p className="m-0">
                 {userDetails ? (
                   <>
@@ -693,7 +693,10 @@ const UserDirData: React.FC = () => {
                   <p>No user details available.</p>
                 )}
               </p>
-            </TabPanel>
+            </TabPanel>)
+            
+            } 
+            
             <TabPanel header="Session details">
               <form
                 onSubmit={(e) => {

@@ -13,7 +13,6 @@ import { TabPanel, TabView } from "primereact/tabview";
 // import { ImUpload2 } from "react-icons/im";
 // import { MdDelete } from "react-icons/md";
 import { FaEye } from "react-icons/fa";
-import { RadioButton } from "primereact/radiobutton";
 
 interface HealthProblemData {
   presentHealthProblem: Record<string, string>;

@@ -2,9 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import CryptoJS from "crypto-js";
 import { useNavigate } from "react-router-dom";
-import { Dropdown, DropdownChangeEvent } from "primereact/dropdown";
+import { Dropdown } from "primereact/dropdown";
 
-import Swal from "sweetalert2"; // Import SweetAlert
 
 const IntroVideo: React.FC = () => {
   interface video {
@@ -72,7 +71,7 @@ const IntroVideo: React.FC = () => {
   };
 
   const [startTime, setStartTime] = useState<string | null>(null);
-  const [endTime, setEndTime] = useState<string | null>(null);
+  const [_endTime, setEndTime] = useState<string | null>(null);
   const [isPaused, setIsPaused] = useState(true);
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -124,16 +123,16 @@ const IntroVideo: React.FC = () => {
     return () => clearInterval(timer); // Cleanup interval on unmount
   }, [timeLeft]);
 
-  const handlePlayPause = () => {
-    if (videoRef.current) {
-      if (isPaused) {
-        videoRef.current.play();
-      } else {
-        videoRef.current.pause();
-      }
-      setIsPaused(!isPaused);
-    }
-  };
+  // const handlePlayPause = () => {
+  //   if (videoRef.current) {
+  //     if (isPaused) {
+  //       videoRef.current.play();
+  //     } else {
+  //       videoRef.current.pause();
+  //     }
+  //     setIsPaused(!isPaused);
+  //   }
+  // };
 
   const handleRightClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -142,17 +141,17 @@ const IntroVideo: React.FC = () => {
 
   const videoContainerRef = useRef<HTMLDivElement>(null);
 
-  const toggleFullscreen = () => {
-    if (videoContainerRef.current) {
-      if (!document.fullscreenElement) {
-        videoContainerRef.current.requestFullscreen();
-      } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        }
-      }
-    }
-  };
+  // const toggleFullscreen = () => {
+  //   if (videoContainerRef.current) {
+  //     if (!document.fullscreenElement) {
+  //       videoContainerRef.current.requestFullscreen();
+  //     } else {
+  //       if (document.exitFullscreen) {
+  //         document.exitFullscreen();
+  //       }
+  //     }
+  //   }
+  // };
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);

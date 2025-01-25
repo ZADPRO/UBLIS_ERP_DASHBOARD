@@ -11,23 +11,23 @@ import { useNavigate } from "react-router-dom";
 
 import CryptoJS from "crypto-js";
 
-interface HealthProblemData {
-  presentHealthProblem: Record<string, string>;
-}
+// interface HealthProblemData {
+//   presentHealthProblem: Record<string, string>;
+// }
 
-interface Condition {
-  label: string;
-  value: number;
-  checked: number;
-}
+// interface Condition {
+//   label: string;
+//   value: number;
+//   checked: number;
+// }
 
 interface DecryptResult {
   [key: string]: any;
 }
 
-interface ModeOfContact {
-  [key: number]: string;
-}
+// interface ModeOfContact {
+//   [key: number]: string;
+// }
 
 interface UserProfileEditProps {
   refid: string; // Adjust the type according to your use case, it can be `number` or `string` depending on what `refid` represents
@@ -59,17 +59,17 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
 
     return JSON.parse(decryptedString);
   };
-  const [conditions, setConditions] = useState<Condition[]>([]);
+  // const [conditions, setConditions] = useState<Condition[]>([]);
   const navigate = useNavigate();
-  const handleCheckboxChange = (index: any) => {
-    setConditions((prevConditions: any) =>
-      prevConditions.map((condition: any, i: any) =>
-        i === index
-          ? { ...condition, checked: condition.checked === 1 ? 0 : 1 }
-          : condition
-      )
-    );
-  };
+  // const handleCheckboxChange = (index: any) => {
+  //   setConditions((prevConditions: any) =>
+  //     prevConditions.map((condition: any, i: any) =>
+  //       i === index
+  //         ? { ...condition, checked: condition.checked === 1 ? 0 : 1 }
+  //         : condition
+  //     )
+  //   );
+  // };
 
   const [inputs, setInputs] = useState({
     profilefile: { contentType: "", content: "" },
@@ -83,14 +83,14 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
     anniversarydate: "",
     qualification: "",
     occupation: "",
-    perdoorno:"",
-    perstreetname:"",
+    perdoorno: "",
+    perstreetname: "",
     peraddress: "",
     perpincode: "",
     perstate: "",
     percity: "",
-    tempdoorno:"",
-    tempstreetname:"",
+    tempdoorno: "",
+    tempstreetname: "",
     tempaddress: "",
     temppincode: "",
     tempstate: "",
@@ -141,6 +141,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
     breaks: false,
     care: false,
     backpain: false,
+    refHealthIssue: false,
   });
 
   // const [userdata, setuserdata] = useState({
@@ -175,9 +176,9 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
   //   });
   // }, []);
 
-  const [modeofcontact, setModeofContact] = useState<ModeOfContact | undefined>(
-    undefined
-  );
+  // const [modeofcontact, setModeofContact] = useState<ModeOfContact | undefined>(
+  //   undefined
+  // );
 
   useEffect(() => {
     Axios.post(
@@ -195,7 +196,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
+      if (data.token == false) {
         navigate("/expired")
       }
       console.log("UserData Running --- ");
@@ -203,32 +204,32 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
-      const healthConditions = Object.entries(
-        (data.data as HealthProblemData).presentHealthProblem
-      ).map(
-        ([value, label]): Condition => ({
-          label, // Label as string
-          value: Number(value), // Ensure value is a number
-          checked: 0, // Default checked value
-        })
-      );
+      // const healthConditions = Object.entries(
+      //   (data.data as HealthProblemData).presentHealthProblem
+      // ).map(
+      //   ([value, label]): Condition => ({
+      //     label, // Label as string
+      //     value: Number(value), // Ensure value is a number
+      //     checked: 0, // Default checked value
+      //   })
+      // );
 
       // Step 2: Update the mapped conditions to set `checked` to 1 if value matches
-      const updatedConditions = healthConditions.map((condition) => {
-        // Check if the condition value is in `presenthealth.refPresentHealth`
-        if (data.data.presentHealth.refPresentHealth) {
-          return {
-            ...condition,
-            checked: 1, // Set `checked` to 1 if value matches
-          };
-        }
-        return condition; // Return as is if no match
-      });
+      // const updatedConditions = healthConditions.map((condition) => {
+      //   // Check if the condition value is in `presenthealth.refPresentHealth`
+      //   if (data.data.presentHealth.refPresentHealth) {
+      //     return {
+      //       ...condition,
+      //       checked: 1, // Set `checked` to 1 if value matches
+      //     };
+      //   }
+      //   return condition; // Return as is if no match
+      // });
 
       // Step 3: Set the final updated conditions in state
-      setConditions(updatedConditions);
+      // setConditions(updatedConditions);
 
-      setModeofContact(data.data.modeOfCommunication);
+      // setModeofContact(data.data.modeOfCommunication);
 
       console.log(data.data);
 
@@ -245,6 +246,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
         breaks: generalhealth.refRecentFractures,
         care: presenthealth.refUnderPhysicalCare,
         backpain: presenthealth.refBackPain === "no" ? false : true,
+        refHealthIssue: personaldata.refHealthIssue
       });
 
       setInputs({
@@ -266,11 +268,11 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
         perstate: addressdata.refAdState1,
         percity: addressdata.refAdCity1,
         tempdoorno: addressdata.addresstype
-        ? addressdata.refAdFlat1
-        : addressdata.refAdFlat2,       
+          ? addressdata.refAdFlat1
+          : addressdata.refAdFlat2,
         tempstreetname: addressdata.addresstype
-        ? addressdata.refAdArea1
-        : addressdata.refAdArea2,
+          ? addressdata.refAdArea1
+          : addressdata.refAdArea2,
         tempaddress: addressdata.addresstype
           ? addressdata.refAdAdd1
           : addressdata.refAdAdd2,
@@ -380,7 +382,6 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
   //     console.error("Error uploading image:", error);
   //   }
   // };
-
   const calculateAge = (dob: string) => {
     const dobDate = new Date(dob);
     const today = new Date();
@@ -442,14 +443,14 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
         address: {
           addresstype: options.address,
           refAdAdd1: inputs.peraddress,
-          refAdFlat1:inputs.perdoorno,
-          refAdArea1:inputs.perstreetname,
+          refAdFlat1: inputs.perdoorno,
+          refAdArea1: inputs.perstreetname,
           refAdCity1: inputs.percity,
           refAdState1: inputs.perstate,
           refAdPincode1: parseInt(inputs.perpincode),
           refAdAdd2: inputs.tempaddress,
-          refAdFlat2:inputs.tempdoorno,
-          refAdArea2:inputs.tempstreetname,
+          refAdFlat2: inputs.tempdoorno,
+          refAdArea2: inputs.tempstreetname,
           refAdCity2: inputs.tempcity,
           refAdState2: inputs.tempstate,
           refAdPincode2: parseInt(inputs.temppincode),
@@ -592,6 +593,9 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
           refRecentInjuriesReason: inputs.accidentdetails,
           refWeight: parseInt(inputs.weight),
         },
+        medicalIssue: {
+          refHealthIssue: options.refHealthIssue
+        }
       },
       {
         headers: {
@@ -622,113 +626,113 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
       });
   };
 
-  const handlepresenthealth = () => {
-    let updatedHealthProblem: any[] = [];
-    conditions.forEach((element) => {
-      if (element.checked === 1) {
-        updatedHealthProblem.push(element.value);
-      }
-    });
+  // const handlepresenthealth = () => {
+  //   let updatedHealthProblem: any[] = [];
+  //   conditions.forEach((element) => {
+  //     if (element.checked === 1) {
+  //       updatedHealthProblem.push(element.value);
+  //     }
+  //   });
 
-    Axios.post(
-      import.meta.env.VITE_API_URL + "/staff/userDataUpdate",
+  //   Axios.post(
+  //     import.meta.env.VITE_API_URL + "/staff/userDataUpdate",
 
-      {
-        refStId: refid,
-        presentHealth: {
-          refBackpain: inputs.backpainscale,
-          refDrName: inputs.caredoctorname,
-          refHospital: inputs.caredoctorhospital,
-          refMedicalDetails: inputs.pastmedicaldetails,
-          refOtherActivities: inputs.pastother,
-          refPresentHealth: updatedHealthProblem,
-          refUnderPhysCare: options.care,
-        },
-      },
-      {
-        headers: {
-          Authorization: localStorage.getItem("JWTtoken"),
-          "Content-Type": "application/json", // Ensure the content type is set
-        },
-      }
-    )
-      .then((res) => {
-        const data = decrypt(
-          res.data[1],
-          res.data[0],
-          import.meta.env.VITE_ENCRYPTION_KEY
-        );
+  //     {
+  //       refStId: refid,
+  //       presentHealth: {
+  //         refBackpain: inputs.backpainscale,
+  //         refDrName: inputs.caredoctorname,
+  //         refHospital: inputs.caredoctorhospital,
+  //         refMedicalDetails: inputs.pastmedicaldetails,
+  //         refOtherActivities: inputs.pastother,
+  //         refPresentHealth: updatedHealthProblem,
+  //         refUnderPhysCare: options.care,
+  //       },
+  //     },
+  //     {
+  //       headers: {
+  //         Authorization: localStorage.getItem("JWTtoken"),
+  //         "Content-Type": "application/json", // Ensure the content type is set
+  //       },
+  //     }
+  //   )
+  //     .then((res) => {
+  //       const data = decrypt(
+  //         res.data[1],
+  //         res.data[0],
+  //         import.meta.env.VITE_ENCRYPTION_KEY
+  //       );
 
-        console.log(data.success);
+  //       console.log(data.success);
 
-        if (data.success) {
-          setEdits({
-            ...edits,
-            present: false,
-          });
-        }
-      })
-      .catch((err) => {
-        // Catching any 400 status or general errors
-        console.log("Error: ", err);
-      });
-  };
+  //       if (data.success) {
+  //         setEdits({
+  //           ...edits,
+  //           present: false,
+  //         });
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       // Catching any 400 status or general errors
+  //       console.log("Error: ", err);
+  //     });
+  // };
 
-  const handletherapy = () => {
-    let updatedHealthProblem: any[] = [];
-    conditions.forEach((element) => {
-      if (element.checked === 1) {
-        updatedHealthProblem.push(element.value);
-      }
-    });
+  // const handletherapy = () => {
+  //   let updatedHealthProblem: any[] = [];
+  //   conditions.forEach((element) => {
+  //     if (element.checked === 1) {
+  //       updatedHealthProblem.push(element.value);
+  //     }
+  //   });
 
-    Axios.post(
-      import.meta.env.VITE_API_URL + "/staff/userDataUpdate",
+  //   Axios.post(
+  //     import.meta.env.VITE_API_URL + "/staff/userDataUpdate",
 
-      {
-        refStId: refid,
-        presentHealth: {
-          refBackpain: inputs.backpainscale,
-          refDrName: inputs.caredoctorname,
-          refHospital: inputs.caredoctorhospital,
-          refMedicalDetails: inputs.pastmedicaldetails,
-          refOtherActivities: inputs.pastother,
-          refPresentHealth: updatedHealthProblem,
-          refUnderPhysCare: options.care,
-          refAnythingelse: inputs.therapyanythingelse,
-          refFamilyHistory: inputs.therapyfamilyhistory,
-          refProblem: inputs.therapydurationproblem,
-          refPastHistory: inputs.therapypasthistory,
-        },
-      },
-      {
-        headers: {
-          Authorization: localStorage.getItem("JWTtoken"),
-          "Content-Type": "application/json", // Ensure the content type is set
-        },
-      }
-    )
-      .then((res) => {
-        const data = decrypt(
-          res.data[1],
-          res.data[0],
-          import.meta.env.VITE_ENCRYPTION_KEY
-        );
+  //     {
+  //       refStId: refid,
+  //       presentHealth: {
+  //         refBackpain: inputs.backpainscale,
+  //         refDrName: inputs.caredoctorname,
+  //         refHospital: inputs.caredoctorhospital,
+  //         refMedicalDetails: inputs.pastmedicaldetails,
+  //         refOtherActivities: inputs.pastother,
+  //         refPresentHealth: updatedHealthProblem,
+  //         refUnderPhysCare: options.care,
+  //         refAnythingelse: inputs.therapyanythingelse,
+  //         refFamilyHistory: inputs.therapyfamilyhistory,
+  //         refProblem: inputs.therapydurationproblem,
+  //         refPastHistory: inputs.therapypasthistory,
+  //       },
+  //     },
+  //     {
+  //       headers: {
+  //         Authorization: localStorage.getItem("JWTtoken"),
+  //         "Content-Type": "application/json", // Ensure the content type is set
+  //       },
+  //     }
+  //   )
+  //     .then((res) => {
+  //       const data = decrypt(
+  //         res.data[1],
+  //         res.data[0],
+  //         import.meta.env.VITE_ENCRYPTION_KEY
+  //       );
 
-        console.log(data.success);
+  //       console.log(data.success);
 
-        if (data.success) {
-          setEdits({
-            ...edits,
-            therapy: false,
-          });
-        }
-      })
-      .catch((err) => {
-        // Catching any 400 status or general errors
-        console.log("Error: ", err);
-      });
-  };
+  //       if (data.success) {
+  //         setEdits({
+  //           ...edits,
+  //           therapy: false,
+  //         });
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       // Catching any 400 status or general errors
+  //       console.log("Error: ", err);
+  //     });
+  // };
 
   return (
     <>
@@ -785,51 +789,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                     </div>
                   )}
 
-                  {/* <div className="w-[250px] flex flex-col justify-center items-center">
-                    <input
-                      type="file"
-                      id="file-upload"
-                      className="hidden"
-                      accept="image/png, image/jpeg" // Only accept PNG and JPG
-                      onChange={handleImageChange} // Handle file change
-                    />
 
-                    {loading.changeimg ? (
-                      <label className="w-[250px] bg-[#f95005] hover:bg-[#e14b04] focus:outline-none border-none py-2 px-4 rounded font-normal text-white text-[1.2rem] lg:text-[18px] text-center mt-4 cursor-pointer">
-                        <svg
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          aria-labelledby="title-04a desc-04a"
-                          aria-live="polite"
-                          aria-busy="true"
-                          className="w-[14px] h-[14px] animate animate-spin"
-                        >
-                          <title id="title-04a">Icon title</title>
-                          <desc id="desc-04a">Some desc</desc>
-                          <circle
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            className="stroke-grey-200"
-                            stroke-width="4"
-                          />
-                          <path
-                            d="M12 22C14.6522 22 17.1957 20.9464 19.0711 19.0711C20.9464 17.1957 22 14.6522 22 12C22 9.34784 20.9464 6.8043 19.0711 4.92893C17.1957 3.05357 14.6522 2 12 2"
-                            className="stroke-white"
-                            stroke-width="4"
-                          />
-                        </svg>
-                      </label>
-                    ) : (
-                      <label
-                        htmlFor="file-upload"
-                        className="w-[250px] bg-[#f95005] hover:bg-[#e14b04] focus:outline-none border-none py-2 px-4 rounded font-normal text-white text-[1.2rem] lg:text-[18px] text-center mt-4 cursor-pointer"
-                      >
-                        Change Image
-                      </label>
-                    )}
-                  </div> */}
                 </div>
                 <div className="w-[100%] lg:w-[100%] flex flex-col justify-center items-center">
                   <div className="w-[100%] justify-center items-center flex flex-col">
@@ -928,7 +888,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                             { value: "single", label: "Single" },
                             { value: "married", label: "Married" },
                           ]}
-                          disabled={!edits.personal && inputs.age > '18' ? true:false}
+                          disabled={!edits.personal && inputs.age > '18' ? true : false}
                           required
                         />
 
@@ -959,7 +919,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                           id="qualification"
                           type="text"
                           onChange={handleInputVal}
-                          disabled={inputs.age > '18'? false : true}
+                          disabled={inputs.age > '18' ? false : true}
                           value={inputs.qualification}
                           readonly={!edits.personal}
                         />
@@ -972,7 +932,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                           id="Occupation"
                           type="text"
                           onChange={handleInputVal}
-                          disabled={inputs.age > '18'? false : true}
+                          disabled={inputs.age > '20' ? false : true}
                           value={inputs.occupation}
                           readonly={!edits.personal}
                         />
@@ -1024,7 +984,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
 
                   <div
                     className="w-[100%] mb-[20px] flex justify-between"
-                   
+
                   >
                     <div className="w-[48%]">
                       <div className="relative w-full">
@@ -1124,8 +1084,8 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                         if (!options.address) {
                           setInputs({
                             ...inputs,
-                            tempdoorno:inputs.perdoorno,
-                            tempstreetname:inputs.perstreetname,
+                            tempdoorno: inputs.perdoorno,
+                            tempstreetname: inputs.perstreetname,
                             tempaddress: inputs.peraddress,
                             temppincode: inputs.perpincode,
                             tempstate: inputs.perstate,
@@ -1134,8 +1094,8 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                         } else {
                           setInputs({
                             ...inputs,
-                            tempdoorno:"",
-                            tempstreetname:"",
+                            tempdoorno: "",
+                            tempstreetname: "",
                             tempaddress: "",
                             temppincode: "",
                             tempstate: "",
@@ -1152,7 +1112,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                   </div>
                   <div
                     className="w-[100%] mb-[20px] flex justify-between"
-                  
+
                   >
                     <div className="w-[48%]">
                       <div className="relative w-full">
@@ -1333,7 +1293,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                   </div>
                 </div>
 
-                <div className="w-[100%] ">
+                {/* <div className="w-[100%] ">
                   <SelectInput
                     id="modeofcontact"
                     name="mode"
@@ -1343,17 +1303,17 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                     options={
                       modeofcontact
                         ? Object.entries(modeofcontact).map(
-                            ([value, label]) => ({
-                              value, // The key as value
-                              label, // The value as label
-                            })
-                          )
+                          ([value, label]) => ({
+                            value, // The key as value
+                            label, // The value as label
+                          })
+                        )
                         : [] // Empty array before the data is loaded
                     }
                     disabled={!edits.communitcation}
                     required
                   />
-                </div>
+                </div> */}
               </div>
             </div>
           </form>
@@ -1366,9 +1326,11 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
             }}
           >
             <div className="basicProfileCont p-10 shadow-lg mt-10">
+
+
               <div className="w-[100%] flex justify-between items-center mb-5">
                 <div className="text-[1.2rem] lg:text-[25px] font-bold">
-                General Health
+                  General Health
                 </div>
                 {edits.gendrel ? (
                   <button
@@ -1453,36 +1415,22 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                   </div>
                 </div>
 
-                <div className="w-[100%] flex justify-between mb-[20px]">
-                  <div className="w-[100%]">
-                    <TextInput
-                      label="BP"
-                      name="bp"
-                      id="bp"
-                      type="number"
-                      onChange={handleInputVal}
-                      value={inputs.bp}
-                      readonly={!edits.gendrel}
-                    />
-                  </div>
-                </div>
-
-                <div className="w-[100%] flex flex-col md:flex-row gap-y-[25px] justify-between mb-[25px]">
+                {localStorage.getItem("refUtId") === "4" ? <> <div className="w-[100%] flex flex-col md:flex-row gap-y-[25px] justify-between mb-[25px]">
                   <div className="w-[100%] md:w-[48%]">
                     <label className="w-[100%] text-[#f95005] font-bold text-[1.0rem] lg:text-[20px] text-start">
-                      Recent injuries / Accidents / Operations *{" "}
+                      Medical Issue *{" "}
                     </label>
                     <div className="w-[100%] flex justify-start mt-[10px]">
                       <div className="mr-10">
                         <RadiobuttonInput
-                          id="accidentyes"
+                          id="refHealthIssue"
                           value="yes"
-                          name="accident"
-                          selectedOption={options.accident ? "yes" : ""}
+                          name="refHealthIssue"
+                          selectedOption={options.refHealthIssue ? "yes" : ""}
                           onChange={() => {
                             setOptions({
                               ...options,
-                              accident: true,
+                              refHealthIssue: true,
                             });
                           }}
                           label="Yes"
@@ -1492,138 +1440,34 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                       </div>
                       <div className="">
                         <RadiobuttonInput
-                          id="accidentno"
+                          id="refHealthIssue"
                           value="no"
-                          name="accident"
+                          name="refHealthIssue"
                           label="No"
                           onChange={() => {
                             setOptions({
                               ...options,
-                              accident: false,
+                              refHealthIssue: false,
                             });
+                          }}
+                          selectedOption={!options.refHealthIssue ? "no" : ""}
+                          readonly={!edits.gendrel}
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div></> : <></>}
+               
 
-                            setInputs({
-                              ...inputs,
-                              accidentdetails: "",
-                            });
-                          }}
-                          selectedOption={!options.accident ? "no" : ""}
-                          readonly={!edits.gendrel}
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="w-[100%] mt-[20px]">
-                      <div className="w-[100%]">
-                        <TextInput
-                          label="Details"
-                          name="accidentdetails"
-                          id="details"
-                          type="text"
-                          onChange={handleInputVal}
-                          value={inputs.accidentdetails}
-                          disabled={!options.accident}
-                          readonly={!edits.gendrel}
-                          required
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="w-[100%] md:w-[48%]">
-                    <label className="w-[100%] text-[#f95005] font-bold text-[1.0rem] lg:text-[20px] text-start">
-                      Recent breaks / Fractures / Sprains *
-                    </label>
-                    <div className="w-[100%] flex justify-start mt-[10px]">
-                      <div className="mr-10">
-                        <RadiobuttonInput
-                          id="breaksyes"
-                          value="yes"
-                          name="breaks"
-                          label="Yes"
-                          selectedOption={options.breaks ? "yes" : ""}
-                          onChange={() => {
-                            setOptions({
-                              ...options,
-                              breaks: true,
-                            });
-                          }}
-                          readonly={!edits.gendrel}
-                          required
-                        />
-                      </div>
-                      <div className="">
-                        <RadiobuttonInput
-                          id="breaksno"
-                          value="no"
-                          name="breaks"
-                          label="No"
-                          selectedOption={!options.breaks ? "no" : ""}
-                          onChange={() => {
-                            setOptions({
-                              ...options,
-                              breaks: false,
-                            });
-                            setInputs({
-                              ...inputs,
-                              breaksdetails: "",
-                              breaksotheractivities: "",
-                            });
-                          }}
-                          readonly={!edits.gendrel}
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="w-[100%] flex justify-between mt-[20px]">
-                      <div className="w-[48%]">
-                        <TextInput
-                          label="Details"
-                          name="breaksdetails"
-                          id="details"
-                          type="text"
-                          onChange={handleInputVal}
-                          value={inputs.breaksdetails}
-                          disabled={!options.breaks}
-                          readonly={!edits.gendrel}
-                          required
-                        />
-                      </div>
-                      <div className="w-[48%]">
-                        <TextInput
-                          label="Other Activities"
-                          name="breaksotheractivities"
-                          id="otheractivities"
-                          type="text"
-                          onChange={handleInputVal}
-                          value={inputs.breaksotheractivities}
-                          disabled={!options.breaks}
-                          readonly={!edits.gendrel}
-                          required
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="w-[100%] flex justify-between">
-                  <div className="w-[100%]">
-                    <TextInput
-                      label="Anything else"
-                      name="genderalanything"
-                      id="anythingelse"
-                      type="text"
-                      onChange={handleInputVal}
-                      value={inputs.genderalanything}
-                      readonly={!edits.gendrel}
-                    />
-                  </div>
-                </div>
               </div>
             </div>
           </form>
 
+          {/* remove in this page------------------------------------- */}
+
           {/* Past or Present Health */}
-          <form
+          {/* <form
             onSubmit={(e) => {
               e.preventDefault();
               handlepresenthealth();
@@ -1829,10 +1673,10 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                 </div>
               </div>
             </div>
-          </form>
+          </form> */}
 
           {/* Therapy */}
-          <div className="basicProfileCont p-10 shadow-lg mt-10">
+          {/* <div className="basicProfileCont p-10 shadow-lg mt-10">
             <div className="w-[100%] flex justify-between items-center mb-5">
               <div className="text-[1.2rem] lg:text-[25px] font-bold">
                 Therapy
@@ -1910,7 +1754,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div className="py-1"></div>
         </div>

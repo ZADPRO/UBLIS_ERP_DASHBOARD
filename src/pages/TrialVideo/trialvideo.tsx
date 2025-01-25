@@ -3,8 +3,6 @@ import Axios from "axios";
 import CryptoJS from "crypto-js";
 import { useNavigate } from "react-router-dom";
 import { Toast } from "primereact/toast";
-import { ProgressBar } from "primereact/progressbar";
-import { RiVideoUploadFill } from "react-icons/ri";
 import { BsCameraVideoOffFill } from "react-icons/bs";
 
 interface introVideo {
@@ -17,7 +15,6 @@ interface introVideo {
 const TrialVideo: React.FC = () => {
     const navigate = useNavigate();
     const [introData, setIntroData] = useState<introVideo[]>([]);
-    const [progress, setProgress] = useState<number>(0);
     const toast = useRef<any>(null);
 
     const decrypt = (encryptedData: string, iv: string, key: string): any => {
