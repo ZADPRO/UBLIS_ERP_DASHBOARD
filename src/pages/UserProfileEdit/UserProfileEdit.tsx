@@ -399,6 +399,15 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
     return age.toString(); // Return age as a string
   };
 
+  function calculateBMI(weight: number, height: number) {
+    if (!weight || !height) return ""; // Return empty if inputs are missing
+    const heightInMeters = height / 100;
+    if (heightInMeters <= 0) return ""; // Avoid division by zero or negative values
+    const bmi = weight / (heightInMeters ** 2);
+    return bmi.toFixed(2); // Round to 2 decimal places
+  }
+
+
   const handleInputVal = (
     event: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
   ) => {
@@ -429,6 +438,14 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
         if (value === "single") {
           updatedInputs.anniversarydate = "";
         }
+      }
+
+      if (name === "height" || name === "weight") {
+        const newBMI = calculateBMI(
+          name === "weight" ? parseInt(value) : parseInt(inputs.weight),
+          name === "height" ? parseInt(value) : parseInt(inputs.height)
+        );
+        updatedInputs.bmi = newBMI;
       }
 
       return updatedInputs; // Return the updated inputs
@@ -1458,303 +1475,11 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                     </div>
                   </div>
                 </div></> : <></>}
-               
+
 
               </div>
             </div>
           </form>
-
-          {/* remove in this page------------------------------------- */}
-
-          {/* Past or Present Health */}
-          {/* <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handlepresenthealth();
-            }}
-          >
-            <div className="basicProfileCont p-10 shadow-lg mt-10">
-              <div className="w-[100%] flex justify-between items-center mb-5">
-                <div className="text-[1.2rem] lg:text-[25px] font-bold">
-                  Past or Present Health
-                </div>
-                {edits.present ? (
-                  <button
-                    className="text-[15px] outline-none py-2 border-none px-3 bg-[#f95005] font-bold cursor-pointer text-white rounded"
-                    type="submit"
-                  >
-                    Save&nbsp;&nbsp;
-                    <i className="text-[15px] pi pi-check"></i>
-                  </button>
-                ) : (
-                  <div
-                    onClick={() => {
-                      editform("present");
-                    }}
-                    className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
-                  >
-                    Edit&nbsp;&nbsp;
-                    <i className="text-[15px] pi pi-pen-to-square"></i>
-                  </div>
-                )}
-              </div>
-              <div className="w-[100%] flex justify-center items-center">
-                <div className="w-[100%] justify-center items-center flex flex-col">
-                  <div className="w-[100%] flex flex-wrap gap-y-[10px] lg:gap-y-[30px] gap-x-10 mb-[20px]">
-                    {conditions.map((condition, index) => (
-                      <div className="w-[140px]" key={index}>
-                        <CheckboxInput
-                          id={`condition-${index}`}
-                          checked={condition.checked === 1}
-                          label={condition.label}
-                          onChange={() => handleCheckboxChange(index)}
-                          readonly={!edits.present}
-                        />
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
-                    <div className="w-[100%] md:w-[48%]">
-                      <TextInput
-                        label="Description "
-                        name="pastother"
-                        id="others"
-                        type="text"
-                        onChange={handleInputVal}
-                        value={inputs.pastother}
-                        readonly={!edits.present}
-                      />
-                    </div>
-                    <div className="w-[100%] md:w-[48%]">
-                      <TextInput
-                        label="Current Medicines"
-                        name="pastmedicaldetails"
-                        id="medicaldetails"
-                        type="text"
-                        onChange={handleInputVal}
-                        value={inputs.pastmedicaldetails}
-                        readonly={!edits.present}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="w-[100%] flex flex-col gap-y-[20px] md:flex-row justify-between">
-                    <div className="w-[100%] md:w-[48%]">
-                      <label className="w-[100%] text-[#f95005] font-bold text-[1rem] lg:text-[20px] text-start">
-                        Under Physician's Care *
-                      </label>
-                      <div className="w-[100%] flex justify-start mt-[10px]">
-                        <div className="mr-10">
-                          <RadiobuttonInput
-                            id="careyes"
-                            value="yes"
-                            name="care"
-                            label="Yes"
-                            selectedOption={options.care ? "yes" : ""}
-                            onChange={() => {
-                              setOptions({
-                                ...options,
-                                care: true,
-                              });
-                            }}
-                            readonly={!edits.present}
-                            required
-                          />
-                        </div>
-                        <div className="">
-                          <RadiobuttonInput
-                            id="careno"
-                            value="no"
-                            name="care"
-                            label="No"
-                            selectedOption={!options.care ? "no" : ""}
-                            onChange={() => {
-                              setOptions({
-                                ...options,
-                                care: false,
-                              });
-                            }}
-                            readonly={!edits.present}
-                            required
-                          />
-                        </div>
-                      </div>
-                      <div className="w-[100%] flex justify-between mt-[20px]">
-                        <div className="w-[48%]">
-                          <TextInput
-                            label="Doctor Name"
-                            name="caredoctorname"
-                            id="doctorname"
-                            type="text"
-                            onChange={handleInputVal}
-                            value={inputs.caredoctorname}
-                            disabled={!options.care}
-                            readonly={!edits.present}
-                            required
-                          />
-                        </div>
-                        <div className="w-[48%]">
-                          <TextInput
-                            label="Hospital"
-                            name="caredoctorhospital"
-                            id="hospital"
-                            type="text"
-                            onChange={handleInputVal}
-                            value={inputs.caredoctorhospital}
-                            disabled={!options.care}
-                            readonly={!edits.present}
-                            required
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="w-[100%] md:w-[48%]">
-                      <label className="w-[100%] text-[#f95005] font-bold text-[1rem] lg:text-[20px] text-start">
-                        Back Pain *
-                      </label>
-                      <div className="w-[100%] flex justify-start mt-[10px]">
-                        <div className="mr-10">
-                          <RadiobuttonInput
-                            id="painyes"
-                            value="yes"
-                            name="pain"
-                            label="Yes"
-                            selectedOption={options.backpain ? "yes" : ""}
-                            onChange={() => {
-                              setOptions({
-                                ...options,
-                                backpain: true,
-                              });
-                            }}
-                            readonly={!edits.present}
-                            required
-                          />
-                        </div>
-                        <div className="">
-                          <RadiobuttonInput
-                            id="painno"
-                            value="no"
-                            name="pain"
-                            label="No"
-                            selectedOption={!options.backpain ? "no" : ""}
-                            onChange={() => {
-                              setOptions({
-                                ...options,
-                                backpain: false,
-                              });
-                            }}
-                            readonly={!edits.present}
-                            required
-                          />
-                        </div>
-                      </div>
-
-                      <div className="w-[100%] mt-[20px]">
-                        <div className="w-[100%]">
-                          <SelectInput
-                            id="painscale"
-                            name="backpainscale"
-                            label="Pain Scale"
-                            onChange={handleInputVal}
-                            value={inputs.backpainscale}
-                            options={[
-                              { value: "upper", label: "Upper" },
-                              { value: "middle", label: "Middle" },
-                              { value: "lower", label: "Lower" },
-                            ]}
-                            disabled={!options.backpain || !edits.present}
-                            required
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form> */}
-
-          {/* Therapy */}
-          {/* <div className="basicProfileCont p-10 shadow-lg mt-10">
-            <div className="w-[100%] flex justify-between items-center mb-5">
-              <div className="text-[1.2rem] lg:text-[25px] font-bold">
-                Therapy
-              </div>
-              {edits.therapy ? (
-                <div
-                  className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
-                  onClick={handletherapy}
-                >
-                  Save&nbsp;&nbsp;
-                  <i className="text-[15px] pi pi-check"></i>
-                </div>
-              ) : (
-                <div
-                  onClick={() => {
-                    editform("therapy");
-                  }}
-                  className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
-                >
-                  Edit&nbsp;&nbsp;
-                  <i className="text-[15px] pi pi-pen-to-square"></i>
-                </div>
-              )}
-            </div>
-            <div className="w-[100%] flex justify-center items-center">
-              <div className="w-[100%] justify-center items-center flex flex-col">
-                <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
-                  <div className="w-[100%] md:w-[48%]">
-                    <TextInput
-                      label="Duration of the Problem"
-                      name="therapydurationproblem"
-                      id="durationproblem"
-                      type="text"
-                      onChange={handleInputVal}
-                      value={inputs.therapydurationproblem}
-                      readonly={!edits.therapy}
-                    />
-                  </div>
-                  <div className="w-[100%] md:w-[48%]">
-                    <TextInput
-                      label="Relevant Past History"
-                      name="therapypasthistory"
-                      id="relevantpasthistory"
-                      type="text"
-                      onChange={handleInputVal}
-                      value={inputs.therapypasthistory}
-                      readonly={!edits.therapy}
-                    />
-                  </div>
-                </div>
-
-                <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between">
-                  <div className="w-[100%] md:w-[48%]">
-                    <TextInput
-                      label="Relevant Family History"
-                      name="therapyfamilyhistory"
-                      id="relevantfamilyhistory"
-                      type="text"
-                      onChange={handleInputVal}
-                      value={inputs.therapyfamilyhistory}
-                      readonly={!edits.therapy}
-                    />
-                  </div>
-                  <div className="w-[100%] md:w-[48%]">
-                    <TextInput
-                      label="Anything else"
-                      name="therapyanythingelse"
-                      id="anythingelse"
-                      type="text"
-                      onChange={handleInputVal}
-                      value={inputs.therapyanythingelse}
-                      readonly={!edits.therapy}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> */}
 
           <div className="py-1"></div>
         </div>

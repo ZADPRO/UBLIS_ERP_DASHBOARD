@@ -37,6 +37,8 @@ interface SelectedUser {
   reftime: string;
   refPackageName: string;
   refSCustId: string;
+  refWeekDaysTime: string,
+  refWeekEndTime: string
 }
 
 // interface Data {
@@ -162,6 +164,8 @@ const StaffAttendance: React.FC = () => {
           userEmail: data.data.refCtEmail,
           reftime: data.data.refTime,
           refSCustId: data.data.refSCustId,
+          refWeekDaysTime: data.data.weekDaysTiming,
+          refWeekEndTime: data.data.weekEndTiming
         });
       }
     }
@@ -338,12 +342,20 @@ const StaffAttendance: React.FC = () => {
                                   ? selectedUser.refPackageName
                                   : "Not Available"}
                               </p>
-                              <p>
-                                Timing:{" "}
-                                {selectedUser.reftime
-                                  ? selectedUser.reftime
+                              {selectedUser.refWeekDaysTime ? <><p>
+                                WeekdaysTiming:{" "}
+                                {selectedUser.refWeekDaysTime
+                                  ? selectedUser.refWeekDaysTime
                                   : "Not Available"}
-                              </p>
+                              </p></> : <></> }
+                              
+                              {selectedUser.refWeekEndTime ? <><p>
+                                WeekendTiming:{" "}
+                                {selectedUser.refWeekEndTime
+                                  ? selectedUser.refWeekEndTime
+                                  : "Not Available"}
+                              </p></> : <></>}
+                              
                             </Panel>
                             <DataTable
                               value={userFilteredAttendanceData}

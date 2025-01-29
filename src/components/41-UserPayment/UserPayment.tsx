@@ -53,18 +53,21 @@ const UserPayment: React.FC = () => {
   const [receiptOfferName, setReceiptOfferName] = useState("");
 
   const [userInitialData, setUserInitialData] = useState({
-    refClassMode: 0,
+    refClMode: 0,
     refPackageName: "",
     refSCustId: "",
     refStFName: "",
     refStId: "",
-    refSeTo: "",
+    refClTo: "",
     refStLName: "",
     refTimeMembers: "",
     refTime: "",
+    weekDaysTiming:"",
+    weekEndTiming:"",
     refFeesType: "",
     refFees: 0,
     refPaId: 0,
+    
   });
 
   const [otherPackageDatatable, setOtherPackageDatatable] = useState([]);
@@ -188,6 +191,7 @@ const UserPayment: React.FC = () => {
           import.meta.env.VITE_ENCRYPTION_KEY
         );
 
+        console.log('paymentData line ----- 191', paymentData)
         if (paymentData.token === false) {
           console.log("data.token", paymentData.token);
           navigate("/expired");
@@ -235,7 +239,7 @@ const UserPayment: React.FC = () => {
                 );
               }
 
-              if (!userInitialData.refSeTo) {
+              if (!userInitialData.refClTo) {
                 const currentDate = new Date();
                 const month = currentDate.getMonth();
                 const year = currentDate.getFullYear();
@@ -606,11 +610,16 @@ const UserPayment: React.FC = () => {
                 </p>
                 <p className="mt-0" style={{ textTransform: "capitalize" }}>
                   Current Package: {userInitialData.refPackageName} ({" "}
-                  {userInitialData.refClassMode === 1 ? "Online" : "Offline"} )
+                  {userInitialData.refClMode === 1 ? "Online" : "Offline"} )
                 </p>
-                <p className="mt-0">
-                  Preferred Timing: {userInitialData.refTime}
-                </p>
+                {userInitialData.weekDaysTiming ? <> <p className="mt-0">
+                  Weekdays Timing: {userInitialData.weekDaysTiming}
+                </p></> : <></>}
+               
+                {userInitialData.weekEndTiming ? <><p className="mt-0">
+                  Weekend Timing: {userInitialData.weekEndTiming}
+                </p></> : <></>}
+                
                 <p className="mt-0">
                   Package fee: {userInitialData.refFees} ({" "}
                   {userInitialData.refFeesType === "0"
@@ -772,7 +781,7 @@ const UserPayment: React.FC = () => {
                     </p>
                     <p className="mt-0">
                       {" "}
-                      {userInitialData.refClassMode === 1
+                      {userInitialData.refClMode === 1
                         ? "Online"
                         : "Offline"}
                     </p>
