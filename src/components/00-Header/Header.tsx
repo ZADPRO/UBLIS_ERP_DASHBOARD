@@ -476,7 +476,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
           {location.pathname != "/expired" ? (
             <div>
               <div>
-                {utId === "5" && isMobile ? (
+                {(utId === "6" || utId === "5") && isMobile ? (
                   <div>
                     <div className="primaryNav flex items-center">
                       <Button
