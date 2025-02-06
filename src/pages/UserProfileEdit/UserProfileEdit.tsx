@@ -97,6 +97,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
     tempcity: "",
     email: "",
     phoneno: "",
+    emergencyno:"",
     whatsappno: "",
     mode: "",
     height: "",
@@ -287,6 +288,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
           : addressdata.refAdCity2,
         email: communication.refCtEmail,
         phoneno: communication.refCtMobile,
+        emergencyno:communication.refEmerContact,
         whatsappno: communication.refCtWhatsapp,
         mode: communication.refUcPreference,
         height: generalhealth.refHeight,
@@ -439,6 +441,9 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
           updatedInputs.anniversarydate = "";
         }
       }
+      if (name === "age" && Number(value) < 20) {
+        updatedInputs.maritalstatus = ""; // Set to an empty string instead of a space
+      }
 
       if (name === "height" || name === "weight") {
         const newBMI = calculateBMI(
@@ -558,6 +563,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
         communication: {
           refCtEmail: inputs.email,
           refCtMobile: inputs.phoneno,
+          refEmerContact:inputs.emergencyno,
           refCtWhatsapp: inputs.whatsappno,
           refUcPreference: inputs.mode,
         },
@@ -881,7 +887,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                       </div>
                       <div className="w-[100%] md:w-[48%] lg:w-[48%]">
                         <TextInput
-                          label="Father / Spouse's Name *"
+                          label="Emergency Contact Name / Relationship *"
                           name="guardianname"
                           id="guardianname"
                           type="text"
@@ -905,7 +911,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                             { value: "single", label: "Single" },
                             { value: "married", label: "Married" },
                           ]}
-                          disabled={!edits.personal && inputs.age > '18' ? true : false}
+                          disabled={edits.personal && inputs.age > '20' ? false : true }
                           required
                         />
 
@@ -1252,7 +1258,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                 )}
               </div>
               <div className="w-[100%] flex flex-col justify-center items-center">
-                <div className="w-[100%] flex justify-between mb-[20px]">
+                <div className="w-[100%] gap-4 flex justify-between mb-[20px]">
                   <div className="w-[100%]">
                     <TextInput
                       label="E-Mail *"
@@ -1265,6 +1271,18 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                       required
                     />
                   </div>
+                  <div className="w-[100%] ">
+                  <TextInput
+                      label="Emergency Contact Number *"
+                      name="emergencyno"
+                      id="emergencyno"
+                      type="number"
+                      onChange={handleInputVal}
+                      value={inputs.emergencyno}
+                      readonly={!edits.communitcation}
+                      required
+                    />
+                      </div>
                 </div>
                 <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
                   <div className="w-[100%] md:w-[40%]">

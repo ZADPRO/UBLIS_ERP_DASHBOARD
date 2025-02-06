@@ -110,6 +110,7 @@ const Profile: React.FC = () => {
     tempcity: "",
     email: "",
     phoneno: "",
+    emergencyno:"",
     whatsappno: "",
     mode: "",
     height: "",
@@ -404,6 +405,7 @@ const Profile: React.FC = () => {
             : addressdata.refAdCity2,
           email: communication.refCtEmail,
           phoneno: communication.refCtMobile,
+          emergencyno:communication.refEmerContact,
           whatsappno: communication.refCtWhatsapp,
           mode: communication.refUcPreference,
           height: generalhealth ? generalhealth.refHeight : null,
@@ -600,6 +602,9 @@ const Profile: React.FC = () => {
           updatedInputs.anniversarydate = "";
         }
       }
+      if (name === "age" && Number(value) < 20) {
+        updatedInputs.maritalstatus = ""; // Set to an empty string instead of a space
+      }
 
       if (name === "height" || name === "weight") {
         const newBMI = calculateBMI(
@@ -733,6 +738,7 @@ const Profile: React.FC = () => {
         communication: {
           refCtEmail: inputs.email,
           refCtMobile: inputs.phoneno,
+          refEmerContact:inputs.emergencyno,
           refCtWhatsapp: inputs.whatsappno,
           refUcPreference: inputs.mode,
         },
@@ -1703,7 +1709,7 @@ const Profile: React.FC = () => {
                         </div>
                         <div className="w-[100%] lg:w-[48%]">
                           <TextInput
-                            label="Father / Spouse's Name *"
+                            label="Emergency Contact Name / Relationship *"
                             name="guardianname"
                             id="guardianname"
                             type="text"
@@ -1727,11 +1733,7 @@ const Profile: React.FC = () => {
                               { value: "single", label: "Single" },
                               { value: "married", label: "Married" },
                             ]}
-                            disabled={
-                              edits.personal && inputs.age > "18"
-                                ? false
-                                : true
-                            }
+                            disabled={edits.personal && inputs.age > '20' ? false : true }
                             required
                           />
                         </div>
@@ -2085,7 +2087,7 @@ const Profile: React.FC = () => {
                 </div>
 
                 <div className="w-[100%] flex flex-col justify-center items-center">
-                  <div className="w-[100%] flex justify-between mb-[20px]">
+                  <div className="w-[100%] gap-4   flex justify-between mb-[20px]">
                     <div className="w-[100%]">
                       <TextInput
                         label="E-Mail *"
@@ -2098,6 +2100,18 @@ const Profile: React.FC = () => {
                         required
                       />
                     </div>
+                    <div className="w-[100%] ">
+                  <TextInput
+                      label="Emergency Contact Number *"
+                      name="emergencyno"
+                      id="emergencyno"
+                      type="number"
+                      onChange={handleInputVal}
+                      value={inputs.emergencyno}
+                      readonly={!edits.communitcation}
+                      required
+                    />
+                      </div> 
                   </div>
                   <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between mb-[20px]">
                     <div className="w-[100%] lg:w-[40%]">
