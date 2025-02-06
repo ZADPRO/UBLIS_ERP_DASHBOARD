@@ -17,6 +17,7 @@ import Axios from "axios";
 import { FilterMatchMode } from "primereact/api";
 import UserProfileEdit from "../UserProfileEdit/UserProfileEdit";
 import MedicalTabs from "../MedicalTab/MedicalTabs";
+import { InputNumber } from "primereact/inputnumber";
 
 interface Customer {
   id: string;
@@ -75,6 +76,7 @@ const UserDirData: React.FC = () => {
   const [UserDetailss, setUserDetailss] = useState<UserDetails[]>([]);
   const [globalFilterValue, setGlobalFilterValue] = useState<string>("");
   const [sessionData, setSessionData] = useState<sessionDetails>();
+  const [threapyCount, setThreapyCount] = useState<number>();
   const [branchList, setBranchList] = useState([]);
   const [userAge, setUserAge] = useState<any>();
   const [refStId, setRefStId] = useState();
@@ -270,6 +272,7 @@ const UserDirData: React.FC = () => {
       };
 
       setSessionData(session);
+      setThreapyCount(userDetails.refThreapyCount)
 
       setUserDetails(userDetails);
       setUserDetailss(userData);
@@ -986,55 +989,67 @@ const UserDirData: React.FC = () => {
                     <div className="text-[1.2rem] lg:text-[25px] font-bold">
                       Threapy Session
                     </div>
-                    {edits.session ? (
-                      <button
-                        className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${sessionUpdateLoad
-                          ? "bg-gray-500 cursor-not-allowed"
-                          : "bg-[#f95005]"
-                          }`}
-                        type="submit"
-                        disabled={sessionUpdateLoad}
-                      >
-                        {sessionUpdateLoad ? (
-                          <>
-                            Loading&nbsp;&nbsp;
-                            <i className="pi pi-spin pi-spinner text-[15px]"></i>
-                          </>
+                    {(refUtId === "7" || refUtId === "11" || refUtId === "12") ?
+                      <>
+                        {edits.session ? (
+                          <button
+                            className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${sessionUpdateLoad
+                              ? "bg-gray-500 cursor-not-allowed"
+                              : "bg-[#f95005]"
+                              }`}
+                            type="submit"
+                            disabled={sessionUpdateLoad}
+                          >
+                            {sessionUpdateLoad ? (
+                              <>
+                                Loading&nbsp;&nbsp;
+                                <i className="pi pi-spin pi-spinner text-[15px]"></i>
+                              </>
+                            ) : (
+                              <>
+                                Save&nbsp;&nbsp;
+                                <i className="text-[15px] pi pi-check"></i>
+                              </>
+                            )}
+                          </button>
                         ) : (
-                          <>
-                            Save&nbsp;&nbsp;
-                            <i className="text-[15px] pi pi-check"></i>
-                          </>
+                          <div
+                            onClick={() => {
+                              setEdits({ session: true });
+                            }}
+                            className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
+                          >
+                            Edit&nbsp;&nbsp;
+                            <i className="text-[15px] pi pi-pen-to-square"></i>
+                          </div>
                         )}
-                      </button>
-                    ) : (
-                      <div
-                        onClick={() => {
-                          setEdits({ session: true });
-                        }}
-                        className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
-                      >
-                        Edit&nbsp;&nbsp;
-                        <i className="text-[15px] pi pi-pen-to-square"></i>
-                      </div>
-                    )}
+                      </> : <></>}
+
                   </div>
                   <div className="w-[100%] flex justify-center items-center">
                     {!edits.session ? (
                       <div className="w-[100%] justify-center items-center flex flex-col">
                         <div className="w-[100%] flex flex-row lg:flex-row gap-y-[20px] justify-between mb-[20px]">
+                          <div className="flex flex-column gap-2 w-[48%]">
+                            <label>No.of Session</label>
+                            <InputNumber
+                              value={threapyCount}
+                              required
+                              readOnly
+                            />
+                          </div>
                           <div className="w-[100%] lg:w-[48%]">
-                            <TextInput
+                            {/* <InputNumber
                               label="No.of Session *"
                               name="threapyCount"
                               id="threapyCount"
                               type="number"
-                              value="1"
+                              value={threapyCount}
                               readonly
-                            />
+                            /> */}
                           </div>
                         </div>
-                         
+
                       </div>
                     ) : (
                       <div></div>
