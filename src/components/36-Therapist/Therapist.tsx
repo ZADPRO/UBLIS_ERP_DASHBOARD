@@ -144,35 +144,7 @@ const Therapist: React.FC = () => {
           </div>
           <div className="routesCont">
             <div className="routeContents">
-              {/* <div className="filterHeaders">
-                <div className="card filterContents w-full md:w-12/12 mx-auto">
-                  <div
-                    className="filter w-full md:w-3/12 mx-auto"
-                    style={{ alignItems: "start", justifyContent: "start" }}
-                  >
-                    <MultiSelect
-                      value={selectedCities}
-                      onChange={(e: MultiSelectChangeEvent) =>
-                        setSelectedCities(e.value)
-                      }
-                      options={cities}
-                      optionLabel="name"
-                      filter
-                      placeholder="Select Options"
-                      maxSelectedLabels={3}
-                      className="w-16rem mt-3"
-                    />
-                  </div>
-
-                  <div
-                    className="filter w-full md:w-3/12 mx-auto"
-                    style={{ alignItems: "end", justifyContent: "end" }}
-                  >
-                    <p className="pr-5">Clear Filter</p>
-                    <p className="pr-5">Apply Filter</p>
-                  </div>
-                </div>
-              </div> */}
+              
               <Divider />
 
               <TherapistTable />

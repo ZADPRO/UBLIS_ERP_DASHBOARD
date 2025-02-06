@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { InputText } from "primereact/inputtext";
+import { InputNumber } from "primereact/inputnumber";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import { Button } from "primereact/button";
@@ -97,6 +98,9 @@ export default function TherapistTable() {
   console.log("testing", UserDetailss, userDetails);
   const [therapyStatus, setTherapyStatus] = useState<{
     [key: string]: boolean;
+  }>({});
+  const [therapyCount, setTherapyCount] = useState<{
+    [key: string]: number;
   }>({});
 
   const [globalFilterValue, setGlobalFilterValue] = useState<string>("");
@@ -242,12 +246,14 @@ export default function TherapistTable() {
     console.log("customer", customer);
     try {
       const therapyChecked = therapyStatus[customer.id] || false;
+      const therapyCounts = therapyCount[customer.id];
       console.log(`Customer ID: ${customer.id}, Therapy: ${therapyChecked}`);
       const response = await Axios.post(
         import.meta.env.VITE_API_URL + `/therapist/approvalButton`,
         {
           refStId: customer.id,
           isTherapy: therapyChecked,
+          threapyCount: therapyCounts
         },
         {
           headers: {
@@ -333,32 +339,35 @@ export default function TherapistTable() {
         label={rowData.userId}
         className="p-button-link"
         style={{ textAlign: "start" }}
-        onClick={() =>{
-          
-          console.log('rowData line ----- 338',rowData )
-          onUserIdClick(rowData.id)}}
+        onClick={() => {
+
+          console.log('rowData line ----- 338', rowData)
+          onUserIdClick(rowData.id)
+        }}
       />
     );
   };
 
   const statusBodyTemplate = (rowData: Customer) => {
     return (
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-row">
         <Button
-          icon="pi pi-check"
-          rounded
-          severity="success"
+          className="flex items-center justify-center p-2 rounded-full bg-green-500 hover:bg-green-600 text-white"
           aria-label="Approve"
           onClick={() => handleApprove(rowData)}
-        />
+        >
+          <i className="pi pi-check text-xl"></i>
+        </Button>
 
         <Button
-          icon="pi pi-times"
-          rounded
-          severity="danger"
+          className="flex items-center justify-center p-2 rounded-full bg-red-500 hover:bg-red-600 text-white"
           aria-label="Cancel"
-          onClick={() => handleReject(rowData.id)}
-        />
+          onClick={() => handleReject(rowData)}
+        >
+          <i className="pi pi-times text-xl"></i>
+        </Button>
+
+
       </div>
     );
   };
@@ -401,16 +410,50 @@ export default function TherapistTable() {
     });
   };
 
+  const handleTherapyCountChange = (e: any, customerId: any) => {
+    setTherapyCount({
+      ...therapyCount,
+      [customerId]: e.value,
+    });
+  };
+
   const therapyCheckboxTemplate = (rowData: any) => {
     return (
       <input
         type="checkbox"
         checked={therapyStatus[rowData.id] || false}
-        onChange={(e) => handleTherapyCheckboxChange(e, rowData.id)}
+        onChange={(e: any) => {
+          let val=0;
+          if(e.target.checked)
+          {
+            val=1
+          }
+          setTherapyCount({
+            ...therapyCount,
+            [rowData.id]: val,
+          });
+          handleTherapyCheckboxChange(e, rowData.id)
+        }}
         style={{
           transform: "scale(1.5)",
         }}
       />
+    );
+  };
+
+  const therapyCountTemplate = (rowData: any) => {
+    return (
+      <div>
+        <InputNumber
+          value={therapyCount[rowData.id] || 1}
+          onChange={(e: any) => {
+            handleTherapyCountChange(e, rowData.id)
+          }}
+          disabled={!therapyStatus[rowData.id]}
+          required
+        />
+      </div>
+
     );
   };
 
@@ -436,6 +479,7 @@ export default function TherapistTable() {
         emptyMessage="No customers found."
         filters={filters}
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        className="flex flex-col justify-center align-baseline"
       >
         <Column
           selectionMode="multiple"
@@ -472,13 +516,15 @@ export default function TherapistTable() {
             minWidth: "9rem",
           }}
         />
+        <Column
+          field="therapy"
+          header="No.of Session"
+          body={therapyCountTemplate}
+          style={{
+            minWidth: "9rem",
+          }}
+        />
 
-        {/* <Column
-          field="currentStatus"
-          header="Current Status"
-          filter
-          style={{ minWidth: "14rem" }}
-        /> */}
         <Column
           header="Approved / Rejected"
           body={statusBodyTemplate}
@@ -492,10 +538,6 @@ export default function TherapistTable() {
         style={{ minWidth: "75vw" }}
       >
         <h2>Registered User</h2>
-        {/* <p>
-          {selectedUserId ? `User ID: ${selectedUserId}` : "No user selected"}
-        </p> */}
-        {/* kandippa varanum */}
         <UserProfileView refid={selectedUserId} viewProfile={true} />
       </Sidebar>
     </div>

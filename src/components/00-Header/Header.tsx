@@ -129,7 +129,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     },
     {
       path: "/staff/signedupUsers",
-      name: "Future Clients",
+      name: "Signed Up Users",
       icon: <UserRoundCheck />,
     },
     {
@@ -180,7 +180,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
 
     {
       path: "/staff/signedupUsers",
-      name: "Future Clients",
+      name: "Signed Up Users",
       icon: <UserPlus />,
     },
 
@@ -280,7 +280,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
 
     {
       path: "/staff/signedupUsers",
-      name: "Future Clients",
+      name: "Signed Up Users",
       icon: <UserPlus />,
     },
 
@@ -388,58 +388,21 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
       name: "All Users",
       icon: <User />,
     },
-    // {
-    //   path: "/staff/registeredUsers",
-    //   name: "Register User & Fee Due Users",
-    //   icon: <User />,
-    // },
-    // {
-    //   path: "/staff/signedupUsers",
-    //   name: "Future Clients",
-    //   icon: <UserRoundCheck  />,
-    // },
     {
       path: "/therapist/approve",
       name: "Registered Users With Medical Issue",
       icon: <UserRoundCheck />,
     },
-    // {
-    //   path: "/dir/staff",
-    //   name: "Staff / Employee",
-    //   icon: <SquareUserRound  />,
-    // },
+    {
+      path: "/staff/payment",
+      name: "Payment",
+      icon: <IndianRupee />,
+    },
     {
       path: "/staff/feedback",
       name: "Feedback",
       icon: <MessageCircle />,
     },
-    // {
-    //   path: "/staff/transaction",
-    //   name: "Transactions",
-    //   icon: <ArrowRightLeft />,
-    // },
-    // {
-    //   path: "/staff/payroll",
-    //   name: "Payroll",
-    //   icon: <IdCard />,
-    // },
-    // {
-    //   path: "/reports",
-    //   name: "Directors - Reports",
-    //   icon: <ChartNoAxesCombined />,
-    // },
-    // { path: "/blogs", name: "Directors - Blogs", icon: <NotebookPen  /> },
-    // { path: "/editNotes", name: "Directors - Notes", icon: <PencilLine /> },
-    // {
-    //   path: "/restrictions",
-    //   name: "Directors - Restrictions",
-    //   icon: <TriangleAlert />,
-    // },
-    // {
-    //   path: "/dir/organization",
-    //   name: "Organization Chart",
-    //   icon: <SlOrganization />,
-    // },
     { path: "/users/profile", name: "Profile", icon: <UserRoundPen /> },
     {
       path: "/users/support",

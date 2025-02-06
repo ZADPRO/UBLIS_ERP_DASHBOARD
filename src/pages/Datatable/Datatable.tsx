@@ -640,7 +640,7 @@ export default function Datatables() {
         position="right"
         onHide={() => setVisibleLeft(false)}
       >
-        <h2>Future Clients (Audit & Action)</h2>
+        <h2>Signed Up Users (Audit & Action)</h2>
         <p>
           {selectedUserId ? `User ID: ${selectedUserId}` : "No user selected"}
         </p>

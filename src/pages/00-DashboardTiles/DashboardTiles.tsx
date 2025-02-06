@@ -37,6 +37,7 @@ interface Product {
   quantity: number;
   inventoryStatus: string;
   rating: number;
+  transTime: string
 }
 
 type DecryptResult = any;
@@ -139,6 +140,7 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
           if (
             localStorage.getItem("refUtId") === "7" ||
             localStorage.getItem("refUtId") === "4"
+            || localStorage.getItem("refUtId") === "12"
           ) {
             setTrialCount({
               Trial: data.data.trailCount[0].trailCount,
@@ -150,7 +152,7 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
             });
           }
 
-          if (localStorage.getItem("refUtId") === "7") {
+          if (localStorage.getItem("refUtId") === "7" || localStorage.getItem("refUtId") === "12") {
             setStudentAudit({
               approvalCount:
                 data.data.getStudentChangesCountResult[0].ApproveCount,
@@ -179,6 +181,8 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
               name: `${item.refStFName} ${item.refStLName}`,
               transTime: item.transTime,
             }));
+            console.log(' -> Line Number ----------------------------------- 183',);
+            console.log('mappedData', mappedData)
             setProducts(mappedData);
 
             const trailSampleData = data.data.trailSampleData;
@@ -403,7 +407,7 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
                       <div className="leaveBalance">
                         <div className="consumed">
                           <p>{trailCount.Trial}</p>
-                          <p>Trial</p>
+                          <p>Registered Count</p>
                         </div>
                         <Divider layout="vertical" />
                         <div className="balance">
@@ -416,7 +420,7 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
                 </div>
               </Link>
 
-              {localStorage.getItem("refUtId") === "7" && (
+              {(localStorage.getItem("refUtId") === "7" || localStorage.getItem("refUtId") === "12") && (
                 <Link
                   to="/dir/notify?user=student"
                   style={{ textDecoration: "none", color: "inherit" }}
@@ -441,7 +445,7 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
                 </Link>
               )}
 
-              {localStorage.getItem("refUtId") === "7" && (
+              {(localStorage.getItem("refUtId") === "7" || localStorage.getItem("refUtId") === "12") && (
                 <Link
                   to="/dir/notify?user=staff"
                   style={{ textDecoration: "none", color: "inherit" }}
@@ -468,6 +472,7 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
 
               {localStorage.getItem("refUtId") === "4" ||
                 localStorage.getItem("refUtId") === "7" ||
+                localStorage.getItem("refUtId") === "12" ||
                 localStorage.getItem("refUtId") === "8" ||
                 localStorage.getItem("refUtId") === "11" ? (
                 <Link
@@ -598,7 +603,7 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
                       style={{ minWidth: "4rem" }}
                     ></Column>
                     <Column
-                      field="registeredDate"
+                      field="transTime"
                       header="RegisteredDate"
                       style={{ minWidth: "6rem" }}
                     ></Column>

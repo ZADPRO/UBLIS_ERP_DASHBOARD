@@ -196,16 +196,14 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className="userTilesDashboard grid-container mt-4 mb-4">
+        <div className="userTilesDashboard mt-4 mb-4">
           <div className="grid-item">
             <Fieldset
               legend="Intro Video"
               onClick={() => handleMobileNavigate("/introVideo")}
             >
               <p className="m-0">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam.
+                Complete The Introduction Video Before Start The Class
               </p>
             </Fieldset>
           </div>

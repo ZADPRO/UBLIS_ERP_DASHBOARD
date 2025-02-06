@@ -626,7 +626,7 @@ const Package: React.FC = () => {
                     </div>
 
                     <div className="flex flex-column gap-2  w-[30%]  ">
-                      <label htmlFor="username">Member Type</label>
+                      <label htmlFor="username">Batch Type</label>
 
                       <MultiSelect
                         value={newPackageData.membertype}
@@ -639,7 +639,7 @@ const Package: React.FC = () => {
                         options={sessionMemberTypeOptions}
                         optionLabel="label"
                         display="chip"
-                        placeholder="Select a Member Type"
+                        placeholder="Select a Batch Type"
                         maxSelectedLabels={3}
                         className="w-full"
                         required
@@ -713,7 +713,7 @@ const Package: React.FC = () => {
                     </div>
 
                     <div className="flex flex-column gap-2  w-[30%] ">
-                      <label htmlFor="username">WeekEnd Timing</label>
+                      <label htmlFor="username">Weekend Timing</label>
 
                       <MultiSelect
                         value={newPackageData.WeTiming}
@@ -845,7 +845,7 @@ const Package: React.FC = () => {
               ></Column>
 
               <Column
-                header="WeekDays Timing"
+                header="Weekdays Timing"
                 body={(rowData) => (
                   <ul className="list-none p-0 m-0">
                     {rowData.wTimingDetails?.map((time: any, index: any) => (
@@ -889,20 +889,7 @@ const Package: React.FC = () => {
                 header="Session Mode"
                 style={{ minWidth: "150px", width: "auto" }}
               ></Column>
-              {/* 
-              <Column
-                header="Session Days"
-                body={(rowData) => (
-                  <DataTable
-                    value={rowData.sessionDaysDetails}
-                    className="p-0 m-0 border-none"
-                    showHeaders={false} // This removes the header
-                  >
-                    <Column body={(data) => data}></Column>
-                  </DataTable>
-                )}
-                style={{ width: "200px" }}
-              ></Column> */}
+              
 
               <Column
                 header="Session Days"
@@ -926,7 +913,7 @@ const Package: React.FC = () => {
                 style={{ minWidth: "150px", width: "auto" }}
               ></Column>
               <Column
-                header="Member Type"
+                header="Batch Type"
                 body={(rowData) => (
                   <ul className="list-none p-0 m-0">
                     {rowData.memberTypeDetails?.map((time: any, index: any) => (

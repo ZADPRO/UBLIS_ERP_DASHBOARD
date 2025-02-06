@@ -628,7 +628,7 @@ const Session: React.FC = () => {
                     </div>
 
                     <div className="flex flex-column gap-2  w-[30%]  ">
-                      <label htmlFor="username">Member Type</label>
+                      <label htmlFor="username">Batch Type</label>
                       {editSession ? (
                         <Dropdown
                           value={sessionWorkSpaceData.membertype}
@@ -659,7 +659,7 @@ const Session: React.FC = () => {
                           options={sessionMemberTypeOptions}
                           optionLabel="label"
                           display="chip"
-                          placeholder="Select a Member Type"
+                          placeholder="Select a Batch Type"
                           maxSelectedLabels={3}
                           className="w-full"
                         />
@@ -722,7 +722,7 @@ const Session: React.FC = () => {
               <Column field="refTime" header="Time"></Column>
               <Column field="refTimeMode" header="Session Mode"></Column>
               <Column field="refTimeDays" header="Session Days"></Column>
-              <Column field="refTimeMembers" header="Member Type"></Column>
+              <Column field="refTimeMembers" header="Batch Type"></Column>
               <Column header="Edit" body={sessionEdit}></Column>
               <Column header="Delete" body={sessionDelete}></Column>
             </DataTable>

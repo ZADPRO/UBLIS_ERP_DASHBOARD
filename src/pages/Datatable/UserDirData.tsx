@@ -681,7 +681,7 @@ const UserDirData: React.FC = () => {
                 )}
               </p>
             </TabPanel>
-           { localStorage.getItem("refUtId") !="4" && (<TabPanel header="Medical Details">
+            {localStorage.getItem("refUtId") != "4" && (<TabPanel header="Medical Details">
               <p className="m-0">
                 {userDetails ? (
                   <>
@@ -694,9 +694,9 @@ const UserDirData: React.FC = () => {
                 )}
               </p>
             </TabPanel>)
-            
-            } 
-            
+
+            }
+
             <TabPanel header="Session details">
               <form
                 onSubmit={(e) => {
@@ -758,7 +758,7 @@ const UserDirData: React.FC = () => {
                           </div>
                           <div className="w-[100%] lg:w-[48%]">
                             <TextInput
-                              label="Member Type *"
+                              label="Batch Type *"
                               name="memberTypeName"
                               id="mtype"
                               type="text"
@@ -971,6 +971,223 @@ const UserDirData: React.FC = () => {
 
                         </div>
                       </div>
+                    )}
+                  </div>
+                </div>
+              </form>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  updateSessionData();
+                }}
+              >
+                <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
+                  <div className="w-[100%] flex justify-between items-center mb-5">
+                    <div className="text-[1.2rem] lg:text-[25px] font-bold">
+                      Threapy Session
+                    </div>
+                    {edits.session ? (
+                      <button
+                        className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${sessionUpdateLoad
+                          ? "bg-gray-500 cursor-not-allowed"
+                          : "bg-[#f95005]"
+                          }`}
+                        type="submit"
+                        disabled={sessionUpdateLoad}
+                      >
+                        {sessionUpdateLoad ? (
+                          <>
+                            Loading&nbsp;&nbsp;
+                            <i className="pi pi-spin pi-spinner text-[15px]"></i>
+                          </>
+                        ) : (
+                          <>
+                            Save&nbsp;&nbsp;
+                            <i className="text-[15px] pi pi-check"></i>
+                          </>
+                        )}
+                      </button>
+                    ) : (
+                      <div
+                        onClick={() => {
+                          setEdits({ session: true });
+                        }}
+                        className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
+                      >
+                        Edit&nbsp;&nbsp;
+                        <i className="text-[15px] pi pi-pen-to-square"></i>
+                      </div>
+                    )}
+                  </div>
+                  <div className="w-[100%] flex justify-center items-center">
+                    {!edits.session ? (
+                      <div className="w-[100%] justify-center items-center flex flex-col">
+                        <div className="w-[100%] flex flex-row lg:flex-row gap-y-[20px] justify-between mb-[20px]">
+                          <div className="w-[100%] lg:w-[48%]">
+                            <TextInput
+                              label="No.of Session *"
+                              name="threapyCount"
+                              id="threapyCount"
+                              type="number"
+                              value="1"
+                              readonly
+                            />
+                          </div>
+                        </div>
+                         
+                      </div>
+                    ) : (
+                      <div></div>
+                      // <div className="w-[100%] justify-center items-center flex flex-col">
+                      //   <div className="w-[100%] flex flex-row lg:flex-row gap-y-[20px] justify-between mb-[20px]">
+                      //     <div className="w-[45%]">
+                      //       <SelectInput
+                      //         id="branch"
+                      //         name="branchId"
+                      //         label="Branch *"
+                      //         options={branchOptions}
+                      //         required
+                      //         value={sessionData?.branchId || ""}
+                      //         onChange={(e) => {
+                      //           setSessionUpdate(2);
+                      //           fetchMemberTypeOptions();
+                      //           const { name, value } = e.target;
+                      //           setSessionData((prevData) => ({
+                      //             ...prevData,
+                      //             [name]: value,
+                      //             memberTypeId: "",
+                      //             classModeId: "",
+                      //             packageId: "",
+                      //             classTimeId: "",
+                      //             weekEndTimingId: "",
+                      //             weekDaysTimingId: ""
+
+                      //           }));
+                      //         }}
+                      //       />
+                      //     </div>
+                      //     <div className="w-[45%]">
+                      //       <SelectInput
+                      //         id="membertype"
+                      //         name="memberTypeId"
+                      //         label="Member Type *"
+                      //         options={memberlistOptions}
+                      //         disabled={sessionUpdate <= 1}
+                      //         required
+                      //         value={sessionData?.memberTypeId || ""}
+                      //         onChange={(e) => {
+                      //           setSessionUpdate(3);
+                      //           const { name, value } = e.target;
+                      //           setSessionData((prevData) => ({
+                      //             ...prevData,
+                      //             [name]: value,
+                      //             classModeId: "",
+                      //             packageId: "",
+                      //             classTimeId: "",
+                      //             weekEndTimingId: "",
+                      //             weekDaysTimingId: ""
+                      //           }));
+                      //         }}
+                      //       />
+                      //     </div>
+
+                      //   </div>
+                      //   <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between">
+                      //     <div className="w-[45%]">
+                      //       <SelectInput
+                      //         id="classtype"
+                      //         name="classModeId"
+                      //         label="Class Type *"
+                      //         options={[
+                      //           { value: "1", label: "Online" },
+                      //           { value: "2", label: "Offline" },
+                      //         ]}
+                      //         disabled={sessionUpdate <= 2}
+                      //         required
+                      //         value={sessionData?.classModeId || ""}
+                      //         onChange={(e) => {
+                      //           setSessionUpdate(4);
+                      //           fetchPackageOptions();
+                      //           const { name, value } = e.target;
+                      //           setSessionData((prevData) => ({
+                      //             ...prevData,
+                      //             [name]: value,
+                      //             packageId: "",
+                      //             classTimeId: "",
+                      //           }));
+                      //         }}
+                      //       />
+                      //     </div>
+                      //     <div className="w-[45%]">
+                      //       <SelectInput
+                      //         id="classtype"
+                      //         name="packageId"
+                      //         label="Class Package *"
+                      //         options={sessionTypeOption}
+                      //         disabled={sessionUpdate <= 3}
+                      //         required
+                      //         value={sessionData?.packageId || ""}
+                      //         onChange={(e) => {
+                      //           setSessionUpdate(5);
+                      //           fetchTimingOptions(e.target.value);
+                      //           const { name, value } = e.target;
+                      //           setSessionData((prevData) => ({
+                      //             ...prevData,
+                      //             [name]: value,
+                      //             classTimeId: "",
+                      //             weekEndTimingId: "",
+                      //             weekDaysTimingId: ""
+                      //           }));
+                      //         }}
+                      //       />
+                      //     </div>
+
+                      //   </div>
+                      //   <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] mt-[20px] justify-between">
+
+                      //     {weekDaysTimingOption.length > 0 ? <><div className="w-[45%]">
+                      //       <SelectInput
+                      //         id="weekDaysTimingId"
+                      //         name="weekDaysTimingId"
+                      //         label="weekdays Timing*"
+                      //         options={weekDaysTimingOption}
+                      //         disabled={sessionUpdate <= 4}
+                      //         required
+                      //         value={sessionData?.weekDaysTimingId || ""}
+                      //         onChange={(e) => {
+                      //           setSessionUpdate(6);
+                      //           const { name, value } = e.target;
+                      //           setSessionData((prevData) => ({
+                      //             ...prevData,
+                      //             [name]: value,
+                      //           }));
+                      //         }}
+                      //       />
+                      //     </div></> : <></>}
+
+                      //     {weekEndTimingOption.length > 0 ? <><div className="w-[45%]">
+                      //       <SelectInput
+                      //         id="weekEndTimingId"
+                      //         name="weekEndTimingId"
+                      //         label="Weekend Timing *"
+                      //         options={weekEndTimingOption}
+                      //         disabled={sessionUpdate <= 4}
+                      //         required
+                      //         value={sessionData?.weekEndTimingId || ""}
+                      //         onChange={(e) => {
+                      //           setSessionUpdate(6);
+                      //           const { name, value } = e.target;
+                      //           setSessionData((prevData) => ({
+                      //             ...prevData,
+                      //             [name]: value,
+                      //           }));
+                      //         }}
+                      //       />
+                      //     </div></> : <></>}
+
+
+                      //   </div>
+                      // </div>
                     )}
                   </div>
                 </div>

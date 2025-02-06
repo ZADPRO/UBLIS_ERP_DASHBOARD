@@ -122,7 +122,7 @@ const Users: React.FC = () => {
       ) : (
         <div className="usersTable">
           <div className="headerPrimary">
-            <h3>FUTURE CLIENTS</h3>
+            <h3>Signed Up Users</h3>
             <div className="quickAcces">
               {userdata.profileimg ? (
                 <div className="p-link layout-topbar-button">

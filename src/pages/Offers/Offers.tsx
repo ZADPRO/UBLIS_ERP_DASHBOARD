@@ -85,7 +85,7 @@ const Offers: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
+      if (data.token == false) {
         navigate("/expired")
       }
 
@@ -138,7 +138,7 @@ const Offers: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
+      if (data.token == false) {
         navigate("/expired")
       }
       console.log(data);
@@ -168,7 +168,7 @@ const Offers: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
+      if (data.token == false) {
         navigate("/expired")
       }
 
@@ -182,8 +182,8 @@ const Offers: React.FC = () => {
 
   const EditBtn = (rowData: any) => {
     return (
-      <GrEdit 
-  style={{ cursor: "pointer", color: "green", fontSize: "1.5rem" }}
+      <GrEdit
+        style={{ cursor: "pointer", color: "green", fontSize: "1.5rem" }}
         onClick={() => {
           setWorkSpace(true);
 
@@ -205,8 +205,8 @@ const Offers: React.FC = () => {
 
   const DeleteBtn = (rowData: any) => {
     return (
-      <MdDelete  
-      style={{ cursor: "pointer", color: "red", fontSize: "1.8rem" }}
+      <MdDelete
+        style={{ cursor: "pointer", color: "red", fontSize: "1.8rem" }}
         onClick={() => {
           deleteFees(rowData.refOfId);
         }}
@@ -231,8 +231,8 @@ const Offers: React.FC = () => {
         res.data[1],
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
-      );  
-      if(data.token==false){
+      );
+      if (data.token == false) {
         navigate("/expired")
       }
 
@@ -301,7 +301,7 @@ const Offers: React.FC = () => {
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
-        if(data.token==false){
+        if (data.token == false) {
           navigate("/expired")
         }
 
@@ -365,7 +365,7 @@ const Offers: React.FC = () => {
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
-        if(data.token==false){
+        if (data.token == false) {
           navigate("/expired")
         }
 
@@ -487,12 +487,12 @@ const Offers: React.FC = () => {
         />
 
         {workSpace ? null : (
-         
+
 
           <button className="bg-green-500 border-none rounded-lg p-2  " onClick={() => {
             setWorkSpace(true);
           }}><MdOutlineAddchart className="text-3xl text-white" />
- </button>
+          </button>
         )}
       </div>
 
@@ -546,6 +546,7 @@ const Offers: React.FC = () => {
                         startingDate: e.value,
                       });
                     }}
+                    dateFormat="dd/mm/yy"
                     required
                   />
                 </div>
@@ -563,6 +564,7 @@ const Offers: React.FC = () => {
                         endingDate: e.value,
                       });
                     }}
+                    dateFormat="dd/mm/yy"
                     required
                   />
                 </div>
@@ -595,8 +597,7 @@ const Offers: React.FC = () => {
                       });
 
                       Axios.post(
-                        `${
-                          import.meta.env.VITE_API_URL
+                        `${import.meta.env.VITE_API_URL
                         }/director/validateCouponCode`,
                         {
                           CouponCode: couponValue,
@@ -629,17 +630,17 @@ const Offers: React.FC = () => {
                     readOnly={!updateStructure ? false : true}
                   />
 
-{!updateStructure && (
-        <>
-          {workSpaceData.coupon.length === 0 ? (
-            <></>
-          ) : workSpaceData.coupon.length < 8 ? (
-            <div className="text-red-700">Coupon Code Should be Above 8 Characters</div>
-          ) : !verifycoupon ? (
-            <div className="text-red-700">Already Expired Coupon</div>
-          ) : (
-            <div className="text-green-600">Valid</div>
-          )}
+                  {!updateStructure && (
+                    <>
+                      {workSpaceData.coupon.length === 0 ? (
+                        <></>
+                      ) : workSpaceData.coupon.length < 8 ? (
+                        <div className="text-red-700">Coupon Code Should be Above 8 Characters</div>
+                      ) : !verifycoupon ? (
+                        <div className="text-red-700">Already Expired Coupon</div>
+                      ) : (
+                        <div className="text-green-600">Valid</div>
+                      )}
                     </>
                   )}
                 </div>
@@ -670,7 +671,7 @@ const Offers: React.FC = () => {
 
                       Axios.post(
                         import.meta.env.VITE_API_URL +
-                          "/director/validateCouponCode",
+                        "/director/validateCouponCode",
                         {
                           CouponCode: couponCode,
                         },

@@ -442,7 +442,7 @@ const FeesStructure: React.FC = () => {
               </div>
               <div className="flex justify-between w-[100%]">
                 <div className="flex flex-column gap-2 w-[48%]">
-                  <label htmlFor="username">Member List</label>
+                  <label htmlFor="username">Batch List</label>
                   {editFeeStructure ? (
                     <Dropdown
                       value={workSpaceData.memberlist}
@@ -455,7 +455,7 @@ const FeesStructure: React.FC = () => {
                       options={memeberlistOption}
                       optionLabel="label"
                       optionValue="value"
-                      placeholder="Select a Member List"
+                      placeholder="Select a Batch List"
                       className="w-[100%] h-[35px]"
                       checkmark={true}
                       highlightOnSelect={false}
@@ -495,7 +495,7 @@ const FeesStructure: React.FC = () => {
                       options={sessionTypeOption}
                       optionLabel="label"
                       optionValue="value"
-                      placeholder="Select a Member List"
+                      placeholder="Select a Batch List"
                       className="w-[100%] h-[35px]"
                       checkmark={true}
                       highlightOnSelect={false}

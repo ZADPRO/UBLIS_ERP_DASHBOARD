@@ -320,7 +320,7 @@ const Settings: React.FC = () => {
       </Sidebar>
 
       <Sidebar
-        style={{ width: "70%", background: "#f6f5f5" }}
+        style={{ width: "70%", background: "white" }}
         visible={browsher}
         position="right"
         onHide={() => setBrowsher(false)}
