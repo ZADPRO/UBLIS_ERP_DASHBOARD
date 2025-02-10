@@ -390,7 +390,7 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
                 >
                   <div className="grid-item">
                     <div className="card">
-                      <Fieldset legend="Future Clients (Meadical Issue)">
+                      <Fieldset legend="Future Clients (Medical Issue)">
                         <div className="leaveBalance">
                           <div className="consumed">
                             <p>{formSubmitted.today}</p>
@@ -624,7 +624,7 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
                 {localStorage.getItem("refUtId") !== "4" &&
                   localStorage.getItem("refUtId") !== "8" ?
                   <> <div className="card statsDataTable">
-                    <p>Registered With Medical Issue</p>
+                    <p>Registered With Medical Issues</p>
                     <DataTable value={mdIsRegisteredData} showGridlines>
                       <Column
                         field="sno"
@@ -650,7 +650,7 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
                 {localStorage.getItem("refUtId") !== "11" &&
                   localStorage.getItem("refUtId") !== "8" ?
                   <> <div className="card statsDataTable">
-                    <p>Registered Without Medical Issue</p>
+                    <p>Registered Without Medical Issues</p>
                     <DataTable value={noMdIsRegisteredData} showGridlines>
                       <Column
                         field="sno"

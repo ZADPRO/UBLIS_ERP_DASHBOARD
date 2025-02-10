@@ -1082,7 +1082,7 @@ const UserDirData: React.FC = () => {
                 <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
                   <div className="w-[100%] flex justify-between items-center mb-5">
                     <div className="text-[1.2rem] lg:text-[25px] font-bold">
-                      Threapy Session
+                      Therapy Session
                     </div>
                     {(refUtId === "7" || refUtId === "11" || refUtId === "12") ?
                       <>
@@ -1133,7 +1133,7 @@ const UserDirData: React.FC = () => {
                         {(threapyCount === 0 || threapyCount === null) && !edits.threapy ?
                           <>
                             <div className="flex justify-center w-[100%]">
-                              <h3 className="text-red-500">No Threapy Class Assigned</h3></div>
+                              <h3 className="text-red-500">No Therapy Class Assigned</h3></div>
 
                           </>
                           :

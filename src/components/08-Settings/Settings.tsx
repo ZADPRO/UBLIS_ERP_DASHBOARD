@@ -252,7 +252,7 @@ const Settings: React.FC = () => {
                 }}
               >
                 <div className="text-[20px] font-bold font-serif">
-                  Browsher
+                  Browser
                 </div>
                 <div className="text-[#f95005] text-[40px] text-end">
                   <GrDocumentTime />
