@@ -26,19 +26,19 @@ interface DashboardTilesProps {
   userData: UserData;
 }
 
-interface Product {
-  id: string;
-  code: string;
-  name: string;
-  description: string;
-  image: string;
-  price: number;
-  category: string;
-  quantity: number;
-  inventoryStatus: string;
-  rating: number;
-  transTime: string
-}
+// interface Product {
+//   id: string;
+//   code: string;
+//   name: string;
+//   description: string;
+//   image: string;
+//   price: number;
+//   category: string;
+//   quantity: number;
+//   inventoryStatus: string;
+//   rating: number;
+//   transTime: string
+// }
 
 type DecryptResult = any;
 
@@ -50,7 +50,9 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
 
   // TILES
 
-  const [trialSampleData, setTrailSampleData] = useState([]);
+  const [signedUpData, setSignedUpData] = useState([]);
+  const [mdIsRegisteredData, setMdIsRegisteredData] = useState([]);
+  const [noMdIsRegisteredData, setNoMdIsRegisteredData] = useState([]);
 
   const [formSubmitted, setFormSubmitted] = useState({
     today: 0,
@@ -114,7 +116,8 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
 
   // PAYMENT DATA TABLE
   const [paymentSampleData, setPaymentSampleData] = useState([]);
-  useEffect(() => {
+  const [refUtId, setRefUtId] = useState<string | null>(null); useEffect(() => {
+    setRefUtId(localStorage.getItem("refUtId"))
     const token = localStorage.getItem("JWTtoken");
     axios
       .get(import.meta.env.VITE_API_URL + `/staff/dashBoard`, {
@@ -132,6 +135,7 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
         if (data.token == false) {
           navigate("/expired");
         } else {
+
           setFutureClient({
             today: data.data.signUpCount[0].count_today,
             futureToday: data.data.signUpCount[0].count_other_days,
@@ -175,25 +179,35 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
               futureToday: data.data.registerCount[0].count_other_days,
             });
 
-            const recentData = data.data.registerSampleData;
-            const mappedData = recentData.map((item: any, index: any) => ({
-              sno: index + 1,
-              name: `${item.refStFName} ${item.refStLName}`,
-              transTime: item.transTime,
-            }));
-            console.log(' -> Line Number ----------------------------------- 183',);
-            console.log('mappedData', mappedData)
-            setProducts(mappedData);
-
-            const trailSampleData = data.data.trailSampleData;
-            const trailSampleDatamappedData = trailSampleData.map(
+            const signedUpDataSampleData = data.data.signUpData;
+            const signedUpData = signedUpDataSampleData.map(
               (item: any, index: any) => ({
                 sno: index + 1,
                 name: `${item.refStFName} ${item.refStLName}`,
                 transTime: item.transTime,
               })
             );
-            setTrailSampleData(trailSampleDatamappedData);
+            setSignedUpData(signedUpData)
+
+            const mdIsRegisteredSampleData = data.data.registerSampleData;
+            const MdIsRegData = mdIsRegisteredSampleData.map(
+              (item: any, index: any) => ({
+                sno: index + 1,
+                name: `${item.refStFName} ${item.refStLName}`,
+                transTime: item.transTime,
+              })
+            );
+            setMdIsRegisteredData(MdIsRegData)
+
+            const noMdIsRegisteredSampleData = data.data.trailSampleData;
+            const noMdIsRegData = noMdIsRegisteredSampleData.map(
+              (item: any, index: any) => ({
+                sno: index + 1,
+                name: `${item.refStFName} ${item.refStLName}`,
+                transTime: item.transTime,
+              })
+            );
+            setNoMdIsRegisteredData(noMdIsRegData)
 
             const paymentPendingSampleData = data.data.paymentPendingSampleData;
             const paymentPendingSampleDatamappedData =
@@ -219,9 +233,6 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
 
   const [attendacenPercentage, setAttendancePercentage] = useState(90);
 
-  // STATS
-
-  const [products, setProducts] = useState<Product[]>([]);
 
   // FINANCE
 
@@ -379,7 +390,7 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
                 >
                   <div className="grid-item">
                     <div className="card">
-                      <Fieldset legend="Future Clients (Threapy)">
+                      <Fieldset legend="Future Clients (Meadical Issue)">
                         <div className="leaveBalance">
                           <div className="consumed">
                             <p>{formSubmitted.today}</p>
@@ -590,8 +601,8 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
                   </div>
                 )}
                 <div className="card statsDataTable">
-                  <p>Today's Form Submission</p>
-                  <DataTable value={products} showGridlines>
+                  <p>Today's Signed Up Users</p>
+                  <DataTable value={signedUpData} showGridlines>
                     <Column
                       field="sno"
                       header="S.No"
@@ -604,35 +615,66 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
                     ></Column>
                     <Column
                       field="transTime"
-                      header="RegisteredDate"
+                      header="Registered Date & Time"
                       style={{ minWidth: "6rem" }}
                     ></Column>
                   </DataTable>
                 </div>
 
-                <div className="card statsDataTable">
-                  <p>Students on Trial</p>
-                  <DataTable value={trialSampleData} showGridlines>
-                    <Column
-                      field="sno"
-                      header="S.No"
-                      style={{ width: "1rem" }}
-                    ></Column>
-                    <Column
-                      field="name"
-                      header="Name"
-                      style={{ minWidth: "4rem" }}
-                    ></Column>
-                    <Column
-                      field="registeredDate"
-                      header="RegisteredDate"
-                      style={{ minWidth: "6rem" }}
-                    ></Column>
-                  </DataTable>
-                </div>
+                {localStorage.getItem("refUtId") !== "4" &&
+                  localStorage.getItem("refUtId") !== "8" ?
+                  <> <div className="card statsDataTable">
+                    <p>Registered With Medical Issue</p>
+                    <DataTable value={mdIsRegisteredData} showGridlines>
+                      <Column
+                        field="sno"
+                        header="S.No"
+                        style={{ width: "1rem" }}
+                      ></Column>
+                      <Column
+                        field="name"
+                        header="Name"
+                        style={{ minWidth: "4rem" }}
+                      ></Column>
+                      <Column
+                        field="transTime"
+                        header="Registered Date & Time"
+                        style={{ minWidth: "6rem" }}
+                      ></Column>
+                    </DataTable>
+                  </div></>
+                  :
+                  <></>
+                }
+
+                {localStorage.getItem("refUtId") !== "11" &&
+                  localStorage.getItem("refUtId") !== "8" ?
+                  <> <div className="card statsDataTable">
+                    <p>Registered Without Medical Issue</p>
+                    <DataTable value={noMdIsRegisteredData} showGridlines>
+                      <Column
+                        field="sno"
+                        header="S.No"
+                        style={{ width: "1rem" }}
+                      ></Column>
+                      <Column
+                        field="name"
+                        header="Name"
+                        style={{ minWidth: "4rem" }}
+                      ></Column>
+                      <Column
+                        field="transTime"
+                        header="Registered Date & Time"
+                        style={{ minWidth: "6rem" }}
+                      ></Column>
+                    </DataTable>
+                  </div></>
+                  :
+                  <></>
+                }
 
                 <div className="card statsDataTable">
-                  <p>Fee Payment Details</p>
+                  <p>New Student Fees Pending</p>
                   <DataTable
                     value={paymentSampleData}
                     showGridlines
@@ -649,8 +691,8 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
                       style={{ minWidth: "4rem" }}
                     ></Column>
                     <Column
-                      field="registeredDate"
-                      header="RegisteredDate"
+                      field="transTime"
+                      header="Student Approved Date & Time"
                       style={{ minWidth: "6rem" }}
                     ></Column>
                   </DataTable>

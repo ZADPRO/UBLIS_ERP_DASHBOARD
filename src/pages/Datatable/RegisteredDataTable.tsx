@@ -514,22 +514,40 @@ export default function RegisteredDataTable() {
           />
         ) : (
           <div className="flex gap-2 ">
+
             <Button
+              className="flex items-center justify-center p-2 rounded-full bg-[#28a745] hover:bg-[#1b682d] text-white"
+              aria-label="Approve"
+              onClick={() => handleApprove(rowData)}
+            >
+              <i className="pi pi-check text-xl"></i>
+            </Button>
+
+            {/* <Button
               icon="pi pi-check"
-              className="flex justify-center align-items-center text-[1.1rem] border rounded"
+              className="flex items-center justify-center text-[1.1rem] border rounded w-10 h-10"
               rounded
               severity="success"
               aria-label="Approve"
               onClick={() => handleApprove(rowData)}
-            />
+            /> */}
 
             <Button
+              className="flex items-center justify-center p-2 rounded-full bg-red-500 hover:bg-red-600 text-white"
+              aria-label="Cancel"
+              onClick={() => handleReject(rowData)}
+            >
+              <i className="pi pi-times text-xl"></i>
+            </Button>
+
+
+            {/* <Button
               icon="pi pi-times"
               rounded
               severity="danger"
               aria-label="Cancel"
               onClick={() => handleReject(rowData.id)}
-            />
+            /> */}
           </div>
         )}
       </>
@@ -658,7 +676,7 @@ export default function RegisteredDataTable() {
         onHide={() => setVisibleLeft(false)}
         style={{ minWidth: "75vw" }}
       >
-        <h2>Form Submitted User</h2>
+        <h2>User Data</h2>
         {/* <p>
           {selectedUserId ? `User ID: ${selectedUserId}` : "No user selected"}
         </p> */}

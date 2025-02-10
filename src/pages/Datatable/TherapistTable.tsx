@@ -376,7 +376,7 @@ export default function TherapistTable() {
     const response = await Axios.post(
       import.meta.env.VITE_API_URL + `/staff/rejectionbtn`,
       {
-        refStId: id,
+        refStId: id.id,
         comment: "Rejected By Therapist",
       },
       {
@@ -537,7 +537,7 @@ export default function TherapistTable() {
         onHide={() => setVisibleLeft(false)}
         style={{ minWidth: "75vw" }}
       >
-        <h2>Registered User</h2>
+        <h2>Future Client Data</h2>
         <UserProfileView refid={selectedUserId} viewProfile={true} />
       </Sidebar>
     </div>

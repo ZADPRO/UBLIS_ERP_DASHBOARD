@@ -119,7 +119,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     },
     {
       path: "/staff/registeredUsers",
-      name: "Register User & Fee Due",
+      name: "Future Client & Fee Due",
       icon: <User />,
     },
     {
@@ -159,12 +159,12 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     },
     {
       path: "/therapist/approve",
-      name: "Registered Users With Medical Issue",
+      name: "Future Clients (Medical Issue)",
       icon: <UserRoundCheck />,
     },
     {
       path: "/staff/registeredUsers",
-      name: "Register User & Fee Due",
+      name: "Future Client & Fee Due",
       icon: <UserRoundPlus />,
     },
     {
@@ -259,12 +259,12 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     },
     {
       path: "/therapist/approve",
-      name: "Registered Users With Medical Issue",
+      name: "Future Clients (Medical Issue)",
       icon: <UserRoundCheck />,
     },
     {
       path: "/staff/registeredUsers",
-      name: "Register User & Fee Due",
+      name: "Future Client & Fee Due",
       icon: <UserRoundPlus />,
     },
     {
@@ -390,7 +390,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     },
     {
       path: "/therapist/approve",
-      name: "Registered Users With Medical Issue",
+      name: "Future Clients (Medical Issue)",
       icon: <UserRoundCheck />,
     },
     {

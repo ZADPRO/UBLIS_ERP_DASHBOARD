@@ -8,6 +8,7 @@ import CryptoJS from "crypto-js";
 
 import { useNavigate } from "react-router-dom";
 import DashboardTiles from "../../pages/00-DashboardTiles/DashboardTiles";
+import Dashboard from "../01-Dashboard/Dashboard";
 
 type DecryptResult = any;
 
@@ -255,52 +256,64 @@ const OverallDashboard: React.FC = () => {
           </div>
         </>
       ) : (
-        <div className="dashboardContext">
-          <div className="headerPrimary">
-            <h3>DASHBOARD</h3>
-            <div className="quickAcces">
-              {userdata.profileimg ? (
-                <div className="p-link layout-topbar-button">
-                  <img
-                    id="userprofileimg"
-                    className="w-[45px] h-[45px] object-cover rounded-full"
-                    src={`data:${userdata.profileimg.contentType};base64,${userdata.profileimg.content}`}
-                    alt=""
+        <>
+          {localStorage.getItem("refUtId") === "5" || localStorage.getItem("refUtId") === "6" ?
+            <>
+              <Dashboard />
+            </>
+            :
+            <>
+              <div className="dashboardContext">
+                <div className="headerPrimary">
+                  <h3>DASHBOARD</h3>
+                  <div className="quickAcces">
+                    {userdata.profileimg ? (
+                      <div className="p-link layout-topbar-button">
+                        <img
+                          id="userprofileimg"
+                          className="w-[45px] h-[45px] object-cover rounded-full"
+                          src={`data:${userdata.profileimg.contentType};base64,${userdata.profileimg.content}`}
+                          alt=""
+                        />
+                      </div>
+                    ) : (
+                      <div className="p-link layout-topbar-button">
+                        <i className="pi pi-user"></i>
+                      </div>
+                    )}
+                    <h3 className="text-[1rem] text-center ml-2 lg:ml-2 mr-0 lg:mr-5">
+                      <span>{userdata.username}</span>
+                      <br />
+                      <span className="text-[0.8rem] text-[#f95005]">
+                        {userdata.usernameid}
+                      </span>
+                    </h3>
+                  </div>{" "}
+                </div>
+
+
+                <div className="showCardTiles ms-5">
+
+                  <DashboardTiles
+                    userData={{
+                      username: userdata.username,
+                      usernameId: userdata.usernameid,
+                    }}
                   />
-                </div>
-              ) : (
-                <div className="p-link layout-topbar-button">
-                  <i className="pi pi-user"></i>
-                </div>
-              )}
-              <h3 className="text-[1rem] text-center ml-2 lg:ml-2 mr-0 lg:mr-5">
-                <span>{userdata.username}</span>
-                <br />
-                <span className="text-[0.8rem] text-[#f95005]">
-                  {userdata.usernameid}
-                </span>
-              </h3>
-            </div>{" "}
-          </div>
 
-          {/* <div className="primaryNav">
-            <p className="font-bold text-black">Dashboard</p>
-            <p className="text-[#f95005]">
-              Logged in as: {userdata.usernameid}
-            </p>
-          </div> */}
-          {/* DASHBOARD TILES START */}
-          <div className="showCardTiles ms-5">
-            <DashboardTiles
-              userData={{
-                username: userdata.username,
-                usernameId: userdata.usernameid,
-              }}
-            />
-          </div>
 
-          {/* DASHBOARD TILES ENDS */}
-        </div>
+
+
+                </div>
+
+              </div>
+            </>
+          }
+
+        </>
+
+
+
       )}
     </>
   );

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 
 import coverImage from "../../assets/Dashboard/banner.jpg";
-import profileImage from "../../assets/Dashboard/profile.svg";
+import profileImage from "../../assets/Dashboard/logo3.png";
 import { Mail, Phone } from "lucide-react";
 import CryptoJS from "crypto-js";
 
@@ -29,14 +29,12 @@ const Dashboard = () => {
     };
   }, []);
 
-  console.log("dfhbdf");
 
   const urlParams = new URLSearchParams(window.location.search);
   const token = urlParams.get("JWTtoken");
   const refUtId = urlParams.get("refUtId");
 
   if (token && refUtId) {
-    // Save token and refUtId to localStorage
     localStorage.setItem("JWTtoken", token);
     localStorage.setItem("refUtId", refUtId);
 
@@ -55,6 +53,9 @@ const Dashboard = () => {
     usernameid: "",
     refUserName: "",
     profileimg: { contentType: "", content: "" },
+    mobileNo: "",
+    whatsappNo: "",
+    email: ""
   });
 
   console.log("userdata", userdata);
@@ -96,6 +97,7 @@ const Dashboard = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      console.log(' -> Line Number ----------------------------------- 100',);
       console.log("data", data);
       if (data.token == false) {
         navigate("/expired");
@@ -108,6 +110,9 @@ const Dashboard = () => {
           usernameid: data.data[0].refusertype,
           refUserName: data.data[0].refUserName,
           profileimg: data.profileFile,
+          email: data.data[0].refCtEmail,
+          whatsappNo: data.data[0].refCtWhatsapp,
+          mobileNo: data.data[0].refCtMobile
         });
 
         setPageLoading({
@@ -171,7 +176,11 @@ const Dashboard = () => {
                   <img src={coverImage} alt="coverImage" />
                 </div>
                 <div className="coverContents">
-                  <img src={profileImage} alt="userProfile" />
+                  <img src={profileImage}
+                    style={{
+                      borderTopLeftRadius: "50%",
+                      borderTopRightRadius: "50%",
+                    }} className="bg-[#ffffff] border rounded-xl-3xl rounded-se-2xl" alt="userProfile" />
                   <div className="userDetails">
                     <div className="">
                       <div className="userDetPrimary mt-2 flex items-center justify-between w-full m-0">
@@ -179,15 +188,15 @@ const Dashboard = () => {
                         <p className="username">Student</p>
                       </div>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex lg:flex-row flex-col justify-between">
                       <p className="flex items-center gap-2">
                         <Mail />
-                        {userdata.refUserName}
+                        {userdata.email}
                       </p>
-                      <p className="flex items-center gap-2">
+                      <p className="flex items-center lg:mt-auto mt-0 gap-2">
                         {" "}
                         <Phone />
-                        N/A
+                        {userdata.mobileNo}
                       </p>
                     </div>
                   </div>
@@ -196,9 +205,10 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className="userTilesDashboard mt-4 mb-4">
-          <div className="grid-item">
+        <div className="userTilesDashboard mt-4 mb-4 w-[100%]">
+          <div className="flex flex-row justify-start w-[100%]">
             <Fieldset
+            className="w-[30%] h-[120px]"
               legend="Intro Video"
               onClick={() => handleMobileNavigate("/introVideo")}
             >

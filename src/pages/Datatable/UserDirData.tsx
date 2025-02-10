@@ -11,8 +11,9 @@ import { TabView, TabPanel } from "primereact/tabview";
 import CryptoJS from "crypto-js";
 import TextInput from "../../pages/Inputs/TextInput";
 import SelectInput from "../../pages/Inputs/SelectInput";
-
+import { MultiSelect } from "primereact/multiselect";
 import Axios from "axios";
+import { useRef } from "react";
 
 import { FilterMatchMode } from "primereact/api";
 import UserProfileEdit from "../UserProfileEdit/UserProfileEdit";
@@ -33,6 +34,7 @@ interface Customer {
   refStLName: string;
   comments?: string;
   commentEnabled?: boolean;
+  trial?: any;
 }
 
 interface sessionDetails {
@@ -122,6 +124,7 @@ const UserDirData: React.FC = () => {
 
   const [edits, setEdits] = useState({
     session: false,
+    threapy: false
   });
   const navigate = useNavigate();
   const decrypt = (
@@ -152,10 +155,95 @@ const UserDirData: React.FC = () => {
 
   const [refid, setRefId] = useState<string>("");
 
+  // Reference for DataTable
+  const dtRef = useRef<any>(null);
+
+  const uniqueTrialStatuses = Array.from(new Set(customers.map((item) => item.trial)))
+    .map((status) => ({ label: status, value: status }));
+
+  const trialFilterTemplate = (options: any) => {
+    return (
+      <MultiSelect
+        value={options.value}
+        options={uniqueTrialStatuses}
+        onChange={(e) => {
+
+          options.filterApplyCallback(e.value)
+        }}
+        placeholder="Select Status"
+        showClear
+        className="p-column-filter"
+      />
+    );
+  };
+
   // Filters state
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    trial: { value: null, matchMode: FilterMatchMode.IN },
   });
+
+  const applyManualFilter = (data: any[], filters: any) => {
+    return data.filter((row) => {
+      let matches = true;
+
+      // Check global filter
+      if (filters.global.value) {
+        matches = matches && row.fname.toLowerCase().includes(filters.global.value.toLowerCase());
+      }
+
+      // Check trial filter
+      if (filters.trial.value && filters.trial.value.length > 0) {
+        matches = matches && filters.trial.value.includes(row.trial);
+      }
+
+      return matches;
+    });
+  };
+
+
+  const exportExcel = () => {
+    import("xlsx").then((xlsx) => {
+      // Manually filter data
+      if (!dtRef.current) return; // Ensure ref exists
+      const filteredData = dtRef.current.filteredValue || customers;
+      console.log('customers', customers)
+      console.log('filters', filters)
+      // const filteredData = applyManualFilter(customers, filters);
+      console.log(' -> Line Number ----------------------------------- 206',);
+      console.log('filteredData', filteredData)
+
+      // Use filteredData or full data if no filter is applied
+      const dataToExport = filteredData.length > 0 ? filteredData : customers;
+
+      const worksheet = xlsx.utils.json_to_sheet(filteredData);
+      const workbook = { Sheets: { data: worksheet }, SheetNames: ["data"] };
+      const excelBuffer = xlsx.write(workbook, {
+        bookType: "xlsx",
+        type: "array",
+      });
+
+      // saveAsExcelFile(excelBuffer, "customers");
+    });
+  };
+
+  // Save function
+  const saveAsExcelFile = (buffer: Uint8Array, fileName: string) => {
+    import("file-saver").then((module) => {
+      if (module && module.default) {
+        const EXCEL_TYPE =
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+        const EXCEL_EXTENSION = ".xlsx";
+        const data = new Blob([buffer], { type: EXCEL_TYPE });
+
+        module.default.saveAs(
+          data,
+          `${fileName}_export_${new Date().getTime()}${EXCEL_EXTENSION}`
+        );
+      }
+    });
+  };
+
 
   // Function to fetch customers
   const fetchCustomers = async () => {
@@ -461,11 +549,48 @@ const UserDirData: React.FC = () => {
         navigate("/expired");
       } else {
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
-        setEdits({ session: false });
+        setEdits({ ...edits, session: false });
       }
     } catch (error) {
       console.error("Error updating session data:", error);
       // Handle error (e.g., showing an error message)
+    } finally {
+      setSessionUpdateLoad(false);
+      fetchCustomers();
+      fetchUserDetails((refStId ?? 'default_value').toString());
+    }
+
+  };
+  const updateThreapyCountData = async () => {
+    setSessionUpdateLoad(true); // Show loading indicator
+    try {
+      const response = await Axios.post(
+        import.meta.env.VITE_API_URL + "/profile/ThreapyUpdate",
+        {
+          id: refStId,
+          threapyCount: threapyCount
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("JWTtoken"),
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = decrypt(
+        response.data[1],
+        response.data[0],
+        import.meta.env.VITE_ENCRYPTION_KEY
+      );
+      console.log("Data received:", data);
+      if (data.token == false) {
+        navigate("/expired");
+      } else {
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+        setEdits({ ...edits, threapy: false });
+      }
+    } catch (error) {
+      console.error("Error updating session data:", error);
     } finally {
       setSessionUpdateLoad(false);
       fetchCustomers();
@@ -483,34 +608,34 @@ const UserDirData: React.FC = () => {
     fetchCustomers();
   }, []);
 
-  const exportExcel = () => {
-    import("xlsx").then((xlsx) => {
-      const worksheet = xlsx.utils.json_to_sheet(customers);
-      const workbook = { Sheets: { data: worksheet }, SheetNames: ["data"] };
-      const excelBuffer = xlsx.write(workbook, {
-        bookType: "xlsx",
-        type: "array",
-      });
+  // const exportExcel = () => {
+  //   import("xlsx").then((xlsx) => {
+  //     const worksheet = xlsx.utils.json_to_sheet(customers);
+  //     const workbook = { Sheets: { data: worksheet }, SheetNames: ["data"] };
+  //     const excelBuffer = xlsx.write(workbook, {
+  //       bookType: "xlsx",
+  //       type: "array",
+  //     });
 
-      saveAsExcelFile(excelBuffer, "customers");
-    });
-  };
+  //     saveAsExcelFile(excelBuffer, "customers");
+  //   });
+  // };
 
-  const saveAsExcelFile = (buffer: Uint8Array, fileName: string) => {
-    import("file-saver").then((module) => {
-      if (module && module.default) {
-        const EXCEL_TYPE =
-          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
-        const EXCEL_EXTENSION = ".xlsx";
-        const data = new Blob([buffer], { type: EXCEL_TYPE });
+  // const saveAsExcelFile = (buffer: Uint8Array, fileName: string) => {
+  //   import("file-saver").then((module) => {
+  //     if (module && module.default) {
+  //       const EXCEL_TYPE =
+  //         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+  //       const EXCEL_EXTENSION = ".xlsx";
+  //       const data = new Blob([buffer], { type: EXCEL_TYPE });
 
-        module.default.saveAs(
-          data,
-          `${fileName}_export_${new Date().getTime()}${EXCEL_EXTENSION}`
-        );
-      }
-    });
-  };
+  //       module.default.saveAs(
+  //         data,
+  //         `${fileName}_export_${new Date().getTime()}${EXCEL_EXTENSION}`
+  //       );
+  //     }
+  //   });
+  // };
 
   const onGlobalFilterChange = (e: any) => {
     const value = e.target.value;
@@ -533,12 +658,7 @@ const UserDirData: React.FC = () => {
         </IconField>
 
         <div className="flex align-items-center justify-content-end gap-2">
-          <Button
-            type="button"
-            severity="success"
-            onClick={exportExcel}
-            data-pr-tooltip="XLS"
-          >
+          <Button type="button" severity="success" onClick={exportExcel} data-pr-tooltip="XLS">
             Export As Excel
           </Button>
         </div>
@@ -598,6 +718,7 @@ const UserDirData: React.FC = () => {
   return (
     <div className="card" style={{ overflow: "auto" }}>
       <DataTable
+        ref={dtRef} // Attach ref to get filtered data
         value={customers}
         paginator
         header={header}
@@ -608,56 +729,30 @@ const UserDirData: React.FC = () => {
         selectionMode="checkbox"
         scrollable
         selection={selectedCustomers}
-        onSelectionChange={(e) => {
-          const customers = e.value as Customer[];
-          setSelectedCustomers(customers);
-        }}
+        onSelectionChange={(e) => setSelectedCustomers(e.value as Customer[])}
         emptyMessage="No customers found."
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
         sortField="userId"
         sortOrder={-1}
         filters={filters}
       >
-        <Column
-          selectionMode="multiple"
-          frozen
-          headerStyle={{ minWidth: "3rem" }}
-        />
-        <Column
-          field="userId"
-          header="User ID"
-          body={userIdTemplate}
-          frozen
-          sortable
-          filterPlaceholder="Search by User ID"
-          style={{ minWidth: "12rem" }}
-        />
-        <Column
-          field="fname"
-          header="Name"
-          sortable
-          style={{ minWidth: "14rem" }}
-        />
+        <Column selectionMode="multiple" frozen headerStyle={{ minWidth: "3rem" }} />
+        <Column field="userId" header="User ID" body={userIdTemplate} frozen sortable style={{ minWidth: "12rem" }} />
+        <Column field="fname" header="Name" style={{ minWidth: "14rem" }} />
         <Column
           field="trial"
           header="Current Status"
+          filter
           sortable
+          filterElement={trialFilterTemplate}
+          showFilterMatchModes={false}
           style={{ minWidth: "14rem", textTransform: "capitalize" }}
+
         />
-        <Column
-          field="mobile"
-          header="Mobile"
-          sortable
-          style={{ minWidth: "14rem" }}
-          filterPlaceholder="Search by Mobile"
-        />
-        <Column
-          field="email"
-          header="Email"
-          sortable
-          style={{ minWidth: "14rem" }}
-        />
+        <Column field="mobile" header="Mobile" style={{ minWidth: "14rem" }} />
+        <Column field="email" header="Email" style={{ minWidth: "14rem" }} />
       </DataTable>
+
 
       <Sidebar
         className="w-[90%] lg:w-[75%]"
@@ -736,7 +831,7 @@ const UserDirData: React.FC = () => {
                     ) : (
                       <div
                         onClick={() => {
-                          setEdits({ session: true });
+                          setEdits({ ...edits, session: true });
                         }}
                         className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
                       >
@@ -981,7 +1076,7 @@ const UserDirData: React.FC = () => {
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
-                  updateSessionData();
+                  updateThreapyCountData();
                 }}
               >
                 <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
@@ -991,219 +1086,78 @@ const UserDirData: React.FC = () => {
                     </div>
                     {(refUtId === "7" || refUtId === "11" || refUtId === "12") ?
                       <>
-                        {edits.session ? (
-                          <button
-                            className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${sessionUpdateLoad
-                              ? "bg-gray-500 cursor-not-allowed"
-                              : "bg-[#f95005]"
-                              }`}
-                            type="submit"
-                            disabled={sessionUpdateLoad}
-                          >
-                            {sessionUpdateLoad ? (
-                              <>
-                                Loading&nbsp;&nbsp;
-                                <i className="pi pi-spin pi-spinner text-[15px]"></i>
-                              </>
-                            ) : (
-                              <>
-                                Save&nbsp;&nbsp;
-                                <i className="text-[15px] pi pi-check"></i>
-                              </>
-                            )}
-                          </button>
-                        ) : (
-                          <div
-                            onClick={() => {
-                              setEdits({ session: true });
-                            }}
-                            className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
-                          >
-                            Edit&nbsp;&nbsp;
-                            <i className="text-[15px] pi pi-pen-to-square"></i>
-                          </div>
-                        )}
+                        {threapyCount === 0 || threapyCount === null ?
+                          <></>
+                          :
+                          <>{edits.threapy ? (
+                            <button
+                              className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${sessionUpdateLoad
+                                ? "bg-gray-500 cursor-not-allowed"
+                                : "bg-[#f95005]"
+                                }`}
+                              type="submit"
+                              disabled={sessionUpdateLoad}
+                            >
+                              {sessionUpdateLoad ? (
+                                <>
+                                  Loading&nbsp;&nbsp;
+                                  <i className="pi pi-spin pi-spinner text-[15px]"></i>
+                                </>
+                              ) : (
+                                <>
+                                  Save&nbsp;&nbsp;
+                                  <i className="text-[15px] pi pi-check"></i>
+                                </>
+                              )}
+                            </button>
+                          ) : (
+                            <div
+                              onClick={() => {
+                                setEdits({ ...edits, threapy: true });
+                              }}
+                              className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
+                            >
+                              Edit&nbsp;&nbsp;
+                              <i className="text-[15px] pi pi-pen-to-square"></i>
+                            </div>
+                          )}</>
+                        }
+
+
                       </> : <></>}
 
                   </div>
                   <div className="w-[100%] flex justify-center items-center">
-                    {!edits.session ? (
-                      <div className="w-[100%] justify-center items-center flex flex-col">
-                        <div className="w-[100%] flex flex-row lg:flex-row gap-y-[20px] justify-between mb-[20px]">
-                          <div className="flex flex-column gap-2 w-[48%]">
-                            <label>No.of Session</label>
-                            <InputNumber
-                              value={threapyCount}
-                              required
-                              readOnly
-                            />
-                          </div>
-                          <div className="w-[100%] lg:w-[48%]">
-                            {/* <InputNumber
-                              label="No.of Session *"
-                              name="threapyCount"
-                              id="threapyCount"
-                              type="number"
-                              value={threapyCount}
-                              readonly
-                            /> */}
-                          </div>
-                        </div>
+                    <div className="w-[100%] justify-center items-center flex flex-col">
+                      <div className="w-[100%] flex flex-row lg:flex-row gap-y-[20px] justify-between mb-[20px]">
+                        {(threapyCount === 0 || threapyCount === null) && !edits.threapy ?
+                          <>
+                            <div className="flex justify-center w-[100%]">
+                              <h3 className="text-red-500">No Threapy Class Assigned</h3></div>
+
+                          </>
+                          :
+                          <>
+                            <div className="flex flex-column gap-2 w-[48%]">
+                              <label>No.of Session</label>
+                              <InputNumber
+                                value={threapyCount}
+                                required
+                                readOnly={!edits.threapy}
+                                onChange={(e) => {
+                                  const value = e.value ?? 0; // If e.value is null, set it to 0
+                                  setThreapyCount(value); // Update state with valid number
+                                }}
+                              />
+
+                            </div>
+                          </>}
+
 
                       </div>
-                    ) : (
-                      <div></div>
-                      // <div className="w-[100%] justify-center items-center flex flex-col">
-                      //   <div className="w-[100%] flex flex-row lg:flex-row gap-y-[20px] justify-between mb-[20px]">
-                      //     <div className="w-[45%]">
-                      //       <SelectInput
-                      //         id="branch"
-                      //         name="branchId"
-                      //         label="Branch *"
-                      //         options={branchOptions}
-                      //         required
-                      //         value={sessionData?.branchId || ""}
-                      //         onChange={(e) => {
-                      //           setSessionUpdate(2);
-                      //           fetchMemberTypeOptions();
-                      //           const { name, value } = e.target;
-                      //           setSessionData((prevData) => ({
-                      //             ...prevData,
-                      //             [name]: value,
-                      //             memberTypeId: "",
-                      //             classModeId: "",
-                      //             packageId: "",
-                      //             classTimeId: "",
-                      //             weekEndTimingId: "",
-                      //             weekDaysTimingId: ""
 
-                      //           }));
-                      //         }}
-                      //       />
-                      //     </div>
-                      //     <div className="w-[45%]">
-                      //       <SelectInput
-                      //         id="membertype"
-                      //         name="memberTypeId"
-                      //         label="Member Type *"
-                      //         options={memberlistOptions}
-                      //         disabled={sessionUpdate <= 1}
-                      //         required
-                      //         value={sessionData?.memberTypeId || ""}
-                      //         onChange={(e) => {
-                      //           setSessionUpdate(3);
-                      //           const { name, value } = e.target;
-                      //           setSessionData((prevData) => ({
-                      //             ...prevData,
-                      //             [name]: value,
-                      //             classModeId: "",
-                      //             packageId: "",
-                      //             classTimeId: "",
-                      //             weekEndTimingId: "",
-                      //             weekDaysTimingId: ""
-                      //           }));
-                      //         }}
-                      //       />
-                      //     </div>
+                    </div>
 
-                      //   </div>
-                      //   <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between">
-                      //     <div className="w-[45%]">
-                      //       <SelectInput
-                      //         id="classtype"
-                      //         name="classModeId"
-                      //         label="Class Type *"
-                      //         options={[
-                      //           { value: "1", label: "Online" },
-                      //           { value: "2", label: "Offline" },
-                      //         ]}
-                      //         disabled={sessionUpdate <= 2}
-                      //         required
-                      //         value={sessionData?.classModeId || ""}
-                      //         onChange={(e) => {
-                      //           setSessionUpdate(4);
-                      //           fetchPackageOptions();
-                      //           const { name, value } = e.target;
-                      //           setSessionData((prevData) => ({
-                      //             ...prevData,
-                      //             [name]: value,
-                      //             packageId: "",
-                      //             classTimeId: "",
-                      //           }));
-                      //         }}
-                      //       />
-                      //     </div>
-                      //     <div className="w-[45%]">
-                      //       <SelectInput
-                      //         id="classtype"
-                      //         name="packageId"
-                      //         label="Class Package *"
-                      //         options={sessionTypeOption}
-                      //         disabled={sessionUpdate <= 3}
-                      //         required
-                      //         value={sessionData?.packageId || ""}
-                      //         onChange={(e) => {
-                      //           setSessionUpdate(5);
-                      //           fetchTimingOptions(e.target.value);
-                      //           const { name, value } = e.target;
-                      //           setSessionData((prevData) => ({
-                      //             ...prevData,
-                      //             [name]: value,
-                      //             classTimeId: "",
-                      //             weekEndTimingId: "",
-                      //             weekDaysTimingId: ""
-                      //           }));
-                      //         }}
-                      //       />
-                      //     </div>
-
-                      //   </div>
-                      //   <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] mt-[20px] justify-between">
-
-                      //     {weekDaysTimingOption.length > 0 ? <><div className="w-[45%]">
-                      //       <SelectInput
-                      //         id="weekDaysTimingId"
-                      //         name="weekDaysTimingId"
-                      //         label="weekdays Timing*"
-                      //         options={weekDaysTimingOption}
-                      //         disabled={sessionUpdate <= 4}
-                      //         required
-                      //         value={sessionData?.weekDaysTimingId || ""}
-                      //         onChange={(e) => {
-                      //           setSessionUpdate(6);
-                      //           const { name, value } = e.target;
-                      //           setSessionData((prevData) => ({
-                      //             ...prevData,
-                      //             [name]: value,
-                      //           }));
-                      //         }}
-                      //       />
-                      //     </div></> : <></>}
-
-                      //     {weekEndTimingOption.length > 0 ? <><div className="w-[45%]">
-                      //       <SelectInput
-                      //         id="weekEndTimingId"
-                      //         name="weekEndTimingId"
-                      //         label="Weekend Timing *"
-                      //         options={weekEndTimingOption}
-                      //         disabled={sessionUpdate <= 4}
-                      //         required
-                      //         value={sessionData?.weekEndTimingId || ""}
-                      //         onChange={(e) => {
-                      //           setSessionUpdate(6);
-                      //           const { name, value } = e.target;
-                      //           setSessionData((prevData) => ({
-                      //             ...prevData,
-                      //             [name]: value,
-                      //           }));
-                      //         }}
-                      //       />
-                      //     </div></> : <></>}
-
-
-                      //   </div>
-                      // </div>
-                    )}
                   </div>
                 </div>
               </form>

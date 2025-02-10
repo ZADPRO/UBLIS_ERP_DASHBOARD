@@ -614,7 +614,7 @@ export default function Datatables() {
         />
         <Column
           field="status1"
-          header="Status 1"
+          header="Status"
           // body={actionBodyTemplateStatus1}
           filterMenuStyle={{ inlineSize: "14rem" }}
           style={{ inlineSize: "14rem", textTransform: "capitalize" }}
