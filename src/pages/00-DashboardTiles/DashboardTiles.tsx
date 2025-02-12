@@ -116,7 +116,7 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
 
   // PAYMENT DATA TABLE
   const [paymentSampleData, setPaymentSampleData] = useState([]);
-  const [refUtId, setRefUtId] = useState<string | null>(null); useEffect(() => {
+  const [_refUtId, setRefUtId] = useState<string | null>(null); useEffect(() => {
     setRefUtId(localStorage.getItem("refUtId"))
     const token = localStorage.getItem("JWTtoken");
     axios

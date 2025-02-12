@@ -183,66 +183,66 @@ const UserDirData: React.FC = () => {
     trial: { value: null, matchMode: FilterMatchMode.IN },
   });
 
-  const applyManualFilter = (data: any[], filters: any) => {
-    return data.filter((row) => {
-      let matches = true;
+  // const applyManualFilter = (data: any[], filters: any) => {
+  //   return data.filter((row) => {
+  //     let matches = true;
 
-      // Check global filter
-      if (filters.global.value) {
-        matches = matches && row.fname.toLowerCase().includes(filters.global.value.toLowerCase());
-      }
+  //     // Check global filter
+  //     if (filters.global.value) {
+  //       matches = matches && row.fname.toLowerCase().includes(filters.global.value.toLowerCase());
+  //     }
 
-      // Check trial filter
-      if (filters.trial.value && filters.trial.value.length > 0) {
-        matches = matches && filters.trial.value.includes(row.trial);
-      }
+  //     // Check trial filter
+  //     if (filters.trial.value && filters.trial.value.length > 0) {
+  //       matches = matches && filters.trial.value.includes(row.trial);
+  //     }
 
-      return matches;
-    });
-  };
+  //     return matches;
+  //   });
+  // };
 
 
-  const exportExcel = () => {
-    import("xlsx").then((xlsx) => {
-      // Manually filter data
-      if (!dtRef.current) return; // Ensure ref exists
-      const filteredData = dtRef.current.filteredValue || customers;
-      console.log('customers', customers)
-      console.log('filters', filters)
-      // const filteredData = applyManualFilter(customers, filters);
-      console.log(' -> Line Number ----------------------------------- 206',);
-      console.log('filteredData', filteredData)
+  // const exportExcel = () => {
+  //   import("xlsx").then((xlsx) => {
+  //     // Manually filter data
+  //     if (!dtRef.current) return; // Ensure ref exists
+  //     const filteredData = dtRef.current.filteredValue || customers;
+  //     console.log('customers', customers)
+  //     console.log('filters', filters)
+  //     // const filteredData = applyManualFilter(customers, filters);
+  //     console.log(' -> Line Number ----------------------------------- 206',);
+  //     console.log('filteredData', filteredData)
 
-      // Use filteredData or full data if no filter is applied
-      const dataToExport = filteredData.length > 0 ? filteredData : customers;
+  //     // Use filteredData or full data if no filter is applied
+  //     const dataToExport = filteredData.length > 0 ? filteredData : customers;
 
-      const worksheet = xlsx.utils.json_to_sheet(filteredData);
-      const workbook = { Sheets: { data: worksheet }, SheetNames: ["data"] };
-      const excelBuffer = xlsx.write(workbook, {
-        bookType: "xlsx",
-        type: "array",
-      });
+  //     const worksheet = xlsx.utils.json_to_sheet(filteredData);
+  //     const workbook = { Sheets: { data: worksheet }, SheetNames: ["data"] };
+  //     const excelBuffer = xlsx.write(workbook, {
+  //       bookType: "xlsx",
+  //       type: "array",
+  //     });
 
-      // saveAsExcelFile(excelBuffer, "customers");
-    });
-  };
+  //     // saveAsExcelFile(excelBuffer, "customers");
+  //   });
+  // };
 
   // Save function
-  const saveAsExcelFile = (buffer: Uint8Array, fileName: string) => {
-    import("file-saver").then((module) => {
-      if (module && module.default) {
-        const EXCEL_TYPE =
-          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
-        const EXCEL_EXTENSION = ".xlsx";
-        const data = new Blob([buffer], { type: EXCEL_TYPE });
+  // const saveAsExcelFile = (buffer: Uint8Array, fileName: string) => {
+  //   import("file-saver").then((module) => {
+  //     if (module && module.default) {
+  //       const EXCEL_TYPE =
+  //         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+  //       const EXCEL_EXTENSION = ".xlsx";
+  //       const data = new Blob([buffer], { type: EXCEL_TYPE });
 
-        module.default.saveAs(
-          data,
-          `${fileName}_export_${new Date().getTime()}${EXCEL_EXTENSION}`
-        );
-      }
-    });
-  };
+  //       module.default.saveAs(
+  //         data,
+  //         `${fileName}_export_${new Date().getTime()}${EXCEL_EXTENSION}`
+  //       );
+  //     }
+  //   });
+  // };
 
 
   // Function to fetch customers
@@ -658,7 +658,9 @@ const UserDirData: React.FC = () => {
         </IconField>
 
         <div className="flex align-items-center justify-content-end gap-2">
-          <Button type="button" severity="success" onClick={exportExcel} data-pr-tooltip="XLS">
+          <Button type="button" severity="success"
+            // onClick={exportExcel}
+            data-pr-tooltip="XLS">
             Export As Excel
           </Button>
         </div>

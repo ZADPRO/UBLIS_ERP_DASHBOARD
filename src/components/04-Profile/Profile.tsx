@@ -18,7 +18,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { MdDelete } from "react-icons/md";
 import Swal from "sweetalert2";
-import { Calendar } from "primereact/calendar";
+
 
 
 interface HealthProblemData {
@@ -111,7 +111,7 @@ const Profile: React.FC = () => {
     tempcity: "",
     email: "",
     phoneno: "",
-    emergencyno:"",
+    emergencyno: "",
     whatsappno: "",
     mode: "",
     height: "",
@@ -406,7 +406,7 @@ const Profile: React.FC = () => {
             : addressdata.refAdCity2,
           email: communication.refCtEmail,
           phoneno: communication.refCtMobile,
-          emergencyno:communication.refEmerContact,
+          emergencyno: communication.refEmerContact,
           whatsappno: communication.refCtWhatsapp,
           mode: communication.refUcPreference,
           height: generalhealth ? generalhealth.refHeight : null,
@@ -739,7 +739,7 @@ const Profile: React.FC = () => {
         communication: {
           refCtEmail: inputs.email,
           refCtMobile: inputs.phoneno,
-          refEmerContact:inputs.emergencyno,
+          refEmerContact: inputs.emergencyno,
           refCtWhatsapp: inputs.whatsappno,
           refUcPreference: inputs.mode,
         },
@@ -1668,30 +1668,21 @@ const Profile: React.FC = () => {
 
                       <div className="w-[100%] flex justify-between mb-[20px]">
                         <div className="w-[48%]">
-                        <label className="bg-[#fff] text-[#ff621b] -mb-[15px] z-50 w-[120px] ml-[10px]">
-                          &nbsp;Date of Birth *
-                        </label>
-                        <Calendar
-                          label="Date of Birth *"
-                          name="dob"
-                          id="dob"
-                          type="date"
-                          className={`relative w-full mt-1 h-10 placeholder-transparent transition-all border-2 rounded outline-none peer 
-              ${edits.personal ? "text-[#4c4c4e]" : "text-black"} border-[#b3b4b6] autofill:bg-white dateInput`}
-
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                handleInputVal({
-                  target: { name: "dob", value: (e.target as any).value },
-                })
-              }
-              
-                          value={inputs.dob ? new Date(inputs.dob) : null} // Ensure it's a Date object
-                          dateFormat="dd/mm/yy"
-                          disabled={!edits.personal} // Disable based on condition
-                          required
-                        />
+                          <label className="bg-[#fff] text-[#ff621b] -mb-[15px] z-50 w-[120px] ml-[10px]">
+                            &nbsp;Date of Birth *
+                          </label>
+                          <TextInput
+                            label="Date of Birth *"
+                            name="dob"
+                            id="dob"
+                            type="date"
+                            onChange={handleInputVal}
+                            value={inputs.dob}
+                            readonly={!edits.personal}
+                            required
+                          />
                         </div>
-                        
+
                         <div className="w-[48%]">
                           <TextInput
                             label="Age *"
@@ -1747,7 +1738,7 @@ const Profile: React.FC = () => {
                               { value: "single", label: "Single" },
                               { value: "married", label: "Married" },
                             ]}
-                            disabled={edits.personal && inputs.age > '20' ? false : true }
+                            disabled={edits.personal && inputs.age > '20' ? false : true}
                             required
                           />
                         </div>
@@ -2115,17 +2106,17 @@ const Profile: React.FC = () => {
                       />
                     </div>
                     <div className="w-[100%] ">
-                  <TextInput
-                      label="Emergency Contact Number *"
-                      name="emergencyno"
-                      id="emergencyno"
-                      type="number"
-                      onChange={handleInputVal}
-                      value={inputs.emergencyno}
-                      readonly={!edits.communitcation}
-                      required
-                    />
-                      </div> 
+                      <TextInput
+                        label="Emergency Contact Number *"
+                        name="emergencyno"
+                        id="emergencyno"
+                        type="number"
+                        onChange={handleInputVal}
+                        value={inputs.emergencyno}
+                        readonly={!edits.communitcation}
+                        required
+                      />
+                    </div>
                   </div>
                   <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between mb-[20px]">
                     <div className="w-[100%] lg:w-[40%]">
@@ -3026,207 +3017,207 @@ const Profile: React.FC = () => {
                     </form>
                     {/* Therapy */}
                     <form
-                    className="flex"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handletherapy();
-                }}>
-                <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
-                  <div className="w-[100%] flex justify-between items-center mb-5">
-                    <div className="text-[1.2rem] lg:text-[25px] font-bold">
-                      Health Problems History
-                    </div>
-                    {edits.therapy ? (
-                      <button
-                        className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
-                        // onClick={handletherapy}
-                        type="submit"
-                      >
-                        Save&nbsp;&nbsp;
-                        <i className="text-[15px] pi pi-check"></i>
-                      </button>
-                    ) : (
-                      <div
-                        onClick={() => {
-                          editform("therapy");
-                        }}
-                        className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
-                      >
-                        Edit&nbsp;&nbsp;
-                        <i className="text-[15px] pi pi-pen-to-square"></i>
-                      </div>
-                    )}
-                  </div>
-                  <div className="w-[100%] flex justify-center items-center">
-                    <div className="w-[100%] justify-center items-center flex flex-col">
-                      <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
-                        <div className="w-[100%] md:w-[48%]">
-                          <TextInput
-                            label="Duration of the Problem *"
-                            name="therapydurationproblem"
-                            id="durationproblem"
-                            type="text"
-                            onChange={handleInputVal}
-                            value={inputs.therapydurationproblem}
-                            readonly={!edits.therapy}
-                            required
-                          />
-                        </div>
-                        <div className="w-[100%] md:w-[48%]">
-                          <TextInput
-                            label="Relevant Past History"
-                            name="therapypasthistory"
-                            id="relevantpasthistory"
-                            type="text"
-                            onChange={handleInputVal}
-                            value={inputs.therapypasthistory}
-                            readonly={!edits.therapy}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between">
-                        <div className="w-[100%] md:w-[48%]">
-                          <TextInput
-                            label="Relevant Family History"
-                            name="therapyfamilyhistory"
-                            id="relevantfamilyhistory"
-                            type="text"
-                            onChange={handleInputVal}
-                            value={inputs.therapyfamilyhistory}
-                            readonly={!edits.therapy}
-                          />
-                        </div>
-                        <div className="w-[100%] md:w-[48%]">
-                          <TextInput
-                            label="Anything else"
-                            name="therapyanythingelse"
-                            id="anythingelse"
-                            type="text"
-                            onChange={handleInputVal}
-                            value={inputs.therapyanythingelse}
-                            readonly={!edits.therapy}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="w-[100%] flex flex-col lg:flex-row gap-y-[25px] mt-3 justify-between mb-[25px]">
-                        <div className="w-[100%] lg:w-[100%]">
-                          <label className="w-[100%] text-[#f95005] font-bold text-[1.0rem] lg:text-[20px] text-start">
-                            Recent Injuries / Accidents / Surgeries / Fractures / Sprains *
-                          </label>
-                          <div className="w-[100%] flex justify-start mt-[10px]">
-                            <div className="mr-10">
-                              <RadiobuttonInput
-                                id="accidentyes"
-                                value="yes"
-                                name="accident"
-                                selectedOption={options.accident ? "yes" : ""}
-                                onChange={() => {
-                                  setOptions({
-                                    ...options,
-                                    accident: true,
-                                  });
-                                }}
-                                label="Yes"
-                                readonly={!edits.therapy}
-                                required
-                              />
-                            </div>
-                            <div className="">
-                              <RadiobuttonInput
-                                id="accidentno"
-                                value="no"
-                                name="accident"
-                                label="No"
-                                onChange={() => {
-                                  setOptions({
-                                    ...options,
-                                    accident: false,
-                                  });
-
-                                  setInputs({
-                                    ...inputs,
-                                    accidentdetails: "",
-                                    breaksdetails: "",
-                                    breaksotheractivities: "",
-                                    genderalanything: "",
-
-                                  });
-                                }}
-                                selectedOption={!options.accident ? "no" : ""}
-                                readonly={!edits.therapy}
-                                required
-                              />
-                            </div>
-
+                      className="flex"
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        handletherapy();
+                      }}>
+                      <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
+                        <div className="w-[100%] flex justify-between items-center mb-5">
+                          <div className="text-[1.2rem] lg:text-[25px] font-bold">
+                            Health Problems History
                           </div>
-
-
+                          {edits.therapy ? (
+                            <button
+                              className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
+                              // onClick={handletherapy}
+                              type="submit"
+                            >
+                              Save&nbsp;&nbsp;
+                              <i className="text-[15px] pi pi-check"></i>
+                            </button>
+                          ) : (
+                            <div
+                              onClick={() => {
+                                editform("therapy");
+                              }}
+                              className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
+                            >
+                              Edit&nbsp;&nbsp;
+                              <i className="text-[15px] pi pi-pen-to-square"></i>
+                            </div>
+                          )}
                         </div>
+                        <div className="w-[100%] flex justify-center items-center">
+                          <div className="w-[100%] justify-center items-center flex flex-col">
+                            <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
+                              <div className="w-[100%] md:w-[48%]">
+                                <TextInput
+                                  label="Duration of the Problem *"
+                                  name="therapydurationproblem"
+                                  id="durationproblem"
+                                  type="text"
+                                  onChange={handleInputVal}
+                                  value={inputs.therapydurationproblem}
+                                  readonly={!edits.therapy}
+                                  required
+                                />
+                              </div>
+                              <div className="w-[100%] md:w-[48%]">
+                                <TextInput
+                                  label="Relevant Past History"
+                                  name="therapypasthistory"
+                                  id="relevantpasthistory"
+                                  type="text"
+                                  onChange={handleInputVal}
+                                  value={inputs.therapypasthistory}
+                                  readonly={!edits.therapy}
+                                />
+                              </div>
+                            </div>
+
+                            <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between">
+                              <div className="w-[100%] md:w-[48%]">
+                                <TextInput
+                                  label="Relevant Family History"
+                                  name="therapyfamilyhistory"
+                                  id="relevantfamilyhistory"
+                                  type="text"
+                                  onChange={handleInputVal}
+                                  value={inputs.therapyfamilyhistory}
+                                  readonly={!edits.therapy}
+                                />
+                              </div>
+                              <div className="w-[100%] md:w-[48%]">
+                                <TextInput
+                                  label="Anything else"
+                                  name="therapyanythingelse"
+                                  id="anythingelse"
+                                  type="text"
+                                  onChange={handleInputVal}
+                                  value={inputs.therapyanythingelse}
+                                  readonly={!edits.therapy}
+                                />
+                              </div>
+                            </div>
+
+                            <div className="w-[100%] flex flex-col lg:flex-row gap-y-[25px] mt-3 justify-between mb-[25px]">
+                              <div className="w-[100%] lg:w-[100%]">
+                                <label className="w-[100%] text-[#f95005] font-bold text-[1.0rem] lg:text-[20px] text-start">
+                                  Recent Injuries / Accidents / Surgeries / Fractures / Sprains *
+                                </label>
+                                <div className="w-[100%] flex justify-start mt-[10px]">
+                                  <div className="mr-10">
+                                    <RadiobuttonInput
+                                      id="accidentyes"
+                                      value="yes"
+                                      name="accident"
+                                      selectedOption={options.accident ? "yes" : ""}
+                                      onChange={() => {
+                                        setOptions({
+                                          ...options,
+                                          accident: true,
+                                        });
+                                      }}
+                                      label="Yes"
+                                      readonly={!edits.therapy}
+                                      required
+                                    />
+                                  </div>
+                                  <div className="">
+                                    <RadiobuttonInput
+                                      id="accidentno"
+                                      value="no"
+                                      name="accident"
+                                      label="No"
+                                      onChange={() => {
+                                        setOptions({
+                                          ...options,
+                                          accident: false,
+                                        });
+
+                                        setInputs({
+                                          ...inputs,
+                                          accidentdetails: "",
+                                          breaksdetails: "",
+                                          breaksotheractivities: "",
+                                          genderalanything: "",
+
+                                        });
+                                      }}
+                                      selectedOption={!options.accident ? "no" : ""}
+                                      readonly={!edits.therapy}
+                                      required
+                                    />
+                                  </div>
+
+                                </div>
+
+
+                              </div>
 
 
 
 
-                      </div>
-                      <div className="w-[100%] mb-[20px]">
-                        <TextInput
-                          label="Description"
-                          name="breaksdetails"
-                          id="details"
-                          type="text"
-                          onChange={handleInputVal}
-                          value={inputs.breaksdetails}
-                          disabled={!options.accident || !edits.therapy}
-                          // disabled={!options.breaks}
-                          // readonly={!edits.gendrel}
-                          required
-                        />
+                            </div>
+                            <div className="w-[100%] mb-[20px]">
+                              <TextInput
+                                label="Description"
+                                name="breaksdetails"
+                                id="details"
+                                type="text"
+                                onChange={handleInputVal}
+                                value={inputs.breaksdetails}
+                                disabled={!options.accident || !edits.therapy}
+                                // disabled={!options.breaks}
+                                // readonly={!edits.gendrel}
+                                required
+                              />
 
-                      </div>
-                      <div className="w-[100%] mb-[20px]">
-                        <div className="w-full">
-                          <TextInput
-                            label="Other Activities"
-                            name="breaksotheractivities"
-                            id="otheractivities"
-                            type="text"
-                            onChange={handleInputVal}
-                            value={inputs.breaksotheractivities}
-                            disabled={!options.accident || !edits.therapy}
-                            // disabled={!options.breaks}
-                            // readonly={!edits.gendrel}
-                            required
-                          />
+                            </div>
+                            <div className="w-[100%] mb-[20px]">
+                              <div className="w-full">
+                                <TextInput
+                                  label="Other Activities"
+                                  name="breaksotheractivities"
+                                  id="otheractivities"
+                                  type="text"
+                                  onChange={handleInputVal}
+                                  value={inputs.breaksotheractivities}
+                                  disabled={!options.accident || !edits.therapy}
+                                  // disabled={!options.breaks}
+                                  // readonly={!edits.gendrel}
+                                  required
+                                />
 
+                              </div>
+
+                            </div>
+                            <div className="w-[100%] mb-[20px]">
+                              <div className="w-full">
+                                <TextInput
+                                  label="Add your Comments"
+                                  name="genderalanything"
+                                  id="otheractivities"
+                                  type="text"
+                                  onChange={handleInputVal}
+                                  value={inputs.genderalanything}
+                                  disabled={!options.accident || !edits.therapy}
+                                  //  disabled={!options.breaks}
+                                  //  readonly={!edits.gendrel}
+                                  required
+                                />
+                              </div>
+                            </div>
+                          </div>
                         </div>
-
                       </div>
-                      <div className="w-[100%] mb-[20px]">
-                        <div className="w-full">
-                          <TextInput
-                            label="Add your Comments"
-                            name="genderalanything"
-                            id="otheractivities"
-                            type="text"
-                            onChange={handleInputVal}
-                            value={inputs.genderalanything}
-                            disabled={!options.accident || !edits.therapy}
-                            //  disabled={!options.breaks}
-                            //  readonly={!edits.gendrel}
-                            required
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
                     </form>
 
                     {/* Medical Documentation */}
-                    <form 
-                    className="flex"
-                    onSubmit={(e) => { e.preventDefault(); handleMedDoc(); }}>
+                    <form
+                      className="flex"
+                      onSubmit={(e) => { e.preventDefault(); handleMedDoc(); }}>
 
                       <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
                         <div className="w-[100%] flex justify-between items-center mb-5">
@@ -3268,95 +3259,95 @@ const Profile: React.FC = () => {
                                 Add Document
                               </button>
                             </div>
-                            <div className="w-[80%] flex justify-center"> 
-                            {uploadDocuments.map((document, index) => (
-                              <div
-                                key={index}
-                                className="w-[100%] flex flex-row items-center justify-evenly lg:p-[10px] mt-5 lg:mt-0"
-                              >
-                                <div>
-                                  {document.refMedDocUpload && (
-                                    <div className="pt-0 align-content-start">
-                                      <FaEye
-                                        className="w-[30px] h-[25px] text-[#f95005] cursor-pointer"
-                                        onClick={() =>
-                                          handlePreviewDocument(uploadDocuments, index)
-                                        }
-                                      />
-                                    </div>
-                                  )}
-                                </div>
+                            <div className="w-[80%] flex justify-center">
+                              {uploadDocuments.map((document, index) => (
+                                <div
+                                  key={index}
+                                  className="w-[100%] flex flex-row items-center justify-evenly lg:p-[10px] mt-5 lg:mt-0"
+                                >
+                                  <div>
+                                    {document.refMedDocUpload && (
+                                      <div className="pt-0 align-content-start">
+                                        <FaEye
+                                          className="w-[30px] h-[25px] text-[#f95005] cursor-pointer"
+                                          onClick={() =>
+                                            handlePreviewDocument(uploadDocuments, index)
+                                          }
+                                        />
+                                      </div>
+                                    )}
+                                  </div>
 
-                                <div className="w-[40%] flex flex-col justify-start text-start">
-                                  {/* <label className="block text-gray-700 font-medium mb-2">
+                                  <div className="w-[40%] flex flex-col justify-start text-start">
+                                    {/* <label className="block text-gray-700 font-medium mb-2">
                                     Enter File Name:
                                   </label> */}
-                                  <TextInput
-                                    label="Enter File Name:"
-                                    name="medicalDocument"
-                                    id="medicalDocument"
-                                    type="text"
-                                    onChange={(e) => {
-                                      setUploadDocuments((prev) => {
-                                        const updatedDocuments = [...prev];
-                                        updatedDocuments[index].refMedDocName =
-                                          e.target.value;
-                                        return updatedDocuments;
-                                      });
-                                    }}
-                                    value={document.refMedDocName || ""}
-                                    required
-                                  />
-
-                                </div>
-                                <div className="w-[40%] flex flex-col justify-start text-start ">
-                                  <input
-                                    type="file"
-                                    accept="application/pdf,image/*"
-                                    className="w-full border m-[10px]"
-                                    disabled={document.refMedDocUpload}
-                                    onChange={(e) => {
-                                      const files = e.target?.files;
-                                      if (files && files[0]) {
-                                        const file = files[0];
-                                        const formData = new FormData();
-                                        formData.append("file", file);
-
+                                    <TextInput
+                                      label="Enter File Name:"
+                                      name="medicalDocument"
+                                      id="medicalDocument"
+                                      type="text"
+                                      onChange={(e) => {
                                         setUploadDocuments((prev) => {
-                                          const updatedDocuments: any = [...prev];
-                                          updatedDocuments[index].refMedDocFile = formData;
-                                          updatedDocuments[index].refMedDocUpBtn = true;
+                                          const updatedDocuments = [...prev];
+                                          updatedDocuments[index].refMedDocName =
+                                            e.target.value;
                                           return updatedDocuments;
                                         });
-                                      }
-                                    }}
-                                    required
-                                  />
-                                </div>
-                                <button
-                                  type="button"
-                                  className={`text-[green] disabled:cursor-not-allowed p-[5px] disabled:text-slate-400 disabled:before:bg-transparent`}
-                                  onClick={() => storeDocument(index)}
-                                  disabled={
-                                    document.refMedDocUpload === true ||
-                                    document.refMedDocUpBtn === false
-                                  }
-                                >
-                                  <ImUpload2 className="w-[30px] h-[25px]" />
-                                </button>
+                                      }}
+                                      value={document.refMedDocName || ""}
+                                      required
+                                    />
 
-                                {/* Delete Button */}
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    handleRemoveDocument(uploadDocuments, index)
-                                  }
-                                  className="text-[red]"
-                                >
-                                  <MdDelete className="w-[30px] h-[30px] " />
-                                </button>
-                              </div>
-                            ))}</div>
+                                  </div>
+                                  <div className="w-[40%] flex flex-col justify-start text-start ">
+                                    <input
+                                      type="file"
+                                      accept="application/pdf,image/*"
+                                      className="w-full border m-[10px]"
+                                      disabled={document.refMedDocUpload}
+                                      onChange={(e) => {
+                                        const files = e.target?.files;
+                                        if (files && files[0]) {
+                                          const file = files[0];
+                                          const formData = new FormData();
+                                          formData.append("file", file);
+
+                                          setUploadDocuments((prev) => {
+                                            const updatedDocuments: any = [...prev];
+                                            updatedDocuments[index].refMedDocFile = formData;
+                                            updatedDocuments[index].refMedDocUpBtn = true;
+                                            return updatedDocuments;
+                                          });
+                                        }
+                                      }}
+                                      required
+                                    />
+                                  </div>
+                                  <button
+                                    type="button"
+                                    className={`text-[green] disabled:cursor-not-allowed p-[5px] disabled:text-slate-400 disabled:before:bg-transparent`}
+                                    onClick={() => storeDocument(index)}
+                                    disabled={
+                                      document.refMedDocUpload === true ||
+                                      document.refMedDocUpBtn === false
+                                    }
+                                  >
+                                    <ImUpload2 className="w-[30px] h-[25px]" />
+                                  </button>
+
+                                  {/* Delete Button */}
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      handleRemoveDocument(uploadDocuments, index)
+                                    }
+                                    className="text-[red]"
+                                  >
+                                    <MdDelete className="w-[30px] h-[30px] " />
+                                  </button>
+                                </div>
+                              ))}</div>
 
                           </div>
                         ) : (
@@ -3440,9 +3431,9 @@ const Profile: React.FC = () => {
                   <></>
                 ) : (
                   <>
-                    <form 
-                    className="flex"
-                    onSubmit={handleDocument}>
+                    <form
+                      className="flex"
+                      onSubmit={handleDocument}>
                       <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
                         <div className="w-[100%] flex justify-between items-center mb-5">
                           <div className="text-[1rem] lg:text-[25px] font-bold">
@@ -3740,9 +3731,9 @@ const Profile: React.FC = () => {
               </>
             )}
 
-            <form 
-            className="flex"
-            onSubmit={handlePassword}>
+            <form
+              className="flex"
+              onSubmit={handlePassword}>
               <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
                 <div className="w-[100%] flex justify-between items-center mb-5">
                   <div className="text-[1rem] lg:text-[25px] font-bold">
