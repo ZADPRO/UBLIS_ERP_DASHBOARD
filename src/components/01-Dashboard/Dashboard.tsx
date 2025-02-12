@@ -208,12 +208,12 @@ const Dashboard = () => {
         <div className="userTilesDashboard mt-4 mb-4 w-[100%]">
           <div className="flex flex-row justify-start w-[100%]">
             <Fieldset
-            className="w-[30%] h-[120px]"
+              className="w-[30%] h-[120px]"
               legend="Intro Video"
               onClick={() => handleMobileNavigate("/introVideo")}
             >
               <p className="m-0">
-                Complete The Introduction Video Before Start The Class
+                Complete The Introduction Video Before Starting The Class
               </p>
             </Fieldset>
           </div>

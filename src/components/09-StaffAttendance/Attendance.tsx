@@ -448,7 +448,7 @@ const StaffAttendance: React.FC = () => {
                         <IconField iconPosition="left">
                           <InputIcon className="pi pi-search"></InputIcon>
                           <InputText
-                            placeholder="Search By CustomerId, Firstname, Mobile, Email, DOB, Username"
+                            placeholder="Search By Customer ID, Firstname, Mobile, Email, DOB, Username"
                             // disabled={selectedUser}
                             value={searchQuery}
                             onChange={(e) => {

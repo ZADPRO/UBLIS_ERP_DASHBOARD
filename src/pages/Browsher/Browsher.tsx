@@ -523,7 +523,7 @@ const Browsher: React.FC = () => {
                     setBrowserCatAdd(false);
                     setBrowserCateoryTypeName("");
                     getCategoryType();
-                    toast.success("New Browser Type is Added Successfully", {
+                    toast.success("New Brochure Type is Added Successfully", {
                         position: "top-right",
                         autoClose: 5000,
                         hideProgressBar: false,
@@ -535,7 +535,7 @@ const Browsher: React.FC = () => {
                         // transition: Bounce,
                     });
                 } else {
-                    toast.warning("can't Add New Browser Type", {
+                    toast.warning("can't Add New Brochure Type", {
                         position: "top-right",
                         autoClose: 5000,
                         hideProgressBar: false,
@@ -558,10 +558,10 @@ const Browsher: React.FC = () => {
             <div className="flex flex-row-reverse justify-between">
                 <div className="pr-10">
                 </div>
-                <h2>Browser Data Table</h2>
+                <h2>Brochure Data Table</h2>
             </div>
             <TabView>
-                <TabPanel header="Browser">
+                <TabPanel header="Brochure">
                     <div className="flex justify-end mr-10 my-4">
                         <Button
                             className="p-button-success text-[1.5rem]"
@@ -706,7 +706,7 @@ const Browsher: React.FC = () => {
                     </Dialog>
 
                 </TabPanel>
-                <TabPanel header="Browser Category Type">
+                <TabPanel header="Brochure Category Type">
                     <div className="flex w-[100%] flex-col bg justify-center align-items-center">
 
                         <div className="w-[80%]">
@@ -739,7 +739,7 @@ const Browsher: React.FC = () => {
                                                     <></>
                                                 ) : (
                                                     <>
-                                                        <label htmlFor="username">Browser Type</label>
+                                                        <label htmlFor="username">Brochure Type</label>
                                                         <InputText
                                                             required
                                                             onInput={(e: any) => {

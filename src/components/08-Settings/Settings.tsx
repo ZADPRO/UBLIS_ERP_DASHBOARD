@@ -181,20 +181,6 @@ const Settings: React.FC = () => {
                 </div>
               </div>
 
-              {/* <div
-                className="w-[250px] h-[100px] rounded-[5px] flex flex-col justify-center bg-[#fff] shadow-lg p-3 cursor-pointer"
-                onClick={() => {
-                  setFeesStructure(true);
-                }}
-              >
-                <div className="text-[20px] font-bold font-serif">
-                  Fee Structure
-                </div>
-                <div className="text-[#f95005] text-[40px] text-end">
-                  <FaMoneyCheckDollar />
-                </div>
-              </div> */}
-
               <div
                 onClick={() => {
                   setOffers(true);
@@ -207,17 +193,6 @@ const Settings: React.FC = () => {
                 </div>
               </div>
 
-              {/* <div
-                className="w-[250px] h-[100px] rounded-[5px] flex flex-col justify-center bg-[#fff] shadow-lg p-3 cursor-pointer"
-                onClick={() => {
-                  setSession(true);
-                }}
-              >
-                <div className="text-[20px] font-bold font-serif">Session</div>
-                <div className="text-[#f95005] text-[40px] text-end">
-                  <FaUserClock />
-                </div>
-              </div> */}
 
               <div
                 className="w-[250px] h-[100px] rounded-[5px] flex flex-col justify-center bg-[#fff] shadow-lg p-3 cursor-pointer"
@@ -252,7 +227,7 @@ const Settings: React.FC = () => {
                 }}
               >
                 <div className="text-[20px] font-bold font-serif">
-                  Browser
+                  Brochure
                 </div>
                 <div className="text-[#f95005] text-[40px] text-end">
                   <GrDocumentTime />

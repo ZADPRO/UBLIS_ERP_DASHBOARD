@@ -505,7 +505,7 @@ const UserDirData: React.FC = () => {
   };
 
   const updateSessionData = async () => {
-    setSessionUpdateLoad(true); // Show loading indicator
+    setSessionUpdateLoad(true);
     try {
       const response = await Axios.post(
         import.meta.env.VITE_API_URL + "/profile/SessionUpdate",
