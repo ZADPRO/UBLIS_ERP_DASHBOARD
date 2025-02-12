@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 
 
 import CryptoJS from "crypto-js";
+import { Calendar } from "primereact/calendar";
 
 // interface HealthProblemData {
 //   presentHealthProblem: Record<string, string>;
@@ -844,18 +845,30 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                     </div>
 
                     <div className="w-[100%] flex justify-between mb-[20px]">
-                      <div className="w-[48%]">
-                        <TextInput
-                          label="Date of Birth *"
-                          name="dob"
-                          id="dob"
-                          type="date"
-                          onChange={handleInputVal}
-                          value={inputs.dob}
-                          readonly={!edits.personal}
-                          required
-                        />
-                      </div>
+                    <div className="flex flex-col w-[48%] -mt-[13px]">
+                        <label className="bg-[#fff] text-[#ff621b]  -mb-[15px] z-50 w-[120px] ml-[10px]">
+                          &nbsp;Date of Birth *
+                        </label>
+                        <Calendar
+                            // label="Date of Birth *"
+                            name="dob"
+                            id="dob"
+                            // type="date"
+                            className={`relative w-full mt-1 h-10  placeholder-transparent transition-all border-2 rounded outline-none peer 
+                              ${edits.personal ? "text-[#4c4c4e]" : "text-black"} border-[#b3b4b6] autofill:bg-white dateInput`}
+                
+                                          onChange={(e) =>
+                                            handleInputVal({
+                                              target: { name: "dob", value: e.value },
+                                            })
+                                          }
+                                          value={inputs.dob ? new Date(inputs.dob) : null} // Ensure it's a Date object
+                                          dateFormat="dd/mm/yy"
+                            disabled={!edits.personal}
+                            required
+                          />
+                        </div>
+
                       <div className="w-[48%]">
                         <TextInput
                           label="Age *"

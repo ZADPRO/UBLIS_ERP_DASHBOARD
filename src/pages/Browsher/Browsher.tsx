@@ -631,7 +631,7 @@ const Browsher: React.FC = () => {
                                         {/* Button to select the image */}
                                         <Button
                                             label="Select Image"
-                                            className="p-button-success w-[60%] mx-2"
+                                            className="p-button-success w-[55%] mx-2"
                                             onClick={() => {
                                                 if (!branch) {
                                                     // Show a validation message if no branch is selected
@@ -652,7 +652,7 @@ const Browsher: React.FC = () => {
                                         {/* Close button */}
                                         <Button
                                             label="Close"
-                                            className="p-button-danger w-[30%]"
+                                            className="p-button-danger w-[35%]"
                                             onClick={() => {
                                                 setBranch(undefined);
                                                 setAddBtn(false);
@@ -678,7 +678,7 @@ const Browsher: React.FC = () => {
                             />
                             <Column
                                 field="refBrowsherTypeName"
-                                header="Browsher Type"
+                                header="Brochure Type"
                                 style={{ textAlign: "start", width: "40%" }}
                             />
                             <Column

@@ -513,7 +513,7 @@ const Payment: React.FC = () => {
                 </Fieldset>
 
                 <Fieldset
-                  className="mt-10 h-[46vh] border-2 border-[#f95005] fieldData"
+                  className="mt-10  border-2 border-[#f95005] fieldData"
                   legend={"Last Payment"}
                 >
                   {info[0] ? (
