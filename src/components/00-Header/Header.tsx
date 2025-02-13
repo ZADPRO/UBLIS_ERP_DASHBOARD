@@ -14,6 +14,7 @@ import Expired from "../../pages/Expired/Expired";
 import { Sidebar } from "primereact/sidebar";
 import { Button } from "primereact/button";
 import { Divider } from "primereact/divider";
+import { MdOutlineClass } from "react-icons/md";
 import {
   ArrowRightLeft,
   CircleUser,
@@ -128,6 +129,11 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
       icon: <LibraryBig />,
     },
     {
+      path: "/staff/classinfo",
+      name: "ClassInfo",
+      icon: <MdOutlineClass />,
+    },
+    {
       path: "/staff/signedupUsers",
       name: "Signed Up Users",
       icon: <UserRoundCheck />,
@@ -177,7 +183,12 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
       name: "Attendance",
       icon: <LibraryBig />,
     },
-
+    {
+      path: "/staff/classinfo",
+      name: "ClassInfo",
+      icon: <MdOutlineClass />,
+    },
+    
     {
       path: "/staff/signedupUsers",
       name: "Signed Up Users",
@@ -276,6 +287,11 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
       path: "/staff/attendance",
       name: "Attendance",
       icon: <LibraryBig />,
+    },
+    {
+      path: "/staff/classinfo",
+      name: "ClassInfo",
+      icon: <MdOutlineClass />,
     },
 
     {
@@ -397,6 +413,11 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
       path: "/staff/payment",
       name: "Payment",
       icon: <IndianRupee />,
+    },
+    {
+      path: "/staff/classinfo",
+      name: "ClassInfo",
+      icon: <MdOutlineClass />,
     },
     {
       path: "/staff/feedback",

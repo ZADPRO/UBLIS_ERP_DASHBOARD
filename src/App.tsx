@@ -34,6 +34,8 @@ import AssignNotes from "./components/40-AssignNotes/AssignNotes";
 import Expired from "./pages/Expired/Expired";
 import UserPayment from "./components/41-UserPayment/UserPayment";
 import IntroVideo from "./pages/03-IntroVideo/IntroVideo";
+import ClassInfo from "./pages/Classinfo/ClassInfo";
+import ClassInfoDetails from "./components/11-ClassInfodetails/ClassInfoDetails";
 
 const App = () => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -82,6 +84,7 @@ const App = () => {
           <Route path="/staff/feedback" element={<StaffFeedback />} />
           <Route path="/staff/payment" element={<Payment />} />
           <Route path="/staff/attendance" element={<StaffAttendance />} />
+          <Route path="/staff/classinfo" element={<ClassInfoDetails />} />
 
           <Route path="/staff/transaction" element={<Transactions />} />
           <Route path="/staff/payroll" element={<Payroll />} />

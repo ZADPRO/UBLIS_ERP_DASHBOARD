@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
+
 import { Divider } from "primereact/divider";
-import TherapistTable from "../../pages/Datatable/TherapistTable";
+
 import Axios from "axios";
 import { Skeleton } from "primereact/skeleton";
 import CryptoJS from "crypto-js";
 import { useNavigate } from "react-router-dom";
+import ClassInfo from "../../pages/Classinfo/ClassInfo";
 
 type DecryptResult = any;
 
-const Therapist: React.FC = () => {
+const ClassInfoDetails: React.FC = () => {
   const navigate = useNavigate();
   const [pageLoading, setPageLoading] = useState({
     verifytoken: true,
@@ -62,8 +64,6 @@ const Therapist: React.FC = () => {
       if (data.token == false) {
         navigate("/expired");
       } else {
-        console.log(data);
-
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
         setuserdata({
@@ -77,8 +77,6 @@ const Therapist: React.FC = () => {
           ...pageLoading,
           verifytoken: false,
         });
-
-        console.log("Verify Token  Running --- ");
       }
     });
   }, []);
@@ -89,7 +87,7 @@ const Therapist: React.FC = () => {
         <>
           <div className="bg-[#f6f5f5]">
             <div className="headerPrimary">
-              <h3>FUTURE CLIENTS ( With Medical Issues )</h3>
+              <h3>USER DETAILS</h3>
               <div className="quickAcces">
                 <Skeleton
                   shape="circle"
@@ -117,7 +115,7 @@ const Therapist: React.FC = () => {
       ) : (
         <div className="usersTable">
           <div className="headerPrimary">
-            <h3>FUTURE CLIENTS ( With Medical Issues ) </h3>
+            <h3>CLASS INFORMATION</h3>
             <div className="quickAcces">
               {userdata.profileimg ? (
                 <div className="p-link layout-topbar-button">
@@ -146,7 +144,7 @@ const Therapist: React.FC = () => {
             <div className="routeContents">
               <Divider />
 
-              <TherapistTable />
+              <ClassInfo />
             </div>
           </div>
         </div>
@@ -155,4 +153,4 @@ const Therapist: React.FC = () => {
   );
 };
 
-export default Therapist;
+export default ClassInfoDetails;

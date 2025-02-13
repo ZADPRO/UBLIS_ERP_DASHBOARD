@@ -551,28 +551,28 @@ const StaffAttendance: React.FC = () => {
                                       </p>
                                     </div>
 
-                                    <div className="w-full h-[25px] flex">
-                                      <p
-                                        style={{
-                                          width: "30%",
-                                          fontSize: "18px",
-                                          fontWeight: "bold",
-                                          color: "#f95005",
-                                          textAlign: "left",
-                                        }}
-                                      >
-                                        User ID
-                                      </p>
-                                      <p
-                                        style={{
-                                          width: "60%",
-                                          fontSize: "18px",
-                                          paddingLeft: "10px",
-                                        }}
-                                      >
-                                        : {selectedUser.userId}
-                                      </p>
-                                    </div>
+                                      <div className="w-full h-[25px] flex">
+                                        <p
+                                          style={{
+                                            width: "30%",
+                                            fontSize: "18px",
+                                            fontWeight: "bold",
+                                            color: "#f95005",
+                                            textAlign: "left",
+                                          }}
+                                        >
+                                          User ID
+                                        </p>
+                                        <p
+                                          style={{
+                                            width: "60%",
+                                            fontSize: "18px",
+                                            paddingLeft: "10px",
+                                          }}
+                                        >
+                                          : {selectedUser.userId}
+                                        </p>
+                                      </div>
                                     <div className="w-full h-[25px] flex">
                                       <p
                                         style={{

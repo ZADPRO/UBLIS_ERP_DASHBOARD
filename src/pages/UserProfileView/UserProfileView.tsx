@@ -132,7 +132,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
     tempcity: "",
     email: "",
     phoneno: "",
-    emergencyno:"",
+    emergencyno: "",
     whatsappno: "",
     mode: "",
     height: "",
@@ -404,14 +404,14 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
           type === "staff"
             ? false
             : generalhealth.refIfBP === "no"
-              ? false
-              : true,
+            ? false
+            : true,
         backpain:
           type === "staff"
             ? false
             : presenthealth.refBackPain === "no"
-              ? false
-              : true,
+            ? false
+            : true,
       });
       setUserAge(personaldata.refStAge);
       setRefStId(personaldata.refStId);
@@ -474,7 +474,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
         branch: personaldata.refBranchId,
         email: communication.refCtEmail,
         phoneno: communication.refCtMobile,
-        emergencyno:communication.refEmerContact,
+        emergencyno: communication.refEmerContact,
         whatsappno: communication.refCtWhatsapp,
         mode: communication.refUcPreference,
         height: type === "staff" ? "" : generalhealth.refHeight,
@@ -483,8 +483,14 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
         bmi: type === "staff" ? "" : generalhealth.refBMI,
         BackPainValue: presenthealth ? presenthealth.refBackPainValue : null,
         bp: type === "staff" ? "" : generalhealth.refBP,
-        bpValue: type === "staff" ? "" : presenthealth ? generalhealth.refBpType : null,
-        ifbp: type === "staff" ? "" : presenthealth ? generalhealth.refIfBp : null,
+        bpValue:
+          type === "staff"
+            ? ""
+            : presenthealth
+            ? generalhealth.refBpType
+            : null,
+        ifbp:
+          type === "staff" ? "" : presenthealth ? generalhealth.refIfBp : null,
         accidentdetails:
           type === "staff" ? "" : generalhealth.refRecentInjuriesReason,
         breaksdetails:
@@ -695,7 +701,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
         communication: {
           refCtEmail: inputs.email,
           refCtMobile: inputs.phoneno,
-          refEmerContact:inputs.emergencyno,
+          refEmerContact: inputs.emergencyno,
           refCtWhatsapp: inputs.whatsappno,
           refUcPreference: inputs.mode,
         },
@@ -1005,7 +1011,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
         import.meta.env.VITE_ENCRYPTION_KEY
       );
 
-      console.log('',)
+      console.log("");
       console.log("Data received:", data);
       if (data.token == false) {
         navigate("/expired");
@@ -1225,8 +1231,12 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                                 { value: "single", label: "Single" },
                                 { value: "married", label: "Married" },
                               ]}
-                              disabled={edits.personal && inputs.age > '20' ? false : true }
-                          required
+                              disabled={
+                                edits.personal && inputs.age > "20"
+                                  ? false
+                                  : true
+                              }
+                              required
                             />
                           </div>
                           <div className="w-[100%] md:w-[48%] lg:w-[48%]">
@@ -1582,17 +1592,17 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                         />
                       </div>
                       <div className="w-[100%] ">
-                  <TextInput
-                      label="Emergency Contact Number *"
-                      name="emergencyno"
-                      id="emergencyno"
-                      type="number"
-                      onChange={handleInputVal}
-                      value={inputs.emergencyno}
-                      readonly={!edits.communitcation}
-                      required
-                    />
-                      </div> 
+                        <TextInput
+                          label="Emergency Contact Number *"
+                          name="emergencyno"
+                          id="emergencyno"
+                          type="number"
+                          onChange={handleInputVal}
+                          value={inputs.emergencyno}
+                          readonly={!edits.communitcation}
+                          required
+                        />
+                      </div>
                     </div>
                     <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
                       <div className="w-[100%] md:w-[48%]">
@@ -1748,49 +1758,61 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                         />
                       </div>
                     </div>
-                    {type === "staff" ? <></> : <><div className="w-[100%] lg:w-[100%] my-[1%]">
-                      <label className="w-[100%] text-[#f95005] font-bold text-[1.0rem] lg:text-[20px] text-start">
-                        Medical Issue *{" "}
-                      </label>
-                      <div className="w-[100%] flex justify-start mt-[10px]">
-                        <div className="mr-10">
-                          <RadiobuttonInput
-                            id="medicalIssueYes"
-                            value="yes"
-                            name="medicalIssue"
-                            selectedOption={options.medicalIssue ? "yes" : ""}
-                            // onChange={() => {
-                            //   setOptions({ ...options, medicalIssue: true });
-                            //   // handleFormToggle("yes");
-                            // }}
-                            label="Yes"
-                            required
-                          />
-                        </div>
-                        <div className="">
-                          <RadiobuttonInput
-                            id="medicalIssueNo"
-                            value="no"
-                            name="medicalIssue"
-                            label="No"
-                            onChange={() => {
-                              setOptions({ ...options, medicalIssue: false });
-                              // handleFormToggle("no");
-                            }}
-                            selectedOption={!options.medicalIssue ? "no" : ""}
-                            required
-                          />
-                        </div>
-                      </div>
-                      {/* <div className="mt-2 text-[#ff621b] flex flex-row justify-center align-middle gap-5">
+                    {type === "staff" ? (
+                      <></>
+                    ) : (
+                      <>
+                        <div className="w-[100%] lg:w-[100%] my-[1%]">
+                          <label className="w-[100%] text-[#f95005] font-bold text-[1.0rem] lg:text-[20px] text-start">
+                            Medical Issue *{" "}
+                          </label>
+                          <div className="w-[100%] flex justify-start mt-[10px]">
+                            <div className="mr-10">
+                              <RadiobuttonInput
+                                id="medicalIssueYes"
+                                value="yes"
+                                name="medicalIssue"
+                                selectedOption={
+                                  options.medicalIssue ? "yes" : ""
+                                }
+                                // onChange={() => {
+                                //   setOptions({ ...options, medicalIssue: true });
+                                //   // handleFormToggle("yes");
+                                // }}
+                                label="Yes"
+                                required
+                              />
+                            </div>
+                            <div className="">
+                              <RadiobuttonInput
+                                id="medicalIssueNo"
+                                value="no"
+                                name="medicalIssue"
+                                label="No"
+                                onChange={() => {
+                                  setOptions({
+                                    ...options,
+                                    medicalIssue: false,
+                                  });
+                                  // handleFormToggle("no");
+                                }}
+                                selectedOption={
+                                  !options.medicalIssue ? "no" : ""
+                                }
+                                required
+                              />
+                            </div>
+                          </div>
+                          {/* <div className="mt-2 text-[#ff621b] flex flex-row justify-center align-middle gap-5">
         <p>
           Note * : If you have any medical history, any medical problems, or
           feel that you have any body pain or other health issues, click 'Yes.'
           Otherwise, click 'No'.
         </p>
       </div> */}
-                    </div></>}
-
+                        </div>
+                      </>
+                    )}
 
                     {/* <div className="w-[100%] flex justify-between mb-[20px]">
                       <div className="w-[100%]">
@@ -2383,7 +2405,6 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                             </div>
                           </div>
 
-
                           <div className="w-[100%] flex justify-between mt-[20px]">
                             <div className="w-[48%]">
                               <SelectInput
@@ -2400,7 +2421,6 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                                   { value: "middle", label: "Middle" },
                                   { value: "lower", label: "Lower" },
                                 ]}
-
                               />
                             </div>
                             <div className="w-[48%]">
@@ -2413,10 +2433,9 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                                 required
                                 value={inputs.BackPainValue}
                                 onChange={(e) => handleInputVal(e)}
-
                                 type="text"
                                 placeholder="pain value"
-                              // value={inputs.email}
+                                // value={inputs.email}
                               />
                             </div>
                           </div>
@@ -2501,7 +2520,6 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                 </div>
               </form>
 
-
               {/* Therapy */}
               <div className="basicProfileCont p-10 shadow-lg mt-10">
                 <div className="w-[100%] flex justify-between items-center mb-5">
@@ -2564,7 +2582,8 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                 </div>
                 <div className="w-[90%] md:w-[100%]  mt-[20px]">
                   <label className="w-[100%] text-[#f95005]  text-[1.0rem] lg:text-[18px] text-start">
-                    Recent Injuries / Accidents / Surgeries / Fractures / Sprains *
+                    Recent Injuries / Accidents / Surgeries / Fractures /
+                    Sprains *
                   </label>
                   <div className="w-[100%] flex justify-start mt-[10px]">
                     <div className="mr-10">
@@ -2667,10 +2686,11 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                     </div>
                     {edits.session ? (
                       <button
-                        className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${sessionUpdateLoad
-                          ? "bg-gray-500 cursor-not-allowed"
-                          : "bg-[#f95005]"
-                          }`}
+                        className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${
+                          sessionUpdateLoad
+                            ? "bg-gray-500 cursor-not-allowed"
+                            : "bg-[#f95005]"
+                        }`}
                         type="submit"
                         disabled={sessionUpdateLoad}
                       >
