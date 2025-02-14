@@ -8,7 +8,6 @@ import RadiobuttonInput from "../../pages/Inputs/RadiobuttonInput";
 import Axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-
 import CryptoJS from "crypto-js";
 import { Calendar } from "primereact/calendar";
 
@@ -98,7 +97,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
     tempcity: "",
     email: "",
     phoneno: "",
-    emergencyno:"",
+    emergencyno: "",
     whatsappno: "",
     mode: "",
     height: "",
@@ -199,7 +198,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
         import.meta.env.VITE_ENCRYPTION_KEY
       );
       if (data.token == false) {
-        navigate("/expired")
+        navigate("/expired");
       }
       console.log("UserData Running --- ");
       console.log(data);
@@ -248,7 +247,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
         breaks: generalhealth.refRecentFractures,
         care: presenthealth.refUnderPhysicalCare,
         backpain: presenthealth.refBackPain === "no" ? false : true,
-        refHealthIssue: personaldata.refHealthIssue
+        refHealthIssue: personaldata.refHealthIssue,
       });
 
       setInputs({
@@ -289,7 +288,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
           : addressdata.refAdCity2,
         email: communication.refCtEmail,
         phoneno: communication.refCtMobile,
-        emergencyno:communication.refEmerContact,
+        emergencyno: communication.refEmerContact,
         whatsappno: communication.refCtWhatsapp,
         mode: communication.refUcPreference,
         height: generalhealth.refHeight,
@@ -402,59 +401,24 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
     return age.toString(); // Return age as a string
   };
 
-  function calculateBMI(weight: number, height: number) {
-    if (!weight || !height) return ""; // Return empty if inputs are missing
-    const heightInMeters = height / 100;
-    if (heightInMeters <= 0) return ""; // Avoid division by zero or negative values
-    const bmi = weight / (heightInMeters ** 2);
-    return bmi.toFixed(2); // Round to 2 decimal places
-  }
-
-
-  const handleInputVal = (
-    event: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
-  ) => {
+  const handleInputVal = (event: {
+    target: { name: string; value: string | Date | null };
+  }) => {
     const { name, value } = event.target;
 
-    // Update inputs
     setInputs((prevInputs) => {
       const updatedInputs = {
         ...prevInputs,
-        [name]: value,
+        [name]:
+          value instanceof Date ? value.toISOString().split("T")[0] : value, // Convert Date to string
       };
 
-      // If the address option is enabled, update temporary address fields
-      if (options.address) {
-        updatedInputs.tempdoorno = prevInputs.perdoorno;
-        updatedInputs.tempstreetname = prevInputs.perstreetname;
-        updatedInputs.tempaddress = prevInputs.peraddress;
-        updatedInputs.temppincode = prevInputs.perpincode;
-        updatedInputs.tempcity = prevInputs.percity;
-        updatedInputs.tempstate = prevInputs.perstate;
-      }
-
-      // If the input is for DOB, calculate the age
       if (name === "dob") {
-        const calculatedAge = calculateAge(value);
+        const calculatedAge = calculateAge(updatedInputs.dob);
         updatedInputs.age = calculatedAge;
-      } else if (name === "maritalstatus") {
-        if (value === "single") {
-          updatedInputs.anniversarydate = "";
-        }
-      }
-      if (name === "age" && Number(value) < 20) {
-        updatedInputs.maritalstatus = ""; // Set to an empty string instead of a space
       }
 
-      if (name === "height" || name === "weight") {
-        const newBMI = calculateBMI(
-          name === "weight" ? parseInt(value) : parseInt(inputs.weight),
-          name === "height" ? parseInt(value) : parseInt(inputs.height)
-        );
-        updatedInputs.bmi = newBMI;
-      }
-
-      return updatedInputs; // Return the updated inputs
+      return updatedInputs;
     });
   };
 
@@ -564,7 +528,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
         communication: {
           refCtEmail: inputs.email,
           refCtMobile: inputs.phoneno,
-          refEmerContact:inputs.emergencyno,
+          refEmerContact: inputs.emergencyno,
           refCtWhatsapp: inputs.whatsappno,
           refUcPreference: inputs.mode,
         },
@@ -618,8 +582,8 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
           refWeight: parseInt(inputs.weight),
         },
         medicalIssue: {
-          refHealthIssue: options.refHealthIssue
-        }
+          refHealthIssue: options.refHealthIssue,
+        },
       },
       {
         headers: {
@@ -785,15 +749,19 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                     <i className="text-[15px] pi pi-check"></i>
                   </button>
                 ) : (
-                  <div
-                    onClick={() => {
-                      editform("personal");
-                    }}
-                    className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
-                  >
-                    Edit&nbsp;&nbsp;
-                    <i className="text-[15px] pi pi-pen-to-square"></i>
-                  </div>
+                  <>
+                    {window.location.pathname !== "/staff/classinfo" && (
+                      <div
+                        onClick={() => {
+                          editform("personal");
+                        }}
+                        className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
+                      >
+                        Edit&nbsp;&nbsp;
+                        <i className="text-[15px] pi pi-pen-to-square"></i>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
               <div className="w-[100%] flex flex-col gap-y-10 justify-center items-center">
@@ -812,8 +780,6 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                       />
                     </div>
                   )}
-
-
                 </div>
                 <div className="w-[100%] lg:w-[100%] flex flex-col justify-center items-center">
                   <div className="w-[100%] justify-center items-center flex flex-col">
@@ -845,29 +811,35 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                     </div>
 
                     <div className="w-[100%] flex justify-between mb-[20px]">
-                    <div className="flex flex-col w-[48%] -mt-[13px]">
+                      <div className="flex flex-col w-[48%] -mt-[13px]">
                         <label className="bg-[#fff] text-[#ff621b]  -mb-[15px] z-50 w-[120px] ml-[10px]">
                           &nbsp;Date of Birth *
                         </label>
                         <Calendar
-                            // label="Date of Birth *"
-                            name="dob"
-                            id="dob"
-                            // type="date"
-                            className={`relative w-full mt-1 h-10  placeholder-transparent transition-all border-2 rounded outline-none peer 
-                              ${edits.personal ? "text-[#4c4c4e]" : "text-black"} border-[#b3b4b6] autofill:bg-white dateInput`}
-                
-                                          onChange={(e) =>
-                                            handleInputVal({
-                                              target: { name: "dob", value: e.value },
-                                            })
-                                          }
-                                          value={inputs.dob ? new Date(inputs.dob) : null} // Ensure it's a Date object
-                                          dateFormat="dd/mm/yy"
-                            disabled={!edits.personal}
-                            required
-                          />
-                        </div>
+                          // label="Date of Birth *"
+                          name="dob"
+                          id="dob"
+                          // type="date"
+                          className={`relative w-full mt-1 h-10  placeholder-transparent transition-all border-2 rounded outline-none peer 
+                              ${
+                                edits.personal ? "text-[#4c4c4e]" : "text-black"
+                              } border-[#b3b4b6] autofill:bg-white dateInput`}
+                          onChange={(e) =>
+                            handleInputVal({
+                              target: {
+                                name: "dob",
+                                value: e.value
+                                  ? e.value.toISOString().split("T")[0]
+                                  : "",
+                              },
+                            })
+                          }
+                          value={inputs.dob ? new Date(inputs.dob) : null} // Ensure it's a Date object
+                          dateFormat="dd/mm/yy"
+                          disabled={!edits.personal}
+                          required
+                        />
+                      </div>
 
                       <div className="w-[48%]">
                         <TextInput
@@ -924,10 +896,11 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                             { value: "single", label: "Single" },
                             { value: "married", label: "Married" },
                           ]}
-                          disabled={edits.personal && inputs.age > '20' ? false : true }
+                          disabled={
+                            edits.personal && inputs.age > "20" ? false : true
+                          }
                           required
                         />
-
                       </div>
                       <div className="w-[100%] md:w-[48%] lg:w-[48%]">
                         <TextInput
@@ -950,12 +923,11 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                       <div className="w-[48%]">
                         <TextInput
                           label="Qualification"
-
                           name="qualification"
                           id="qualification"
                           type="text"
                           onChange={handleInputVal}
-                          disabled={inputs.age > '18' ? false : true}
+                          disabled={inputs.age > "18" ? false : true}
                           value={inputs.qualification}
                           readonly={!edits.personal}
                         />
@@ -963,12 +935,11 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                       <div className="w-[48%]">
                         <TextInput
                           label="Occupation"
-
                           name="occupation"
                           id="Occupation"
                           type="text"
                           onChange={handleInputVal}
-                          disabled={inputs.age > '20' ? false : true}
+                          disabled={inputs.age > "20" ? false : true}
                           value={inputs.occupation}
                           readonly={!edits.personal}
                         />
@@ -1001,15 +972,19 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                     <i className="text-[15px] pi pi-check"></i>
                   </button>
                 ) : (
-                  <div
-                    onClick={() => {
-                      editform("address");
-                    }}
-                    className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
-                  >
-                    Edit&nbsp;&nbsp;
-                    <i className="text-[15px] pi pi-pen-to-square"></i>
-                  </div>
+                  <>
+                    {window.location.pathname !== "/staff/classinfo" && (
+                      <div
+                        onClick={() => {
+                          editform("address");
+                        }}
+                        className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
+                      >
+                        Edit&nbsp;&nbsp;
+                        <i className="text-[15px] pi pi-pen-to-square"></i>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
               <div className="w-[100%] flex justify-center items-center">
@@ -1018,10 +993,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                     Permanent Address
                   </div>
 
-                  <div
-                    className="w-[100%] mb-[20px] flex justify-between"
-
-                  >
+                  <div className="w-[100%] mb-[20px] flex justify-between">
                     <div className="w-[48%]">
                       <div className="relative w-full">
                         <TextInput
@@ -1146,10 +1118,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                   <div className="text-[1.2rem] lg:text-[25px] font-bold mb-5">
                     Communication Address
                   </div>
-                  <div
-                    className="w-[100%] mb-[20px] flex justify-between"
-
-                  >
+                  <div className="w-[100%] mb-[20px] flex justify-between">
                     <div className="w-[48%]">
                       <div className="relative w-full">
                         <TextInput
@@ -1259,15 +1228,19 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                     <i className="text-[15px] pi pi-check"></i>
                   </button>
                 ) : (
-                  <div
-                    onClick={() => {
-                      editform("communitcation");
-                    }}
-                    className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
-                  >
-                    Edit&nbsp;&nbsp;
-                    <i className="text-[15px] pi pi-pen-to-square"></i>
-                  </div>
+                  <>
+                    {window.location.pathname !== "/staff/classinfo" && (
+                      <div
+                        onClick={() => {
+                          editform("communitcation");
+                        }}
+                        className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
+                      >
+                        Edit&nbsp;&nbsp;
+                        <i className="text-[15px] pi pi-pen-to-square"></i>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
               <div className="w-[100%] flex flex-col justify-center items-center">
@@ -1285,7 +1258,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                     />
                   </div>
                   <div className="w-[100%] ">
-                  <TextInput
+                    <TextInput
                       label="Emergency Contact Number *"
                       name="emergencyno"
                       id="emergencyno"
@@ -1295,7 +1268,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                       readonly={!edits.communitcation}
                       required
                     />
-                      </div>
+                  </div>
                 </div>
                 <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
                   <div className="w-[100%] md:w-[40%]">
@@ -1374,8 +1347,6 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
             }}
           >
             <div className="basicProfileCont p-10 shadow-lg mt-10">
-
-
               <div className="w-[100%] flex justify-between items-center mb-5">
                 <div className="text-[1.2rem] lg:text-[25px] font-bold">
                   General Health
@@ -1389,15 +1360,19 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                     <i className="text-[15px] pi pi-check"></i>
                   </button>
                 ) : (
-                  <div
-                    onClick={() => {
-                      editform("gendrel");
-                    }}
-                    className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
-                  >
-                    Edit&nbsp;&nbsp;
-                    <i className="text-[15px] pi pi-pen-to-square"></i>
-                  </div>
+                  <>
+                    {window.location.pathname !== "/staff/classinfo" && (
+                      <div
+                        onClick={() => {
+                          editform("gendrel");
+                        }}
+                        className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
+                      >
+                        Edit&nbsp;&nbsp;
+                        <i className="text-[15px] pi pi-pen-to-square"></i>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
               <div className="w-[100%] flex flex-col justify-center items-center">
@@ -1463,51 +1438,60 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                   </div>
                 </div>
 
-                {localStorage.getItem("refUtId") === "4" ? <> <div className="w-[100%] flex flex-col md:flex-row gap-y-[25px] justify-between mb-[25px]">
-                  <div className="w-[100%] md:w-[48%]">
-                    <label className="w-[100%] text-[#f95005] font-bold text-[1.0rem] lg:text-[20px] text-start">
-                      Medical Issue *{" "}
-                    </label>
-                    <div className="w-[100%] flex justify-start mt-[10px]">
-                      <div className="mr-10">
-                        <RadiobuttonInput
-                          id="refHealthIssue"
-                          value="yes"
-                          name="refHealthIssue"
-                          selectedOption={options.refHealthIssue ? "yes" : ""}
-                          onChange={() => {
-                            setOptions({
-                              ...options,
-                              refHealthIssue: true,
-                            });
-                          }}
-                          label="Yes"
-                          readonly={!edits.gendrel}
-                          required
-                        />
-                      </div>
-                      <div className="">
-                        <RadiobuttonInput
-                          id="refHealthIssue"
-                          value="no"
-                          name="refHealthIssue"
-                          label="No"
-                          onChange={() => {
-                            setOptions({
-                              ...options,
-                              refHealthIssue: false,
-                            });
-                          }}
-                          selectedOption={!options.refHealthIssue ? "no" : ""}
-                          readonly={!edits.gendrel}
-                          required
-                        />
+                {localStorage.getItem("refUtId") === "4" ? (
+                  <>
+                    {" "}
+                    <div className="w-[100%] flex flex-col md:flex-row gap-y-[25px] justify-between mb-[25px]">
+                      <div className="w-[100%] md:w-[48%]">
+                        <label className="w-[100%] text-[#f95005] font-bold text-[1.0rem] lg:text-[20px] text-start">
+                          Medical Issue *{" "}
+                        </label>
+                        <div className="w-[100%] flex justify-start mt-[10px]">
+                          <div className="mr-10">
+                            <RadiobuttonInput
+                              id="refHealthIssue"
+                              value="yes"
+                              name="refHealthIssue"
+                              selectedOption={
+                                options.refHealthIssue ? "yes" : ""
+                              }
+                              onChange={() => {
+                                setOptions({
+                                  ...options,
+                                  refHealthIssue: true,
+                                });
+                              }}
+                              label="Yes"
+                              readonly={!edits.gendrel}
+                              required
+                            />
+                          </div>
+                          <div className="">
+                            <RadiobuttonInput
+                              id="refHealthIssue"
+                              value="no"
+                              name="refHealthIssue"
+                              label="No"
+                              onChange={() => {
+                                setOptions({
+                                  ...options,
+                                  refHealthIssue: false,
+                                });
+                              }}
+                              selectedOption={
+                                !options.refHealthIssue ? "no" : ""
+                              }
+                              readonly={!edits.gendrel}
+                              required
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div></> : <></>}
-
-
+                  </>
+                ) : (
+                  <></>
+                )}
               </div>
             </div>
           </form>

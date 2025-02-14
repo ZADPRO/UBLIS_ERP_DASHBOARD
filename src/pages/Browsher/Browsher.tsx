@@ -602,7 +602,7 @@ const Browsher: React.FC = () => {
                                         options={broTypeOptions}
                                         optionLabel="label"
                                         optionValue="value"
-                                        placeholder="Select Browsher Type"
+                                        placeholder="Select Brochure Type"
                                         className="w-[35%] h-[35px]"
                                         checkmark={true}
                                         highlightOnSelect={false}
@@ -640,7 +640,7 @@ const Browsher: React.FC = () => {
                                                 }
                                                 if (!browsherTypeId) {
                                                     // Show a validation message if no branch is selected
-                                                    alert("Please select a Browsher Type before uploading an image.");
+                                                    alert("Please select a Brochure Type before uploading an image.");
                                                     return;
                                                 }
 

@@ -20,7 +20,6 @@ import { MdDelete } from "react-icons/md";
 import Swal from "sweetalert2";
 import { Calendar } from "primereact/calendar";
 
-
 interface HealthProblemData {
   presentHealthProblem: Record<string, string>;
 }
@@ -68,7 +67,7 @@ const Profile: React.FC = () => {
   };
 
   const [conditions, setConditions] = useState<Condition[]>([]);
-  const [medicalIssue, setMedicalIssue] = useState<boolean>(false)
+  const [medicalIssue, setMedicalIssue] = useState<boolean>(false);
 
   const handleCheckboxChange = (index: any) => {
     setConditions((prevConditions: any) =>
@@ -111,7 +110,7 @@ const Profile: React.FC = () => {
     tempcity: "",
     email: "",
     phoneno: "",
-    emergencyno:"",
+    emergencyno: "",
     whatsappno: "",
     mode: "",
     height: "",
@@ -201,8 +200,6 @@ const Profile: React.FC = () => {
     usernameid: "",
     profileimg: { contentType: "", content: "" },
   });
-
-
 
   useEffect(() => {
     Axios.get(import.meta.env.VITE_API_URL + "/validateTokenData", {
@@ -351,14 +348,15 @@ const Profile: React.FC = () => {
               ? false
               : true
             : false,
-          ifbp: generalhealth ? generalhealth.refIfBP === "no"
-            ? false
-            : true
+          ifbp: generalhealth
+            ? generalhealth.refIfBP === "no"
+              ? false
+              : true
             : false,
         });
 
         if (personaldata.refHealthIssue) {
-          setMedicalIssue(personaldata.refHealthIssue)
+          setMedicalIssue(personaldata.refHealthIssue);
         }
 
         if (personaldata.refHealthIssue) {
@@ -406,7 +404,7 @@ const Profile: React.FC = () => {
             : addressdata.refAdCity2,
           email: communication.refCtEmail,
           phoneno: communication.refCtMobile,
-          emergencyno:communication.refEmerContact,
+          emergencyno: communication.refEmerContact,
           whatsappno: communication.refCtWhatsapp,
           mode: communication.refUcPreference,
           height: generalhealth ? generalhealth.refHeight : null,
@@ -464,7 +462,7 @@ const Profile: React.FC = () => {
         }
       }
     });
-  }
+  };
 
   useEffect(() => {
     getData();
@@ -564,58 +562,24 @@ const Profile: React.FC = () => {
     return age.toString(); // Return age as a string
   };
 
-  function calculateBMI(weight: number, height: number) {
-    if (!weight || !height) return ""; // Return empty if inputs are missing
-    const heightInMeters = height / 100;
-    if (heightInMeters <= 0) return ""; // Avoid division by zero or negative values
-    const bmi = weight / (heightInMeters ** 2);
-    return bmi.toFixed(2); // Round to 2 decimal places
-  }
-
-  const handleInputVal = (
-    event: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>
-  ) => {
+  const handleInputVal = (event: {
+    target: { name: string; value: string | Date | null };
+  }) => {
     const { name, value } = event.target;
 
-    // Update inputs
     setInputs((prevInputs) => {
       const updatedInputs = {
         ...prevInputs,
-        [name]: value,
+        [name]:
+          value instanceof Date ? value.toISOString().split("T")[0] : value, // Convert Date to string
       };
 
-      // If the address option is enabled, update temporary address fields
-      if (options.address) {
-        updatedInputs.tempdoorno = prevInputs.perdoorno;
-        updatedInputs.tempstreetname = prevInputs.perstreetname;
-        updatedInputs.tempaddress = prevInputs.peraddress;
-        updatedInputs.temppincode = prevInputs.perpincode;
-        updatedInputs.tempcity = prevInputs.percity;
-        updatedInputs.tempstate = prevInputs.perstate;
-      }
-
-      // If the input is for DOB, calculate the age
       if (name === "dob") {
-        const calculatedAge = calculateAge(value);
+        const calculatedAge = calculateAge(updatedInputs.dob);
         updatedInputs.age = calculatedAge;
-      } else if (name === "maritalstatus") {
-        if (value === "single") {
-          updatedInputs.anniversarydate = "";
-        }
-      }
-      if (name === "age" && Number(value) < 20) {
-        updatedInputs.maritalstatus = ""; // Set to an empty string instead of a space
       }
 
-      if (name === "height" || name === "weight") {
-        const newBMI = calculateBMI(
-          name === "weight" ? parseInt(value) : parseInt(inputs.weight),
-          name === "height" ? parseInt(value) : parseInt(inputs.height)
-        );
-        updatedInputs.bmi = newBMI;
-      }
-
-      return updatedInputs; // Return the updated inputs
+      return updatedInputs;
     });
   };
 
@@ -739,7 +703,7 @@ const Profile: React.FC = () => {
         communication: {
           refCtEmail: inputs.email,
           refCtMobile: inputs.phoneno,
-          refEmerContact:inputs.emergencyno,
+          refEmerContact: inputs.emergencyno,
           refCtWhatsapp: inputs.whatsappno,
           refUcPreference: inputs.mode,
         },
@@ -797,8 +761,8 @@ const Profile: React.FC = () => {
           refWeight: parseInt(inputs.weight),
         },
         medicalIssue: {
-          refHealthIssue: options.medicalIssue
-        }
+          refHealthIssue: options.medicalIssue,
+        },
       },
       {
         headers: {
@@ -826,15 +790,15 @@ const Profile: React.FC = () => {
               gendrel: false,
             });
           }
-
         }
       })
       .catch((err) => {
         // Catching any 400 status or general errors
         console.log("Error: ", err);
-      }).finally(() => {
-        getData()
       })
+      .finally(() => {
+        getData();
+      });
   };
 
   const handlepresenthealth = () => {
@@ -1127,7 +1091,6 @@ const Profile: React.FC = () => {
   };
 
   const handleMedDoc = () => {
-
     // Combine data from both states
     const medicalDocuments = [
       ...uploadDocuments.map((doc) => ({
@@ -1293,7 +1256,9 @@ const Profile: React.FC = () => {
             if (data.success) {
               console.log("Success delete");
 
-              setMedDocData((prev: any) => prev.filter((_: any, idx: any) => idx !== index));
+              setMedDocData((prev: any) =>
+                prev.filter((_: any, idx: any) => idx !== index)
+              );
               toast.success("Medical Document Removed Successfully", {
                 position: "top-right",
                 autoClose: 5000,
@@ -1428,13 +1393,12 @@ const Profile: React.FC = () => {
       });
   };
 
-
   const storeDocument = (index: any) => {
-    console.log('index', index)
-    console.log(' -> Line Number ----------------------------------- 1421',);
+    console.log("index", index);
+    console.log(" -> Line Number ----------------------------------- 1421");
     const uploadDocument = uploadDocuments[index];
-    console.log('Document', uploadDocument)
-    console.log(' -> Line Number ----------------------------------- 1423',);
+    console.log("Document", uploadDocument);
+    console.log(" -> Line Number ----------------------------------- 1423");
     try {
       Axios.post(
         import.meta.env.VITE_API_URL + "/profile/userHealthReportUpload",
@@ -1536,7 +1500,6 @@ const Profile: React.FC = () => {
         </>
       ) : (
         <div className="bg-[#f6f5f5]">
-
           <div className="userProfilePage">
             {/* Personal Information */}
             <ToastContainer />
@@ -1667,30 +1630,36 @@ const Profile: React.FC = () => {
                       </div>
 
                       <div className="w-[100%] flex justify-between mb-[20px]">
-                      <div className="flex flex-col w-[48%] -mt-[13px]">
-                        <label className="bg-[#fff] text-[#ff621b]  -mb-[15px] z-50 w-[120px] ml-[10px]">
-                          &nbsp;Date of Birth *
-                        </label>
-                        <Calendar
+                        <div className="flex flex-col w-[48%] -mt-[13px]">
+                          <label className="bg-[#fff] text-[#ff621b]  -mb-[15px] z-50 w-[120px] ml-[10px]">
+                            &nbsp;Date of Birth *
+                          </label>
+                          <Calendar
                             // label="Date of Birth *"
                             name="dob"
                             id="dob"
                             // type="date"
                             className={`relative w-full mt-1 h-10  placeholder-transparent transition-all border-2 rounded outline-none peer 
-                              ${edits.personal ? "text-[#4c4c4e]" : "text-black"} border-[#b3b4b6] autofill:bg-white dateInput`}
-                
-                                          onChange={(e) =>
-                                            handleInputVal({
-                                              target: { name: "dob", value: e.value },
-                                            })
-                                          }
-                                          value={inputs.dob ? new Date(inputs.dob) : null} 
-                                          dateFormat="dd/mm/yy"
+                              ${
+                                edits.personal ? "text-[#4c4c4e]" : "text-black"
+                              } border-[#b3b4b6] autofill:bg-white dateInput`}
+                            onChange={(e) =>
+                              handleInputVal({
+                                target: {
+                                  name: "dob",
+                                  value: e.value
+                                    ? e.value.toISOString().split("T")[0]
+                                    : "",
+                                },
+                              })
+                            }
+                            value={inputs.dob ? new Date(inputs.dob) : null}
+                            dateFormat="dd/mm/yy"
                             // readonly={!edits.personal}
                             required
                           />
                         </div>
-                        
+
                         <div className="w-[48%]">
                           <TextInput
                             label="Age *"
@@ -1746,7 +1715,9 @@ const Profile: React.FC = () => {
                               { value: "single", label: "Single" },
                               { value: "married", label: "Married" },
                             ]}
-                            disabled={edits.personal && inputs.age > '20' ? false : true }
+                            disabled={
+                              edits.personal && inputs.age > "20" ? false : true
+                            }
                             required
                           />
                         </div>
@@ -1771,13 +1742,12 @@ const Profile: React.FC = () => {
                         <div
                           className={
                             localStorage.getItem("refUtId") === "5" ||
-                              localStorage.getItem("refUtId") === "6"
+                            localStorage.getItem("refUtId") === "6"
                               ? "w-[48%]"
                               : "w-[100%]"
                           }
                         >
                           <TextInput
-
                             label="Qualification"
                             name="qualification"
                             id="qualification"
@@ -1790,11 +1760,10 @@ const Profile: React.FC = () => {
                         </div>
 
                         {localStorage.getItem("refUtId") === "5" ||
-                          localStorage.getItem("refUtId") === "6" ? (
+                        localStorage.getItem("refUtId") === "6" ? (
                           <div className="w-[48%]">
                             <TextInput
                               label="Occupation *"
-
                               name="occupation"
                               id="Occupation"
                               type="text"
@@ -2114,17 +2083,17 @@ const Profile: React.FC = () => {
                       />
                     </div>
                     <div className="w-[100%] ">
-                  <TextInput
-                      label="Emergency Contact Number *"
-                      name="emergencyno"
-                      id="emergencyno"
-                      type="number"
-                      onChange={handleInputVal}
-                      value={inputs.emergencyno}
-                      readonly={!edits.communitcation}
-                      required
-                    />
-                      </div> 
+                      <TextInput
+                        label="Emergency Contact Number *"
+                        name="emergencyno"
+                        id="emergencyno"
+                        type="number"
+                        onChange={handleInputVal}
+                        value={inputs.emergencyno}
+                        readonly={!edits.communitcation}
+                        required
+                      />
+                    </div>
                   </div>
                   <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between mb-[20px]">
                     <div className="w-[100%] lg:w-[40%]">
@@ -2196,7 +2165,7 @@ const Profile: React.FC = () => {
             </form>
 
             {localStorage.getItem("refUtId") === "5" ||
-              localStorage.getItem("refUtId") === "6" ? (
+            localStorage.getItem("refUtId") === "6" ? (
               <>
                 {/* Genderal Health */}
                 <form
@@ -2426,7 +2395,6 @@ const Profile: React.FC = () => {
                   </div>
                 </div> */}
 
-
                       {/* <div className="w-[100%] flex flex-col lg:flex-row gap-y-[25px] justify-between mb-[25px]">
                         <div className="w-[100%] lg:w-[48%]">
                           <label className="w-[100%] text-[#f95005] font-bold text-[1.0rem] lg:text-[20px] text-start">
@@ -2584,7 +2552,7 @@ const Profile: React.FC = () => {
 
                 {/* Past or Present Health */}
 
-                {medicalIssue ?
+                {medicalIssue ? (
                   <>
                     <form
                       className="flex"
@@ -2730,7 +2698,6 @@ const Profile: React.FC = () => {
                               </div>
                             </div>
 
-
                             <div className="w-[100%] mb-5 flex flex-col gap-y-[20px] md:flex-row justify-between">
                               <div className="w-[100%] md:w-[100%]">
                                 <label className="w-[100%] text-[#f95005]  text-[1.0rem] lg:text-[18px] text-start">
@@ -2743,7 +2710,9 @@ const Profile: React.FC = () => {
                                       value="yes"
                                       name="pain"
                                       label="Yes"
-                                      selectedOption={options.backpain ? "yes" : ""}
+                                      selectedOption={
+                                        options.backpain ? "yes" : ""
+                                      }
                                       onChange={() => {
                                         setOptions({
                                           ...options,
@@ -2760,7 +2729,9 @@ const Profile: React.FC = () => {
                                       value="no"
                                       name="pain"
                                       label="No"
-                                      selectedOption={!options.backpain ? "no" : ""}
+                                      selectedOption={
+                                        !options.backpain ? "no" : ""
+                                      }
                                       onChange={() => {
                                         setOptions({
                                           ...options,
@@ -2773,14 +2744,15 @@ const Profile: React.FC = () => {
                                   </div>
                                 </div>
 
-
                                 <div className="w-[100%] flex justify-between mt-[20px]">
                                   <div className="w-[48%]">
                                     <SelectInput
                                       id="painscale"
                                       name="backpainscale"
                                       label="Pain Scale"
-                                      disabled={!options.backpain || !edits.present}
+                                      disabled={
+                                        !options.backpain || !edits.present
+                                      }
                                       // readonly={!edits.present}
                                       required
                                       onChange={handleInputVal}
@@ -2790,12 +2762,9 @@ const Profile: React.FC = () => {
                                         { value: "middle", label: "Middle" },
                                         { value: "lower", label: "Lower" },
                                       ]}
-
                                     />
                                   </div>
                                   <div className="w-[48%]">
-
-
                                     <TextInput
                                       id="painValue"
                                       name="BackPainValue"
@@ -2886,7 +2855,6 @@ const Profile: React.FC = () => {
                               </div>
                             </div>
                           </div>
-
 
                           {/* <div className="w-[100%] flex flex-col gap-y-[20px] lg:flex-row justify-between">
                           <div className="w-[100%] lg:w-[48%]">
@@ -3019,214 +2987,211 @@ const Profile: React.FC = () => {
                             </div>
                           </div>
                         </div> */}
-
                         </div>
                       </div>
                     </form>
                     {/* Therapy */}
                     <form
-                    className="flex"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handletherapy();
-                }}>
-                <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
-                  <div className="w-[100%] flex justify-between items-center mb-5">
-                    <div className="text-[1.2rem] lg:text-[25px] font-bold">
-                      Health Problems History
-                    </div>
-                    {edits.therapy ? (
-                      <button
-                        className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
-                        // onClick={handletherapy}
-                        type="submit"
-                      >
-                        Save&nbsp;&nbsp;
-                        <i className="text-[15px] pi pi-check"></i>
-                      </button>
-                    ) : (
-                      <div
-                        onClick={() => {
-                          editform("therapy");
-                        }}
-                        className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
-                      >
-                        Edit&nbsp;&nbsp;
-                        <i className="text-[15px] pi pi-pen-to-square"></i>
-                      </div>
-                    )}
-                  </div>
-                  <div className="w-[100%] flex justify-center items-center">
-                    <div className="w-[100%] justify-center items-center flex flex-col">
-                      <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
-                        <div className="w-[100%] md:w-[48%]">
-                          <TextInput
-                            label="Duration of the Problem *"
-                            name="therapydurationproblem"
-                            id="durationproblem"
-                            type="text"
-                            onChange={handleInputVal}
-                            value={inputs.therapydurationproblem}
-                            readonly={!edits.therapy}
-                            required
-                          />
-                        </div>
-                        <div className="w-[100%] md:w-[48%]">
-                          <TextInput
-                            label="Relevant Past History"
-                            name="therapypasthistory"
-                            id="relevantpasthistory"
-                            type="text"
-                            onChange={handleInputVal}
-                            value={inputs.therapypasthistory}
-                            readonly={!edits.therapy}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between">
-                        <div className="w-[100%] md:w-[48%]">
-                          <TextInput
-                            label="Relevant Family History"
-                            name="therapyfamilyhistory"
-                            id="relevantfamilyhistory"
-                            type="text"
-                            onChange={handleInputVal}
-                            value={inputs.therapyfamilyhistory}
-                            readonly={!edits.therapy}
-                          />
-                        </div>
-                        <div className="w-[100%] md:w-[48%]">
-                          <TextInput
-                            label="Anything else"
-                            name="therapyanythingelse"
-                            id="anythingelse"
-                            type="text"
-                            onChange={handleInputVal}
-                            value={inputs.therapyanythingelse}
-                            readonly={!edits.therapy}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="w-[100%] flex flex-col lg:flex-row gap-y-[25px] mt-3 justify-between mb-[25px]">
-                        <div className="w-[100%] lg:w-[100%]">
-                          <label className="w-[100%] text-[#f95005] font-bold text-[1.0rem] lg:text-[20px] text-start">
-                            Recent Injuries / Accidents / Surgeries / Fractures / Sprains *
-                          </label>
-                          <div className="w-[100%] flex justify-start mt-[10px]">
-                            <div className="mr-10">
-                              <RadiobuttonInput
-                                id="accidentyes"
-                                value="yes"
-                                name="accident"
-                                selectedOption={options.accident ? "yes" : ""}
-                                onChange={() => {
-                                  setOptions({
-                                    ...options,
-                                    accident: true,
-                                  });
-                                }}
-                                label="Yes"
-                                readonly={!edits.therapy}
-                                required
-                              />
-                            </div>
-                            <div className="">
-                              <RadiobuttonInput
-                                id="accidentno"
-                                value="no"
-                                name="accident"
-                                label="No"
-                                onChange={() => {
-                                  setOptions({
-                                    ...options,
-                                    accident: false,
-                                  });
-
-                                  setInputs({
-                                    ...inputs,
-                                    accidentdetails: "",
-                                    breaksdetails: "",
-                                    breaksotheractivities: "",
-                                    genderalanything: "",
-
-                                  });
-                                }}
-                                selectedOption={!options.accident ? "no" : ""}
-                                readonly={!edits.therapy}
-                                required
-                              />
-                            </div>
-
+                      className="flex"
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        handletherapy();
+                      }}
+                    >
+                      <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
+                        <div className="w-[100%] flex justify-between items-center mb-5">
+                          <div className="text-[1.2rem] lg:text-[25px] font-bold">
+                            Health Problems History
                           </div>
-
-
+                          {edits.therapy ? (
+                            <button
+                              className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
+                              // onClick={handletherapy}
+                              type="submit"
+                            >
+                              Save&nbsp;&nbsp;
+                              <i className="text-[15px] pi pi-check"></i>
+                            </button>
+                          ) : (
+                            <div
+                              onClick={() => {
+                                editform("therapy");
+                              }}
+                              className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
+                            >
+                              Edit&nbsp;&nbsp;
+                              <i className="text-[15px] pi pi-pen-to-square"></i>
+                            </div>
+                          )}
                         </div>
+                        <div className="w-[100%] flex justify-center items-center">
+                          <div className="w-[100%] justify-center items-center flex flex-col">
+                            <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between mb-[20px]">
+                              <div className="w-[100%] md:w-[48%]">
+                                <TextInput
+                                  label="Duration of the Problem *"
+                                  name="therapydurationproblem"
+                                  id="durationproblem"
+                                  type="text"
+                                  onChange={handleInputVal}
+                                  value={inputs.therapydurationproblem}
+                                  readonly={!edits.therapy}
+                                  required
+                                />
+                              </div>
+                              <div className="w-[100%] md:w-[48%]">
+                                <TextInput
+                                  label="Relevant Past History"
+                                  name="therapypasthistory"
+                                  id="relevantpasthistory"
+                                  type="text"
+                                  onChange={handleInputVal}
+                                  value={inputs.therapypasthistory}
+                                  readonly={!edits.therapy}
+                                />
+                              </div>
+                            </div>
 
+                            <div className="w-[100%] flex flex-col md:flex-row gap-y-[20px] justify-between">
+                              <div className="w-[100%] md:w-[48%]">
+                                <TextInput
+                                  label="Relevant Family History"
+                                  name="therapyfamilyhistory"
+                                  id="relevantfamilyhistory"
+                                  type="text"
+                                  onChange={handleInputVal}
+                                  value={inputs.therapyfamilyhistory}
+                                  readonly={!edits.therapy}
+                                />
+                              </div>
+                              <div className="w-[100%] md:w-[48%]">
+                                <TextInput
+                                  label="Anything else"
+                                  name="therapyanythingelse"
+                                  id="anythingelse"
+                                  type="text"
+                                  onChange={handleInputVal}
+                                  value={inputs.therapyanythingelse}
+                                  readonly={!edits.therapy}
+                                />
+                              </div>
+                            </div>
 
+                            <div className="w-[100%] flex flex-col lg:flex-row gap-y-[25px] mt-3 justify-between mb-[25px]">
+                              <div className="w-[100%] lg:w-[100%]">
+                                <label className="w-[100%] text-[#f95005] font-bold text-[1.0rem] lg:text-[20px] text-start">
+                                  Recent Injuries / Accidents / Surgeries /
+                                  Fractures / Sprains *
+                                </label>
+                                <div className="w-[100%] flex justify-start mt-[10px]">
+                                  <div className="mr-10">
+                                    <RadiobuttonInput
+                                      id="accidentyes"
+                                      value="yes"
+                                      name="accident"
+                                      selectedOption={
+                                        options.accident ? "yes" : ""
+                                      }
+                                      onChange={() => {
+                                        setOptions({
+                                          ...options,
+                                          accident: true,
+                                        });
+                                      }}
+                                      label="Yes"
+                                      readonly={!edits.therapy}
+                                      required
+                                    />
+                                  </div>
+                                  <div className="">
+                                    <RadiobuttonInput
+                                      id="accidentno"
+                                      value="no"
+                                      name="accident"
+                                      label="No"
+                                      onChange={() => {
+                                        setOptions({
+                                          ...options,
+                                          accident: false,
+                                        });
 
-
-                      </div>
-                      <div className="w-[100%] mb-[20px]">
-                        <TextInput
-                          label="Description"
-                          name="breaksdetails"
-                          id="details"
-                          type="text"
-                          onChange={handleInputVal}
-                          value={inputs.breaksdetails}
-                          disabled={!options.accident || !edits.therapy}
-                          // disabled={!options.breaks}
-                          // readonly={!edits.gendrel}
-                          required
-                        />
-
-                      </div>
-                      <div className="w-[100%] mb-[20px]">
-                        <div className="w-full">
-                          <TextInput
-                            label="Other Activities"
-                            name="breaksotheractivities"
-                            id="otheractivities"
-                            type="text"
-                            onChange={handleInputVal}
-                            value={inputs.breaksotheractivities}
-                            disabled={!options.accident || !edits.therapy}
-                            // disabled={!options.breaks}
-                            // readonly={!edits.gendrel}
-                            required
-                          />
-
+                                        setInputs({
+                                          ...inputs,
+                                          accidentdetails: "",
+                                          breaksdetails: "",
+                                          breaksotheractivities: "",
+                                          genderalanything: "",
+                                        });
+                                      }}
+                                      selectedOption={
+                                        !options.accident ? "no" : ""
+                                      }
+                                      readonly={!edits.therapy}
+                                      required
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="w-[100%] mb-[20px]">
+                              <TextInput
+                                label="Description"
+                                name="breaksdetails"
+                                id="details"
+                                type="text"
+                                onChange={handleInputVal}
+                                value={inputs.breaksdetails}
+                                disabled={!options.accident || !edits.therapy}
+                                // disabled={!options.breaks}
+                                // readonly={!edits.gendrel}
+                                required
+                              />
+                            </div>
+                            <div className="w-[100%] mb-[20px]">
+                              <div className="w-full">
+                                <TextInput
+                                  label="Other Activities"
+                                  name="breaksotheractivities"
+                                  id="otheractivities"
+                                  type="text"
+                                  onChange={handleInputVal}
+                                  value={inputs.breaksotheractivities}
+                                  disabled={!options.accident || !edits.therapy}
+                                  // disabled={!options.breaks}
+                                  // readonly={!edits.gendrel}
+                                  required
+                                />
+                              </div>
+                            </div>
+                            <div className="w-[100%] mb-[20px]">
+                              <div className="w-full">
+                                <TextInput
+                                  label="Add your Comments"
+                                  name="genderalanything"
+                                  id="otheractivities"
+                                  type="text"
+                                  onChange={handleInputVal}
+                                  value={inputs.genderalanything}
+                                  disabled={!options.accident || !edits.therapy}
+                                  //  disabled={!options.breaks}
+                                  //  readonly={!edits.gendrel}
+                                  required
+                                />
+                              </div>
+                            </div>
+                          </div>
                         </div>
-
                       </div>
-                      <div className="w-[100%] mb-[20px]">
-                        <div className="w-full">
-                          <TextInput
-                            label="Add your Comments"
-                            name="genderalanything"
-                            id="otheractivities"
-                            type="text"
-                            onChange={handleInputVal}
-                            value={inputs.genderalanything}
-                            disabled={!options.accident || !edits.therapy}
-                            //  disabled={!options.breaks}
-                            //  readonly={!edits.gendrel}
-                            required
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
                     </form>
 
                     {/* Medical Documentation */}
-                    <form 
-                    className="flex"
-                    onSubmit={(e) => { e.preventDefault(); handleMedDoc(); }}>
-
+                    <form
+                      className="flex"
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        handleMedDoc();
+                      }}
+                    >
                       <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
                         <div className="w-[100%] flex justify-between items-center mb-5">
                           <div className="text-[1rem] lg:text-[25px] font-bold">
@@ -3249,12 +3214,14 @@ const Profile: React.FC = () => {
                             </div>
                           )}
                         </div>
-                        {uploadDocuments.length > 0 ? (<></>
-
+                        {uploadDocuments.length > 0 ? (
+                          <></>
                         ) : (
-                          <><div className="text-gray-500 text-center mt-5">
-                            No Medical Documents Uploaded
-                          </div></>
+                          <>
+                            <div className="text-gray-500 text-center mt-5">
+                              No Medical Documents Uploaded
+                            </div>
+                          </>
                         )}
                         {edits.medDoc ? (
                           <div className="w-full overflow-auto flex flex-col justify-center align-items-center ">
@@ -3267,96 +3234,108 @@ const Profile: React.FC = () => {
                                 Add Document
                               </button>
                             </div>
-                            <div className="w-[80%] flex justify-center"> 
-                            {uploadDocuments.map((document, index) => (
-                              <div
-                                key={index}
-                                className="w-[100%] flex flex-row items-center justify-evenly lg:p-[10px] mt-5 lg:mt-0"
-                              >
-                                <div>
-                                  {document.refMedDocUpload && (
-                                    <div className="pt-0 align-content-start">
-                                      <FaEye
-                                        className="w-[30px] h-[25px] text-[#f95005] cursor-pointer"
-                                        onClick={() =>
-                                          handlePreviewDocument(uploadDocuments, index)
-                                        }
-                                      />
-                                    </div>
-                                  )}
-                                </div>
+                            <div className="w-[80%] flex justify-center">
+                              {uploadDocuments.map((document, index) => (
+                                <div
+                                  key={index}
+                                  className="w-[100%] flex flex-row items-center justify-evenly lg:p-[10px] mt-5 lg:mt-0"
+                                >
+                                  <div>
+                                    {document.refMedDocUpload && (
+                                      <div className="pt-0 align-content-start">
+                                        <FaEye
+                                          className="w-[30px] h-[25px] text-[#f95005] cursor-pointer"
+                                          onClick={() =>
+                                            handlePreviewDocument(
+                                              uploadDocuments,
+                                              index
+                                            )
+                                          }
+                                        />
+                                      </div>
+                                    )}
+                                  </div>
 
-                                <div className="w-[40%] flex flex-col justify-start text-start">
-                                  {/* <label className="block text-gray-700 font-medium mb-2">
+                                  <div className="w-[40%] flex flex-col justify-start text-start">
+                                    {/* <label className="block text-gray-700 font-medium mb-2">
                                     Enter File Name:
                                   </label> */}
-                                  <TextInput
-                                    label="Enter File Name:"
-                                    name="medicalDocument"
-                                    id="medicalDocument"
-                                    type="text"
-                                    onChange={(e) => {
-                                      setUploadDocuments((prev) => {
-                                        const updatedDocuments = [...prev];
-                                        updatedDocuments[index].refMedDocName =
-                                          e.target.value;
-                                        return updatedDocuments;
-                                      });
-                                    }}
-                                    value={document.refMedDocName || ""}
-                                    required
-                                  />
-
-                                </div>
-                                <div className="w-[40%] flex flex-col justify-start text-start ">
-                                  <input
-                                    type="file"
-                                    accept="application/pdf,image/*"
-                                    className="w-full border m-[10px]"
-                                    disabled={document.refMedDocUpload}
-                                    onChange={(e) => {
-                                      const files = e.target?.files;
-                                      if (files && files[0]) {
-                                        const file = files[0];
-                                        const formData = new FormData();
-                                        formData.append("file", file);
-
+                                    <TextInput
+                                      label="Enter File Name:"
+                                      name="medicalDocument"
+                                      id="medicalDocument"
+                                      type="text"
+                                      onChange={(e) => {
                                         setUploadDocuments((prev) => {
-                                          const updatedDocuments: any = [...prev];
-                                          updatedDocuments[index].refMedDocFile = formData;
-                                          updatedDocuments[index].refMedDocUpBtn = true;
+                                          const updatedDocuments = [...prev];
+                                          updatedDocuments[
+                                            index
+                                          ].refMedDocName = e.target.value;
                                           return updatedDocuments;
                                         });
-                                      }
-                                    }}
-                                    required
-                                  />
+                                      }}
+                                      value={document.refMedDocName || ""}
+                                      required
+                                    />
+                                  </div>
+                                  <div className="w-[40%] flex flex-col justify-start text-start ">
+                                    <input
+                                      type="file"
+                                      accept="application/pdf,image/*"
+                                      className="w-full border m-[10px]"
+                                      disabled={document.refMedDocUpload}
+                                      onChange={(e) => {
+                                        const files = e.target?.files;
+                                        if (files && files[0]) {
+                                          const file = files[0];
+                                          const formData = new FormData();
+                                          formData.append("file", file);
+
+                                          setUploadDocuments((prev) => {
+                                            const updatedDocuments: any = [
+                                              ...prev,
+                                            ];
+                                            updatedDocuments[
+                                              index
+                                            ].refMedDocFile = formData;
+                                            updatedDocuments[
+                                              index
+                                            ].refMedDocUpBtn = true;
+                                            return updatedDocuments;
+                                          });
+                                        }
+                                      }}
+                                      required
+                                    />
+                                  </div>
+                                  <button
+                                    type="button"
+                                    className={`text-[green] disabled:cursor-not-allowed p-[5px] disabled:text-slate-400 disabled:before:bg-transparent`}
+                                    onClick={() => storeDocument(index)}
+                                    disabled={
+                                      document.refMedDocUpload === true ||
+                                      document.refMedDocUpBtn === false
+                                    }
+                                  >
+                                    <ImUpload2 className="w-[30px] h-[25px]" />
+                                  </button>
+
+                                  {/* Delete Button */}
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      handleRemoveDocument(
+                                        uploadDocuments,
+                                        index
+                                      )
+                                    }
+                                    className="text-[red]"
+                                  >
+                                    <MdDelete className="w-[30px] h-[30px] " />
+                                  </button>
                                 </div>
-                                <button
-                                  type="button"
-                                  className={`text-[green] disabled:cursor-not-allowed p-[5px] disabled:text-slate-400 disabled:before:bg-transparent`}
-                                  onClick={() => storeDocument(index)}
-                                  disabled={
-                                    document.refMedDocUpload === true ||
-                                    document.refMedDocUpBtn === false
-                                  }
-                                >
-                                  <ImUpload2 className="w-[30px] h-[25px]" />
-                                </button>
-
-                                {/* Delete Button */}
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    handleRemoveDocument(uploadDocuments, index)
-                                  }
-                                  className="text-[red]"
-                                >
-                                  <MdDelete className="w-[30px] h-[30px] " />
-                                </button>
-                              </div>
-                            ))}</div>
-
+                              ))}
+                            </div>
                           </div>
                         ) : (
                           <></>
@@ -3364,7 +3343,6 @@ const Profile: React.FC = () => {
 
                         <div className="w-[100%] flex justify-center items-center">
                           <div className="flex flex-wrap  items-center w-[100%]">
-
                             {medDocData.map((doc: any, index: any) => (
                               <div
                                 key={doc.refMedDocId}
@@ -3402,7 +3380,9 @@ const Profile: React.FC = () => {
                                       />
                                     </div>
                                   ) : (
-                                    <h3 className="text-[20px]">{doc.refMedDocName}</h3>
+                                    <h3 className="text-[20px]">
+                                      {doc.refMedDocName}
+                                    </h3>
                                   )}
 
                                   {/* Display refMedDocName */}
@@ -3426,12 +3406,10 @@ const Profile: React.FC = () => {
                         </div>
                       </div>
                     </form>
-
                   </>
-                  :
+                ) : (
                   <></>
-                }
-
+                )}
               </>
             ) : (
               <>
@@ -3439,9 +3417,7 @@ const Profile: React.FC = () => {
                   <></>
                 ) : (
                   <>
-                    <form 
-                    className="flex"
-                    onSubmit={handleDocument}>
+                    <form className="flex" onSubmit={handleDocument}>
                       <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
                         <div className="w-[100%] flex justify-between items-center mb-5">
                           <div className="text-[1rem] lg:text-[25px] font-bold">
@@ -3628,8 +3604,8 @@ const Profile: React.FC = () => {
                         </div>
 
                         {inputs.pancard &&
-                          inputs.aadhar &&
-                          inputs.certification ? null : (
+                        inputs.aadhar &&
+                        inputs.certification ? null : (
                           <div className="w-[100%] flex justify-start">
                             {uploadloading ? (
                               <div>
@@ -3675,7 +3651,7 @@ const Profile: React.FC = () => {
                     <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
                       <div className="w-[100%] flex justify-between items-center mb-5">
                         <div className="text-[1rem] lg:text-[25px] font-bold">
-                          Professional Exprience
+                          Professional Experience
                         </div>
                         {edits.prof ? (
                           <div
@@ -3739,9 +3715,7 @@ const Profile: React.FC = () => {
               </>
             )}
 
-            <form 
-            className="flex"
-            onSubmit={handlePassword}>
+            <form className="flex" onSubmit={handlePassword}>
               <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
                 <div className="w-[100%] flex justify-between items-center mb-5">
                   <div className="text-[1rem] lg:text-[25px] font-bold">

@@ -492,7 +492,7 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
                 >
                   <div className="grid-item">
                     <div className="card">
-                      <Fieldset legend="Fee Paid & Pending">
+                      <Fieldset legend="Fees Paid & Pending">
                         <div className="leaveBalance">
                           <div className="consumed">
                             <p>{feesCount.feesPaid}</p>

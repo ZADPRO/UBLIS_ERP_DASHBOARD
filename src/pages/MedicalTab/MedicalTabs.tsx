@@ -690,6 +690,7 @@ const MedicalTabs: React.FC<UserProfileEditProps> = ({ refid }) => {
                         <i className="text-[15px] pi pi-check"></i>
                       </button>
                     ) : (
+                      <>{window.location.pathname !== "/staff/classinfo" && (
                       <div
                         onClick={() => {
                           editform("present");
@@ -698,7 +699,7 @@ const MedicalTabs: React.FC<UserProfileEditProps> = ({ refid }) => {
                       >
                         Edit&nbsp;&nbsp;
                         <i className="text-[15px] pi pi-pen-to-square"></i>
-                      </div>
+                      </div>)}</>
                     )}
                   </div>
                   <div className="w-[100%] flex justify-center items-center">
@@ -993,6 +994,8 @@ const MedicalTabs: React.FC<UserProfileEditProps> = ({ refid }) => {
                         <i className="text-[15px] pi pi-check"></i>
                       </button>
                     ) : (
+                     <>
+                                         {window.location.pathname !== "/staff/classinfo" && (
                       <div
                         onClick={() => {
                           editform("therapy");
@@ -1001,7 +1004,7 @@ const MedicalTabs: React.FC<UserProfileEditProps> = ({ refid }) => {
                       >
                         Edit&nbsp;&nbsp;
                         <i className="text-[15px] pi pi-pen-to-square"></i>
-                      </div>
+                      </div>)}</>
                     )}
                   </div>
                   <div className="w-[100%] flex justify-center items-center">

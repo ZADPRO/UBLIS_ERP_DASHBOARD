@@ -49,9 +49,9 @@ interface sessionDetails {
   classTimeId?: string;
   classTime?: string;
   weekEndTiming?: string;
-  weekDaysTiming?: string
+  weekDaysTiming?: string;
   weekEndTimingId?: string;
-  weekDaysTimingId?: string
+  weekDaysTimingId?: string;
 }
 
 interface UserDetails {
@@ -84,6 +84,7 @@ const UserDirData: React.FC = () => {
   const [refStId, setRefStId] = useState();
   const [sessionUpdate, setSessionUpdate] = useState<number>(1);
   const [sessionUpdateLoad, setSessionUpdateLoad] = useState(false);
+  console.log("sessionUpdateLoad", sessionUpdateLoad);
   const branchOptions = Object.entries(branchList).map(([value, label]) => ({
     value, // Key (e.g., '1')
     label, // Value (e.g., 'Chennai')
@@ -106,7 +107,7 @@ const UserDirData: React.FC = () => {
   );
   const [weekDaysTiming, setWeekDaysTiming] = useState([]);
   const [weekEndTiming, setWeekEndTiming] = useState([]);
-  const [refUtId, setUtId] = useState("")
+  const [refUtId, setUtId] = useState("");
 
   const weekDaysTimingOption = Object.entries(weekDaysTiming).map(
     ([value, label]) => ({
@@ -121,10 +122,9 @@ const UserDirData: React.FC = () => {
     })
   );
 
-
   const [edits, setEdits] = useState({
     session: false,
-    threapy: false
+    threapy: false,
   });
   const navigate = useNavigate();
   const decrypt = (
@@ -158,8 +158,9 @@ const UserDirData: React.FC = () => {
   // Reference for DataTable
   const dtRef = useRef<any>(null);
 
-  const uniqueTrialStatuses = Array.from(new Set(customers.map((item) => item.trial)))
-    .map((status) => ({ label: status, value: status }));
+  const uniqueTrialStatuses = Array.from(
+    new Set(customers.map((item) => item.trial))
+  ).map((status) => ({ label: status, value: status }));
 
   const trialFilterTemplate = (options: any) => {
     return (
@@ -167,8 +168,7 @@ const UserDirData: React.FC = () => {
         value={options.value}
         options={uniqueTrialStatuses}
         onChange={(e) => {
-
-          options.filterApplyCallback(e.value)
+          options.filterApplyCallback(e.value);
         }}
         placeholder="Select Status"
         showClear
@@ -200,7 +200,6 @@ const UserDirData: React.FC = () => {
   //     return matches;
   //   });
   // };
-
 
   // const exportExcel = () => {
   //   import("xlsx").then((xlsx) => {
@@ -243,7 +242,6 @@ const UserDirData: React.FC = () => {
   //     }
   //   });
   // };
-
 
   // Function to fetch customers
   const fetchCustomers = async () => {
@@ -313,7 +311,7 @@ const UserDirData: React.FC = () => {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      console.log('data', data)
+      console.log("data", data);
       if (data.token == false) {
         navigate("/expired");
       }
@@ -338,10 +336,10 @@ const UserDirData: React.FC = () => {
       };
 
       const userData = data.data.userTransaction;
-      console.log('userData', userData)
+      console.log("userData", userData);
       const userDetails = data.data.UserData[0];
       console.log("userDetails line --- 181 ", userDetails);
-      const age = calculateAge(userDetails.refStDOB)
+      const age = calculateAge(userDetails.refStDOB);
       setUserAge(age);
       setRefStId(userDetails.refStId);
       const session = {
@@ -360,7 +358,7 @@ const UserDirData: React.FC = () => {
       };
 
       setSessionData(session);
-      setThreapyCount(userDetails.refThreapyCount)
+      setThreapyCount(userDetails.refThreapyCount);
 
       setUserDetails(userDetails);
       setUserDetailss(userData);
@@ -387,7 +385,7 @@ const UserDirData: React.FC = () => {
           navigate("/expired");
         }
         console.log("--------------  229", data);
-          localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
         if (data.success) {
           setBranchList(data.data.branchList);
@@ -494,7 +492,7 @@ const UserDirData: React.FC = () => {
         if (data.token == false) {
           navigate("/expired");
         } else {
-          console.log('data data--------- 393', data)
+          console.log("data data--------- 393", data);
           setWeekEndTiming(data.packageWeTiming);
           setWeekDaysTiming(data.packageWTiming);
         }
@@ -515,9 +513,7 @@ const UserDirData: React.FC = () => {
             refClMode: parseInt(
               (sessionData as { classModeId: string }).classModeId
             ),
-            refPaId: parseInt(
-              (sessionData as { packageId: string }).packageId
-            ),
+            refPaId: parseInt((sessionData as { packageId: string }).packageId),
             refWeekTiming: parseInt(
               (sessionData as { weekEndTimingId: string }).weekEndTimingId
             ),
@@ -557,9 +553,8 @@ const UserDirData: React.FC = () => {
     } finally {
       setSessionUpdateLoad(false);
       fetchCustomers();
-      fetchUserDetails((refStId ?? 'default_value').toString());
+      fetchUserDetails((refStId ?? "default_value").toString());
     }
-
   };
   const updateThreapyCountData = async () => {
     setSessionUpdateLoad(true); // Show loading indicator
@@ -568,7 +563,7 @@ const UserDirData: React.FC = () => {
         import.meta.env.VITE_API_URL + "/profile/ThreapyUpdate",
         {
           id: refStId,
-          threapyCount: threapyCount
+          threapyCount: threapyCount,
         },
         {
           headers: {
@@ -594,14 +589,13 @@ const UserDirData: React.FC = () => {
     } finally {
       setSessionUpdateLoad(false);
       fetchCustomers();
-      fetchUserDetails((refStId ?? 'default_value').toString());
+      fetchUserDetails((refStId ?? "default_value").toString());
     }
-
   };
 
   useEffect(() => {
     const token = localStorage.getItem("refUtId");
-    console.log('token line ------- 475', token)
+    console.log("token line ------- 475", token);
     if (token) {
       setUtId(token);
     }
@@ -658,11 +652,12 @@ const UserDirData: React.FC = () => {
         </IconField>
 
         <div className="flex align-items-center justify-content-end gap-2">
-          <Button type="button" severity="success"
-            // onClick={exportExcel}
-            data-pr-tooltip="XLS">
-            Export As Excel
-          </Button>
+          <Button
+            label="Export as Excel"
+            icon="pi pi-file-excel"
+            onClick={() => dtRef.current.exportCSV({ selectionOnly: false })}
+            className="p-button-success p-mr-2"
+          />
         </div>
       </div>
     );
@@ -738,8 +733,19 @@ const UserDirData: React.FC = () => {
         sortOrder={-1}
         filters={filters}
       >
-        <Column selectionMode="multiple" frozen headerStyle={{ minWidth: "3rem" }} />
-        <Column field="userId" header="User ID" body={userIdTemplate} frozen sortable style={{ minWidth: "12rem" }} />
+        <Column
+          selectionMode="multiple"
+          frozen
+          headerStyle={{ minWidth: "3rem" }}
+        />
+        <Column
+          field="userId"
+          header="User ID"
+          body={userIdTemplate}
+          frozen
+          sortable
+          style={{ minWidth: "12rem" }}
+        />
         <Column field="fname" header="Name" style={{ minWidth: "14rem" }} />
         <Column
           field="trial"
@@ -749,12 +755,10 @@ const UserDirData: React.FC = () => {
           filterElement={trialFilterTemplate}
           showFilterMatchModes={false}
           style={{ minWidth: "14rem", textTransform: "capitalize" }}
-
         />
         <Column field="mobile" header="Mobile" style={{ minWidth: "14rem" }} />
         <Column field="email" header="Email" style={{ minWidth: "14rem" }} />
       </DataTable>
-
 
       <Sidebar
         className="w-[90%] lg:w-[75%]"
@@ -781,21 +785,21 @@ const UserDirData: React.FC = () => {
                 )}
               </p>
             </TabPanel>
-            {localStorage.getItem("refUtId") != "4" && (<TabPanel header="Medical Details">
-              <p className="m-0">
-                {userDetails ? (
-                  <>
-                    <div className="mt-10">
-                      <MedicalTabs refid={refid} />
-                    </div>
-                  </>
-                ) : (
-                  <p>No user details available.</p>
-                )}
-              </p>
-            </TabPanel>)
-
-            }
+            {localStorage.getItem("refUtId") != "4" && (
+              <TabPanel header="Medical Details">
+                <p className="m-0">
+                  {userDetails ? (
+                    <>
+                      <div className="mt-10">
+                        <MedicalTabs refid={refid} />
+                      </div>
+                    </>
+                  ) : (
+                    <p>No user details available.</p>
+                  )}
+                </p>
+              </TabPanel>
+            )}
 
             <TabPanel header="Session details">
               <form
@@ -894,30 +898,39 @@ const UserDirData: React.FC = () => {
                           </div>
                         </div>
                         <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] mt-[20px] justify-between">
+                          {sessionData?.weekDaysTiming?.length || 0 > 0 ? (
+                            <>
+                              <div className="w-[100%] lg:w-[48%]">
+                                <TextInput
+                                  label="Weekdays Timing"
+                                  id="mtype"
+                                  name="classTime"
+                                  type="text"
+                                  value={sessionData?.weekDaysTiming}
+                                  readonly
+                                />
+                              </div>
+                            </>
+                          ) : (
+                            <> </>
+                          )}
 
-                          {sessionData?.weekDaysTiming?.length || 0 > 0 ? <><div className="w-[100%] lg:w-[48%]">
-                            <TextInput
-                              label="Weekdays Timing"
-                              id="mtype"
-                              name="classTime"
-                              type="text"
-                              value={sessionData?.weekDaysTiming}
-                              readonly
-                            />
-                          </div></> : <> </>}
-
-                          {sessionData?.weekEndTiming?.length || 0 > 0 ? <><div className="w-[100%] lg:w-[48%]">
-                            <TextInput
-                              label="Weekend Timing"
-                              id="mtype"
-                              name="classTime"
-                              type="text"
-                              value={sessionData?.weekEndTiming}
-                              readonly
-                            />
-                          </div></> : <></>}
-
-
+                          {sessionData?.weekEndTiming?.length || 0 > 0 ? (
+                            <>
+                              <div className="w-[100%] lg:w-[48%]">
+                                <TextInput
+                                  label="Weekend Timing"
+                                  id="mtype"
+                                  name="classTime"
+                                  type="text"
+                                  value={sessionData?.weekEndTiming}
+                                  readonly
+                                />
+                              </div>
+                            </>
+                          ) : (
+                            <></>
+                          )}
                         </div>
                       </div>
                     ) : (
@@ -943,8 +956,7 @@ const UserDirData: React.FC = () => {
                                   packageId: "",
                                   classTimeId: "",
                                   weekEndTimingId: "",
-                                  weekDaysTimingId: ""
-
+                                  weekDaysTimingId: "",
                                 }));
                               }}
                             />
@@ -968,12 +980,11 @@ const UserDirData: React.FC = () => {
                                   packageId: "",
                                   classTimeId: "",
                                   weekEndTimingId: "",
-                                  weekDaysTimingId: ""
+                                  weekDaysTimingId: "",
                                 }));
                               }}
                             />
                           </div>
-
                         </div>
                         <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between">
                           <div className="w-[45%]">
@@ -1019,56 +1030,64 @@ const UserDirData: React.FC = () => {
                                   [name]: value,
                                   classTimeId: "",
                                   weekEndTimingId: "",
-                                  weekDaysTimingId: ""
+                                  weekDaysTimingId: "",
                                 }));
                               }}
                             />
                           </div>
-
                         </div>
                         <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] mt-[20px] justify-between">
+                          {weekDaysTimingOption.length > 0 ? (
+                            <>
+                              <div className="w-[45%]">
+                                <SelectInput
+                                  id="weekDaysTimingId"
+                                  name="weekDaysTimingId"
+                                  label="weekdays Timing*"
+                                  options={weekDaysTimingOption}
+                                  disabled={sessionUpdate <= 4}
+                                  required
+                                  value={sessionData?.weekDaysTimingId || ""}
+                                  onChange={(e) => {
+                                    setSessionUpdate(6);
+                                    const { name, value } = e.target;
+                                    setSessionData((prevData) => ({
+                                      ...prevData,
+                                      [name]: value,
+                                    }));
+                                  }}
+                                />
+                              </div>
+                            </>
+                          ) : (
+                            <></>
+                          )}
 
-                          {weekDaysTimingOption.length > 0 ? <><div className="w-[45%]">
-                            <SelectInput
-                              id="weekDaysTimingId"
-                              name="weekDaysTimingId"
-                              label="weekdays Timing*"
-                              options={weekDaysTimingOption}
-                              disabled={sessionUpdate <= 4}
-                              required
-                              value={sessionData?.weekDaysTimingId || ""}
-                              onChange={(e) => {
-                                setSessionUpdate(6);
-                                const { name, value } = e.target;
-                                setSessionData((prevData) => ({
-                                  ...prevData,
-                                  [name]: value,
-                                }));
-                              }}
-                            />
-                          </div></> : <></>}
-
-                          {weekEndTimingOption.length > 0 ? <><div className="w-[45%]">
-                            <SelectInput
-                              id="weekEndTimingId"
-                              name="weekEndTimingId"
-                              label="Weekend Timing *"
-                              options={weekEndTimingOption}
-                              disabled={sessionUpdate <= 4}
-                              required
-                              value={sessionData?.weekEndTimingId || ""}
-                              onChange={(e) => {
-                                setSessionUpdate(6);
-                                const { name, value } = e.target;
-                                setSessionData((prevData) => ({
-                                  ...prevData,
-                                  [name]: value,
-                                }));
-                              }}
-                            />
-                          </div></> : <></>}
-
-
+                          {weekEndTimingOption.length > 0 ? (
+                            <>
+                              <div className="w-[45%]">
+                                <SelectInput
+                                  id="weekEndTimingId"
+                                  name="weekEndTimingId"
+                                  label="Weekend Timing *"
+                                  options={weekEndTimingOption}
+                                  disabled={sessionUpdate <= 4}
+                                  required
+                                  value={sessionData?.weekEndTimingId || ""}
+                                  onChange={(e) => {
+                                    setSessionUpdate(6);
+                                    const { name, value } = e.target;
+                                    setSessionData((prevData) => ({
+                                      ...prevData,
+                                      [name]: value,
+                                    }));
+                                  }}
+                                />
+                              </div>
+                            </>
+                          ) : (
+                            <></>
+                          )}
                         </div>
                       </div>
                     )}
@@ -1086,11 +1105,14 @@ const UserDirData: React.FC = () => {
                     <div className="text-[1.2rem] lg:text-[25px] font-bold">
                       Therapy Session
                     </div>
-                    {(refUtId === "7" || refUtId === "11" || refUtId === "12") ?
+                    {refUtId === "7" || refUtId === "11" || refUtId === "12" ? (
                       <>
-                        {threapyCount === 0 || threapyCount === null ?
-                          <></>
-                          :<></>
+                        {
+                          threapyCount === 0 || threapyCount === null ? (
+                            <></>
+                          ) : (
+                            <></>
+                          )
                           // <>{edits.threapy ? (
                           //   <button
                           //     className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${sessionUpdateLoad
@@ -1124,21 +1146,24 @@ const UserDirData: React.FC = () => {
                           //   </div>
                           // )}</>
                         }
-
-
-                      </> : <></>}
-
+                      </>
+                    ) : (
+                      <></>
+                    )}
                   </div>
                   <div className="w-[100%] flex justify-center items-center">
                     <div className="w-[100%] justify-center items-center flex flex-col">
                       <div className="w-[100%] flex flex-row lg:flex-row gap-y-[20px] justify-between mb-[20px]">
-                        {(threapyCount === 0 || threapyCount === null) && !edits.threapy ?
+                        {(threapyCount === 0 || threapyCount === null) &&
+                        !edits.threapy ? (
                           <>
                             <div className="flex justify-center w-[100%]">
-                              <h3 className="text-red-500">No Therapy Class Assigned</h3></div>
-
+                              <h3 className="text-red-500">
+                                No Therapy Class Assigned
+                              </h3>
+                            </div>
                           </>
-                          :
+                        ) : (
                           <>
                             <div className="flex flex-column gap-2 w-[48%]">
                               <label>No.of Session</label>
@@ -1151,22 +1176,21 @@ const UserDirData: React.FC = () => {
                                   setThreapyCount(value); // Update state with valid number
                                 }}
                               />
-
                             </div>
-                          </>}
-
-
+                          </>
+                        )}
                       </div>
-
                     </div>
-
                   </div>
                 </div>
               </form>
             </TabPanel>
             <TabPanel header="Audit">
               <p className="m-0">
-                <DataTable value={UserDetailss} tableStyle={{ minWidth: "50rem" }}>
+                <DataTable
+                  value={UserDetailss}
+                  tableStyle={{ minWidth: "50rem" }}
+                >
                   <Column
                     header="S.No"
                     body={(_data, options) => options.rowIndex + 1}
@@ -1196,13 +1220,13 @@ const UserDirData: React.FC = () => {
                   {parseInt(refUtId) == 7 && (
                     <Column
                       header="Performer Name"
-                      body={(rowData) => `${rowData.refStFName} ${rowData.refStLName}`}
+                      body={(rowData) =>
+                        `${rowData.refStFName} ${rowData.refStLName}`
+                      }
                       style={{ textTransform: "capitalize" }}
                     />
                   )}
                 </DataTable>
-
-
               </p>
             </TabPanel>
           </TabView>

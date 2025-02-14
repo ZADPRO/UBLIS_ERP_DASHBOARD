@@ -21,9 +21,10 @@ import { FilterMatchMode } from "primereact/api";
 import UserProfileEdit from "../UserProfileEdit/UserProfileEdit";
 import MedicalTabs from "../MedicalTab/MedicalTabs";
 import { InputNumber } from "primereact/inputnumber";
-import UserProfileView from "../UserProfileView/UserProfileView";
+import "./ClassInfo.css";
 import { Fieldset } from "primereact/fieldset";
 import { Divider } from "primereact/divider";
+import ReportPageClass from "../ReportPageClass/ReportPageClass";
 
 interface Customer {
   id: string;
@@ -87,6 +88,7 @@ const ClassInfo: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [userDetails, setUserDetails] = useState<Customer | null>(null);
   const [UserDetailss, setUserDetailss] = useState<UserDetails[]>([]);
+  console.log("UserDetailss", UserDetailss);
   const [globalFilterValue, setGlobalFilterValue] = useState<string>("");
   const [sessionData, setSessionData] = useState<sessionDetails>();
   const [threapyCount, setThreapyCount] = useState<number | null>();
@@ -171,6 +173,7 @@ const ClassInfo: React.FC = () => {
   const uniqueTrialStatuses = Array.from(
     new Set(customers.map((item) => item.trial))
   ).map((status) => ({ label: status, value: status }));
+  console.log("uniqueTrialStatuses", uniqueTrialStatuses);
   const uniqueClassModes = Array.from(
     new Set(customers.map((item) => item.classMode))
   ).map((mode) => ({ label: mode, value: mode }));
@@ -186,12 +189,15 @@ const ClassInfo: React.FC = () => {
   const uniqueWeekEndTimings = Array.from(
     new Set(customers.map((item) => item.weekEndTiming))
   ).map((timing) => ({ label: timing, value: timing }));
+  const uniquePackageName = Array.from(
+    new Set(customers.map((item) => item.packageName))
+  ).map((packagename) => ({ label: packagename, value: packagename }));
 
-  const trialFilterTemplate = (options: any) => {
+  const packageFilterTemplate = (options: any) => {
     return (
       <MultiSelect
         value={options.value}
-        options={uniqueTrialStatuses}
+        options={uniquePackageName}
         onChange={(e) => {
           options.filterApplyCallback(e.value);
         }}
@@ -201,6 +207,7 @@ const ClassInfo: React.FC = () => {
       />
     );
   };
+
   const classModeFilterTemplate = (options: any) => {
     return (
       <MultiSelect
@@ -271,69 +278,9 @@ const ClassInfo: React.FC = () => {
     therapy: { value: null, matchMode: FilterMatchMode.IN },
     weekDaysTiming: { value: null, matchMode: FilterMatchMode.IN },
     weekEndTiming: { value: null, matchMode: FilterMatchMode.IN },
+    packageName: { value: null, matchMode: FilterMatchMode.IN },
   });
 
-  // const applyManualFilter = (data: any[], filters: any) => {
-  //   return data.filter((row) => {
-  //     let matches = true;
-
-  //     // Check global filter
-  //     if (filters.global.value) {
-  //       matches = matches && row.fname.toLowerCase().includes(filters.global.value.toLowerCase());
-  //     }
-
-  //     // Check trial filter
-  //     if (filters.trial.value && filters.trial.value.length > 0) {
-  //       matches = matches && filters.trial.value.includes(row.trial);
-  //     }
-
-  //     return matches;
-  //   });
-  // };
-
-  // const exportExcel = () => {
-  //   import("xlsx").then((xlsx) => {
-  //     // Manually filter data
-  //     if (!dtRef.current) return; // Ensure ref exists
-  //     const filteredData = dtRef.current.filteredValue || customers;
-  //     console.log('customers', customers)
-  //     console.log('filters', filters)
-  //     // const filteredData = applyManualFilter(customers, filters);
-  //     console.log(' -> Line Number ----------------------------------- 206',);
-  //     console.log('filteredData', filteredData)
-
-  //     // Use filteredData or full data if no filter is applied
-  //     const dataToExport = filteredData.length > 0 ? filteredData : customers;
-
-  //     const worksheet = xlsx.utils.json_to_sheet(filteredData);
-  //     const workbook = { Sheets: { data: worksheet }, SheetNames: ["data"] };
-  //     const excelBuffer = xlsx.write(workbook, {
-  //       bookType: "xlsx",
-  //       type: "array",
-  //     });
-
-  //     // saveAsExcelFile(excelBuffer, "customers");
-  //   });
-  // };
-
-  // Save function
-  // const saveAsExcelFile = (buffer: Uint8Array, fileName: string) => {
-  //   import("file-saver").then((module) => {
-  //     if (module && module.default) {
-  //       const EXCEL_TYPE =
-  //         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
-  //       const EXCEL_EXTENSION = ".xlsx";
-  //       const data = new Blob([buffer], { type: EXCEL_TYPE });
-
-  //       module.default.saveAs(
-  //         data,
-  //         `${fileName}_export_${new Date().getTime()}${EXCEL_EXTENSION}`
-  //       );
-  //     }
-  //   });
-  // };
-
-  // Function to fetch customers
   const fetchCustomers = async () => {
     try {
       const response = await Axios.get(
@@ -395,7 +342,7 @@ const ClassInfo: React.FC = () => {
   const [classCount, setClassCount] = useState<ClassCountData | undefined>(
     undefined
   );
-  const [thearpyBtn, setTherapyBtn] = useState(true)
+  const [thearpyBtn, setTherapyBtn] = useState(true);
 
   const fetchUserDetails = async (id: string) => {
     try {
@@ -437,10 +384,9 @@ const ClassInfo: React.FC = () => {
       setClassCount(countData);
 
       if (countData.therapyCount <= countData.thearpyAttend) {
-        setTherapyBtn(false)
-      }
-      else {
-        setTherapyBtn(true)
+        setTherapyBtn(false);
+      } else {
+        setTherapyBtn(true);
       }
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
@@ -748,20 +694,17 @@ const ClassInfo: React.FC = () => {
         // alert("here")
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
         setEdits({ ...edits, threapy: false });
-        toast.success(
-          "student thearpy attendance is marked successfully",
-          {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-            // transition: Bounce,
-          }
-        );
+        toast.success("student thearpy attendance is marked successfully", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          // transition: Bounce,
+        });
       }
     } catch (error) {
       console.error("Error updating session data:", error);
@@ -774,11 +717,12 @@ const ClassInfo: React.FC = () => {
 
   function getCurrentMonthYear(): string {
     const date: Date = new Date();
-    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long' };
-    return date.toLocaleDateString('en-US', options);
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+    };
+    return date.toLocaleDateString("en-US", options);
   }
-  
-  
 
   useEffect(() => {
     const token = localStorage.getItem("refUtId");
@@ -788,7 +732,6 @@ const ClassInfo: React.FC = () => {
     }
     fetchCustomers();
   }, []);
-
 
   const onGlobalFilterChange = (e: any) => {
     const value = e.target.value;
@@ -812,13 +755,11 @@ const ClassInfo: React.FC = () => {
 
         <div className="flex align-items-center justify-content-end gap-2">
           <Button
-            type="button"
-            severity="success"
-            // onClick={exportExcel}
-            data-pr-tooltip="XLS"
-          >
-            Export As Excel
-          </Button>
+            label="Export as Excel"
+            icon="pi pi-file-excel"
+            onClick={() => dtRef.current.exportCSV({ selectionOnly: false })}
+            className="p-button-success p-mr-2"
+          />
         </div>
       </div>
     );
@@ -849,658 +790,677 @@ const ClassInfo: React.FC = () => {
 
   const header = renderHeader();
 
-  const actionBody = (rowData: any) => {
-    console.log(rowData);
-
-    let parsedData;
-    try {
-      parsedData = JSON.parse(rowData.transData);
-
-      return (
-        <>
-          Label: {parsedData.label}
-          <br />
-          <br />
-          Old Data:{" "}
-          {parsedData.data.oldValue ? parsedData.data.oldValue : "null"} <br />
-          <br />
-          New Data: {parsedData.data.newValue}
-        </>
-      );
-    } catch (error) {
-      // If parsing fails, transData is not valid JSON
-      return <>{rowData.transData}</>;
-    }
-  };
+  const nullToDash = (value: any) =>
+    value === null || value === undefined ? "-" : value;
 
   return (
     <>
-      <ToastContainer />
-      <div className="card" style={{ overflow: "auto" }}>
-        <DataTable
-          ref={dtRef} // Attach ref to get filtered data
-          value={customers}
-          paginator
-          header={header}
-          rows={10}
-          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-          rowsPerPageOptions={[10, 25, 50]}
-          dataKey="id"
-          selectionMode="checkbox"
-          scrollable
-          selection={selectedCustomers}
-          onSelectionChange={(e) => setSelectedCustomers(e.value as Customer[])}
-          emptyMessage="No customers found."
-          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-          sortField="userId"
-          sortOrder={-1}
-          filters={filters}
-        >
-          <Column
-            selectionMode="multiple"
-            frozen
-            headerStyle={{ minWidth: "3rem" }}
-          />
-          <Column
-            field="userId"
-            header="Cust ID"
-            body={userIdTemplate}
-            frozen
-            sortable
-            style={{ minWidth: "12rem" }}
-          />
-          <Column field="fname" header="Name" style={{ minWidth: "14rem" }} />
-          <Column field="mobile" header="Mobile" style={{ minWidth: "14rem" }} />
-          <Column
-            field="packageName"
-            header="Package Name"
-            style={{ minWidth: "14rem" }}
-          />
-          <Column
-            field="classMode"
-            filter
-            sortable
-            filterElement={classModeFilterTemplate}
-            showFilterMatchModes={false}
-            header="ClassMode"
-            style={{ minWidth: "14rem" }}
-          />
+      <TabView className="overflow-hidden  ">
+        {/* <TabPanel header="Overview"></TabPanel> */}
+        <TabPanel header="Class Details">
+          <ToastContainer />
+          <div className="card" style={{ overflow: "auto" }}>
+            <DataTable
+              ref={dtRef} // Attach ref to get filtered data
+              value={customers}
+              paginator
+              header={header}
+              rows={10}
+              paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+              rowsPerPageOptions={[10, 25, 50]}
+              dataKey="id"
+              selectionMode="checkbox"
+              scrollable
+              selection={selectedCustomers}
+              onSelectionChange={(e) =>
+                setSelectedCustomers(e.value as Customer[])
+              }
+              emptyMessage="No customers found."
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+              sortField="userId"
+              sortOrder={-1}
+              filters={filters}
+            >
+              <Column
+                selectionMode="multiple"
+                frozen
+                headerStyle={{ minWidth: "3rem" }}
+              />
+              <Column
+                field="userId"
+                header="Cust ID"
+                body={userIdTemplate}
+                frozen
+                sortable
+                style={{ minWidth: "12rem" }}
+              />
+              <Column
+                field="fname"
+                header="Name"
+                style={{ minWidth: "14rem" }}
+              />
+              <Column
+                field="mobile"
+                header="Mobile"
+                style={{ minWidth: "14rem" }}
+              />
+              <Column
+                field="packageName"
+                filter
+                sortable
+                filterElement={packageFilterTemplate}
+                showFilterMatchModes={false}
+                header="Package Name"
+                body={(rowData) => nullToDash(rowData.packageName)}
+                style={{ minWidth: "14rem" }}
+              />
+              <Column
+                field="classMode"
+                filter
+                sortable
+                filterElement={classModeFilterTemplate}
+                showFilterMatchModes={false}
+                header="Class Mode"
+                body={(rowData) => nullToDash(rowData.classMode)}
+                style={{ minWidth: "14rem" }}
+              />
 
-          <Column
-            field="batch"
-            filter
-            sortable
-            filterElement={batchFilterTemplate}
-            showFilterMatchModes={false}
-            header="Batch"
-            style={{ minWidth: "14rem" }}
-          />
-          <Column
-            field="therapy"
-            filter
-            sortable
-            filterElement={therapyFilterTemplate}
-            showFilterMatchModes={false}
-            header="Therapy"
-            style={{ minWidth: "14rem" }}
-          />
-          <Column
-            field="weekDaysTiming"
-            filter
-            sortable
-            filterElement={weekDaysTimingFilterTemplate}
-            showFilterMatchModes={false}
-            header="Weekdays Timing"
-            style={{ minWidth: "14rem" }}
-          />
-          <Column
-            field="weekEndTiming"
-            filter
-            sortable
-            filterElement={weekEndTimingFilterTemplate}
-            showFilterMatchModes={false}
-            header="Weekend Timing "
-            style={{ minWidth: "14rem" }}
-          />
-        </DataTable>
+              <Column
+                field="batch"
+                filter
+                sortable
+                filterElement={batchFilterTemplate}
+                showFilterMatchModes={false}
+                header="Batch"
+                body={(rowData) => nullToDash(rowData.batch)}
+                style={{ minWidth: "14rem" }}
+              />
+              <Column
+                field="therapy"
+                filter
+                sortable
+                filterElement={therapyFilterTemplate}
+                showFilterMatchModes={false}
+                header="Therapy"
+                body={(rowData) => nullToDash(rowData.therapy)}
+                style={{ minWidth: "14rem" }}
+              />
+              <Column
+                field="weekDaysTiming"
+                filter
+                sortable
+                filterElement={weekDaysTimingFilterTemplate}
+                showFilterMatchModes={false}
+                header="Weekdays Timing"
+                body={(rowData) => nullToDash(rowData.weekDaysTiming)}
+                style={{ minWidth: "14rem" }}
+              />
+              <Column
+                field="weekEndTiming"
+                filter
+                sortable
+                filterElement={weekEndTimingFilterTemplate}
+                showFilterMatchModes={false}
+                header="Weekend Timing "
+                body={(rowData) => nullToDash(rowData.weekEndTiming)}
+                style={{ minWidth: "14rem" }}
+              />
+            </DataTable>
 
-        <Sidebar
-          className="w-[90%] lg:w-[75%]"
-          visible={visibleLeft}
-          position="right"
-          onHide={() => setVisibleLeft(false)}
-        >
-          <h2>User Detail</h2>
-          <p>
-            {selectedUserId ? `User ID: ${selectedUserId}` : "No user selected"}
-          </p>
-          <div className="card">
-            <TabView>
-              <TabPanel header="Profile">
-                <p className="m-0">
-                  {userDetails ? (
-                    <>
-                      <div className="mt-10">
-                        <UserProfileEdit refid={refid} />
-                      </div>
-                    </>
-                  ) : (
-                    <p>No user details available.</p>
-                  )}
-                </p>
-              </TabPanel>
-              {localStorage.getItem("refUtId") != "4" && (
-                <TabPanel header="Medical Details">
-                  <p className="m-0">
-                    {userDetails ? (
-                      <>
-                        <div className="mt-10">
-                          <MedicalTabs refid={refid} />
-                        </div>
-                      </>
-                    ) : (
-                      <p>No user details available.</p>
-                    )}
-                  </p>
-                </TabPanel>
-              )}
-
-              <TabPanel header="Session details">
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    updateSessionData();
-                  }}
-                >
-                  <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
-                    <div className="w-[100%] flex justify-between items-center mb-5">
-                      <div className="text-[1.2rem] lg:text-[25px] font-bold">
-                        Yoga class
-                      </div>
-                      {edits.session ? (
-                        <button
-                          className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${sessionUpdateLoad
-                            ? "bg-gray-500 cursor-not-allowed"
-                            : "bg-[#f95005]"
-                            }`}
-                          type="submit"
-                          disabled={sessionUpdateLoad}
-                        >
-                          {sessionUpdateLoad ? (
-                            <>
-                              Loading&nbsp;&nbsp;
-                              <i className="pi pi-spin pi-spinner text-[15px]"></i>
-                            </>
-                          ) : (
-                            <>
-                              Save&nbsp;&nbsp;
-                              <i className="text-[15px] pi pi-check"></i>
-                            </>
-                          )}
-                        </button>
-                      ) : (
-                        <div
-                          onClick={() => {
-                            setEdits({ ...edits, session: true });
-                          }}
-                          className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
-                        >
-                          Edit&nbsp;&nbsp;
-                          <i className="text-[15px] pi pi-pen-to-square"></i>
-                        </div>
-                      )}
-                    </div>
-                    <div className="w-[100%] flex justify-center items-center">
-                      {!edits.session ? (
-                        <div className="w-[100%] justify-center items-center flex flex-col">
-                          <div className="w-[100%] flex flex-row lg:flex-row gap-y-[20px] justify-between mb-[20px]">
-                            <div className="w-[100%] lg:w-[48%]">
-                              <TextInput
-                                label="Branch *"
-                                name="branchName"
-                                id="branch"
-                                type="text"
-                                value={sessionData?.branchName}
-                                readonly
-                              />
-                            </div>
-                            <div className="w-[100%] lg:w-[48%]">
-                              <TextInput
-                                label="Batch Type *"
-                                name="memberTypeName"
-                                id="mtype"
-                                type="text"
-                                value={sessionData?.memberTypeName}
-                                readonly
-                              />
-                            </div>
-                          </div>
-                          <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between">
-                            <div className="w-[100%] lg:w-[48%]">
-                              <TextInput
-                                label="Class Mode *"
-                                name="classMode"
-                                id="mtype"
-                                type="text"
-                                value={
-                                  sessionData?.classMode === "1"
-                                    ? "Online"
-                                    : "Offline"
-                                }
-                                readonly
-                              />
-                            </div>
-                            <div className="w-[100%] lg:w-[48%]">
-                              <TextInput
-                                label="Package Name *"
-                                id="mtype"
-                                name="packageName"
-                                type="text"
-                                value={sessionData?.packageName}
-                                readonly
-                              />
-                            </div>
-                          </div>
-                          <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] mt-[20px] justify-between">
-                            {sessionData?.weekDaysTiming?.length || 0 > 0 ? (
-                              <>
-                                <div className="w-[100%] lg:w-[48%]">
-                                  <TextInput
-                                    label="Weekdays Timing"
-                                    id="mtype"
-                                    name="classTime"
-                                    type="text"
-                                    value={sessionData?.weekDaysTiming}
-                                    readonly
-                                  />
-                                </div>
-                              </>
-                            ) : (
-                              <> </>
-                            )}
-
-                            {sessionData?.weekEndTiming?.length || 0 > 0 ? (
-                              <>
-                                <div className="w-[100%] lg:w-[48%]">
-                                  <TextInput
-                                    label="Weekend Timing"
-                                    id="mtype"
-                                    name="classTime"
-                                    type="text"
-                                    value={sessionData?.weekEndTiming}
-                                    readonly
-                                  />
-                                </div>
-                              </>
-                            ) : (
-                              <></>
-                            )}
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="w-[100%] justify-center items-center flex flex-col">
-                          <div className="w-[100%] flex flex-row lg:flex-row gap-y-[20px] justify-between mb-[20px]">
-                            <div className="w-[45%]">
-                              <SelectInput
-                                id="branch"
-                                name="branchId"
-                                label="Branch *"
-                                options={branchOptions}
-                                required
-                                value={sessionData?.branchId || ""}
-                                onChange={(e) => {
-                                  setSessionUpdate(2);
-                                  fetchMemberTypeOptions();
-                                  const { name, value } = e.target;
-                                  setSessionData((prevData) => ({
-                                    ...prevData,
-                                    [name]: value,
-                                    memberTypeId: "",
-                                    classModeId: "",
-                                    packageId: "",
-                                    classTimeId: "",
-                                    weekEndTimingId: "",
-                                    weekDaysTimingId: "",
-                                  }));
-                                }}
-                              />
-                            </div>
-                            <div className="w-[45%]">
-                              <SelectInput
-                                id="membertype"
-                                name="memberTypeId"
-                                label="Member Type *"
-                                options={memberlistOptions}
-                                disabled={sessionUpdate <= 1}
-                                required
-                                value={sessionData?.memberTypeId || ""}
-                                onChange={(e) => {
-                                  setSessionUpdate(3);
-                                  const { name, value } = e.target;
-                                  setSessionData((prevData) => ({
-                                    ...prevData,
-                                    [name]: value,
-                                    classModeId: "",
-                                    packageId: "",
-                                    classTimeId: "",
-                                    weekEndTimingId: "",
-                                    weekDaysTimingId: "",
-                                  }));
-                                }}
-                              />
-                            </div>
-                          </div>
-                          <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between">
-                            <div className="w-[45%]">
-                              <SelectInput
-                                id="classtype"
-                                name="classModeId"
-                                label="Class Type *"
-                                options={[
-                                  { value: "1", label: "Online" },
-                                  { value: "2", label: "Offline" },
-                                ]}
-                                disabled={sessionUpdate <= 2}
-                                required
-                                value={sessionData?.classModeId || ""}
-                                onChange={(e) => {
-                                  setSessionUpdate(4);
-                                  fetchPackageOptions();
-                                  const { name, value } = e.target;
-                                  setSessionData((prevData) => ({
-                                    ...prevData,
-                                    [name]: value,
-                                    packageId: "",
-                                    classTimeId: "",
-                                  }));
-                                }}
-                              />
-                            </div>
-                            <div className="w-[45%]">
-                              <SelectInput
-                                id="classtype"
-                                name="packageId"
-                                label="Class Package *"
-                                options={sessionTypeOption}
-                                disabled={sessionUpdate <= 3}
-                                required
-                                value={sessionData?.packageId || ""}
-                                onChange={(e) => {
-                                  setSessionUpdate(5);
-                                  fetchTimingOptions(e.target.value);
-                                  const { name, value } = e.target;
-                                  setSessionData((prevData) => ({
-                                    ...prevData,
-                                    [name]: value,
-                                    classTimeId: "",
-                                    weekEndTimingId: "",
-                                    weekDaysTimingId: "",
-                                  }));
-                                }}
-                              />
-                            </div>
-                          </div>
-                          <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] mt-[20px] justify-between">
-                            {weekDaysTimingOption.length > 0 ? (
-                              <>
-                                <div className="w-[45%]">
-                                  <SelectInput
-                                    id="weekDaysTimingId"
-                                    name="weekDaysTimingId"
-                                    label="weekdays Timing*"
-                                    options={weekDaysTimingOption}
-                                    disabled={sessionUpdate <= 4}
-                                    required
-                                    value={sessionData?.weekDaysTimingId || ""}
-                                    onChange={(e) => {
-                                      setSessionUpdate(6);
-                                      const { name, value } = e.target;
-                                      setSessionData((prevData) => ({
-                                        ...prevData,
-                                        [name]: value,
-                                      }));
-                                    }}
-                                  />
-                                </div>
-                              </>
-                            ) : (
-                              <></>
-                            )}
-
-                            {weekEndTimingOption.length > 0 ? (
-                              <>
-                                <div className="w-[45%]">
-                                  <SelectInput
-                                    id="weekEndTimingId"
-                                    name="weekEndTimingId"
-                                    label="Weekend Timing *"
-                                    options={weekEndTimingOption}
-                                    disabled={sessionUpdate <= 4}
-                                    required
-                                    value={sessionData?.weekEndTimingId || ""}
-                                    onChange={(e) => {
-                                      setSessionUpdate(6);
-                                      const { name, value } = e.target;
-                                      setSessionData((prevData) => ({
-                                        ...prevData,
-                                        [name]: value,
-                                      }));
-                                    }}
-                                  />
-                                </div>
-                              </>
-                            ) : (
-                              <></>
-                            )}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </form>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    updateThreapyCountData();
-                  }}
-                >
-                  <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
-                    <div className="w-[100%] flex justify-between items-center mb-5">
-                      <div className="text-[1.2rem] lg:text-[25px] font-bold">
-                        Therapy Session
-                      </div>
-                      {refUtId === "7" || refUtId === "11" || refUtId === "12" ? (
+            <Sidebar
+              className="w-[90%] lg:w-[75%]"
+              visible={visibleLeft}
+              position="right"
+              onHide={() => setVisibleLeft(false)}
+            >
+              <h2>User Detail</h2>
+              <p>
+                {selectedUserId
+                  ? `User ID: ${selectedUserId}`
+                  : "No user selected"}
+              </p>
+              <div className="card">
+                <TabView>
+                  <TabPanel header="Profile">
+                    <p className="m-0">
+                      {userDetails ? (
                         <>
-                          {threapyCount === 0 || threapyCount === null ? (
-                            <></>
-                          ) : (
-                            <>
-                              {edits.threapy ? (
-                                <button
-                                  className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${sessionUpdateLoad
-                                    ? "bg-gray-500 cursor-not-allowed"
-                                    : "bg-[#f95005]"
-                                    }`}
-                                  type="submit"
-                                  disabled={sessionUpdateLoad}
-                                >
-                                  {sessionUpdateLoad ? (
-                                    <>
-                                      Loading&nbsp;&nbsp;
-                                      <i className="pi pi-spin pi-spinner text-[15px]"></i>
-                                    </>
-                                  ) : (
-                                    <>
-                                      Save&nbsp;&nbsp;
-                                      <i className="text-[15px] pi pi-check"></i>
-                                    </>
-                                  )}
-                                </button>
-                              ) : (
-                                <div
-                                  onClick={() => {
-                                    setEdits({ ...edits, threapy: true });
-                                  }}
-                                  className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
-                                >
-                                  Edit&nbsp;&nbsp;
-                                  <i className="text-[15px] pi pi-pen-to-square"></i>
-                                </div>
-                              )}
-                            </>
-                          )}
+                          <div className="mt-10">
+                            <UserProfileEdit refid={refid} />
+                          </div>
                         </>
                       ) : (
-                        <></>
+                        <p>No user details available.</p>
                       )}
-                    </div>
-                    <div className="w-[100%] flex justify-center items-center">
-                      <div className="w-[100%] justify-center items-center flex flex-col">
-                        <div className="w-[100%] flex flex-row lg:flex-row gap-y-[20px] justify-between mb-[20px]">
-                          {(threapyCount === 0 || threapyCount === null) &&
-                            !edits.threapy ? (
-                            <>
-                              <div className="flex justify-center w-[100%]">
-                                <h3 className="text-red-500">
-                                  No Therapy Class Assigned
-                                </h3>
-                              </div>
-                            </>
+                    </p>
+                  </TabPanel>
+                  {localStorage.getItem("refUtId") != "4" && (
+                    <TabPanel header="Medical Details">
+                      <p className="m-0">
+                        {userDetails ? (
+                          <>
+                            <div className="mt-10">
+                              <MedicalTabs refid={refid} />
+                            </div>
+                          </>
+                        ) : (
+                          <p>No user details available.</p>
+                        )}
+                      </p>
+                    </TabPanel>
+                  )}
+
+                  <TabPanel header="Session details">
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        updateSessionData();
+                      }}
+                    >
+                      <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
+                        <div className="w-[100%] flex justify-between items-center mb-5">
+                          <div className="text-[1.2rem] lg:text-[25px] font-bold">
+                            Yoga class
+                          </div>
+                          {edits.session ? (
+                            <button
+                              className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${
+                                sessionUpdateLoad
+                                  ? "bg-gray-500 cursor-not-allowed"
+                                  : "bg-[#f95005]"
+                              }`}
+                              type="submit"
+                              disabled={sessionUpdateLoad}
+                            >
+                              {sessionUpdateLoad ? (
+                                <>
+                                  Loading&nbsp;&nbsp;
+                                  <i className="pi pi-spin pi-spinner text-[15px]"></i>
+                                </>
+                              ) : (
+                                <>
+                                  Save&nbsp;&nbsp;
+                                  <i className="text-[15px] pi pi-check"></i>
+                                </>
+                              )}
+                            </button>
                           ) : (
-                            <>
-                              <div className="flex flex-row w-[100%] justify-around">
-                                <div className="flex flex-column gap-2 w-[48%]">
-                                  <label>No.of Session</label>
-                                  <InputNumber
-                                    value={threapyCount}
+                            <div
+                              onClick={() => {
+                                setEdits({ ...edits, session: true });
+                              }}
+                              className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
+                            >
+                              Edit&nbsp;&nbsp;
+                              <i className="text-[15px] pi pi-pen-to-square"></i>
+                            </div>
+                          )}
+                        </div>
+                        <div className="w-[100%] flex justify-center items-center">
+                          {!edits.session ? (
+                            <div className="w-[100%] justify-center items-center flex flex-col">
+                              <div className="w-[100%] flex flex-row lg:flex-row gap-y-[20px] justify-between mb-[20px]">
+                                <div className="w-[100%] lg:w-[48%]">
+                                  <TextInput
+                                    label="Branch *"
+                                    name="branchName"
+                                    id="branch"
+                                    type="text"
+                                    value={sessionData?.branchName}
+                                    readonly
+                                  />
+                                </div>
+                                <div className="w-[100%] lg:w-[48%]">
+                                  <TextInput
+                                    label="Batch Type *"
+                                    name="memberTypeName"
+                                    id="mtype"
+                                    type="text"
+                                    value={sessionData?.memberTypeName}
+                                    readonly
+                                  />
+                                </div>
+                              </div>
+                              <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between">
+                                <div className="w-[100%] lg:w-[48%]">
+                                  <TextInput
+                                    label="Class Mode *"
+                                    name="classMode"
+                                    id="mtype"
+                                    type="text"
+                                    value={
+                                      sessionData?.classMode === "1"
+                                        ? "Online"
+                                        : "Offline"
+                                    }
+                                    readonly
+                                  />
+                                </div>
+                                <div className="w-[100%] lg:w-[48%]">
+                                  <TextInput
+                                    label="Package Name *"
+                                    id="mtype"
+                                    name="packageName"
+                                    type="text"
+                                    value={sessionData?.packageName}
+                                    readonly
+                                  />
+                                </div>
+                              </div>
+                              <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] mt-[20px] justify-between">
+                                {sessionData?.weekDaysTiming?.length ||
+                                0 > 0 ? (
+                                  <>
+                                    <div className="w-[100%] lg:w-[48%]">
+                                      <TextInput
+                                        label="Weekdays Timing"
+                                        id="mtype"
+                                        name="classTime"
+                                        type="text"
+                                        value={sessionData?.weekDaysTiming}
+                                        readonly
+                                      />
+                                    </div>
+                                  </>
+                                ) : (
+                                  <> </>
+                                )}
+
+                                {sessionData?.weekEndTiming?.length || 0 > 0 ? (
+                                  <>
+                                    <div className="w-[100%] lg:w-[48%]">
+                                      <TextInput
+                                        label="Weekend Timing"
+                                        id="mtype"
+                                        name="classTime"
+                                        type="text"
+                                        value={sessionData?.weekEndTiming}
+                                        readonly
+                                      />
+                                    </div>
+                                  </>
+                                ) : (
+                                  <></>
+                                )}
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="w-[100%] justify-center items-center flex flex-col">
+                              <div className="w-[100%] flex flex-row lg:flex-row gap-y-[20px] justify-between mb-[20px]">
+                                <div className="w-[45%]">
+                                  <SelectInput
+                                    id="branch"
+                                    name="branchId"
+                                    label="Branch *"
+                                    options={branchOptions}
                                     required
-                                    readOnly={!edits.threapy}
+                                    value={sessionData?.branchId || ""}
                                     onChange={(e) => {
-                                      const value = e.value ?? 0; // If e.value is null, set it to 0
-                                      setThreapyCount(value); // Update state with valid number
+                                      setSessionUpdate(2);
+                                      fetchMemberTypeOptions();
+                                      const { name, value } = e.target;
+                                      setSessionData((prevData) => ({
+                                        ...prevData,
+                                        [name]: value,
+                                        memberTypeId: "",
+                                        classModeId: "",
+                                        packageId: "",
+                                        classTimeId: "",
+                                        weekEndTimingId: "",
+                                        weekDaysTimingId: "",
+                                      }));
                                     }}
                                   />
                                 </div>
-                                <div>
-                                  <Button
-                                    severity="success"
-                                    type="button"
-                                    disabled={!thearpyBtn}
-                                    className="h-[35px] w-[100%] mt-[27px]"
-                                    label="Completed 1 session"
-                                    onClick={(e) => {
-                                      addThreapyCountData(e);
+                                <div className="w-[45%]">
+                                  <SelectInput
+                                    id="membertype"
+                                    name="memberTypeId"
+                                    label="Member Type *"
+                                    options={memberlistOptions}
+                                    disabled={sessionUpdate <= 1}
+                                    required
+                                    value={sessionData?.memberTypeId || ""}
+                                    onChange={(e) => {
+                                      setSessionUpdate(3);
+                                      const { name, value } = e.target;
+                                      setSessionData((prevData) => ({
+                                        ...prevData,
+                                        [name]: value,
+                                        classModeId: "",
+                                        packageId: "",
+                                        classTimeId: "",
+                                        weekEndTimingId: "",
+                                        weekDaysTimingId: "",
+                                      }));
                                     }}
                                   />
                                 </div>
                               </div>
-                            </>
+                              <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] justify-between">
+                                <div className="w-[45%]">
+                                  <SelectInput
+                                    id="classtype"
+                                    name="classModeId"
+                                    label="Class Type *"
+                                    options={[
+                                      { value: "1", label: "Online" },
+                                      { value: "2", label: "Offline" },
+                                    ]}
+                                    disabled={sessionUpdate <= 2}
+                                    required
+                                    value={sessionData?.classModeId || ""}
+                                    onChange={(e) => {
+                                      setSessionUpdate(4);
+                                      fetchPackageOptions();
+                                      const { name, value } = e.target;
+                                      setSessionData((prevData) => ({
+                                        ...prevData,
+                                        [name]: value,
+                                        packageId: "",
+                                        classTimeId: "",
+                                      }));
+                                    }}
+                                  />
+                                </div>
+                                <div className="w-[45%]">
+                                  <SelectInput
+                                    id="classtype"
+                                    name="packageId"
+                                    label="Class Package *"
+                                    options={sessionTypeOption}
+                                    disabled={sessionUpdate <= 3}
+                                    required
+                                    value={sessionData?.packageId || ""}
+                                    onChange={(e) => {
+                                      setSessionUpdate(5);
+                                      fetchTimingOptions(e.target.value);
+                                      const { name, value } = e.target;
+                                      setSessionData((prevData) => ({
+                                        ...prevData,
+                                        [name]: value,
+                                        classTimeId: "",
+                                        weekEndTimingId: "",
+                                        weekDaysTimingId: "",
+                                      }));
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                              <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] mt-[20px] justify-between">
+                                {weekDaysTimingOption.length > 0 ? (
+                                  <>
+                                    <div className="w-[45%]">
+                                      <SelectInput
+                                        id="weekDaysTimingId"
+                                        name="weekDaysTimingId"
+                                        label="weekdays Timing*"
+                                        options={weekDaysTimingOption}
+                                        disabled={sessionUpdate <= 4}
+                                        required
+                                        value={
+                                          sessionData?.weekDaysTimingId || ""
+                                        }
+                                        onChange={(e) => {
+                                          setSessionUpdate(6);
+                                          const { name, value } = e.target;
+                                          setSessionData((prevData) => ({
+                                            ...prevData,
+                                            [name]: value,
+                                          }));
+                                        }}
+                                      />
+                                    </div>
+                                  </>
+                                ) : (
+                                  <></>
+                                )}
+
+                                {weekEndTimingOption.length > 0 ? (
+                                  <>
+                                    <div className="w-[45%]">
+                                      <SelectInput
+                                        id="weekEndTimingId"
+                                        name="weekEndTimingId"
+                                        label="Weekend Timing *"
+                                        options={weekEndTimingOption}
+                                        disabled={sessionUpdate <= 4}
+                                        required
+                                        value={
+                                          sessionData?.weekEndTimingId || ""
+                                        }
+                                        onChange={(e) => {
+                                          setSessionUpdate(6);
+                                          const { name, value } = e.target;
+                                          setSessionData((prevData) => ({
+                                            ...prevData,
+                                            [name]: value,
+                                          }));
+                                        }}
+                                      />
+                                    </div>
+                                  </>
+                                ) : (
+                                  <></>
+                                )}
+                              </div>
+                            </div>
                           )}
                         </div>
                       </div>
-                    </div>
-                  </div>
-                </form>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    updateThreapyCountData();
-                  }}
-                >
-                  <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
-                    <div className="w-[100%] flex justify-between items-center mb-5">
-                      <div className="text-[1.2rem] lg:text-[25px] font-bold">
-                        Class Count
-                      </div>
-                      {refUtId === "7" || refUtId === "11" || refUtId === "12" ? (
-                        <></>
-                      ) : (
-                        <></>
-                      )}
-                    </div>
-                    <div className="w-[100%] flex justify-center items-center">
-                      <div className="w-[100%] justify-center items-center flex flex-col">
-                        <p className="m-0">
-                          <Fieldset
-                            className="border-2 border-[#f95005] fieldData pb-[2rem] w-[50vw]"
-                            legend={getCurrentMonthYear()}
-                          >
-                            <div className="flex flex-row gap-0 justify-around">
-                              <div>
-                                <th className="text-900 font-bold p-2 text-start">
-                                  Yoga Class
-                                </th>
-                                <tr>
-                                  <td className="text-900 font-bold p-2">
-                                    Total Class
-                                  </td>
-                                  <td className="text-[#000] p-2">
-                                    {classCount?.classCount || 0}
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td className="text-900 font-bold p-2">
-                                    Attended Class
-                                  </td>
-                                  <td className="text-[#000] p-2">
-                                    {classCount?.classAttend || 0}
-                                  </td>
-                                  {/* <td className="text-[#000] p-2">{info[0].refCtMobile}</td> */}
-                                </tr>
-                                <tr>
-                                  <td className="text-900 font-bold p-2">
-                                    Remaining Class
-                                  </td>
-                                  <td className="text-[#000] p-2">
-                                    {classCount?.classreCount || 0}
-                                  </td>
-                                </tr>
-                              </div>
-                              <Divider
-                              layout="vertical"/>
-                              <div>
-                                <th className="text-900 font-bold p-2 text-start">
-                                  Therapy Session
-                                </th>
-                                <tr>
-                                  <td className="text-900 font-bold p-2">
-                                    Total Class
-                                  </td>
-                                  <td className="text-[#000] p-2">
-                                    {classCount?.therapyCount || 0}
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td className="text-900 font-bold p-2">
-                                    Attended Class
-                                  </td>
-                                  <td className="text-[#000] p-2">
-                                    {classCount?.thearpyAttend}
-                                  </td>
-                                  {/* <td className="text-[#000] p-2">{info[0].refCtMobile}</td> */}
-                                </tr>
-                                <tr>
-                                  <td className="text-900 font-bold p-2">
-                                    Remaining Class
-                                  </td>
-                                  <td className="text-[#000] p-2">
-                                    {classCount?.thearpyreCount || 0}
-                                  </td>
-                                </tr>
-                              </div>
+                    </form>
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        updateThreapyCountData();
+                      }}
+                    >
+                      <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
+                        <div className="w-[100%] flex justify-between items-center mb-5">
+                          <div className="text-[1.2rem] lg:text-[25px] font-bold">
+                            Therapy Session
+                          </div>
+                          {refUtId === "7" ||
+                          refUtId === "11" ||
+                          refUtId === "12" ? (
+                            <>
+                              {threapyCount === 0 || threapyCount === null ? (
+                                <></>
+                              ) : (
+                                <>
+                                  {edits.threapy ? (
+                                    <button
+                                      className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${
+                                        sessionUpdateLoad
+                                          ? "bg-gray-500 cursor-not-allowed"
+                                          : "bg-[#f95005]"
+                                      }`}
+                                      type="submit"
+                                      disabled={sessionUpdateLoad}
+                                    >
+                                      {sessionUpdateLoad ? (
+                                        <>
+                                          Loading&nbsp;&nbsp;
+                                          <i className="pi pi-spin pi-spinner text-[15px]"></i>
+                                        </>
+                                      ) : (
+                                        <>
+                                          Save&nbsp;&nbsp;
+                                          <i className="text-[15px] pi pi-check"></i>
+                                        </>
+                                      )}
+                                    </button>
+                                  ) : (
+                                    <div
+                                      onClick={() => {
+                                        setEdits({ ...edits, threapy: true });
+                                      }}
+                                      className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
+                                    >
+                                      Edit&nbsp;&nbsp;
+                                      <i className="text-[15px] pi pi-pen-to-square"></i>
+                                    </div>
+                                  )}
+                                </>
+                              )}
+                            </>
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                        <div className="w-[100%] flex justify-center items-center">
+                          <div className="w-[100%] justify-center items-center flex flex-col">
+                            <div className="w-[100%] flex flex-row lg:flex-row gap-y-[20px] justify-between mb-[20px]">
+                              {(threapyCount === 0 || threapyCount === null) &&
+                              !edits.threapy ? (
+                                <>
+                                  <div className="flex justify-center w-[100%]">
+                                    <h3 className="text-red-500">
+                                      No Therapy Class Assigned
+                                    </h3>
+                                  </div>
+                                </>
+                              ) : (
+                                <>
+                                  <div className="flex flex-row w-[100%] justify-around">
+                                    <div className="flex flex-column gap-2 w-[48%]">
+                                      <label>No.of Session</label>
+                                      <InputNumber
+                                        value={threapyCount}
+                                        required
+                                        readOnly={!edits.threapy}
+                                        onChange={(e) => {
+                                          const value = e.value ?? 0; // If e.value is null, set it to 0
+                                          setThreapyCount(value); // Update state with valid number
+                                        }}
+                                      />
+                                    </div>
+                                    <div>
+                                      <Button
+                                        severity="success"
+                                        type="button"
+                                        disabled={!thearpyBtn}
+                                        className="h-[35px] w-[100%] mt-[27px]"
+                                        label="Completed 1 session"
+                                        onClick={(e) => {
+                                          addThreapyCountData(e);
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
+                                </>
+                              )}
                             </div>
-                          </Fieldset>
-                        </p>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </form>
-              </TabPanel>
-            </TabView>
+                    </form>
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        updateThreapyCountData();
+                      }}
+                    >
+                      <div className="basicProfileCont m-[10px] lg:m-[30px] p-[20px] lg:p-[40px] shadow-lg">
+                        <div className="w-[100%] flex justify-between items-center mb-5">
+                          <div className="text-[1.2rem] lg:text-[25px] font-bold">
+                            Class Count
+                          </div>
+                          {refUtId === "7" ||
+                          refUtId === "11" ||
+                          refUtId === "12" ? (
+                            <></>
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                        <div className="w-[100%] flex justify-center items-center">
+                          <div className="w-[100%] justify-center items-center flex flex-col">
+                            <p className="m-0">
+                              <Fieldset
+                                className="border-2 border-[#f95005] fieldData pb-[2rem] w-[50vw]"
+                                legend={getCurrentMonthYear()}
+                              >
+                                <div className="flex flex-row gap-0 justify-around">
+                                  <div>
+                                    <th className="text-900 font-bold p-2 text-start">
+                                      Yoga Class
+                                    </th>
+                                    <tr>
+                                      <td className="text-900 font-bold p-2">
+                                        Total Class
+                                      </td>
+                                      <td className="text-[#000] p-2">
+                                        {classCount?.classCount || 0}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td className="text-900 font-bold p-2">
+                                        Attended Class
+                                      </td>
+                                      <td className="text-[#000] p-2">
+                                        {classCount?.classAttend || 0}
+                                      </td>
+                                      {/* <td className="text-[#000] p-2">{info[0].refCtMobile}</td> */}
+                                    </tr>
+                                    <tr>
+                                      <td className="text-900 font-bold p-2">
+                                        Remaining Class
+                                      </td>
+                                      <td className="text-[#000] p-2">
+                                        {classCount?.classreCount || 0}
+                                      </td>
+                                    </tr>
+                                  </div>
+                                  <Divider layout="vertical" />
+                                  <div>
+                                    <th className="text-900 font-bold p-2 text-start">
+                                      Therapy Session
+                                    </th>
+                                    <tr>
+                                      <td className="text-900 font-bold p-2">
+                                        Total Class
+                                      </td>
+                                      <td className="text-[#000] p-2">
+                                        {classCount?.therapyCount || 0}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td className="text-900 font-bold p-2">
+                                        Attended Class
+                                      </td>
+                                      <td className="text-[#000] p-2">
+                                        {classCount?.thearpyAttend}
+                                      </td>
+                                      {/* <td className="text-[#000] p-2">{info[0].refCtMobile}</td> */}
+                                    </tr>
+                                    <tr>
+                                      <td className="text-900 font-bold p-2">
+                                        Remaining Class
+                                      </td>
+                                      <td className="text-[#000] p-2">
+                                        {classCount?.thearpyreCount || 0}
+                                      </td>
+                                    </tr>
+                                  </div>
+                                </div>
+                              </Fieldset>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                  </TabPanel>
+                </TabView>
+              </div>
+            </Sidebar>
           </div>
-        </Sidebar>
-      </div></>
-
+        </TabPanel>
+        <TabPanel header="Report">
+          <ReportPageClass />
+        </TabPanel>
+      </TabView>
+    </>
   );
 };
 
