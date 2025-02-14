@@ -387,9 +387,9 @@ const UserDirData: React.FC = () => {
           navigate("/expired");
         }
         console.log("--------------  229", data);
+          localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
         if (data.success) {
-          localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
           setBranchList(data.data.branchList);
         }
       })

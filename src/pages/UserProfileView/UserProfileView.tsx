@@ -404,14 +404,14 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
           type === "staff"
             ? false
             : generalhealth.refIfBP === "no"
-            ? false
-            : true,
+              ? false
+              : true,
         backpain:
           type === "staff"
             ? false
             : presenthealth.refBackPain === "no"
-            ? false
-            : true,
+              ? false
+              : true,
       });
       setUserAge(personaldata.refStAge);
       setRefStId(personaldata.refStId);
@@ -487,8 +487,8 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
           type === "staff"
             ? ""
             : presenthealth
-            ? generalhealth.refBpType
-            : null,
+              ? generalhealth.refBpType
+              : null,
         ifbp:
           type === "staff" ? "" : presenthealth ? generalhealth.refIfBp : null,
         accidentdetails:
@@ -855,10 +855,9 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
         if (data.token == false) {
           navigate("/expired");
         }
-        console.log("--------------  229", data);
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
         if (data.success) {
-          localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
           setBranchList(data.data.branchList);
         }
       })
@@ -2435,7 +2434,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                                 onChange={(e) => handleInputVal(e)}
                                 type="text"
                                 placeholder="pain value"
-                                // value={inputs.email}
+                              // value={inputs.email}
                               />
                             </div>
                           </div>
@@ -2686,11 +2685,10 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                     </div>
                     {edits.session ? (
                       <button
-                        className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${
-                          sessionUpdateLoad
+                        className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${sessionUpdateLoad
                             ? "bg-gray-500 cursor-not-allowed"
                             : "bg-[#f95005]"
-                        }`}
+                          }`}
                         type="submit"
                         disabled={sessionUpdateLoad}
                       >

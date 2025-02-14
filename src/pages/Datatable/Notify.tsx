@@ -113,7 +113,6 @@ export default function Notify(selectedType: any) {
   const fetchCustomers = async () => {
     try {
       let url = "/director/userAuditList";
-
       if (selectedType.selectedType === "Staff") {
         url = "/director/staffAuditList";
       }
