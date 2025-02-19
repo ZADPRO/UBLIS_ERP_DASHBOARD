@@ -47,6 +47,8 @@ interface Customer {
   comments?: string;
   commentEnabled?: boolean;
   trial?: any;
+  userType?: any;
+  gender?: any;
 }
 
 interface sessionDetails {
@@ -170,10 +172,13 @@ const ClassInfo: React.FC = () => {
   // Reference for DataTable
   const dtRef = useRef<any>(null);
 
-  const uniqueTrialStatuses = Array.from(
-    new Set(customers.map((item) => item.trial))
+  const uniqueStudentTypeStatuses = Array.from(
+    new Set(customers.map((item) => item.userType))
   ).map((status) => ({ label: status, value: status }));
-  console.log("uniqueTrialStatuses", uniqueTrialStatuses);
+  const uniqueGenderStatuses = Array.from(
+    new Set(customers.map((item) => item.gender))
+  ).map((status) => ({ label: status, value: status }));
+
   const uniqueClassModes = Array.from(
     new Set(customers.map((item) => item.classMode))
   ).map((mode) => ({ label: mode, value: mode }));
@@ -193,6 +198,34 @@ const ClassInfo: React.FC = () => {
     new Set(customers.map((item) => item.packageName))
   ).map((packagename) => ({ label: packagename, value: packagename }));
 
+  const StudentTypeFilterTemplate = (options: any) => {
+    return (
+      <MultiSelect
+        value={options.value}
+        options={uniqueStudentTypeStatuses}
+        onChange={(e) => {
+          options.filterApplyCallback(e.value);
+        }}
+        placeholder="Select Option"
+        showClear
+        className="p-column-filter"
+      />
+    );
+  };
+  const GenderFilterTemplate = (options: any) => {
+    return (
+      <MultiSelect
+        value={options.value}
+        options={uniqueGenderStatuses}
+        onChange={(e) => {
+          options.filterApplyCallback(e.value);
+        }}
+        placeholder="Select Gender"
+        showClear
+        className="p-column-filter"
+      />
+    );
+  };
   const packageFilterTemplate = (options: any) => {
     return (
       <MultiSelect
@@ -272,7 +305,8 @@ const ClassInfo: React.FC = () => {
   // Filters state
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    trial: { value: null, matchMode: FilterMatchMode.IN },
+    userType: { value: null, matchMode: FilterMatchMode.IN },
+    gender: { value: null, matchMode: FilterMatchMode.IN },
     classMode: { value: null, matchMode: FilterMatchMode.IN },
     batch: { value: null, matchMode: FilterMatchMode.IN },
     therapy: { value: null, matchMode: FilterMatchMode.IN },
@@ -312,9 +346,9 @@ const ClassInfo: React.FC = () => {
         userId: customer.refSCustId,
         fname: customer.refStFName + " " + customer.refStLName,
         lname: customer.refStLName,
-        email: customer.refCtEmail || "",
+        email: customer.refCtEmail || "Null",
         trial: customer.refUtIdLabel || "Trial",
-        date: customer.transTime || "",
+        date: customer.transTime || "Null",
         mobile: customer.refCtMobile,
         batch: customer.refTimeMembers,
         classMode: customer.refClMode,
@@ -322,8 +356,12 @@ const ClassInfo: React.FC = () => {
         packageName: customer.refPackageName,
         weekEndTiming: customer.WeekEndTiming,
         therapy: customer.refTherapy,
+        userType: customer.userType || "Null",
+        gender: customer.refStSex
+          ? customer.refStSex.charAt(0).toUpperCase() + customer.refStSex.slice(1).toLowerCase()
+          : "Null",
         comments: "",
-        commentEnabled: false, // Default value for commentEnabled
+        commentEnabled: false,
       }));
       setCustomers(fetchedCustomers);
       console.log("fetchedCustomers", fetchedCustomers);
@@ -442,7 +480,7 @@ const ClassInfo: React.FC = () => {
     }
   };
   const fetchSessionOptions = async () => {
-    Axios.get(import.meta.env.VITE_API_URL + "/profile/passRegisterData", {
+    Axios.get(import.meta.env.VITE_API_URL + "/settings/Section/branch", {
       headers: {
         Authorization: localStorage.getItem("JWTtoken"),
         "Content-Type": "application/json",
@@ -457,15 +495,13 @@ const ClassInfo: React.FC = () => {
         if (data.token == false) {
           navigate("/expired");
         }
-        console.log("--------------  229", data);
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
         if (data.success) {
-          setBranchList(data.data.branchList);
+          setBranchList(data.Branch);
         }
       })
       .catch((err) => {
-        // Catching any 400 status or general errors
         console.error("Error: ", err);
       });
   };
@@ -845,6 +881,26 @@ const ClassInfo: React.FC = () => {
                 style={{ minWidth: "14rem" }}
               />
               <Column
+                field="userType"
+                filter
+                sortable
+                filterElement={StudentTypeFilterTemplate}
+                showFilterMatchModes={false}
+                header="Student Type"
+                body={(rowData) => nullToDash(rowData.userType)}
+                style={{ minWidth: "14rem" }}
+              />
+              <Column
+                field="gender"
+                filter
+                sortable
+                filterElement={GenderFilterTemplate}
+                showFilterMatchModes={false}
+                header="Gender"
+                body={(rowData) => nullToDash(rowData.gender)}
+                style={{ minWidth: "14rem" }}
+              />
+              <Column
                 field="packageName"
                 filter
                 sortable
@@ -964,11 +1020,10 @@ const ClassInfo: React.FC = () => {
                           </div>
                           {edits.session ? (
                             <button
-                              className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${
-                                sessionUpdateLoad
-                                  ? "bg-gray-500 cursor-not-allowed"
-                                  : "bg-[#f95005]"
-                              }`}
+                              className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${sessionUpdateLoad
+                                ? "bg-gray-500 cursor-not-allowed"
+                                : "bg-[#f95005]"
+                                }`}
                               type="submit"
                               disabled={sessionUpdateLoad}
                             >
@@ -1049,7 +1104,7 @@ const ClassInfo: React.FC = () => {
                               </div>
                               <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] mt-[20px] justify-between">
                                 {sessionData?.weekDaysTiming?.length ||
-                                0 > 0 ? (
+                                  0 > 0 ? (
                                   <>
                                     <div className="w-[100%] lg:w-[48%]">
                                       <TextInput
@@ -1261,8 +1316,8 @@ const ClassInfo: React.FC = () => {
                             Therapy Session
                           </div>
                           {refUtId === "7" ||
-                          refUtId === "11" ||
-                          refUtId === "12" ? (
+                            refUtId === "11" ||
+                            refUtId === "12" ? (
                             <>
                               {threapyCount === 0 || threapyCount === null ? (
                                 <></>
@@ -1270,11 +1325,10 @@ const ClassInfo: React.FC = () => {
                                 <>
                                   {edits.threapy ? (
                                     <button
-                                      className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${
-                                        sessionUpdateLoad
-                                          ? "bg-gray-500 cursor-not-allowed"
-                                          : "bg-[#f95005]"
-                                      }`}
+                                      className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${sessionUpdateLoad
+                                        ? "bg-gray-500 cursor-not-allowed"
+                                        : "bg-[#f95005]"
+                                        }`}
                                       type="submit"
                                       disabled={sessionUpdateLoad}
                                     >
@@ -1312,7 +1366,7 @@ const ClassInfo: React.FC = () => {
                           <div className="w-[100%] justify-center items-center flex flex-col">
                             <div className="w-[100%] flex flex-row lg:flex-row gap-y-[20px] justify-between mb-[20px]">
                               {(threapyCount === 0 || threapyCount === null) &&
-                              !edits.threapy ? (
+                                !edits.threapy ? (
                                 <>
                                   <div className="flex justify-center w-[100%]">
                                     <h3 className="text-red-500">
@@ -1367,8 +1421,8 @@ const ClassInfo: React.FC = () => {
                             Class Count
                           </div>
                           {refUtId === "7" ||
-                          refUtId === "11" ||
-                          refUtId === "12" ? (
+                            refUtId === "11" ||
+                            refUtId === "12" ? (
                             <></>
                           ) : (
                             <></>

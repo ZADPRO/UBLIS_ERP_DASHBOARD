@@ -37,7 +37,8 @@ interface Customer {
   totalClassCount?: String;
   classAttendCount?: String;
   reCount?: String;
-  // count?:object
+  userType?: String;
+  refStSex?: String;
 }
 
 type DecryptResult = any;
@@ -98,6 +99,13 @@ const ReportPageClass: React.FC = () => {
     new Set(customers.map((item) => item.refPackageName))
   ).map((packagename) => ({ label: packagename, value: packagename }));
 
+  const uniqueStudentTypeStatuses = Array.from(
+    new Set(customers.map((item) => item.userType))
+  ).map((status) => ({ label: status, value: status }));
+  const uniqueGenderStatuses = Array.from(
+    new Set(customers.map((item) => item.refStSex))
+  ).map((status) => ({ label: status, value: status }));
+
   const classModeFilterTemplate = (options: any) => {
     return (
       <MultiSelect
@@ -111,18 +119,35 @@ const ReportPageClass: React.FC = () => {
     );
   };
 
-  //   const packageModeFilterTemplate = (options: any) => {
-  //     return (
-  //       <MultiSelect
-  //         value={options.value}
-  //         options={uniquePackageName}
-  //         onChange={(e) => options.filterApplyCallback(e.value)}
-  //         placeholder="Select Class Mode"
-  //         showClear
-  //         className="p-column-filter"
-  //       />
-  //     );
-  //   };
+  const StudentTypeFilterTemplate = (options: any) => {
+    return (
+      <MultiSelect
+        value={options.value}
+        options={uniqueStudentTypeStatuses}
+        onChange={(e) => {
+          options.filterApplyCallback(e.value);
+        }}
+        placeholder="Select Option"
+        showClear
+        className="p-column-filter"
+      />
+    );
+  };
+  const GenderFilterTemplate = (options: any) => {
+    return (
+      <MultiSelect
+        value={options.value}
+        options={uniqueGenderStatuses}
+        onChange={(e) => {
+          options.filterApplyCallback(e.value);
+        }}
+        placeholder="Select Gender"
+        showClear
+        className="p-column-filter"
+      />
+    );
+  };
+
   const packageModeFilterTemplate = (options: any) => {
     return (
       <MultiSelect
@@ -195,6 +220,8 @@ const ReportPageClass: React.FC = () => {
     WeekDaysTiming: { value: null, matchMode: FilterMatchMode.IN },
     WeekEndTiming: { value: null, matchMode: FilterMatchMode.IN },
     refPackageName: { value: null, matchMode: FilterMatchMode.IN },
+    userType: { value: null, matchMode: FilterMatchMode.IN },
+    refStSex: { value: null, matchMode: FilterMatchMode.IN },
   });
 
   const handleDateChange = async (date: any) => {
@@ -230,15 +257,6 @@ const ReportPageClass: React.FC = () => {
       } else {
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
         setCustomers(data.data);
-        // console.log("data.data", data.data);
-
-        // const count = {
-        //   classCount: data.data.count.totalClassCount,
-        //   attendCount: data.data.count.classAttendCount,
-        //   recount: data.data.count.reCount,
-        // };
-        // console.log("count", count);
-        // setClassCount(count)
       }
     } catch (error) {
       console.error("Error fetching user details:", error);
@@ -349,6 +367,26 @@ const ReportPageClass: React.FC = () => {
           <Column
             field="refCtMobile"
             header="Mobile"
+            style={{ minWidth: "14rem" }}
+          />
+          <Column
+            field="userType"
+            filter
+            sortable
+            filterElement={StudentTypeFilterTemplate}
+            showFilterMatchModes={false}
+            header="Student Type"
+            body={(rowData) => nullToDash(rowData.userType)}
+            style={{ minWidth: "14rem" }}
+          />
+          <Column
+            field="refStSex"
+            filter
+            sortable
+            filterElement={GenderFilterTemplate}
+            showFilterMatchModes={false}
+            header="Gender"
+            body={(rowData) => nullToDash(rowData.refStSex)}
             style={{ minWidth: "14rem" }}
           />
           <Column

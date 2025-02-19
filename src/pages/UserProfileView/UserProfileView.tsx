@@ -840,7 +840,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
   };
 
   const fetchSessionOptions = async () => {
-    Axios.get(import.meta.env.VITE_API_URL + "/profile/passRegisterData", {
+    Axios.get(import.meta.env.VITE_API_URL + "/settings/Section/branch", {
       headers: {
         Authorization: localStorage.getItem("JWTtoken"),
         "Content-Type": "application/json",
@@ -858,11 +858,10 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
         if (data.success) {
-          setBranchList(data.data.branchList);
+          setBranchList(data.Branch);
         }
       })
       .catch((err) => {
-        // Catching any 400 status or general errors
         console.error("Error: ", err);
       });
   };
@@ -2686,8 +2685,8 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                     {edits.session ? (
                       <button
                         className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${sessionUpdateLoad
-                            ? "bg-gray-500 cursor-not-allowed"
-                            : "bg-[#f95005]"
+                          ? "bg-gray-500 cursor-not-allowed"
+                          : "bg-[#f95005]"
                           }`}
                         type="submit"
                         disabled={sessionUpdateLoad}

@@ -35,6 +35,8 @@ interface Customer {
   comments?: string;
   commentEnabled?: boolean;
   trial?: any;
+  gender?: any;
+  userType?: any
 }
 
 interface sessionDetails {
@@ -155,7 +157,6 @@ const UserDirData: React.FC = () => {
 
   const [refid, setRefId] = useState<string>("");
 
-  // Reference for DataTable
   const dtRef = useRef<any>(null);
 
   const uniqueTrialStatuses = Array.from(
@@ -177,73 +178,52 @@ const UserDirData: React.FC = () => {
     );
   };
 
+  const uniqueUserTypeStatuses = Array.from(
+    new Set(customers.map((item) => item.userType))
+  ).map((status) => ({ label: status, value: status }));
+
+  const UserTypeFilterTemplate = (options: any) => {
+    return (
+      <MultiSelect
+        value={options.value}
+        options={uniqueUserTypeStatuses}
+        onChange={(e) => {
+          options.filterApplyCallback(e.value);
+        }}
+        placeholder="Select User Type"
+        showClear
+        className="p-column-filter"
+      />
+    );
+  };
+  const uniqueGenderStatuses = Array.from(
+    new Set(customers.map((item) => item.gender))
+  ).map((status) => ({ label: status, value: status }));
+
+  const GenderFilterTemplate = (options: any) => {
+    return (
+      <MultiSelect
+        value={options.value}
+        options={uniqueGenderStatuses}
+        onChange={(e) => {
+          options.filterApplyCallback(e.value);
+        }}
+        placeholder="Select User Type"
+        showClear
+        className="p-column-filter"
+      />
+    );
+  };
+
   // Filters state
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     trial: { value: null, matchMode: FilterMatchMode.IN },
+    userType: { value: null, matchMode: FilterMatchMode.IN },
+    gender: { value: null, matchMode: FilterMatchMode.IN },
   });
 
-  // const applyManualFilter = (data: any[], filters: any) => {
-  //   return data.filter((row) => {
-  //     let matches = true;
 
-  //     // Check global filter
-  //     if (filters.global.value) {
-  //       matches = matches && row.fname.toLowerCase().includes(filters.global.value.toLowerCase());
-  //     }
-
-  //     // Check trial filter
-  //     if (filters.trial.value && filters.trial.value.length > 0) {
-  //       matches = matches && filters.trial.value.includes(row.trial);
-  //     }
-
-  //     return matches;
-  //   });
-  // };
-
-  // const exportExcel = () => {
-  //   import("xlsx").then((xlsx) => {
-  //     // Manually filter data
-  //     if (!dtRef.current) return; // Ensure ref exists
-  //     const filteredData = dtRef.current.filteredValue || customers;
-  //     console.log('customers', customers)
-  //     console.log('filters', filters)
-  //     // const filteredData = applyManualFilter(customers, filters);
-  //     console.log(' -> Line Number ----------------------------------- 206',);
-  //     console.log('filteredData', filteredData)
-
-  //     // Use filteredData or full data if no filter is applied
-  //     const dataToExport = filteredData.length > 0 ? filteredData : customers;
-
-  //     const worksheet = xlsx.utils.json_to_sheet(filteredData);
-  //     const workbook = { Sheets: { data: worksheet }, SheetNames: ["data"] };
-  //     const excelBuffer = xlsx.write(workbook, {
-  //       bookType: "xlsx",
-  //       type: "array",
-  //     });
-
-  //     // saveAsExcelFile(excelBuffer, "customers");
-  //   });
-  // };
-
-  // Save function
-  // const saveAsExcelFile = (buffer: Uint8Array, fileName: string) => {
-  //   import("file-saver").then((module) => {
-  //     if (module && module.default) {
-  //       const EXCEL_TYPE =
-  //         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
-  //       const EXCEL_EXTENSION = ".xlsx";
-  //       const data = new Blob([buffer], { type: EXCEL_TYPE });
-
-  //       module.default.saveAs(
-  //         data,
-  //         `${fileName}_export_${new Date().getTime()}${EXCEL_EXTENSION}`
-  //       );
-  //     }
-  //   });
-  // };
-
-  // Function to fetch customers
   const fetchCustomers = async () => {
     try {
       const response = await Axios.get(
@@ -279,6 +259,10 @@ const UserDirData: React.FC = () => {
         trial: customer.refUtIdLabel || "Trial",
         date: customer.transTime || "",
         mobile: customer.refCtMobile,
+        userType: customer.userType || "",
+        gender: customer.refStSex
+          ? customer.refStSex.charAt(0).toUpperCase() + customer.refStSex.slice(1).toLowerCase()
+          : "",
         comments: "",
         commentEnabled: false, // Default value for commentEnabled
       }));
@@ -369,7 +353,7 @@ const UserDirData: React.FC = () => {
     }
   };
   const fetchSessionOptions = async () => {
-    Axios.get(import.meta.env.VITE_API_URL + "/profile/passRegisterData", {
+    Axios.get(import.meta.env.VITE_API_URL + "/settings/Section/branch", {
       headers: {
         Authorization: localStorage.getItem("JWTtoken"),
         "Content-Type": "application/json",
@@ -388,7 +372,7 @@ const UserDirData: React.FC = () => {
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
         if (data.success) {
-          setBranchList(data.data.branchList);
+          setBranchList(data.Branch);
         }
       })
       .catch((err) => {
@@ -758,6 +742,20 @@ const UserDirData: React.FC = () => {
         />
         <Column field="mobile" header="Mobile" style={{ minWidth: "14rem" }} />
         <Column field="email" header="Email" style={{ minWidth: "14rem" }} />
+        <Column field="userType"
+          filter
+          sortable
+          filterElement={UserTypeFilterTemplate}
+          showFilterMatchModes={false}
+          header="User Type"
+          style={{ minWidth: "14rem", textTransform: "capitalize" }} />
+        <Column field="gender"
+          sortable
+          filter
+          filterElement={GenderFilterTemplate}
+          showFilterMatchModes={false}
+          style={{ minWidth: "14rem", textTransform: "capitalize" }}
+          header="Gender" />
       </DataTable>
 
       <Sidebar
@@ -1155,7 +1153,7 @@ const UserDirData: React.FC = () => {
                     <div className="w-[100%] justify-center items-center flex flex-col">
                       <div className="w-[100%] flex flex-row lg:flex-row gap-y-[20px] justify-between mb-[20px]">
                         {(threapyCount === 0 || threapyCount === null) &&
-                        !edits.threapy ? (
+                          !edits.threapy ? (
                           <>
                             <div className="flex justify-center w-[100%]">
                               <h3 className="text-red-500">
