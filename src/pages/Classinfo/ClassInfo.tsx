@@ -25,6 +25,7 @@ import "./ClassInfo.css";
 import { Fieldset } from "primereact/fieldset";
 import { Divider } from "primereact/divider";
 import ReportPageClass from "../ReportPageClass/ReportPageClass";
+import ClassinfoOverview from "../ClassinfoOverview/ClassinfoOverview";
 
 interface Customer {
   id: string;
@@ -832,7 +833,7 @@ const ClassInfo: React.FC = () => {
   return (
     <>
       <TabView className="overflow-hidden  ">
-        {/* <TabPanel header="Overview"></TabPanel> */}
+        <TabPanel header="Overview"><ClassinfoOverview/></TabPanel>
         <TabPanel header="Class Details">
           <ToastContainer />
           <div className="card" style={{ overflow: "auto" }}>
