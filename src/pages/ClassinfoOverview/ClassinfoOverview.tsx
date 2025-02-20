@@ -18,48 +18,14 @@ import { Nullable } from "primereact/ts-helpers";
 import { Accordion, AccordionTab } from "primereact/accordion";
 import { Row } from "primereact/row";
 
-interface Customer {
-  StudentBatch?: String;
-  StudentClassMode?: String;
-  ThearpyAttend?: String;
-  TotalThearpyClassCount?: String;
-  WeekDaysTiming?: String;
-  WeekEndTiming?: String;
-  refBranchId?: String;
-  refCtEmail?: String;
-  refCtMobile?: String;
-  refPackageName?: String;
-  refSCustId?: String;
-  refStFName?: String;
-  refStId?: String;
-  refStLName?: String;
-  refTherapy?: String;
-  totalClassCount?: String;
-  classAttendCount?: String;
-  reCount?: String;
-  // count?:object
-}
-
 type DecryptResult = any;
 const ClassinfoOverview: React.FC = () => {
-  const classData = [
-    {
-      category: "Old",
-      adultMale: 25,
-      adultFemale: 30,
-      kids: 15,
-    },
-  ];
-  const data = [
-    { type: "Old", category: "Adult", male: 1, female: 1 },
-    { type: "Old", category: "Kids", male: 1, female: 1 },
-    { type: "New", category: "Adult", male: 1, female: 1 },
-    { type: "New", category: "Kids", male: 1, female: 1 },
-  ];
   const [toDate, _setToDate] = useState<Nullable<Date>>(new Date());
 
-  const [packageCount, setPackageCount]:any = useState<any>([]);
-  const [PreTimingCount, setPreTimingCount] = useState<any>([]);
+  const [packageCount, setPackageCount]: any = useState<any>([]);
+  const [PreTimingCount, setPreTimingCount]: any = useState<any>([]);
+  const [TherapyCount, setTherapyCount]: any = useState<any>([]);
+  const [TotalCount, setTotalCount]= useState<number>();
 
   const [_refUtId, setUtId] = useState("");
 
@@ -116,21 +82,26 @@ const ClassinfoOverview: React.FC = () => {
         navigate("/expired");
       } else {
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
-        function countPackagesWithStudentTypes(data: any[]): {
+        setTotalCount(data.Data.length)
+        async function countPackagesWithStudentTypes(data: any[]): Promise<{
           package: {
             name: string;
             count: number;
-            studentType?: {
+            studentType: {
               name: string;
               count: number;
-              userType?: {
+              userType: {
                 name: string;
                 count: number;
-                Gender?: { name: string; count: number }[];
+                Gender: { name: string; count: number }[];
               }[];
             }[];
           }[];
-        } {
+        }> {
+          const studentTypes = ["Old", "New"];
+          const userTypes = ["Kids", "Adult"];
+          const genders = ["Male", "Female"];
+
           const packageMap: Record<
             string,
             {
@@ -156,77 +127,210 @@ const ClassinfoOverview: React.FC = () => {
 
             if (!packageMap[packageName]) {
               packageMap[packageName] = { count: 0, studentTypes: {} };
+              studentTypes.forEach((st) => {
+                packageMap[packageName].studentTypes[st] = {
+                  count: 0,
+                  userTypes: {},
+                };
+                userTypes.forEach((ut) => {
+                  packageMap[packageName].studentTypes[st].userTypes[ut] = {
+                    count: 0,
+                    genders: { Male: 0, Female: 0 },
+                  };
+                });
+              });
             }
 
             packageMap[packageName].count += 1;
-
-            if (!packageMap[packageName].studentTypes[studentType]) {
-              packageMap[packageName].studentTypes[studentType] = {
-                count: 0,
-                userTypes: {},
-              };
-            }
-
             packageMap[packageName].studentTypes[studentType].count += 1;
-
-            if (
-              !packageMap[packageName].studentTypes[studentType].userTypes[
-                userType
-              ]
-            ) {
-              packageMap[packageName].studentTypes[studentType].userTypes[
-                userType
-              ] = { count: 0, genders: {} };
-            }
-
-            packageMap[packageName].studentTypes[studentType].userTypes[
-              userType
-            ].count += 1;
-            packageMap[packageName].studentTypes[studentType].userTypes[
-              userType
-            ].genders[gender] =
-              (packageMap[packageName].studentTypes[studentType].userTypes[
-                userType
-              ].genders[gender] || 0) + 1;
+            packageMap[packageName].studentTypes[studentType].userTypes[userType].count += 1;
+            packageMap[packageName].studentTypes[studentType].userTypes[userType].genders[gender] += 1;
           });
 
-          const packageArray = Object.entries(packageMap).map(
-            ([packageName, packageDetails]) => ({
-              name: packageName,
-              count: packageDetails.count,
-              studentType: Object.entries(packageDetails.studentTypes).map(
-                ([studentTypeName, studentTypeDetails]) => ({
-                  name: studentTypeName,
-                  count: studentTypeDetails.count,
-                  userType: Object.entries(studentTypeDetails.userTypes).map(
-                    ([userTypeName, userTypeDetails]) => ({
-                      name: userTypeName,
-                      count: userTypeDetails.count,
-                      Gender: Object.entries(userTypeDetails.genders).map(
-                        ([genderName, count]) => ({
-                          name: genderName,
-                          count,
-                        })
-                      ),
-                    })
-                  ),
-                })
-              ),
-            })
-          );
+          const packageArray = Object.entries(packageMap).map(([packageName, packageDetails]) => ({
+            name: packageName,
+            count: packageDetails.count,
+            studentType: studentTypes.map((studentTypeName) => ({
+              name: studentTypeName,
+              count: packageDetails.studentTypes[studentTypeName].count,
+              userType: userTypes.map((userTypeName) => ({
+                name: userTypeName,
+                count: packageDetails.studentTypes[studentTypeName].userTypes[userTypeName].count,
+                Gender: genders.map((genderName) => ({
+                  name: genderName,
+                  count: packageDetails.studentTypes[studentTypeName].userTypes[userTypeName].genders[genderName],
+                })),
+              })),
+            })),
+          }));
 
           return { package: packageArray };
         }
-        const count: any = countPackagesWithStudentTypes(data.Data);
-        console.log("count line ------ 222", count.package);
+        const count: any = await countPackagesWithStudentTypes(data.Data);
+
+        async function countWeekTimingsWithStudentTypes(data: any[]): Promise<{
+          WeekTimings: {
+            name: string;
+            count: number;
+            studentType: {
+              name: string;
+              count: number;
+              userType: {
+                name: string;
+                count: number;
+                Gender: { name: string; count: number }[];
+              }[];
+            }[];
+          }[];
+        }> {
+          const studentTypes = ["Old", "New"];
+          const userTypes = ["Kids", "Adult"];
+          const genders = ["Male", "Female"];
+
+          const timingMap: Record<
+            string,
+            {
+              count: number;
+              studentTypes: Record<
+                string,
+                {
+                  count: number;
+                  userTypes: Record<
+                    string,
+                    { count: number; genders: Record<string, number> }
+                  >;
+                }
+              >;
+            }
+          > = {};
+
+          data.forEach((item) => {
+            const timings = [item.WeekDaysTiming, item.WeekEndTiming].filter(Boolean);
+            const studentType = item.studentType;
+            const userType = item.userType;
+            const gender = item.refStSex;
+
+            timings.forEach((timing) => {
+              if (!timingMap[timing]) {
+                timingMap[timing] = { count: 0, studentTypes: {} };
+                studentTypes.forEach((st) => {
+                  timingMap[timing].studentTypes[st] = {
+                    count: 0,
+                    userTypes: {},
+                  };
+                  userTypes.forEach((ut) => {
+                    timingMap[timing].studentTypes[st].userTypes[ut] = {
+                      count: 0,
+                      genders: { Male: 0, Female: 0 },
+                    };
+                  });
+                });
+              }
+
+              timingMap[timing].count += 1;
+              timingMap[timing].studentTypes[studentType].count += 1;
+              timingMap[timing].studentTypes[studentType].userTypes[userType].count += 1;
+              timingMap[timing].studentTypes[studentType].userTypes[userType].genders[gender] += 1;
+            });
+          });
+
+          const timingArray = Object.entries(timingMap).map(([timingName, timingDetails]) => ({
+            name: timingName,
+            count: timingDetails.count,
+            studentType: studentTypes.map((studentTypeName) => ({
+              name: studentTypeName,
+              count: timingDetails.studentTypes[studentTypeName].count,
+              userType: userTypes.map((userTypeName) => ({
+                name: userTypeName,
+                count: timingDetails.studentTypes[studentTypeName].userTypes[userTypeName].count,
+                Gender: genders.map((genderName) => ({
+                  name: genderName,
+                  count: timingDetails.studentTypes[studentTypeName].userTypes[userTypeName].genders[genderName],
+                })),
+              })),
+            })),
+          }));
+
+          return { WeekTimings: timingArray };
+        }
+        const count1: any = await countWeekTimingsWithStudentTypes(data.Data);
+
+        async function countPendingTherapySessions(data: any[]): Promise<{
+          Therapy: {
+            name: string;
+            count: number;
+            userType: {
+              name: string;
+              count: number;
+              Gender: { name: string; count: number }[];
+            }[];
+          }[];
+        }> {
+          const userTypes = ["Kids", "Adult"];
+          const genders = ["Male", "Female"];
+        
+          const therapyMap: Record<
+            string,
+            {
+              count: number;
+              userTypes: Record<string, { count: number; genders: Record<string, number> }>;
+            }
+          > = {};
+        
+          // Process data
+          data.forEach((item) => {
+            const therapy = item.refTherapy;
+            const totalTherapy = item.TotalThearpyClassCount ? Number(item.TotalThearpyClassCount) : 0;
+            const attendTherapy = item.ThearpyAttend ? Number(item.ThearpyAttend) : 0;
+            const userType = item.userType;
+            const gender = item.refStSex;
+        
+            if (therapy === "Yes" && totalTherapy > attendTherapy) {
+              if (!therapyMap[therapy]) {
+                therapyMap[therapy] = { count: 0, userTypes: {} };
+                userTypes.forEach((ut) => {
+                  therapyMap[therapy].userTypes[ut] = { count: 0, genders: { Male: 0, Female: 0 } };
+                });
+              }
+        
+              therapyMap[therapy].count += 1;
+              therapyMap[therapy].userTypes[userType].count += 1;
+              therapyMap[therapy].userTypes[userType].genders[gender] += 1;
+            }
+          });
+        
+          // Convert to structured format
+          const therapyArray = Object.entries(therapyMap).map(([therapyName, therapyDetails]) => ({
+            name: therapyName,
+            count: therapyDetails.count,
+            userType: userTypes.map((userTypeName) => ({
+              name: userTypeName,
+              count: therapyDetails.userTypes[userTypeName].count,
+              Gender: genders.map((genderName) => ({
+                name: genderName,
+                count: therapyDetails.userTypes[userTypeName].genders[genderName],
+              })),
+            })),
+          }));
+        
+          return { Therapy: therapyArray };
+        }
+        
+        // **Usage with `await`**
+        const count2: any = await countPendingTherapySessions(data.Data);
+        
+        console.log('count2 line ------ 317', count2)
+
+
+        setPreTimingCount(count1.WeekTimings)
         setPackageCount(count.package);
+        setTherapyCount(count2.Therapy)
       }
     } catch (error) {
       console.error("Error fetching user details:", error);
     }
   };
 
-  // Function to format date to yyyy-mm-dd
   const formatDate = (date: any) => {
     if (!date) return null;
     const year = date.getFullYear();
@@ -240,14 +344,12 @@ const ClassinfoOverview: React.FC = () => {
     if (token) {
       setUtId(token);
     }
-
-    console.log("********************", toDate ? toDate : new Date());
     handleDateChange(toDate ? toDate : new Date());
   }, []);
   return (
     <div>
       <div>
-        <div className="flex flex justify-between -mt-3">
+        <div className="flex justify-between -mt-3">
           {" "}
           <div className="flex flex-row gap`-5">
             <Calendar
@@ -260,9 +362,8 @@ const ClassinfoOverview: React.FC = () => {
               placeholder="Select Month"
             />
             <div>
-              <p className="font-bold mt-2">
-                Total Class Count:{" "}
-                {/* {customers.length > 0 ? customers[0].totalClassCount : "N/A"} */}
+              <p className="font-bold mt-2 ml-3">
+                Total Class Count: {TotalCount}
               </p>
             </div>
           </div>
@@ -278,246 +379,247 @@ const ClassinfoOverview: React.FC = () => {
               <div className="card">
 
                 {
-                  packageCount.map((element:any,index:any)=>(
+                  packageCount.map((element: any, index: any) => (
                     <Accordion activeIndex={1}>
-                    <AccordionTab
-                      header={
-                        <div className="flex items-center gap-4">
-                          <span className="font-bold text-lg text-[#f95005]">
-                            {element.name}
-                          </span>
-
-                          <span className="text-gray-600 text-md">
-                            Count:{" "}
-                            <span className="font-semibold text-gray-600">
-                              {element.count}
+                      <AccordionTab
+                        header={
+                          <div className="flex items-center gap-4">
+                            <span className="font-bold text-lg text-[#f95005]">
+                              {element.name}
                             </span>
-                          </span>
-                        </div>
-                      }
-                    >
-                      <div className="w-full">
-                        <table className="w-full border-collapse border border-gray-300">
-                          <thead>
-                            <tr className="bg-gray-200 text-center font-bold ">
-                              <th className="border border-gray-300 p-1 w-[full]" colSpan={2}>
-                                Old -1
-                              </th>
-                              <th className="border border-gray-300 p-1 w-[full]" colSpan={2}>
-                                New -1
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr className="bg-gray-100 font-semibold text-center">
-                              <td className="border border-gray-300 ">A - 1</td>
-                              <td className="border border-gray-300 p-1">
-                                K - 2{" "}
-                              </td>
-                              <td className="border border-gray-300 p-1">
-                                A - 1
-                              </td>
-                              <td className="border border-gray-300 p-1">
-                                K - 2{" "}
-                              </td>
-                            </tr>
-                            <tr className=" text-center">
-                              <td className="border border-gray-300 p-1">
-                                M - 1
-                              </td>
-                              <td className="border border-gray-300 p-1">
-                                M - 1
-                              </td>
-                              <td className="border border-gray-300 p-1">
-                                M - 1
-                              </td>
-                              <td className="border border-gray-300 p-1">
-                                M - 1
-                              </td>
-                            </tr>
-                            <tr className=" text-center">
-                              <td className="border border-gray-300 p-1">
-                                F - 1
-                              </td>
-                              <td className="border border-gray-300 p-1">
-                                F - 1
-                              </td>
-                              <td className="border border-gray-300 p-1">
-                                F - 1
-                              </td>
-                              <td className="border border-gray-300 p-1">
-                                F - 1
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>{" "}
-                    </AccordionTab>
-                  </Accordion>
+
+                            <span className="text-gray-600 text-md">
+                              Count:{" "}
+                              <span className="font-semibold text-gray-600">
+                                {element.count}
+                              </span>
+                            </span>
+                          </div>
+                        }
+                      >
+                        <div className="w-full">
+                          <table className="w-full border-collapse border border-gray-300">
+                            <thead>
+                              <tr className="bg-gray-200 text-center font-bold ">
+                                <th className="border border-gray-300 p-1 w-[full]" colSpan={2}>
+                                  {element.studentType[0].name} - {element.studentType[0].count}
+                                </th>
+                                <th className="border border-gray-300 p-1 w-[full]" colSpan={2}>
+                                  {element.studentType[1].name} - {element.studentType[1].count}
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr className="bg-gray-100 font-semibold text-center">
+                                <td className="border border-gray-300 ">
+                                  {element.studentType[0].userType[0].name == "Kids" ? "K" : "A"} - {element.studentType[0].userType[0].count}
+                                </td>
+                                <td className="border border-gray-300 p-1">
+                                  {element.studentType[0].userType[1].name == "Adult" ? "A" : "K"} - {element.studentType[0].userType[1].count}
+
+                                </td>
+                                <td className="border border-gray-300 p-1">
+                                  {element.studentType[1].userType[0].name == "Kids" ? "K" : "A"} - {element.studentType[1].userType[0].count}
+                                </td>
+                                <td className="border border-gray-300 p-1">
+                                  {element.studentType[1].userType[1].name == "Adult" ? "A" : "K"} - {element.studentType[1].userType[1].count}
+                                </td>
+                              </tr>
+                              <tr className=" text-center">
+                                <td className="border border-gray-300 p-1">
+                                  {element.studentType[0].userType[0].Gender[0].name == "Male" ? "M" : "F"} - {element.studentType[0].userType[0].Gender[0].count}
+                                </td>
+                                <td className="border border-gray-300 p-1">
+                                  {element.studentType[0].userType[1].Gender[0].name == "Male" ? "M" : "F"} - {element.studentType[0].userType[1].Gender[0].count}
+                                </td>
+                                <td className="border border-gray-300 p-1">
+                                  {element.studentType[1].userType[0].Gender[0].name == "Male" ? "M" : "F"} - {element.studentType[1].userType[0].Gender[0].count}
+                                </td>
+                                <td className="border border-gray-300 p-1">
+                                  {element.studentType[1].userType[1].Gender[0].name == "Male" ? "M" : "F"} - {element.studentType[1].userType[1].Gender[0].count}
+                                </td>
+                              </tr>
+                              <tr className=" text-center">
+                                <td className="border border-gray-300 p-1">
+                                  {element.studentType[0].userType[0].Gender[1].name == "Male" ? "M" : "F"} - {element.studentType[0].userType[0].Gender[1].count}
+                                </td>
+                                <td className="border border-gray-300 p-1">
+                                  {element.studentType[0].userType[1].Gender[1].name == "Male" ? "M" : "F"} - {element.studentType[0].userType[1].Gender[1].count}
+                                </td>
+                                <td className="border border-gray-300 p-1">
+                                  {element.studentType[1].userType[0].Gender[1].name == "Male" ? "M" : "F"} - {element.studentType[1].userType[0].Gender[1].count}
+                                </td>
+                                <td className="border border-gray-300 p-1">
+                                  {element.studentType[1].userType[1].Gender[1].name == "Male" ? "M" : "F"} - {element.studentType[1].userType[1].Gender[1].count}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>{" "}
+                      </AccordionTab>
+                    </Accordion>
                   ))
                 }
 
-              
+
 
               </div>
             </div>
 
             <div className="w-[40%] h-[max-content] bg-white shadow-lg rounded-xl p-4 ">
-              <Accordion activeIndex={1}>
-                <AccordionTab
-                  header={
-                    <div className="flex items-center gap-4">
-                      <span className="font-bold text-lg text-[#f95005]">
-                        Class Timing
-                      </span>
+              <div className="card">
+                {
+                  PreTimingCount.map((element: any, index: any) => (
+                    <Accordion activeIndex={1}>
+                      <AccordionTab
+                        header={
+                          <div className="flex items-center gap-4">
+                            <span className="font-bold text-lg text-[#f95005]">
+                              {element.name}
+                            </span>
 
-                      <span className="text-gray-600 text-md">
-                        Count:{" "}
-                        <span className="font-semibold text-gray-600">101</span>
-                      </span>
-                    </div>
-                  }
-                >
-                  <div className="w-full">
-                    <table className="w-full border-collapse border border-gray-300">
-                      <thead>
-                        <tr className="bg-gray-200 text-center font-bold ">
-                          <th className="border border-gray-300 p-1 w-[full]">
-                            Old
-                          </th>
-                          <th className="border border-gray-300 p-1 w-[full]">
-                            Count:1
-                          </th>
+                            <span className="text-gray-600 text-md">
+                              Count:{" "}
+                              <span className="font-semibold text-gray-600">
+                                {element.count}
+                              </span>
+                            </span>
+                          </div>
+                        }
+                      >
+                        <div className="w-full">
+                          <table className="w-full border-collapse border border-gray-300">
+                            <thead>
+                              <tr className="bg-gray-200 text-center font-bold ">
+                                <th className="border border-gray-300 p-1 w-[full]" colSpan={2}>
+                                  {element.studentType[0].name} - {element.studentType[0].count}
+                                </th>
+                                <th className="border border-gray-300 p-1 w-[full]" colSpan={2}>
+                                  {element.studentType[1].name} - {element.studentType[1].count}
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr className="bg-gray-100 font-semibold text-center">
+                                <td className="border border-gray-300 ">
+                                  {element.studentType[0].userType[0].name == "Kids" ? "K" : "A"} - {element.studentType[0].userType[0].count}
+                                </td>
+                                <td className="border border-gray-300 p-1">
+                                  {element.studentType[0].userType[1].name == "Adult" ? "A" : "K"} - {element.studentType[0].userType[1].count}
 
-                          <th className="border border-gray-300 p-1">New</th>
-                          <th className="border border-gray-300 p-1 ">
-                            Count:1
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr className="bg-gray-100 font-semibold text-center">
-                          <td className="border border-gray-300 ">A - 1</td>
-                          <td className="border border-gray-300 p-1">K - 2 </td>
-                          <td className="border border-gray-300 p-1">A - 1</td>
-                          <td className="border border-gray-300 p-1">K - 2 </td>
-                        </tr>
-                        <tr className=" text-center">
-                          <td className="border border-gray-300 p-1">M - 1</td>
-                          <td className="border border-gray-300 p-1">M - 1</td>
-                          <td className="border border-gray-300 p-1">M - 1</td>
-                          <td className="border border-gray-300 p-1">M - 1</td>
-                        </tr>
-                        <tr className=" text-center">
-                          <td className="border border-gray-300 p-1">F - 1</td>
-                          <td className="border border-gray-300 p-1">F - 1</td>
-                          <td className="border border-gray-300 p-1">F - 1</td>
-                          <td className="border border-gray-300 p-1">F - 1</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>{" "}
-                </AccordionTab>
-              </Accordion>
-              <Accordion activeIndex={1}>
-                <AccordionTab
-                  header={
-                    <div className="flex items-center gap-4">
-                      <span className="font-bold text-lg text-[#f95005]">
-                        Class Timing
-                      </span>
+                                </td>
+                                <td className="border border-gray-300 p-1">
+                                  {element.studentType[1].userType[0].name == "Kids" ? "K" : "A"} - {element.studentType[1].userType[0].count}
+                                </td>
+                                <td className="border border-gray-300 p-1">
+                                  {element.studentType[1].userType[1].name == "Adult" ? "A" : "K"} - {element.studentType[1].userType[1].count}
+                                </td>
+                              </tr>
+                              <tr className=" text-center">
+                                <td className="border border-gray-300 p-1">
+                                  {element.studentType[0].userType[0].Gender[0].name == "Male" ? "M" : "F"} - {element.studentType[0].userType[0].Gender[0].count}
+                                </td>
+                                <td className="border border-gray-300 p-1">
+                                  {element.studentType[0].userType[1].Gender[0].name == "Male" ? "M" : "F"} - {element.studentType[0].userType[1].Gender[0].count}
+                                </td>
+                                <td className="border border-gray-300 p-1">
+                                  {element.studentType[1].userType[0].Gender[0].name == "Male" ? "M" : "F"} - {element.studentType[1].userType[0].Gender[0].count}
+                                </td>
+                                <td className="border border-gray-300 p-1">
+                                  {element.studentType[1].userType[1].Gender[0].name == "Male" ? "M" : "F"} - {element.studentType[1].userType[1].Gender[0].count}
+                                </td>
+                              </tr>
+                              <tr className=" text-center">
+                                <td className="border border-gray-300 p-1">
+                                  {element.studentType[0].userType[0].Gender[1].name == "Male" ? "M" : "F"} - {element.studentType[0].userType[0].Gender[1].count}
+                                </td>
+                                <td className="border border-gray-300 p-1">
+                                  {element.studentType[0].userType[1].Gender[1].name == "Male" ? "M" : "F"} - {element.studentType[0].userType[1].Gender[1].count}
+                                </td>
+                                <td className="border border-gray-300 p-1">
+                                  {element.studentType[1].userType[0].Gender[1].name == "Male" ? "M" : "F"} - {element.studentType[1].userType[0].Gender[1].count}
+                                </td>
+                                <td className="border border-gray-300 p-1">
+                                  {element.studentType[1].userType[1].Gender[1].name == "Male" ? "M" : "F"} - {element.studentType[1].userType[1].Gender[1].count}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>{" "}
+                      </AccordionTab>
+                    </Accordion>
+                  ))
+                }
 
-                      <span className="text-gray-600 text-md">
-                        Count:{" "}
-                        <span className="font-semibold text-gray-600">101</span>
-                      </span>
-                    </div>
-                  }
-                >
-                  <div className="w-full">
-                    <table className="w-full border-collapse border border-gray-300">
-                      <thead>
-                        <tr className="bg-gray-200 text-center font-bold ">
-                          <th className="border border-gray-300 p-1 w-[full]">
-                            Old
-                          </th>
-                          <th className="border border-gray-300 p-1 w-[full]">
-                            Count:1
-                          </th>
 
-                          <th className="border border-gray-300 p-1">New</th>
-                          <th className="border border-gray-300 p-1 ">
-                            Count:1
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr className="bg-gray-100 font-semibold text-center">
-                          <td className="border border-gray-300 ">A - 1</td>
-                          <td className="border border-gray-300 p-1">K - 2 </td>
-                          <td className="border border-gray-300 p-1">A - 1</td>
-                          <td className="border border-gray-300 p-1">K - 2 </td>
-                        </tr>
-                        <tr className=" text-center">
-                          <td className="border border-gray-300 p-1">M - 1</td>
-                          <td className="border border-gray-300 p-1">M - 1</td>
-                          <td className="border border-gray-300 p-1">M - 1</td>
-                          <td className="border border-gray-300 p-1">M - 1</td>
-                        </tr>
-                        <tr className=" text-center">
-                          <td className="border border-gray-300 p-1">F - 1</td>
-                          <td className="border border-gray-300 p-1">F - 1</td>
-                          <td className="border border-gray-300 p-1">F - 1</td>
-                          <td className="border border-gray-300 p-1">F - 1</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>{" "}
-                </AccordionTab>
-              </Accordion>
+
+              </div>
             </div>
             <div className="w-[40%] h-[max-content] bg-white shadow-lg rounded-xl p-4 ">
-              <Accordion activeIndex={1}>
-                <AccordionTab
-                  header={
-                    <div className="flex items-center gap-4">
-                      <span className="font-bold text-lg text-[#f95005]">
-                        Therapy
-                      </span>
+              <div className="card">
+                {
+                  TherapyCount.map((element: any, index: any) => (
+                    <Accordion activeIndex={1}>
+                      <AccordionTab
+                        header={
+                          <div className="flex items-center gap-4">
+                            <span className="font-bold text-lg text-[#f95005]">
+                              Therapy
+                            </span>
 
-                      <span className="text-gray-600 text-md">
-                        Count:{" "}
-                        <span className="font-semibold text-gray-600">101</span>
-                      </span>
-                    </div>
-                  }
-                >
-                  <div className="w-full">
-                    <table className="w-full border-collapse border border-gray-300">
-                      <tbody>
-                        <tr className="bg-gray-100 font-semibold text-center">
-                          <td className="border border-gray-300 ">A - 1</td>
-                          <td className="border border-gray-300 p-1">K - 2 </td>
-                          <td className="border border-gray-300 p-1">A - 1</td>
-                          <td className="border border-gray-300 p-1">K - 2 </td>
-                        </tr>
-                        <tr className=" text-center">
-                          <td className="border border-gray-300 p-1">M - 1</td>
-                          <td className="border border-gray-300 p-1">M - 1</td>
-                          <td className="border border-gray-300 p-1">M - 1</td>
-                          <td className="border border-gray-300 p-1">M - 1</td>
-                        </tr>
-                        <tr className=" text-center">
-                          <td className="border border-gray-300 p-1">F - 1</td>
-                          <td className="border border-gray-300 p-1">F - 1</td>
-                          <td className="border border-gray-300 p-1">F - 1</td>
-                          <td className="border border-gray-300 p-1">F - 1</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>{" "}
-                </AccordionTab>
-              </Accordion>
+                            <span className="text-gray-600 text-md">
+                              Count:{" "}
+                              <span className="font-semibold text-gray-600">
+                                {element.count}
+                              </span>
+                            </span>
+                          </div>
+                        }
+                      >
+                        <div className="w-full">
+                          <table className="w-full border-collapse border border-gray-300">
+                            <tbody>
+                              <tr className="bg-gray-100 font-semibold text-center">
+                                <td className="border border-gray-300 ">
+                                  {element.userType[0].name == "Kids" ? "K" : "A"} - {element.userType[0].count}
+                                </td>
+                                
+                                <td className="border border-gray-300 p-1">
+                                  {element.userType[1].name == "Kids" ? "K" : "A"} - {element.userType[1].count}
+                                </td>
+                               
+                              </tr>
+                              <tr className=" text-center">
+                                <td className="border border-gray-300 p-1">
+                                  {element.userType[0].Gender[0].name == "Male" ? "M" : "F"} - {element.userType[0].Gender[0].count}
+                                </td>
+                                
+                                <td className="border border-gray-300 p-1">
+                                  {element.userType[1].Gender[0].name == "Male" ? "M" : "F"} - {element.userType[1].Gender[0].count}
+                                </td>
+                                
+                              </tr>
+                              <tr className=" text-center">
+                                <td className="border border-gray-300 p-1">
+                                  {element.userType[0].Gender[1].name == "Male" ? "M" : "F"} - {element.userType[0].Gender[1].count}
+                                </td>
+                                
+                                <td className="border border-gray-300 p-1">
+                                  {element.userType[1].Gender[1].name == "Male" ? "M" : "F"} - {element.userType[1].Gender[1].count}
+                                </td>
+                                
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>{" "}
+                      </AccordionTab>
+                    </Accordion>
+                  ))
+                }
+
+
+
+              </div>
             </div>
           </div>
         </div>
