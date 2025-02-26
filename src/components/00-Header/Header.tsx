@@ -6,7 +6,7 @@ import { SlOrganization } from "react-icons/sl";
 import { IoIosLogOut, IoMdMenu } from "react-icons/io";
 
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import logo from "../../assets/Images/Logo/logo.png"
+import logo from "../../assets/Images/Logo/logo.png";
 
 import "./Header.css";
 import Expired from "../../pages/Expired/Expired";
@@ -124,6 +124,11 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
       icon: <User />,
     },
     {
+      path: "/staff/payment",
+      name: "Payment",
+      icon: <IndianRupee />,
+    },
+    {
       path: "/staff/attendance",
       name: "Attendance",
       icon: <LibraryBig />,
@@ -188,7 +193,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
       name: "ClassInfo",
       icon: <MdOutlineClass />,
     },
-    
+
     {
       path: "/staff/signedupUsers",
       name: "Signed Up Users",
@@ -652,7 +657,12 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
 
               <img src={logo} className="lg:w-[5%] w-[65px] ms-3" alt="" />
 
-              <p className="text-[#f95005]" style={{ color: "#f95005", marginRight: "5%" }}>Logged in as: Student</p>
+              <p
+                className="text-[#f95005]"
+                style={{ color: "#f95005", marginRight: "5%" }}
+              >
+                Logged in as: Student
+              </p>
             </div>
             {children}
           </div>

@@ -351,7 +351,7 @@ const Browsher: React.FC = () => {
                 }
             />
             <Button
-                label="Upload"
+                label="Change"
                 className="p-button-success"
                 onClick={() =>
                     document
@@ -610,7 +610,7 @@ const Browsher: React.FC = () => {
                                         required
                                     />
 
-                                    <div className="w-[30%]">
+                                    <div className="w-[100%] flex gap-4">
                                         {/* File input (hidden) */}
                                         <input
                                             type="file"
@@ -631,7 +631,7 @@ const Browsher: React.FC = () => {
                                         {/* Button to select the image */}
                                         <Button
                                             label="Select Image"
-                                            className="p-button-success w-[55%] mx-2"
+                                            className="p-button-success "
                                             onClick={() => {
                                                 if (!branch) {
                                                     // Show a validation message if no branch is selected
@@ -652,7 +652,7 @@ const Browsher: React.FC = () => {
                                         {/* Close button */}
                                         <Button
                                             label="Close"
-                                            className="p-button-danger w-[35%]"
+                                            className="p-button-danger w-[35%] "
                                             onClick={() => {
                                                 setBranch(undefined);
                                                 setAddBtn(false);

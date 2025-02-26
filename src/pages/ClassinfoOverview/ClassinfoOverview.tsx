@@ -183,6 +183,7 @@ const ClassinfoOverview: React.FC = () => {
           return { package: packageArray };
         }
         const count: any = await countPackagesWithStudentTypes(data.Data);
+        console.log('count', count)
 
         async function countWeekTimingsWithStudentTypes(data: any[]): Promise<{
           WeekTimings: {
@@ -284,6 +285,7 @@ const ClassinfoOverview: React.FC = () => {
           return { WeekTimings: timingArray };
         }
         const count1: any = await countWeekTimingsWithStudentTypes(data.Data);
+        console.log('count1', count1)
 
         async function countPendingTherapySessionsAsync(data: any[]): Promise<{
           Therapy: {
@@ -367,6 +369,7 @@ const ClassinfoOverview: React.FC = () => {
 
         // **Usage with `await`**
         const count2: any = await countPendingTherapySessionsAsync(data.Data);
+        console.log('count2', count2)
 
         console.log("count2 line ------ 317", count2);
 

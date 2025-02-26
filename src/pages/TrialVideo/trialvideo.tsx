@@ -192,7 +192,7 @@ const TrialVideo: React.FC = () => {
     return (
         <div>
             <Toast ref={toast} />
-            <h2>Trial Video</h2>
+            <h2>Intro Video</h2>
             <div className="flex flex-wrap justify-center gap-5 mt-10">
                 {introData.map((video) => (
                     <div
@@ -224,7 +224,7 @@ const TrialVideo: React.FC = () => {
                             <button
                                 className="w-[80%] py-[2%] bg-green-500 border-transparent rounded-lg text-[#ffffff] text-[15px]"
                                 onClick={() => document.getElementById(`uploadVideo-${video.refVdId}`)!.click()}>
-                                Upload
+                               Change
                             </button>
                             <input
                                 type="file"

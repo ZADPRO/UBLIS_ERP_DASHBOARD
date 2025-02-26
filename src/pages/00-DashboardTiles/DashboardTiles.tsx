@@ -360,8 +360,8 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
         {value === "Tiles" && (
           <div>
             <div className="userDashboard grid-container">
-
-              <Link
+            {(localStorage.getItem("refUtId") === "7" || localStorage.getItem("refUtId") === "4" || localStorage.getItem("refUtId") === "12")  && (
+            <Link
                 to="/staff/signedupUsers"
                 style={{ textDecoration: "none", color: "inherit" }}
               >
@@ -383,6 +383,8 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
                   </div>
                 </div>
               </Link>
+            )}
+              
               {localStorage.getItem("refUtId") !== "4" && (
                 <Link
                   to="/therapist/approve"
@@ -408,28 +410,31 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
                 </Link>
               )}
 
-              <Link
-                to="/staff/registeredUsers"
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <div className="grid-item">
-                  <div className="card">
-                    <Fieldset legend="Future Clients & Payment">
-                      <div className="leaveBalance">
-                        <div className="consumed">
-                          <p>{trailCount.Trial}</p>
-                          <p>Registered Count</p>
-                        </div>
-                        <Divider layout="vertical" />
-                        <div className="balance">
-                          <p>{trailCount.FeesPending}</p>
-                          <p>Fees Pending</p>
-                        </div>
-                      </div>
-                    </Fieldset>
-                  </div>
-                </div>
-              </Link>
+                {(localStorage.getItem("refUtId") === "7" || localStorage.getItem("refUtId") === "4" || localStorage.getItem("refUtId") === "12")  && (
+                   <Link
+                   to="/staff/registeredUsers"
+                   style={{ textDecoration: "none", color: "inherit" }}
+                 >
+                   <div className="grid-item">
+                     <div className="card">
+                       <Fieldset legend="Future Clients & Payment">
+                         <div className="leaveBalance">
+                           <div className="consumed">
+                             <p>{trailCount.Trial}</p>
+                             <p>Registered Count</p>
+                           </div>
+                           <Divider layout="vertical" />
+                           <div className="balance">
+                             <p>{trailCount.FeesPending}</p>
+                             <p>Fees Pending</p>
+                           </div>
+                         </div>
+                       </Fieldset>
+                     </div>
+                   </div>
+                 </Link>
+                  )}
+             
 
               {(localStorage.getItem("refUtId") === "7" || localStorage.getItem("refUtId") === "12") && (
                 <Link
