@@ -36,6 +36,7 @@ import UserPayment from "./components/41-UserPayment/UserPayment";
 import IntroVideo from "./pages/03-IntroVideo/IntroVideo";
 
 import ClassInfoDetails from "./components/11-ClassInfodetails/ClassInfoDetails";
+import Onlineclass from "./components/12-OnlineClass/Onlineclass";
 
 const App = () => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -75,7 +76,8 @@ const App = () => {
           <Route path="/dir/staff" element={<StaffData />} />
           <Route path="/dir/notify" element={<Notifications />} />
           <Route path="/assignnotes" element={<AssignNotes />} />
-
+          <Route path="//staff/onlineclass" element={<Onlineclass/>} />
+          
           <Route path="/staff/signedupUsers" element={<Users />} />
           <Route path="/dir/organization" element={<Organization />} />
           <Route path="/therapist/approve" element={<Therapist />} />

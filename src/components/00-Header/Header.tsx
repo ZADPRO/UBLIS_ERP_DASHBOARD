@@ -15,6 +15,7 @@ import { Sidebar } from "primereact/sidebar";
 import { Button } from "primereact/button";
 import { Divider } from "primereact/divider";
 import { MdOutlineClass } from "react-icons/md";
+import { SiGooglemeet } from "react-icons/si";
 import {
   ArrowRightLeft,
   CircleUser,
@@ -189,6 +190,11 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
       icon: <LibraryBig />,
     },
     {
+      path: "/staff/onlineclass",
+      name: "Online Class",
+      icon: <SiGooglemeet />,
+    },
+    {
       path: "/staff/classinfo",
       name: "ClassInfo",
       icon: <MdOutlineClass />,
@@ -292,6 +298,11 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
       path: "/staff/attendance",
       name: "Attendance",
       icon: <LibraryBig />,
+    },
+    {
+      path: "/staff/onlineclass",
+      name: "Online Class",
+      icon: <SiGooglemeet />,
     },
     {
       path: "/staff/classinfo",
@@ -595,6 +606,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
                     <Ripple />
                   </a>
                 </li>
+               
                 <li onClick={() => showWarn()}>
                   <a className="p-ripple flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors w-full">
                     <LibraryBig size={20} />{" "}

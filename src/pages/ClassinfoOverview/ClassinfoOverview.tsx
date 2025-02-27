@@ -183,7 +183,7 @@ const ClassinfoOverview: React.FC = () => {
           return { package: packageArray };
         }
         const count: any = await countPackagesWithStudentTypes(data.Data);
-        console.log('count', count)
+        console.log("count", count);
 
         async function countWeekTimingsWithStudentTypes(data: any[]): Promise<{
           WeekTimings: {
@@ -285,7 +285,7 @@ const ClassinfoOverview: React.FC = () => {
           return { WeekTimings: timingArray };
         }
         const count1: any = await countWeekTimingsWithStudentTypes(data.Data);
-        console.log('count1', count1)
+        console.log("count1", count1);
 
         async function countPendingTherapySessionsAsync(data: any[]): Promise<{
           Therapy: {
@@ -369,7 +369,7 @@ const ClassinfoOverview: React.FC = () => {
 
         // **Usage with `await`**
         const count2: any = await countPendingTherapySessionsAsync(data.Data);
-        console.log('count2', count2)
+        console.log("count2", count2);
 
         console.log("count2 line ------ 317", count2);
 
@@ -606,7 +606,7 @@ const ClassinfoOverview: React.FC = () => {
             </div>
 
             <div className="w-[40%] h-[40vh] bg-white shadow-sm rounded-xl p-4 overflow-hidden">
-            <div className="font-bold">Class Timing</div>
+              <div className="font-bold">Class Timing</div>
               <div className="card h-full overflow-y-auto">
                 {PreTimingCount.map((element: any, index: any) => (
                   <Accordion
@@ -784,7 +784,7 @@ const ClassinfoOverview: React.FC = () => {
               </div>
             </div>
             <div className="w-[40%] h-[40vh] bg-white shadow-sm rounded-xl p-4 overflow-hidden">
-            <div className="font-bold">Therapy</div>
+              <div className="font-bold">Therapy</div>
               <div className="card h-full overflow-y-auto">
                 {TherapyCount.map((element: any, index: any) => (
                   <Accordion
