@@ -8,7 +8,7 @@ import CryptoJS from "crypto-js";
 import Axios from "axios";
 import { Button } from "primereact/button";
 import { Divider } from "primereact/divider";
-import { DataTable, DataTableExpandedRows } from "primereact/datatable";
+import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { MdDelete } from "react-icons/md";
 import { Sidebar } from "primereact/sidebar";
@@ -16,12 +16,32 @@ import { Sidebar } from "primereact/sidebar";
 import { IoAdd } from "react-icons/io5";
 import { InputText } from "primereact/inputtext";
 import { Calendar } from "primereact/calendar";
+import { Nullable } from "primereact/ts-helpers";
+
+import { Dropdown } from "primereact/dropdown";
+import GMeetMembersSidebar from "../../pages/GMeetMembersSidebar/GMeetMembersSidebar";
 
 interface GoogleWorkspaceInterface {
   meetingId: number;
-  meetingName: string;
-  dummy1: string;
-  dummy2: string;
+  meetingtitle: string;
+  meetinglink: string;
+  meetingdate: string;
+  meetingtype: string;
+  meetingremove: string;
+}
+
+interface SelectedMeeting {
+  refBranchName: string;
+  refCreatedDate: string;
+  refEndTime: string;
+  refGoogleMeetId: string;
+  refMLTypeName: string;
+  refMeetEnd: string;
+  refMeetStartFrom: string;
+  refMeetingDescription: string;
+  refMeetingLink: string;
+  refMeetingTitle: string;
+  refStartTime: string;
 }
 
 const Onlineclass: React.FC = () => {
@@ -35,35 +55,32 @@ const Onlineclass: React.FC = () => {
     usernameid: "",
     profileimg: { contentType: "", content: "" },
   });
-  const [changes, setChnages] = useState(false);
-  const [showDescription, setShowDescription] = useState(false);
+  const [showEmail, setShowEmail] = useState(false);
 
-  const [googleWorkspaceLink, setGoogleWorkspaceLink] = useState<
-    GoogleWorkspaceInterface[]
-  >([]);
-  const [expandedRows, setExpandedRows] = useState<
-    DataTableExpandedRows | GoogleWorkspaceInterface[]
-  >([]);
+  const [googleWorkspaceLink, setGoogleWorkspaceLink] = useState([]);
   const [visibleLeft, setVisibleLeft] = useState(false);
+  const [googleMeetDesc, setGoogleMeetDesc] = useState(false);
+
   const [meetingDetailsSidebar, setMeetingSidebar] = useState(false);
+  const [individualMeetingSIdebar, setIndividualMeetingSidebar] =
+    useState(null);
+
   const [visibleRight, setVisibleRight] = useState<boolean>(false);
   const [title, setTile] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
   const [startdate, setStartdate] = useState<Date | null>(null);
   const [description, setDescription] = useState<string>("");
   const [enddate, setEnddate] = useState<Date | null>(null);
-  const [datetime12h, setDateTime12h] = useState(null);
+  const [starttime, setStarttime] = useState<Nullable<Date>>(null);
+  const [endtime, setEndtime] = useState<Nullable<Date>>(null);
+
+  // const [branch, setBranch] = useState(null);
+  const [ids, setIds] = useState([]);
+  const [branchtype, setBranchtype] = useState([]);
+  const [MeetingLinkType, setMeetingLinkType] = useState([]);
+  const [branch, setBranch] = useState([]);
 
   useEffect(() => {
-    const data = [
-      {
-        meetingId: 101,
-        meetingName: "Meeting Name 1",
-        dummy1: "Dummy1",
-        dummy2: "Dummy 2",
-      },
-    ];
-    setGoogleWorkspaceLink(data);
+    meetingdetails();
   }, []);
 
   const decrypt = (
@@ -90,6 +107,7 @@ const Onlineclass: React.FC = () => {
     return JSON.parse(decryptedString);
   };
   const navigate = useNavigate();
+
   useEffect(() => {
     Axios.get(import.meta.env.VITE_API_URL + "/validateTokenData", {
       headers: {
@@ -118,29 +136,27 @@ const Onlineclass: React.FC = () => {
           ...pageLoading,
           verifytoken: false,
         });
-
-        console.log("Verify Token  Running --- ");
       }
     });
   }, []);
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768); // Set mobile view if width <= 768px
+      setIsMobile(window.innerWidth <= 768);
     };
 
-    handleResize(); // Check initial screen size
-    window.addEventListener("resize", handleResize); // Add resize listener
+    handleResize();
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener("resize", handleResize); // Clean up listener
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
   const onUserIdClick = (id: string, rowData: string) => {
     setVisibleLeft(true);
   };
 
-  const [selectedMeeting, setSelectedMeeting] = useState(null);
+  const [selectedMeeting, setSelectedMeeting] = useState<SelectedMeeting>();
 
   const onMeetingClick = (rowData: any) => {
     setSelectedMeeting(rowData);
@@ -154,21 +170,208 @@ const Onlineclass: React.FC = () => {
     />
   );
 
-  const [emails, setEmails] = useState(['']); // Initialize with one empty email
+  const [emails, setEmails]: any = useState([]);
 
   const handleAddEmail = () => {
-    setEmails([...emails, '']); // Add a new empty email to the array
+    setShowEmail(true);
+    setEmails([...emails, { email: "" }]); // Add an empty object with an email field
   };
 
-  const handleEmailChange = (index, value) => {
-    const newEmails = [...emails];
-    newEmails[index] = value;
-    setEmails(newEmails);
+  const handleEmailChange = (index: number, value: string) => {
+    const updatedEmails = [...emails]; // Create a copy of the emails array
+    updatedEmails[index].email = value; // Update the email at the specified index
+    setEmails(updatedEmails); // Update the state with the modified array
   };
 
-  const handleDeleteEmail = (index) => {
-    const newEmails = emails.filter((_, i) => i !== index);
-    setEmails(newEmails);
+  const handleDeleteEmail = (index: number) => {
+    const updatedEmails = emails.filter((_, i) => i !== index); // Remove email at the specified index
+    setEmails(updatedEmails); // Update the state with the filtered array
+  };
+
+  const meetinglinktype = async () => {
+    try {
+      const response = await Axios.get(
+        import.meta.env.VITE_API_URL + `/googleWorkspace/MeetingLinkType`,
+        {
+          headers: {
+            Authorization: localStorage.getItem("JWTtoken"),
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = decrypt(
+        response.data[1],
+        response.data[0],
+        import.meta.env.VITE_ENCRYPTION_KEY
+      );
+
+      if (data.token === false) {
+        navigate("/expired");
+        return;
+      } else {
+        localStorage.setItem("JWTtoken", "Bearer " + data.token);
+
+        const options = data.MeetingType.map((Data: any) => ({
+          label: Data.refMLTypeName,
+          value: Data.refMLinkId,
+        }));
+        setMeetingLinkType(options);
+
+        const options1 = data.branch.map((Data: any) => ({
+          label: Data.refBranchName,
+          value: Data.refbranchId,
+        }));
+        setBranch(options1);
+      }
+    } catch (error) {
+      console.error("Error fetching meeting details:", error);
+    }
+  };
+
+  const meetingdetails = async () => {
+    try {
+      const response = await Axios.get(
+        import.meta.env.VITE_API_URL + `/googleWorkspace/MeetingList`,
+        {
+          headers: {
+            Authorization: localStorage.getItem("JWTtoken"),
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = decrypt(
+        response.data[1],
+        response.data[0],
+        import.meta.env.VITE_ENCRYPTION_KEY
+      );
+
+      console.log("data line ----- 233", data);
+      if (data.token === false) {
+        navigate("/expired");
+        return;
+      } else {
+        localStorage.setItem("JWTtoken", "Bearer " + data.token);
+        setGoogleWorkspaceLink(data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching meeting details:", error);
+    }
+  };
+
+  const handleAddNewMeeting = async () => {
+    setVisibleRight(true);
+    await meetinglinktype();
+  };
+
+  const handleDelete = async (meetingId: any) => {
+    console.log("meetingId line ------ 258", meetingId);
+    try {
+      const response = await Axios.post(
+        import.meta.env.VITE_API_URL + `/googleWorkspace/DeleteMeeting`,
+        {
+          meetingId: meetingId,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("JWTtoken"),
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = decrypt(
+        response.data[1],
+        response.data[0],
+        import.meta.env.VITE_ENCRYPTION_KEY
+      );
+      console.log("data line 270", data);
+      if (data.success) {
+        meetingdetails();
+      }
+
+      // setGoogleWorkspaceLink((prevData) =>
+      // prevData.filter((m) => {
+      // console.log("m", m);
+      // m.refGoogleMeetId !== meetingId;
+      // })
+      // );
+    } catch (error) {
+      console.error("Error deleting meeting:", error);
+    }
+  };
+
+  const Createmeeting = async () => {
+    const formattedStartDate = startdate
+      ? startdate.toLocaleDateString("en-GB")
+      : "";
+    const formattedEndDate = enddate ? enddate.toLocaleDateString("en-GB") : "";
+    const formattedStartTime = starttime
+      ? starttime.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        })
+      : "";
+    const formattedEndTime = endtime
+      ? endtime.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        })
+      : "";
+
+    console.log(
+      ids,
+      branchtype,
+      title,
+      formattedStartDate,
+      formattedEndDate,
+      formattedStartTime,
+      formattedEndTime,
+      description
+    );
+
+    console.log(emails);
+
+    const payload = {
+      title: title,
+      startDateStr: formattedStartDate,
+      endDateStr: formattedEndDate,
+      startTimeStr: formattedStartTime,
+      endTimeStr: formattedEndTime,
+      description: description,
+      attendees: emails,
+      meetingType: ids,
+      branchId: branchtype,
+    };
+
+    try {
+      const res = await Axios.post(
+        import.meta.env.VITE_API_URL + "/googleWorkspace/CreateMeeting",
+        payload,
+        {
+          headers: {
+            Authorization: localStorage.getItem("JWTtoken"),
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = decrypt(
+        res.data[1],
+        res.data[0],
+        import.meta.env.VITE_ENCRYPTION_KEY
+      );
+
+      if (data.token === false) {
+        navigate("/expired");
+      } else {
+        console.log("Meeting created successfully", data);
+      }
+    } catch (error) {
+      console.error("Error creating meeting: ", error);
+    }
   };
 
   return (
@@ -241,10 +444,8 @@ const Onlineclass: React.FC = () => {
                       <div className="text-xl">Google Workspace</div>
                       <Button
                         severity="success"
-                        label="Add New Employee"
-                        onClick={() => {
-                          setVisibleRight(true);
-                        }}
+                        label="Add New Meeting"
+                        onClick={handleAddNewMeeting}
                       />
                     </div>
                   </div>
@@ -258,28 +459,58 @@ const Onlineclass: React.FC = () => {
                 position="right"
                 style={{ width: "60vw" }}
               >
-                <div className="flex flex-row justify-between">
-                  {" "}
-                  <h2>Add New Meeting</h2>
-                  <Button
-                    className="w-[20%] mt-3 h-[20%]"
-                    severity="info"
-                    label="Create Meeting"
-                    onClick={() => {
-                      setVisibleRight(true);
-                    }}
-                  />
-                </div>
-
                 {/* Form content starts here */}
                 <form
                   onSubmit={(e) => {
-                    e.preventDefault(); // Prevent default form submission
-                    //   handleAddStaff(); // Call your submit function if validation passes
+                    e.preventDefault();
+                    Createmeeting();
                   }}
                 >
                   <div>
                     <div className="w-[100%] ">
+                      <div className="flex flex-row justify-between">
+                        {" "}
+                        <h2>Add New Meeting</h2>
+                        <Button
+                          className="w-[20%] mt-3 h-[20%]"
+                          severity="info"
+                          label="Create Meeting"
+                          onClick={() => {
+                            setVisibleRight(false);
+                            meetingdetails();
+                          }}
+                        />
+                      </div>
+                      <div>
+                        {visibleRight && (
+                          <div className="card flex justify-evenly">
+                            <Dropdown
+                              value={ids}
+                              options={MeetingLinkType}
+                              optionLabel="label"
+                              optionValue="value"
+                              placeholder="Select a Meeting Type"
+                              className="w-[40%] h-[35px]"
+                              checkmark={true}
+                              highlightOnSelect={false}
+                              required
+                              onChange={(e) => setIds(e.value)}
+                            />
+                            <Dropdown
+                              value={branchtype}
+                              options={branch}
+                              optionLabel="label"
+                              optionValue="value"
+                              placeholder="Select a Branch"
+                              className="w-[40%] h-[35px]"
+                              checkmark={true}
+                              highlightOnSelect={false}
+                              required
+                              onChange={(e) => setBranchtype(e.value)}
+                            />
+                          </div>
+                        )}
+                      </div>
                       <div>
                         <div className="flex flex-col gap-2 p-3">
                           <div
@@ -289,12 +520,14 @@ const Onlineclass: React.FC = () => {
                             <div className="field col-8">
                               <span className="p-float-label">
                                 <InputText
+                                  // id="startdate"
+                                  // value={startdate}
+                                  // onChange={(e) => setStartdate(e.value)}
                                   id="title"
                                   value={title}
                                   onChange={(e) => setTile(e.target.value)}
-                                  required
                                 />
-                                <label htmlFor="title">Title</label>
+                                <label htmlFor="title">Meeting Title</label>
                               </span>
                             </div>
                             <div className="flex flex-row">
@@ -304,8 +537,10 @@ const Onlineclass: React.FC = () => {
                                     id="startdate"
                                     value={startdate}
                                     onChange={(e) => setStartdate(e.value)}
-                                    showTime
-                                    hourFormat="12"
+                                    // id="startdate"
+                                    // value={selectedMeeting ? new Date(selectedMeeting.refMeetStartFrom) : null}
+                                    // onChange={(e) => setStartdate(e.value)}
+                                    showButtonBar
                                     required
                                   />
 
@@ -315,16 +550,55 @@ const Onlineclass: React.FC = () => {
 
                               <div className="field col-6">
                                 <span className="p-float-label">
-                                  <Calendar
-                                    id=""
+                                  {/* <Calendar
+                                    id="enddate"
                                     value={enddate}
                                     onChange={(e) => setEnddate(e.value)}
                                     dateFormat="dd/mm/yy"
                                     showTime
                                     hourFormat="12"
                                     required
+                                  /> */}
+                                  <Calendar
+                                    id="enddate"
+                                    value={enddate}
+                                    onChange={(e) => setEnddate(e.value)}
+                                    // id="enddate"
+                                    // value={selectedMeeting ? new Date(selectedMeeting.refMeetEnd) : null}
+                                    // onChange={(e) => setEnddate(e.value)}
+                                    showButtonBar
+                                    required
                                   />
+
                                   <label htmlFor="enddate">End Date</label>
+                                </span>
+                              </div>
+                            </div>
+                            <div className="flex flex-row">
+                              <div className="field col-6">
+                                <span className="p-float-label">
+                                  <Calendar
+                                    id="startdate"
+                                    value={starttime}
+                                    onChange={(e) => setStarttime(e.value)}
+                                    timeOnly
+                                    required
+                                  />
+
+                                  <label htmlFor="startdate">Start Time</label>
+                                </span>
+                              </div>
+
+                              <div className="field col-6">
+                                <span className="p-float-label">
+                                  <Calendar
+                                    id="endtime"
+                                    value={endtime}
+                                    onChange={(e) => setEndtime(e.value)}
+                                    timeOnly
+                                    required
+                                  />
+                                  <label htmlFor="endtime">End Time</label>
                                 </span>
                               </div>
                             </div>
@@ -343,42 +617,50 @@ const Onlineclass: React.FC = () => {
                             </div>
                           </div>
 
-                          <div className="mx-10 w-[full]">
-                            <div className="flex flex-row w-[full] gap-3 p-2">
+                          <div className="mx-10 w-full">
+                            <div className="flex flex-row w-full gap-3 p-2">
                               <p className="text-lg font-medium">Add User</p>
                               <Button
-                                 className="h-[10%] w-[6%] mt-3"
-                                  icon={<IoAdd size={20} />}
-                                  severity="success"
-                                  aria-label="Add"
-                                  onClick={handleAddEmail}
-                                />
+                                className="h-[10%] w-[6%] mt-3"
+                                icon={<IoAdd size={20} />}
+                                severity="success"
+                                aria-label="Add"
+                                onClick={handleAddEmail}
+                              />
                             </div>
 
-                            {showDescription && (
+                            {showEmail && (
                               <div className="mx-10 w-full">
-                           
-                        
-                              {emails.map((email, index) => (
-                                <div key={index} className="flex gap-3 w-[100%] mb-2">
-                                  <div className="p-float-label w-[70%] ">
-                                    <InputText
-                                      id={`email-${index}`}
-                                      value={email}
-                                      onChange={(e) => handleEmailChange(index, e.target.value)}
-                                      required
+                                {emails.map((emailObj: any, index: any) => (
+                                  <div
+                                    key={index}
+                                    className="flex gap-3 mt-5 w-full mb-2"
+                                  >
+                                    <div className="p-float-label w-[70%]">
+                                      <InputText
+                                        id={`email-${index}`}
+                                        value={emailObj.email} // Access the email value correctly
+                                        onChange={(e) =>
+                                          handleEmailChange(
+                                            index,
+                                            e.target.value
+                                          )
+                                        } // Handle change properly
+                                        required
+                                      />
+                                      <label htmlFor={`email-${index}`}>
+                                        Email
+                                      </label>
+                                    </div>
+                                    <Button
+                                      className="text-red-500 bg-white"
+                                      icon={<MdDelete size={24} />}
+                                      onClick={() => handleDeleteEmail(index)} // Handle delete
+                                      aria-label="Delete"
                                     />
-                                    <label htmlFor={`email-${index}`}>Email</label>
                                   </div>
-                                  <Button
-                                    className="text-red-500 bg-white"
-                                    icon={<MdDelete size={24} />}
-                                    onClick={() => handleDeleteEmail(index)}
-                                    aria-label="Delete"
-                                  />
-                                </div>
-                              ))}
-                            </div>
+                                ))}
+                              </div>
                             )}
                           </div>
                         </div>
@@ -403,54 +685,152 @@ const Onlineclass: React.FC = () => {
                 </DataTable>
               </Sidebar>
 
+              <Sidebar
+                visible={googleMeetDesc}
+                onHide={() => setGoogleMeetDesc(false)}
+                position="right"
+                style={{ width: "60vw" }}
+              >
+                <GMeetMembersSidebar selectedMeeting={selectedMeeting} />
+              </Sidebar>
+
               <div>
                 <div className="card">
                   <DataTable
-                    // rowGroupMode="subheader"
+                    // value={googleWorkspaceLink}
+                    // selectionMode="single"
+                    // selection={selectedMeeting}
+                    // onSelectionChange={(e) => {
+                    //   setSelectedMeeting(e.value);
+                    //   setVisibleRight(true);
+                    // }}
                     sortMode="single"
+                    className="googleMeetDatatable"
+                    scrollHeight="400px"
                     value={googleWorkspaceLink}
                     sortOrder={1}
-                    // expandableRowGroups
-                    tableStyle={{ minWidth: "50rem" }}
                   >
                     <Column
-                      field="meetingId"
-                      body={meetingIdTemplate}
+                      header="S.No"
+                      style={{ width: "10%" }}
+                      body={(_rowData, { rowIndex }) => rowIndex + 1}
+                    />
+                    {/* <Column
+                      field="refGoogleMeetId"
                       header="Meeting ID"
                       style={{ width: "20%" }}
-                    ></Column>
+                    /> */}
                     <Column
-                      field="meetingName"
-                      header="Meeting Name"
-                      style={{ width: "20%" }}
-                    ></Column>
-                    <Column
-                      field="dummy1"
-                      header="Dummy1"
-                      style={{ width: "20%" }}
-                    ></Column>
-                    <Column
-                      field="dummy2"
-                      header="Dummy2"
-                      style={{ width: "20%" }}
-                    ></Column>
-                  </DataTable>
+                      field="refMeetingTitle"
+                      header="Meeting Title"
+                      style={{ minWidth: "14rem", cursor: "pointer" }}
+                      body={(rowData) => (
+                        <span
+                          className="text-blue-500 hover:underline cursor-pointer"
+                          onClick={() => {
+                            setSelectedMeeting(rowData); // Set selected row data
+                            console.log("rowData", rowData);
+                            setGoogleMeetDesc(true); // Open sidebar
+                          }}
+                        >
+                          {rowData.refMeetingTitle}
+                        </span>
+                      )}
+                    />
 
-                  {/* <Sidebar
-        className="w-[90%] lg:w-[75%]"
-        visible={visibleLeft}
-        position="right"
-        onHide={() => setVisibleLeft(false)}
-      >
-        <h2>User Detail</h2>
-        <p>
-          {selectedUserId ? `User ID: ${selectedUserId}` : "No user selected"}
-        </p> 
-        <div className="card">
-        
-        </div>
-      </Sidebar>
-       */}
+                    <Column
+                      field="refMeetingLink"
+                      header="Meeting Link"
+                      style={{ minWidth: "20rem" }}
+                      body={(rowData) => (
+                        <div className="flex items-center gap-2">
+                          <p>{rowData.refMeetingLink}</p>
+                          <button
+                            onClick={() => {
+                              if (
+                                navigator.clipboard &&
+                                navigator.clipboard.writeText
+                              ) {
+                                navigator.clipboard
+                                  .writeText(rowData.refMeetingLink || "")
+                                  .then(() => {
+                                    alert(`Copied: ${rowData.refMeetingLink}`);
+                                  })
+                                  .catch((err) => {
+                                    console.error("Failed to copy text:", err);
+                                  });
+                              } else {
+                                // Fallback: Create a temporary textarea element for copying
+                                const tempInput =
+                                  document.createElement("textarea");
+                                tempInput.value = rowData.refMeetingLink || "";
+                                document.body.appendChild(tempInput);
+                                tempInput.select();
+                                document.execCommand("copy");
+                                document.body.removeChild(tempInput);
+
+                                alert(`Copied: ${rowData.refMeetingLink}`);
+                              }
+                            }}
+                            className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-700"
+                          >
+                            Copy
+                          </button>
+                        </div>
+                      )}
+                    />
+
+                    <Column
+                      field="refMLTypeName"
+                      header="Meeting Type"
+                      style={{ minWidth: "14rem" }}
+                    />
+                    {/* <Column
+                      field="refMeetStartFrom"
+                      header="Start Date"
+                      style={{ width: "15%" }}
+                    />
+                    <Column
+                      field="refMeetEnd"
+                      header="End Date"
+                      style={{ width: "15%" }}
+                    /> */}
+                    {/* <Column
+                      field="refStartTime"
+                      header="Start Time"
+                      style={{ minWidth: "8rem" }}
+                    />
+                    <Column
+                      field="refEndTime"
+                      header="End Time"
+                      style={{ minWidth: "8rem" }}
+                    /> */}
+                    <Column
+                      field="refCreatedDate"
+                      header="Created Date"
+                      style={{ minWidth: "15rem" }}
+                    />
+                    <Column
+                      header="Remove"
+                      body={(rowData) => (
+                        <button
+                          onClick={() => {
+                            console.log("rowData ------- line 767", rowData);
+                            handleDelete(rowData.refGoogleMeetId);
+                          }}
+                          style={{
+                            background: "red",
+                            color: "white",
+                            border: "none",
+                            padding: "5px 10px",
+                            cursor: "pointer",
+                          }}
+                        >
+                          Remove
+                        </button>
+                      )}
+                    />
+                  </DataTable>
                 </div>
               </div>
             </div>

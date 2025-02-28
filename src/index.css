@@ -134,11 +134,9 @@ fieldset {
   }
 }
 
-.p-column-filter-overlay
-{
+.p-column-filter-overlay {
   width: 25%;
-  .p-multiselect-clear-icon
-  {
+  .p-multiselect-clear-icon {
     background-color: white;
     color: red;
   }

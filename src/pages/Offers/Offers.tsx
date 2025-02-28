@@ -16,7 +16,6 @@ import { MdDelete } from "react-icons/md";
 import { MdOutlineAddchart } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
-
 type DecryptResult = any;
 
 interface WorkSpaceData {
@@ -86,7 +85,7 @@ const Offers: React.FC = () => {
         import.meta.env.VITE_ENCRYPTION_KEY
       );
       if (data.token == false) {
-        navigate("/expired")
+        navigate("/expired");
       }
 
       console.log("Offers Data -----------", data);
@@ -139,7 +138,7 @@ const Offers: React.FC = () => {
         import.meta.env.VITE_ENCRYPTION_KEY
       );
       if (data.token == false) {
-        navigate("/expired")
+        navigate("/expired");
       }
       console.log(data);
 
@@ -169,7 +168,7 @@ const Offers: React.FC = () => {
         import.meta.env.VITE_ENCRYPTION_KEY
       );
       if (data.token == false) {
-        navigate("/expired")
+        navigate("/expired");
       }
 
       console.log(data);
@@ -233,7 +232,7 @@ const Offers: React.FC = () => {
         import.meta.env.VITE_ENCRYPTION_KEY
       );
       if (data.token == false) {
-        navigate("/expired")
+        navigate("/expired");
       }
 
       branchChange(branch);
@@ -302,7 +301,7 @@ const Offers: React.FC = () => {
           import.meta.env.VITE_ENCRYPTION_KEY
         );
         if (data.token == false) {
-          navigate("/expired")
+          navigate("/expired");
         }
 
         console.log("Edited Data ----------", data);
@@ -366,7 +365,7 @@ const Offers: React.FC = () => {
           import.meta.env.VITE_ENCRYPTION_KEY
         );
         if (data.token == false) {
-          navigate("/expired")
+          navigate("/expired");
         }
 
         console.log(data);
@@ -487,11 +486,13 @@ const Offers: React.FC = () => {
         />
 
         {workSpace ? null : (
-
-
-          <button className="bg-green-500 border-none rounded-lg p-2  " onClick={() => {
-            setWorkSpace(true);
-          }}><MdOutlineAddchart className="text-3xl text-white" />
+          <button
+            className="bg-green-500 border-none rounded-lg p-2  "
+            onClick={() => {
+              setWorkSpace(true);
+            }}
+          >
+            <MdOutlineAddchart className="text-3xl text-white" />
           </button>
         )}
       </div>
@@ -597,7 +598,8 @@ const Offers: React.FC = () => {
                       });
 
                       Axios.post(
-                        `${import.meta.env.VITE_API_URL
+                        `${
+                          import.meta.env.VITE_API_URL
                         }/director/validateCouponCode`,
                         {
                           CouponCode: couponValue,
@@ -635,9 +637,13 @@ const Offers: React.FC = () => {
                       {workSpaceData.coupon.length === 0 ? (
                         <></>
                       ) : workSpaceData.coupon.length < 8 ? (
-                        <div className="text-red-700">Coupon Code Should be Above 8 Characters</div>
+                        <div className="text-red-700">
+                          Coupon Code Should be Above 8 Characters
+                        </div>
                       ) : !verifycoupon ? (
-                        <div className="text-red-700">Already Expired Coupon</div>
+                        <div className="text-red-700">
+                          Already Expired Coupon
+                        </div>
                       ) : (
                         <div className="text-green-600">Valid</div>
                       )}
@@ -671,7 +677,7 @@ const Offers: React.FC = () => {
 
                       Axios.post(
                         import.meta.env.VITE_API_URL +
-                        "/director/validateCouponCode",
+                          "/director/validateCouponCode",
                         {
                           CouponCode: couponCode,
                         },

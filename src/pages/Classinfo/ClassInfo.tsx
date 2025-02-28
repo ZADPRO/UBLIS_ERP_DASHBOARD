@@ -371,6 +371,8 @@ const ClassInfo: React.FC = () => {
       console.error("Error fetching customers:", error);
     }
   };
+
+  
   type ClassCountData = {
     classCount: number;
     classAttend: number;
