@@ -129,24 +129,30 @@ const OverallDashboard: React.FC = () => {
             }));
             setProducts(mappedData);
 
-            const trailSampleData = data.data.trailSampleData;
-            const trailSampleDatamappedData = trailSampleData.map(
-              (item: any, index: any) => ({
-                sno: index + 1,
-                name: `${item.refStFName} ${item.refStLName}`,
-                transTime: item.transTime,
-              })
-            );
-            setTrailSampleData(trailSampleDatamappedData);
+            if (data.data.trailSampleData) {
+              const trailSampleData = data.data.trailSampleData;
+              const trailSampleDatamappedData = trailSampleData.map(
+                (item: any, index: any) => ({
+                  sno: index + 1,
+                  name: `${item.refStFName} ${item.refStLName}`,
+                  transTime: item.transTime,
+                })
+              );
+              setTrailSampleData(trailSampleDatamappedData);
+            }
 
-            const paymentPendingSampleData = data.data.paymentPendingSampleData;
-            const paymentPendingSampleDatamappedData =
-              paymentPendingSampleData.map((item: any, index: any) => ({
-                sno: index + 1,
-                name: `${item.refStFName} ${item.refStLName}`,
-                transTime: item.transTime,
-              }));
-            setPaymentSampleData(paymentPendingSampleDatamappedData);
+
+            if (data.data.paymentPendingSampleData) {
+              const paymentPendingSampleData = data.data.paymentPendingSampleData;
+              const paymentPendingSampleDatamappedData =
+                paymentPendingSampleData.map((item: any, index: any) => ({
+                  sno: index + 1,
+                  name: `${item.refStFName} ${item.refStLName}`,
+                  transTime: item.transTime,
+                }));
+              setPaymentSampleData(paymentPendingSampleDatamappedData);
+            }
+
           }
 
           setOverallUserStatus(data.data.userTypeCount);

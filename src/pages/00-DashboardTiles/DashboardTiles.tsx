@@ -199,27 +199,33 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
             );
             setMdIsRegisteredData(MdIsRegData)
 
-            const noMdIsRegisteredSampleData = data.data.trailSampleData;
-            const noMdIsRegData = noMdIsRegisteredSampleData.map(
-              (item: any, index: any) => ({
-                sno: index + 1,
-                name: `${item.refStFName} ${item.refStLName}`,
-                transTime: item.transTime,
-              })
-            );
-            setNoMdIsRegisteredData(noMdIsRegData)
+            if (data.data.trailSampleData) {
+              const noMdIsRegisteredSampleData = data.data.trailSampleData;
+              const noMdIsRegData = noMdIsRegisteredSampleData.map(
+                (item: any, index: any) => ({
+                  sno: index + 1,
+                  name: `${item.refStFName} ${item.refStLName}`,
+                  transTime: item.transTime,
+                })
+              );
+              setNoMdIsRegisteredData(noMdIsRegData)
+            }
 
-            const paymentPendingSampleData = data.data.paymentPendingSampleData;
-            const paymentPendingSampleDatamappedData =
-              paymentPendingSampleData.map((item: any, index: any) => ({
-                sno: index + 1,
-                name: `${item.refStFName} ${item.refStLName}`,
-                transTime: item.transTime,
-              }));
-            setPaymentSampleData(paymentPendingSampleDatamappedData);
+            if (data.data.paymentPendingSampleData) {
+              const paymentPendingSampleData = data.data.paymentPendingSampleData;
+
+              const paymentPendingSampleDatamappedData =
+                paymentPendingSampleData.map((item: any, index: any) => ({
+                  sno: index + 1,
+                  name: `${item.refStFName} ${item.refStLName}`,
+                  transTime: item.transTime,
+                }));
+              setPaymentSampleData(paymentPendingSampleDatamappedData);
+            }
+
           }
-
-          console.log("data.data", data.data);
+          console.log(' -> Line Number ----------------------------------- 221',);
+          console.log("data.data line ----- 222", data.data);
           setOverallUserStatus(data.data.userTypeCount);
           setOverallEmployeeStatus(data.data.staffCount)
 
@@ -360,31 +366,31 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
         {value === "Tiles" && (
           <div>
             <div className="userDashboard grid-container">
-            {(localStorage.getItem("refUtId") === "7" || localStorage.getItem("refUtId") === "4" || localStorage.getItem("refUtId") === "12")  && (
-            <Link
-                to="/staff/signedupUsers"
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <div className="grid-item">
-                  <div className="card">
-                    <Fieldset legend="Signed Up Users">
-                      <div className="leaveBalance">
-                        <div className="consumed">
-                          <p>{futureClient.today ?? 0}</p>
-                          <p>Today</p>
+              {(localStorage.getItem("refUtId") === "7" || localStorage.getItem("refUtId") === "4" || localStorage.getItem("refUtId") === "12") && (
+                <Link
+                  to="/staff/signedupUsers"
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <div className="grid-item">
+                    <div className="card">
+                      <Fieldset legend="Signed Up Users">
+                        <div className="leaveBalance">
+                          <div className="consumed">
+                            <p>{futureClient.today ?? 0}</p>
+                            <p>Today</p>
+                          </div>
+                          <Divider layout="vertical" />
+                          <div className="balance">
+                            <p>{futureClient.futureToday ?? 0}</p>
+                            <p>Previous</p>
+                          </div>
                         </div>
-                        <Divider layout="vertical" />
-                        <div className="balance">
-                          <p>{futureClient.futureToday ?? 0}</p>
-                          <p>Previous</p>
-                        </div>
-                      </div>
-                    </Fieldset>
+                      </Fieldset>
+                    </div>
                   </div>
-                </div>
-              </Link>
-            )}
-              
+                </Link>
+              )}
+
               {localStorage.getItem("refUtId") !== "4" && (
                 <Link
                   to="/therapist/approve"
@@ -410,31 +416,31 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
                 </Link>
               )}
 
-                {(localStorage.getItem("refUtId") === "7" || localStorage.getItem("refUtId") === "4" || localStorage.getItem("refUtId") === "12")  && (
-                   <Link
-                   to="/staff/registeredUsers"
-                   style={{ textDecoration: "none", color: "inherit" }}
-                 >
-                   <div className="grid-item">
-                     <div className="card">
-                       <Fieldset legend="Future Clients & Payment">
-                         <div className="leaveBalance">
-                           <div className="consumed">
-                             <p>{trailCount.Trial}</p>
-                             <p>Registered Count</p>
-                           </div>
-                           <Divider layout="vertical" />
-                           <div className="balance">
-                             <p>{trailCount.FeesPending}</p>
-                             <p>Fees Pending</p>
-                           </div>
-                         </div>
-                       </Fieldset>
-                     </div>
-                   </div>
-                 </Link>
-                  )}
-             
+              {(localStorage.getItem("refUtId") === "7" || localStorage.getItem("refUtId") === "4" || localStorage.getItem("refUtId") === "12") && (
+                <Link
+                  to="/staff/registeredUsers"
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <div className="grid-item">
+                    <div className="card">
+                      <Fieldset legend="Future Clients & Payment">
+                        <div className="leaveBalance">
+                          <div className="consumed">
+                            <p>{trailCount.Trial}</p>
+                            <p>Registered Count</p>
+                          </div>
+                          <Divider layout="vertical" />
+                          <div className="balance">
+                            <p>{trailCount.FeesPending}</p>
+                            <p>Fees Pending</p>
+                          </div>
+                        </div>
+                      </Fieldset>
+                    </div>
+                  </div>
+                </Link>
+              )}
+
 
               {(localStorage.getItem("refUtId") === "7" || localStorage.getItem("refUtId") === "12") && (
                 <Link
@@ -605,7 +611,7 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
 
                   </div>
                 )}
-                <div className="card statsDataTable">
+                {localStorage.getItem("refUtId") !== "11" && localStorage.getItem("refUtId") !== "10" ? <><div className="card statsDataTable">
                   <p>Today's Signed Up Users</p>
                   <DataTable value={signedUpData} showGridlines>
                     <Column
@@ -624,7 +630,8 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
                       style={{ minWidth: "6rem" }}
                     ></Column>
                   </DataTable>
-                </div>
+                </div></> : <> </>}
+
 
                 {localStorage.getItem("refUtId") !== "4" &&
                   localStorage.getItem("refUtId") !== "8" ?
@@ -678,30 +685,35 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
                   <></>
                 }
 
-                <div className="card statsDataTable">
-                  <p>New Student Fees Pending</p>
-                  <DataTable
-                    value={paymentSampleData}
-                    showGridlines
-                    emptyMessage="No Data"
-                  >
-                    <Column
-                      field="sno"
-                      header="S.No"
-                      style={{ width: "1rem" }}
-                    ></Column>
-                    <Column
-                      field="name"
-                      header="Name"
-                      style={{ minWidth: "4rem" }}
-                    ></Column>
-                    <Column
-                      field="transTime"
-                      header="Student Approved Date & Time"
-                      style={{ minWidth: "6rem" }}
-                    ></Column>
-                  </DataTable>
-                </div>
+                {localStorage.getItem("refUtId") !== "11" && localStorage.getItem("refUtId") !== "10" ?
+                  <> <div className="card statsDataTable">
+                    <p>New Student Fees Pending</p>
+                    <DataTable
+                      value={paymentSampleData}
+                      showGridlines
+                      emptyMessage="No Data"
+                    >
+                      <Column
+                        field="sno"
+                        header="S.No"
+                        style={{ width: "1rem" }}
+                      ></Column>
+                      <Column
+                        field="name"
+                        header="Name"
+                        style={{ minWidth: "4rem" }}
+                      ></Column>
+                      <Column
+                        field="transTime"
+                        header="Student Approved Date & Time"
+                        style={{ minWidth: "6rem" }}
+                      ></Column>
+                    </DataTable>
+                  </div> </>
+                  :
+                  <></>
+                }
+
               </div>
             </div>
           </div>
