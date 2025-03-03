@@ -2,7 +2,7 @@ import { Skeleton } from "primereact/skeleton";
 import React from "react";
 
 import { useNavigate } from "react-router-dom";
-
+import { MdContentCopy } from "react-icons/md";
 import { useState, useEffect } from "react";
 import CryptoJS from "crypto-js";
 import Axios from "axios";
@@ -12,23 +12,16 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { MdDelete } from "react-icons/md";
 import { Sidebar } from "primereact/sidebar";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { IoAdd } from "react-icons/io5";
 import { InputText } from "primereact/inputtext";
 import { Calendar } from "primereact/calendar";
 import { Nullable } from "primereact/ts-helpers";
+import { MdOutlineDelete } from "react-icons/md";
 
 import { Dropdown } from "primereact/dropdown";
 import GMeetMembersSidebar from "../../pages/GMeetMembersSidebar/GMeetMembersSidebar";
-
-interface GoogleWorkspaceInterface {
-  meetingId: number;
-  meetingtitle: string;
-  meetinglink: string;
-  meetingdate: string;
-  meetingtype: string;
-  meetingremove: string;
-}
 
 interface SelectedMeeting {
   refBranchName: string;
@@ -62,8 +55,6 @@ const Onlineclass: React.FC = () => {
   const [googleMeetDesc, setGoogleMeetDesc] = useState(false);
 
   const [meetingDetailsSidebar, setMeetingSidebar] = useState(false);
-  const [individualMeetingSIdebar, setIndividualMeetingSidebar] =
-    useState(null);
 
   const [visibleRight, setVisibleRight] = useState<boolean>(false);
   const [title, setTile] = useState<string>("");
@@ -184,7 +175,7 @@ const Onlineclass: React.FC = () => {
   };
 
   const handleDeleteEmail = (index: number) => {
-    const updatedEmails = emails.filter((_, i) => i !== index); // Remove email at the specified index
+    const updatedEmails = emails.filter((_:any, i:any) => i !== index); // Remove email at the specified index
     setEmails(updatedEmails); // Update the state with the filtered array
   };
 
@@ -264,13 +255,13 @@ const Onlineclass: React.FC = () => {
     await meetinglinktype();
   };
 
-  const handleDelete = async (meetingId: any) => {
-    console.log("meetingId line ------ 258", meetingId);
+  const handleDelete = async (meetingLink: any) => {
+    console.log("meetingId line ------ 258", meetingLink);
     try {
       const response = await Axios.post(
         import.meta.env.VITE_API_URL + `/googleWorkspace/DeleteMeeting`,
         {
-          meetingId: meetingId,
+          meetingLink: meetingLink,
         },
         {
           headers: {
@@ -308,17 +299,17 @@ const Onlineclass: React.FC = () => {
     const formattedEndDate = enddate ? enddate.toLocaleDateString("en-GB") : "";
     const formattedStartTime = starttime
       ? starttime.toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        })
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })
       : "";
     const formattedEndTime = endtime
       ? endtime.toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        })
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })
       : "";
 
     console.log(
@@ -376,6 +367,7 @@ const Onlineclass: React.FC = () => {
 
   return (
     <>
+      <ToastContainer />
       {pageLoading.verifytoken && pageLoading.pageData ? (
         <>
           <div className="bg-[#f6f5f5] AttendancePage">
@@ -583,6 +575,7 @@ const Onlineclass: React.FC = () => {
                                     onChange={(e) => setStarttime(e.value)}
                                     timeOnly
                                     required
+                                    hourFormat="12"
                                   />
 
                                   <label htmlFor="startdate">Start Time</label>
@@ -597,6 +590,7 @@ const Onlineclass: React.FC = () => {
                                     onChange={(e) => setEndtime(e.value)}
                                     timeOnly
                                     required
+                                    hourFormat="12"
                                   />
                                   <label htmlFor="endtime">End Time</label>
                                 </span>
@@ -710,6 +704,7 @@ const Onlineclass: React.FC = () => {
                     value={googleWorkspaceLink}
                     sortOrder={1}
                   >
+                    
                     <Column
                       header="S.No"
                       style={{ width: "10%" }}
@@ -743,7 +738,7 @@ const Onlineclass: React.FC = () => {
                       header="Meeting Link"
                       style={{ minWidth: "20rem" }}
                       body={(rowData) => (
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center justify-between gap-2">
                           <p>{rowData.refMeetingLink}</p>
                           <button
                             onClick={() => {
@@ -754,10 +749,34 @@ const Onlineclass: React.FC = () => {
                                 navigator.clipboard
                                   .writeText(rowData.refMeetingLink || "")
                                   .then(() => {
-                                    alert(`Copied: ${rowData.refMeetingLink}`);
+                                    toast.success(
+                                      `"${rowData.refMeetingTitle}" Meeting Link is copied Successfully`,
+                                      {
+                                        position: "top-right",
+                                        autoClose: 5000,
+                                        hideProgressBar: false,
+                                        closeOnClick: true,
+                                        pauseOnHover: true,
+                                        draggable: true,
+                                        progress: undefined,
+                                        theme: "light",
+                                      }
+                                    );
                                   })
                                   .catch((err) => {
-                                    console.error("Failed to copy text:", err);
+                                    toast.error(
+                                      `Failed To Copy the Meeting of "${rowData.refMeetingTitle}"`,
+                                      {
+                                        position: "top-right",
+                                        autoClose: 5000,
+                                        hideProgressBar: false,
+                                        closeOnClick: true,
+                                        pauseOnHover: true,
+                                        draggable: true,
+                                        progress: undefined,
+                                        theme: "light",
+                                      }
+                                    );
                                   });
                               } else {
                                 // Fallback: Create a temporary textarea element for copying
@@ -772,9 +791,10 @@ const Onlineclass: React.FC = () => {
                                 alert(`Copied: ${rowData.refMeetingLink}`);
                               }
                             }}
-                            className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-700"
+
+                            className="text-blue-500 hover:bg-blue-500 hover:text-white px-2 py-1 rounded border-transparent bg-transparent "
                           >
-                            Copy
+                            <MdContentCopy size={"1.2rem"} />
                           </button>
                         </div>
                       )}
@@ -816,17 +836,18 @@ const Onlineclass: React.FC = () => {
                         <button
                           onClick={() => {
                             console.log("rowData ------- line 767", rowData);
-                            handleDelete(rowData.refGoogleMeetId);
+                            handleDelete(rowData.refMeetingLink);
                           }}
-                          style={{
-                            background: "red",
-                            color: "white",
-                            border: "none",
-                            padding: "5px 10px",
-                            cursor: "pointer",
-                          }}
+                          // style={{
+                          //   background: "red",
+                          //   color: "white",
+                          //   border: "none",
+                          //   padding: "5px 10px",
+                          //   cursor: "pointer",
+                          // }}
+                          className="border-transparent text-red-500 rounded bg-transparent hover:bg-red-500 hover:text-white"
                         >
-                          Remove
+                          <MdOutlineDelete size={"1.5rem"} />
                         </button>
                       )}
                     />
