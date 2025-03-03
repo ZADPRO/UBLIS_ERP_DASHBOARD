@@ -69,10 +69,41 @@ const Onlineclass: React.FC = () => {
   const [branchtype, setBranchtype] = useState([]);
   const [MeetingLinkType, setMeetingLinkType] = useState([]);
   const [branch, setBranch] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     meetingdetails();
+    
   }, []);
+
+  const resetForm = () => {
+    setTile("");
+    setStartdate(null);
+    setEnddate(null);
+    setStarttime(null);
+    setEndtime(null);
+    setDescription("");
+    setIds([]);
+    setBranchtype([]);
+    setEmails([]);
+    setShowEmail(false);
+  };
+
+  const handleCreateMeeting = async (e: any) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      console.log("Form Submitted");
+      await Createmeeting();
+      setVisibleRight(false); // Close the sidebar
+      resetForm(); // Reset form fields
+    } catch (error) {
+      console.error("Error creating meeting:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const decrypt = (
     encryptedData: string,
@@ -175,7 +206,7 @@ const Onlineclass: React.FC = () => {
   };
 
   const handleDeleteEmail = (index: number) => {
-    const updatedEmails = emails.filter((_:any, i:any) => i !== index); // Remove email at the specified index
+    const updatedEmails = emails.filter((_: any, i: any) => i !== index); // Remove email at the specified index
     setEmails(updatedEmails); // Update the state with the filtered array
   };
 
@@ -255,13 +286,13 @@ const Onlineclass: React.FC = () => {
     await meetinglinktype();
   };
 
-  const handleDelete = async (meetingLink: any) => {
-    console.log("meetingId line ------ 258", meetingLink);
+  const handleDelete = async (meetingId: any) => {
+    console.log("meetingId line ------ 258", meetingId);
     try {
       const response = await Axios.post(
         import.meta.env.VITE_API_URL + `/googleWorkspace/DeleteMeeting`,
         {
-          meetingLink: meetingLink,
+          meetingId: meetingId,
         },
         {
           headers: {
@@ -281,12 +312,6 @@ const Onlineclass: React.FC = () => {
         meetingdetails();
       }
 
-      // setGoogleWorkspaceLink((prevData) =>
-      // prevData.filter((m) => {
-      // console.log("m", m);
-      // m.refGoogleMeetId !== meetingId;
-      // })
-      // );
     } catch (error) {
       console.error("Error deleting meeting:", error);
     }
@@ -299,17 +324,17 @@ const Onlineclass: React.FC = () => {
     const formattedEndDate = enddate ? enddate.toLocaleDateString("en-GB") : "";
     const formattedStartTime = starttime
       ? starttime.toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-      })
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        })
       : "";
     const formattedEndTime = endtime
       ? endtime.toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-      })
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        })
       : "";
 
     console.log(
@@ -447,30 +472,27 @@ const Onlineclass: React.FC = () => {
 
               <Sidebar
                 visible={visibleRight}
-                onHide={() => setVisibleRight(false)}
+                onHide={() => {
+                  setVisibleRight(false);
+                  resetForm();
+                }}
                 position="right"
                 style={{ width: "60vw" }}
               >
                 {/* Form content starts here */}
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    Createmeeting();
-                  }}
-                >
+                <form onSubmit={handleCreateMeeting}>
                   <div>
                     <div className="w-[100%] ">
                       <div className="flex flex-row justify-between">
                         {" "}
                         <h2>Add New Meeting</h2>
                         <Button
+                          type="submit"
                           className="w-[20%] mt-3 h-[20%]"
                           severity="info"
-                          label="Create Meeting"
-                          onClick={() => {
-                            setVisibleRight(false);
-                            meetingdetails();
-                          }}
+                          label={loading ? "Creating..." : "Create Meeting"}
+                          disabled={loading}
+                          icon={loading ? "pi pi-spin pi-spinner" : ""}
                         />
                       </div>
                       <div>
@@ -504,7 +526,7 @@ const Onlineclass: React.FC = () => {
                         )}
                       </div>
                       <div>
-                        <div className="flex flex-col gap-2 p-3">
+                        <div className="flex flex-col gap-2 p-3 mt-3">
                           <div
                             className="p-fluid grid"
                             style={{ justifyContent: "center" }}
@@ -512,11 +534,9 @@ const Onlineclass: React.FC = () => {
                             <div className="field col-8">
                               <span className="p-float-label">
                                 <InputText
-                                  // id="startdate"
-                                  // value={startdate}
-                                  // onChange={(e) => setStartdate(e.value)}
                                   id="title"
                                   value={title}
+                                  required
                                   onChange={(e) => setTile(e.target.value)}
                                 />
                                 <label htmlFor="title">Meeting Title</label>
@@ -528,12 +548,12 @@ const Onlineclass: React.FC = () => {
                                   <Calendar
                                     id="startdate"
                                     value={startdate}
-                                    onChange={(e) => setStartdate(e.value)}
-                                    // id="startdate"
-                                    // value={selectedMeeting ? new Date(selectedMeeting.refMeetStartFrom) : null}
-                                    // onChange={(e) => setStartdate(e.value)}
+                                    onChange={(e) =>
+                                      setStartdate(e.value ?? null)
+                                    }
                                     showButtonBar
                                     required
+                                    dateFormat="dd/mm/yy"
                                   />
 
                                   <label htmlFor="startdate">Start Date</label>
@@ -542,23 +562,21 @@ const Onlineclass: React.FC = () => {
 
                               <div className="field col-6">
                                 <span className="p-float-label">
-                                  {/* <Calendar
-                                    id="enddate"
-                                    value={enddate}
-                                    onChange={(e) => setEnddate(e.value)}
-                                    dateFormat="dd/mm/yy"
-                                    showTime
-                                    hourFormat="12"
-                                    required
-                                  /> */}
                                   <Calendar
                                     id="enddate"
                                     value={enddate}
-                                    onChange={(e) => setEnddate(e.value)}
-                                    // id="enddate"
-                                    // value={selectedMeeting ? new Date(selectedMeeting.refMeetEnd) : null}
-                                    // onChange={(e) => setEnddate(e.value)}
+                                    onChange={(e) =>
+                                      setEnddate(e.value ?? null)
+                                    }
                                     showButtonBar
+                                    dateFormat="dd/mm/yy"
+                                    minDate={
+                                      startdate
+                                        ? new Date(
+                                            startdate.getTime() + 86400000
+                                          )
+                                        : undefined
+                                    }
                                     required
                                   />
 
@@ -633,14 +651,15 @@ const Onlineclass: React.FC = () => {
                                     <div className="p-float-label w-[70%]">
                                       <InputText
                                         id={`email-${index}`}
-                                        value={emailObj.email} // Access the email value correctly
+                                        value={emailObj.email}
                                         onChange={(e) =>
                                           handleEmailChange(
                                             index,
                                             e.target.value
                                           )
-                                        } // Handle change properly
+                                        }
                                         required
+                                        type="email"
                                       />
                                       <label htmlFor={`email-${index}`}>
                                         Email
@@ -683,38 +702,28 @@ const Onlineclass: React.FC = () => {
                 visible={googleMeetDesc}
                 onHide={() => setGoogleMeetDesc(false)}
                 position="right"
-                style={{ width: "60vw" }}
+                style={{ width: "75vw" }}
               >
-                <GMeetMembersSidebar selectedMeeting={selectedMeeting} />
+                {selectedMeeting && (
+                  <GMeetMembersSidebar selectedMeeting={selectedMeeting} />
+                )}
               </Sidebar>
 
               <div>
                 <div className="card">
                   <DataTable
-                    // value={googleWorkspaceLink}
-                    // selectionMode="single"
-                    // selection={selectedMeeting}
-                    // onSelectionChange={(e) => {
-                    //   setSelectedMeeting(e.value);
-                    //   setVisibleRight(true);
-                    // }}
                     sortMode="single"
                     className="googleMeetDatatable"
-                    scrollHeight="400px"
+                    scrollable
+                    scrollHeight="400px" // This can be removed if you are using max-height in CSS
                     value={googleWorkspaceLink}
                     sortOrder={1}
                   >
-                    
                     <Column
                       header="S.No"
                       style={{ width: "10%" }}
                       body={(_rowData, { rowIndex }) => rowIndex + 1}
                     />
-                    {/* <Column
-                      field="refGoogleMeetId"
-                      header="Meeting ID"
-                      style={{ width: "20%" }}
-                    /> */}
                     <Column
                       field="refMeetingTitle"
                       header="Meeting Title"
@@ -723,128 +732,78 @@ const Onlineclass: React.FC = () => {
                         <span
                           className="text-blue-500 hover:underline cursor-pointer"
                           onClick={() => {
-                            setSelectedMeeting(rowData); // Set selected row data
-                            console.log("rowData", rowData);
-                            setGoogleMeetDesc(true); // Open sidebar
+                            setSelectedMeeting(rowData);
+                            setGoogleMeetDesc(true);
                           }}
                         >
                           {rowData.refMeetingTitle}
                         </span>
                       )}
                     />
-
                     <Column
                       field="refMeetingLink"
                       header="Meeting Link"
-                      style={{ minWidth: "20rem" }}
+                      style={{ minWidth: "22rem" }}
                       body={(rowData) => (
                         <div className="flex items-center justify-between gap-2">
                           <p>{rowData.refMeetingLink}</p>
                           <button
                             onClick={() => {
-                              if (
-                                navigator.clipboard &&
-                                navigator.clipboard.writeText
-                              ) {
-                                navigator.clipboard
-                                  .writeText(rowData.refMeetingLink || "")
-                                  .then(() => {
-                                    toast.success(
-                                      `"${rowData.refMeetingTitle}" Meeting Link is copied Successfully`,
-                                      {
-                                        position: "top-right",
-                                        autoClose: 5000,
-                                        hideProgressBar: false,
-                                        closeOnClick: true,
-                                        pauseOnHover: true,
-                                        draggable: true,
-                                        progress: undefined,
-                                        theme: "light",
-                                      }
-                                    );
-                                  })
-                                  .catch((err) => {
-                                    toast.error(
-                                      `Failed To Copy the Meeting of "${rowData.refMeetingTitle}"`,
-                                      {
-                                        position: "top-right",
-                                        autoClose: 5000,
-                                        hideProgressBar: false,
-                                        closeOnClick: true,
-                                        pauseOnHover: true,
-                                        draggable: true,
-                                        progress: undefined,
-                                        theme: "light",
-                                      }
-                                    );
-                                  });
-                              } else {
-                                // Fallback: Create a temporary textarea element for copying
-                                const tempInput =
-                                  document.createElement("textarea");
-                                tempInput.value = rowData.refMeetingLink || "";
-                                document.body.appendChild(tempInput);
-                                tempInput.select();
-                                document.execCommand("copy");
-                                document.body.removeChild(tempInput);
-
-                                alert(`Copied: ${rowData.refMeetingLink}`);
-                              }
+                              navigator.clipboard
+                                .writeText(rowData.refMeetingLink || "")
+                                .then(() => {
+                                  toast.success(
+                                    `"${rowData.refMeetingTitle}" Meeting Link is copied Successfully`,
+                                    {
+                                      position: "top-right",
+                                      autoClose: 5000,
+                                      hideProgressBar: false,
+                                      closeOnClick: true,
+                                      pauseOnHover: true,
+                                      draggable: true,
+                                      progress: undefined,
+                                      theme: "light",
+                                    }
+                                  );
+                                })
+                                .catch(() => {
+                                  toast.error(
+                                    `Failed To Copy the Meeting of "${rowData.refMeetingTitle}"`,
+                                    {
+                                      position: "top-right",
+                                      autoClose: 5000,
+                                      hideProgressBar: false,
+                                      closeOnClick: true,
+                                      pauseOnHover: true,
+                                      draggable: true,
+                                      progress: undefined,
+                                      theme: "light",
+                                    }
+                                  );
+                                });
                             }}
-
-                            className="text-blue-500 hover:bg-blue-500 hover:text-white px-2 py-1 rounded border-transparent bg-transparent "
+                            className="text-blue-500 hover:bg-blue-500 hover:text-white px-2 py-1 rounded border-transparent bg-transparent"
                           >
                             <MdContentCopy size={"1.2rem"} />
                           </button>
                         </div>
                       )}
                     />
-
                     <Column
                       field="refMLTypeName"
                       header="Meeting Type"
                       style={{ minWidth: "14rem" }}
                     />
-                    {/* <Column
-                      field="refMeetStartFrom"
-                      header="Start Date"
-                      style={{ width: "15%" }}
-                    />
-                    <Column
-                      field="refMeetEnd"
-                      header="End Date"
-                      style={{ width: "15%" }}
-                    /> */}
-                    {/* <Column
-                      field="refStartTime"
-                      header="Start Time"
-                      style={{ minWidth: "8rem" }}
-                    />
-                    <Column
-                      field="refEndTime"
-                      header="End Time"
-                      style={{ minWidth: "8rem" }}
-                    /> */}
                     <Column
                       field="refCreatedDate"
                       header="Created Date"
-                      style={{ minWidth: "15rem" }}
+                      style={{ minWidth: "13rem" }}
                     />
                     <Column
                       header="Remove"
                       body={(rowData) => (
                         <button
-                          onClick={() => {
-                            console.log("rowData ------- line 767", rowData);
-                            handleDelete(rowData.refMeetingLink);
-                          }}
-                          // style={{
-                          //   background: "red",
-                          //   color: "white",
-                          //   border: "none",
-                          //   padding: "5px 10px",
-                          //   cursor: "pointer",
-                          // }}
+                          onClick={() => handleDelete(rowData.refMeetingLink)}
                           className="border-transparent text-red-500 rounded bg-transparent hover:bg-red-500 hover:text-white"
                         >
                           <MdOutlineDelete size={"1.5rem"} />
