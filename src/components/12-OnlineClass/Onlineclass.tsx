@@ -73,7 +73,7 @@ const Onlineclass: React.FC = () => {
 
   useEffect(() => {
     meetingdetails();
-    
+
   }, []);
 
   const resetForm = () => {
@@ -98,6 +98,7 @@ const Onlineclass: React.FC = () => {
       await Createmeeting();
       setVisibleRight(false); // Close the sidebar
       resetForm(); // Reset form fields
+      meetingdetails();
     } catch (error) {
       console.error("Error creating meeting:", error);
     } finally {
@@ -324,17 +325,17 @@ const Onlineclass: React.FC = () => {
     const formattedEndDate = enddate ? enddate.toLocaleDateString("en-GB") : "";
     const formattedStartTime = starttime
       ? starttime.toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        })
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })
       : "";
     const formattedEndTime = endtime
       ? endtime.toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        })
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })
       : "";
 
     console.log(
@@ -573,8 +574,8 @@ const Onlineclass: React.FC = () => {
                                     minDate={
                                       startdate
                                         ? new Date(
-                                            startdate.getTime() + 86400000
-                                          )
+                                          startdate.getTime() + 86400000
+                                        )
                                         : undefined
                                     }
                                     required
