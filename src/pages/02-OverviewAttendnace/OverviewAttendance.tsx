@@ -1,7 +1,7 @@
-import axios from "axios";
 import { Calendar } from "primereact/calendar";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
+import Axios from "axios";
 import { Divider } from "primereact/divider";
 import { Fieldset } from "primereact/fieldset";
 import { Nullable } from "primereact/ts-helpers";
@@ -42,60 +42,34 @@ interface OverviewAttendanceProps {
   overviewSessionData: AttendanceData | null;
 }
 
-const OverviewAttendance: React.FC<OverviewAttendanceProps> = ({
-  overviewSessionData,
-}) => {
+const OverviewAttendance: React.FC = () => {
+  // const OverviewAttendance: React.FC<OverviewAttendanceProps> = ({
+  //   overviewSessionData,
+  // }) => {
   const [date, setDate] = useState<Nullable<Date>>(new Date());
 
   const [userData, setUserData] = useState<AttendanceData[]>([]);
   const [nearestSessionRefTime, setNearestSessionRefTime] =
     useState<string>("");
 
-  const [_attendedTimeCount, setAttendedTimeCount] = useState<number>(0);
+  const [attendedTimeCount, setAttendedTimeCount] = useState<number>(0);
   const [kidsCount, setKidsCount] = useState<number>(0);
   const [maleCount, setMaleCount] = useState<number>(0);
   const [femaleCount, setFemaleCount] = useState<number>(0);
   const [notAttendedTimeCount, setNotAttendedTimeCount] = useState<number>(0);
+  const [offlineCount, setOfflineCount] = useState<RegularSession[]>([])
+  const [onlineCount, setOnlineCount] = useState<RegularSession[]>([])
 
-  useEffect(() => {
-    if (overviewSessionData) {
-      const dataArray = Array.isArray(overviewSessionData)
-        ? overviewSessionData
-        : [overviewSessionData];
-
-      // Extract nearestRefTimeId refTime if it exists
-      const nearestSession = dataArray.find(
-        (data) => "nearestRefTimeId" in data
-      ) as NearestSession;
-
-      if (nearestSession?.nearestRefTimeId) {
-        setNearestSessionRefTime(nearestSession.nearestRefTimeId.reftime);
-        setAttendedTimeCount(nearestSession.nearestRefTimeId.usercount);
-        setKidsCount(nearestSession.nearestRefTimeId.kidscount);
-        setMaleCount(nearestSession.nearestRefTimeId.malecount);
-        setFemaleCount(nearestSession.nearestRefTimeId.femalecount);
-        setNotAttendedTimeCount(
-          nearestSession.nearestRefTimeId.attendancecount
-        );
-      }
-
-      // Set userData excluding the last item (nearest session)
-      setUserData(dataArray.slice(0, -1));
-      console.log('dataArray.slice(0, -1)', dataArray.slice(0, -1))
-    }
-  }, [overviewSessionData]);
 
   const decrypt = (
     encryptedData: string,
     iv: string,
     key: string
   ): DecryptResult => {
-    // Create CipherParams with ciphertext
     const cipherParams = CryptoJS.lib.CipherParams.create({
       ciphertext: CryptoJS.enc.Hex.parse(encryptedData),
     });
 
-    // Perform decryption
     const decrypted = CryptoJS.AES.decrypt(
       cipherParams,
       CryptoJS.enc.Hex.parse(key),
@@ -113,12 +87,7 @@ const OverviewAttendance: React.FC<OverviewAttendanceProps> = ({
 
   const navigate = useNavigate();
 
-
-  const [overviewSessionDatas, setOverviewSessionData] =
-    useState<AttendanceData | null>(null);
-
-
-  useEffect(() => {
+  const attendanceOverViewData = async () => {
     const formattedDate = date?.toLocaleString("en-IN", {
       timeZone: "Asia/Kolkata",
       day: "2-digit",
@@ -129,7 +98,11 @@ const OverviewAttendance: React.FC<OverviewAttendanceProps> = ({
       second: "2-digit",
       hour12: true,
     });
-    axios.post(import.meta.env.VITE_API_URL + "/attendance/overView",
+    console.log(' -> Line Number ----------------------------------- 101',);
+    console.log('formattedDate', formattedDate)
+
+    const response = await Axios.post(
+      import.meta.env.VITE_API_URL + "/attendance/overView",
       {
         date: formattedDate
       },
@@ -138,45 +111,31 @@ const OverviewAttendance: React.FC<OverviewAttendanceProps> = ({
           Authorization: localStorage.getItem("JWTtoken"),
           "Content-Type": "application/json",
         },
-      }).then((res) => {
-        const data = decrypt(
-          res.data[1],
-          res.data[0],
-          import.meta.env.VITE_ENCRYPTION_KEY
-        );
-        console.log('data', data)
-        if (data.token == false) {
-          navigate("/expired");
-        } else {
-          localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
-          setOverviewSessionData(data.attendanceCount);
-        }
-      });
-  }, [date]);
+      }
+    );
+    const data = decrypt(
+      response.data[1],
+      response.data[0],
+      import.meta.env.VITE_ENCRYPTION_KEY
+    );
+    console.log(' -> Line Number ----------------------------------- 121',);
+    console.log('data', data)
+
+    if (data.token == false) {
+      navigate("/expired");
+    } else {
+      setOfflineCount(data.attendanceCount.slice(0, -1))
+      setOnlineCount(data.onlineAttendanceData.slice(0, -1))
+      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+    }
+  }
 
   useEffect(() => {
-    if (overviewSessionDatas) {
-      const dataArray = Array.isArray(overviewSessionDatas)
-        ? overviewSessionDatas
-        : [overviewSessionDatas];
+    attendanceOverViewData();
+  }, [date]);
 
-      // Extract nearestRefTimeId refTime if it exists
-      const nearestSession = dataArray.find(
-        (data) => "nearestRefTimeId" in data
-      ) as NearestSession;
 
-      if (nearestSession?.nearestRefTimeId) {
-        setNearestSessionRefTime(nearestSession.nearestRefTimeId.reftime);
-        setAttendedTimeCount(nearestSession.nearestRefTimeId.usercount);
-        setNotAttendedTimeCount(
-          nearestSession.nearestRefTimeId.attendancecount
-        );
-      }
 
-      // Set userData excluding the last item (nearest session)
-      setUserData(dataArray.slice(0, -1));
-    }
-  }, [overviewSessionDatas]);
 
   return (
     <div>
@@ -200,40 +159,48 @@ const OverviewAttendance: React.FC<OverviewAttendanceProps> = ({
             <input
               className="border px-0 py-0 text-center rounded border  p-4 border-[#f95005] border-2 text-[18px]"
               value={
-                "Total Count: " +
-                userData.reduce((sum, item) => {
+                "Total Count: " +(offlineCount.reduce((sum, item) => {
                   return sum + parseInt((item as any).attendancecount);
-                }, 0)
+                }, 0) + onlineCount.reduce((sum, item) => {
+                  return sum + parseInt((item as any).attendancecount);
+                }, 0))
+                
               }
               disabled
             />
             <input
               className="border px-0 py-0 text-center rounded border p-4 border-[#f95005] border-2 text-[18px]"
               value={
-                "Male: " +
-                userData.reduce((sum, item) => {
+                "Male: " +(
+                offlineCount.reduce((sum, item) => {
                   return sum + parseInt((item as any).malecount);
-                }, 0)
+                }, 0) + onlineCount.reduce((sum, item) => {
+                  return sum + parseInt((item as any).malecount);
+                }, 0))
               }
               disabled
             />
             <input
               className="border px-0 py-0 text-center rounded border p-4 border-[#f95005] border-2 text-[18px]"
               value={
-                "Female: " +
-                userData.reduce((sum, item) => {
+                "Female: " +(offlineCount.reduce((sum, item) => {
                   return sum + parseInt((item as any).femalecount);
-                }, 0)
+                }, 0) + onlineCount.reduce((sum, item) => {
+                  return sum + parseInt((item as any).femalecount);
+                }, 0))
+                
               }
               disabled
             />
             <input
               className="border px-0 py-0 text-center rounded border p-4 border-[#f95005] border-2 text-[18px]"
               value={
-                "Kids: " +
-                userData.reduce((sum, item) => {
+                "Kids: " + ( offlineCount.reduce((sum, item) => {
                   return sum + parseInt((item as any).kidscount);
-                }, 0)
+                }, 0) + onlineCount.reduce((sum, item) => {
+                  return sum + parseInt((item as any).kidscount);
+                }, 0))
+               
               }
               disabled
             />
@@ -246,177 +213,109 @@ const OverviewAttendance: React.FC<OverviewAttendanceProps> = ({
       <div className="userDashboard grid-container flex justify-center">
 
         <div
-          className="grid-item flex flex-col justify-start items-center lg:w-[40vw] mt-[-20px]"
+          className="grid-item flex flex-col justify-start items-center lg:w-[45vw] mt-[-20px] border-2 border-gray-400 h-[60vh]"
           style={{ justifyContent: "start" }}
         >
-          {" "}
-
-          <div className="card mb-3">
-            <Fieldset legend="Offline" className="">
-              <div className="leaveBalance flex flex-col">
-
-                <p
-                  className="m-0"
-                  style={{
-                    color: "#f95005",
-                    fontWeight: "bold",
-                    fontSize: "20px",
-                  }}
-                >
-                  {nearestSessionRefTime}
-                </p>
-                <div className="flex">
-                  <div className="balance">
-                    <p className="m-0">{notAttendedTimeCount}</p>
-                    <p className="m-0">Attended</p>
-                  </div>
-                  <Divider layout="vertical" />
-                  <div className="balance">
-                    <p className="m-0">{kidsCount}</p>
-                    <p className="m-0">Kids</p>
-                  </div>
-                  <Divider layout="vertical" />
-                  <div className="balance">
-                    <p className="m-0">{maleCount}</p>
-                    <p className="m-0">Male</p>
-                  </div>
-                  <Divider layout="vertical" />
-                  <div className="balance">
-                    <p className="m-0">{femaleCount}</p>
-                    <p className="m-0">Female</p>
-                  </div>
-                </div>
-              </div>
-            </Fieldset>
+          <div className="bg-[#f95005] w-[100%]">
+            <p className="text-white text-center font-bold">OFFLINE CLASS TIMING</p>
           </div>
-          <DataTable
-            value={userData}
-            stripedRows
-            scrollable
-            scrollHeight="250px"
-            emptyMessage="No Data Found"
-          >
-            <Column
-              header="S.No"
-              body={(_rowData, options) => options.rowIndex + 1}
-              style={{ minWidth: "2rem" }}
-            ></Column>
-            <Column
-              field="reftime"
-              header="Ref Time"
-              style={{ minWidth: "7rem" }}
-            ></Column>
-            <Column
-              field="attendancecount"
-              header="Present"
-              style={{ minWidth: "2rem" }}
-            ></Column>
-            <Column
-              field="kidscount"
-              style={{ minWidth: "2rem" }}
-              header="Kids"
-            ></Column>
-            <Column
-              field="malecount"
-              style={{ minWidth: "2rem" }}
-              header="Male"
-            ></Column>
-            <Column
-              field="femalecount"
-              style={{ minWidth: "2rem" }}
-              header="Female"
-            ></Column>
-            {/* <Column
-              body={(rowData) => {
-                const absentCount = rowData.usercount - rowData.attendancecount;
-                console.log("absentCount", absentCount);
-                return absentCount == 0 ? 0 : absentCount;
-              }}
-              style={{ minWidth: "2rem" }}
-              header="Absent"
-            ></Column> */}
-          </DataTable>
+          <div className="w-[100%]">
+            <DataTable
+              value={offlineCount}
+              stripedRows
+              scrollable
+              scrollHeight="50vh"
+              emptyMessage="No Data Found"
+              className="w-[100%]"
+            >
+              <Column
+                header="S.No"
+                body={(_rowData, options) => options.rowIndex + 1}
+                style={{ minWidth: "2rem" }}
+              ></Column>
+              <Column
+                field="reftime"
+                header="Ref Time"
+                style={{ minWidth: "7rem" }}
+              ></Column>
+              <Column
+                field="attendancecount"
+                header="Present"
+                style={{ minWidth: "2rem" }}
+              ></Column>
+              <Column
+                field="kidscount"
+                style={{ minWidth: "2rem" }}
+                header="Kids"
+              ></Column>
+              <Column
+                field="malecount"
+                style={{ minWidth: "2rem" }}
+                header="Male"
+              ></Column>
+              <Column
+                field="femalecount"
+                style={{ minWidth: "2rem" }}
+                header="Female"
+              ></Column>
+            </DataTable>
+          </div>
+
+
+
         </div>
         <div
-          className="grid-item flex flex-col justify-start items-center lg:w-[40vw] mt-[-20px]"
+          className="grid-item flex flex-col justify-start items-center lg:w-[45vw] mt-[-20px] border-2 border-gray-400 h-[60vh]"
           style={{ justifyContent: "start" }}
         >
-          <div className="card mb-3">
-            <Fieldset legend="Online">
-              <div className="leaveBalance flex flex-col">
-
-                <p
-                  className="m-0"
-                  style={{
-                    color: "#f95005",
-                    fontWeight: "bold",
-                    fontSize: "20px",
-                  }}
-                >
-                  {nearestSessionRefTime}
-                </p>
-                <div className="flex">
-                  <div className="balance">
-                    <p className="m-0">{notAttendedTimeCount}</p>
-                    <p className="m-0">Attended</p>
-                  </div>
-                  <Divider layout="vertical" />
-                  <div className="balance">
-                    <p className="m-0">{kidsCount}</p>
-                    <p className="m-0">Kids</p>
-                  </div>
-                  <Divider layout="vertical" />
-                  <div className="balance">
-                    <p className="m-0">{maleCount}</p>
-                    <p className="m-0">Male</p>
-                  </div>
-                  <Divider layout="vertical" />
-                  <div className="balance">
-                    <p className="m-0">{femaleCount}</p>
-                    <p className="m-0">Female</p>
-                  </div>
-                </div>
-              </div>
-            </Fieldset>
+          <div className="bg-[#f95005] w-[100%]">
+            <p className="text-white text-center font-bold">ONLINE CLASS TIMING</p>
           </div>
-          <DataTable
-            stripedRows
-            scrollHeight="250px"
-            scrollable
-            emptyMessage="No Data Found"
-          >
-            <Column
-              header="S.No"
-              body={(_rowData, options) => options.rowIndex + 1}
-              style={{ minWidth: "2rem" }}
-            ></Column>
-            <Column
-              field="refTime"
-              header="Ref Time"
-              style={{ minWidth: "7rem" }}
-            ></Column>
-            <Column
-              field="usercount"
-              header="Present"
-              style={{ minWidth: "2rem" }}
-            ></Column>
-            <Column
-              field="attendancecount"
-              style={{ minWidth: "2rem" }}
-              header="Kids"
-            ></Column>
-            <Column
-              field="attendancecount"
-              style={{ minWidth: "2rem" }}
-              header="Male"
-            ></Column>
-            <Column
-              field="attendancecount"
-              style={{ minWidth: "2rem" }}
-              header="Female"
-            ></Column>
-          </DataTable>
+          <div className="w-[100%]">
+            <DataTable
+              value={onlineCount}
+              stripedRows
+              scrollable
+              scrollHeight="50vh"
+              emptyMessage="No Data Found"
+            >
+              <Column
+                header="S.No"
+                body={(_rowData, options) => options.rowIndex + 1}
+                style={{ minWidth: "2rem" }}
+              ></Column>
+              <Column
+                field="reftime"
+                header="Ref Time"
+                style={{ minWidth: "7rem" }}
+              ></Column>
+              <Column
+                field="attendancecount"
+                header="Present"
+                style={{ minWidth: "2rem" }}
+              ></Column>
+              <Column
+                field="kidscount"
+                style={{ minWidth: "2rem" }}
+                header="Kids"
+              ></Column>
+              <Column
+                field="malecount"
+                style={{ minWidth: "2rem" }}
+                header="Male"
+              ></Column>
+              <Column
+                field="femalecount"
+                style={{ minWidth: "2rem" }}
+                header="Female"
+              ></Column>
+            </DataTable>
+          </div>
+
+
+
         </div>
+
       </div>
     </div>
   );

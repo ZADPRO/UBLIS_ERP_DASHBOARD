@@ -298,7 +298,6 @@ const StaffAttendance: React.FC = () => {
           verifytoken: false,
         });
 
-        console.log("Verify Token  Running --- ");
       }
     });
   }, []);
@@ -421,7 +420,8 @@ const StaffAttendance: React.FC = () => {
 
             <TabView className="overflow-hidden m-2 pt-[10vh]">
               <TabPanel header="Overview">
-                <OverviewAttendance overviewSessionData={overviewSessionData} />
+                {/* <OverviewAttendance overviewSessionData={overviewSessionData} /> */}
+                <OverviewAttendance/>
 
               </TabPanel>
               <TabPanel header="Session">

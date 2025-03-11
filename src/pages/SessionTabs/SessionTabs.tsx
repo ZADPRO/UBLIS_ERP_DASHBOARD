@@ -109,6 +109,8 @@ const SessionTabs: React.FC = () => {
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
+        console.log(' -> Line Number ----------------------------------- 112', );
+        console.log('data', data)
 
         if (data.token == false) {
           navigate("/expired");
@@ -134,7 +136,7 @@ const SessionTabs: React.FC = () => {
     // const skeletonRows = Array.from({ length: 5 });
     return (
       <div className="flex flex-wrap gap-2 pt-2 pb-2 justify-content-between align-items-center">
-        <h3 className="m-0">Customers</h3>
+        <h3 className="m-0">Session Wise Attendance Count</h3>
         <Button
           label="View Report"
           severity="success"

@@ -98,7 +98,7 @@ const GMeetMembersSidebar: React.FC<GMeetMembersSidebarProps> = ({
   >([]);
 
 
-  
+
   useEffect(() => {
     GetMembers(selectedMeeting.refGoogleMeetId);
   }, []);
@@ -241,6 +241,7 @@ const GMeetMembersSidebar: React.FC<GMeetMembersSidebarProps> = ({
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
+      console.log('data line ------- 244 \n', data)
       if (data.token == false) {
         navigate("/expired");
       } else {
@@ -564,9 +565,8 @@ const GMeetMembersSidebar: React.FC<GMeetMembersSidebarProps> = ({
                 </div>
                 <div className="flex justify-end w-[20%]">
                   <button
-                    className={`border-none rounded-md ${
-                      loading ? "bg-gray-400" : "bg-[#28a745]"
-                    } text-white px-5 py-2 text-[1rem] flex items-center justify-center`}
+                    className={`border-none rounded-md ${loading ? "bg-gray-400" : "bg-[#28a745]"
+                      } text-white px-5 py-2 text-[1rem] flex items-center justify-center`}
                     onClick={AddNewMembers}
                     disabled={loading} // Disable the button while loading
                   >
