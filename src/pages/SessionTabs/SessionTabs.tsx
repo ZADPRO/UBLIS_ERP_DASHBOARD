@@ -221,7 +221,7 @@ const SessionTabs: React.FC = () => {
 
 
       <Sidebar
-        style={{ width: "70%" }}
+        style={{ width: "80%" }}
         visible={visibleLeft}
         position="right"
         onHide={() => setVisibleLeft(false)}

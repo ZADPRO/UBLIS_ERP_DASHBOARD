@@ -27,6 +27,7 @@ type Attendance = {
   sno: number;
   date: string;
   time: string;
+  atten_in: string;
 };
 
 interface SelectedUser {
@@ -54,6 +55,7 @@ interface SelectedUser {
 
 interface AttendanceItem {
   formatted_punch_time: string;
+  atten_in: string;
   // Add other properties if they exist in the response
 }
 
@@ -129,9 +131,19 @@ const StaffAttendance: React.FC = () => {
     });
   }, []);
 
+  interface attendanceCount {
+    totalClassCount: number;
+    classAttendanceCount: number;
+    reCount: number;
+    onlineCount: number;
+    totalAttendCount: number;
+  }
+
   const [userFilteredAttendanceData, setUserFilteredAttendanceData] = useState<
     Attendance[]
   >([]);
+  const [userAttendanceCount, setUserAttendanceCount] = useState<attendanceCount>();
+
   const [selectedUser, setSelectedUser] = useState<SelectedUser | null>(null);
   // const [rowData, setRowData] = useState<Data | null>(null);
 
@@ -194,7 +206,7 @@ const StaffAttendance: React.FC = () => {
       response.data[0],
       import.meta.env.VITE_ENCRYPTION_KEY
     );
-    console.log("data", data);
+    console.log("data line ------ 208", data);
     if (data.token == false) {
       navigate("/expired");
     } else {
@@ -207,12 +219,14 @@ const StaffAttendance: React.FC = () => {
               sno: index + 1,
               date: date.trim(),
               time: time.trim(),
+              atten_in: item.atten_in
             };
           }
         );
         console.log("mappedData", mappedData);
 
         setUserFilteredAttendanceData(mappedData);
+        setUserAttendanceCount(data.AttendanceCount)
       }
     }
   };
@@ -329,7 +343,7 @@ const StaffAttendance: React.FC = () => {
                       <div className="flex flex-col w-[90%]">
                         {selectedUser && (
                           <div className="w-full flex flex-col align-items-center justify-center">
-                            <Panel header="User Details" className="w-full">
+                            {/* <Panel header="User Details" className="w-full">
                               <p>
                                 Username:{" "}
                                 {selectedUser.userName.charAt(0).toUpperCase() +
@@ -367,27 +381,170 @@ const StaffAttendance: React.FC = () => {
                               ) : (
                                 <></>
                               )}
-                            </Panel>
+                            </Panel> */}
+                            <div
+                                className="flex flex-col justify-start p-4 w-full rounded-md"
+                                style={{ border: "3px solid #f95005" }}
+                              >
+                                <div className="flex flex-row w-full align-items-center justify-center">
+                                  <div className="w-[95%]">
+                                    <div className="h-[25px] mt-[-30px] flex">
+                                      <p
+                                        style={{
+                                          width: "30%",
+                                          fontSize: "18px",
+                                          fontWeight: "bold",
+                                          color: "#f95005",
+                                          textAlign: "left",
+                                        }}
+                                      >
+                                        User Name
+                                      </p>
+                                      <p
+                                        style={{
+                                          width: "60%",
+                                          fontSize: "18px",
+                                          paddingLeft: "10px",
+                                        }}
+                                      >
+                                        :{" "}
+                                        {selectedUser.userName
+                                          .charAt(0)
+                                          .toUpperCase() +
+                                          selectedUser.userName
+                                            .slice(1)
+                                            .toLowerCase()}
+                                      </p>
+                                    </div>
+
+                                    <div className="w-full h-[25px] flex">
+                                      <p
+                                        style={{
+                                          width: "30%",
+                                          fontSize: "18px",
+                                          fontWeight: "bold",
+                                          color: "#f95005",
+                                          textAlign: "left",
+                                        }}
+                                      >
+                                        User ID
+                                      </p>
+                                      <p
+                                        style={{
+                                          width: "60%",
+                                          fontSize: "18px",
+                                          paddingLeft: "10px",
+                                        }}
+                                      >
+                                        : {selectedUser.userId}
+                                      </p>
+                                    </div>
+                                    <div className="w-full h-[25px] flex">
+                                      <p
+                                        style={{
+                                          width: "30%",
+                                          fontSize: "18px",
+                                          fontWeight: "bold",
+                                          color: "#f95005",
+                                          textAlign: "left",
+                                        }}
+                                      >
+                                        Session
+                                      </p>
+                                      <p
+                                        style={{
+                                          width: "60%",
+                                          fontSize: "18px",
+                                          paddingLeft: "10px",
+                                        }}
+                                      >
+                                        : {selectedUser.refPackageName}
+                                      </p>
+                                    </div>
+                                    <div className="w-full h-[25px] flex">
+                                      <p
+                                        style={{
+                                          width: "30%",
+                                          fontSize: "18px",
+                                          fontWeight: "bold",
+                                          color: "#f95005",
+                                          textAlign: "left",
+                                        }}
+                                      >
+                                        Weekdays
+                                      </p>
+                                      <p
+                                        style={{
+                                          width: "60%",
+                                          fontSize: "18px",
+                                          paddingLeft: "10px",
+                                        }}
+                                      >
+                                        : {selectedUser.refWeekDaysTime}
+                                      </p>
+                                    </div>
+                                    <div className="w-full h-[25px] flex">
+                                      <p
+                                        style={{
+                                          width: "30%",
+                                          fontSize: "18px",
+                                          fontWeight: "bold",
+                                          color: "#f95005",
+                                          textAlign: "left",
+                                        }}
+                                      >
+                                        Weekend
+                                      </p>
+                                      <p
+                                        style={{
+                                          width: "60%",
+                                          fontSize: "18px",
+                                          paddingLeft: "10px",
+                                        }}
+                                      >
+                                        : {selectedUser.refWeekEndTime}
+                                      </p>
+                                    </div>
+                                  </div>
+                                 
+                                </div>
+                              </div>
+                            <div className="w-[100%] mt-3">
+                              <div className="border-3 rounded-md w-[100%] flex flex-col align-items-center border-[#f95005]">
+                                <div className="flex flex-row gap-x-3">
+                                  <p className="font-bold bg-white">Total class count : <span className="text-[#f95005]">{userAttendanceCount?.totalClassCount}</span> </p>
+                                  <p className="font-bold">Completed Class : <span className="text-[#f95005]">{userAttendanceCount?.totalAttendCount}</span></p>
+                                  <p className="font-bold">Remaining Class : <span className="text-[#f95005]">{userAttendanceCount?.reCount}</span></p>
+                                </div>
+                                <div className="flex flex-row gap-x-3 justify-center">
+                                  <p className="font-bold">Attend in Offline : <span className="text-[#f95005]">{userAttendanceCount?.classAttendanceCount}</span> </p>
+                                  <p className="font-bold">Attend in Online : <span className="text-[#f95005]">{userAttendanceCount?.onlineCount}</span></p>
+                                </div>
+                              </div>
+
+
+                            </div>
                             <DataTable
                               value={userFilteredAttendanceData}
                               className="w-full mt-3 border-2 border-gray-400 custom-header"
-                              scrollHeight="350px"
+                              scrollHeight="180px"
                               scrollable
                             >
                               <Column
                                 field="sno"
                                 header="S.No"
-                                style={{ minWidth: "3rem" }}
                               />
                               <Column
                                 field="date"
                                 header="Date"
-                                style={{ minWidth: "12rem" }}
                               />
                               <Column
                                 field="time"
                                 header="Time"
-                                style={{ minWidth: "10rem" }}
+                              />
+                              <Column
+                                field="atten_in"
+                                header="Mode"
                               />
                             </DataTable>
                           </div>

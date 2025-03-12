@@ -375,6 +375,8 @@ const ClassInfo: React.FC = () => {
   
   type ClassCountData = {
     classCount: number;
+    offlineCount:number;
+    onlineCount:number;
     classAttend: number;
     classreCount: number;
     therapyCount: number;
@@ -416,7 +418,9 @@ const ClassInfo: React.FC = () => {
       console.log("Data line --------------- 227", data);
       const countData = {
         classCount: data.data.classCount.totalClassCount,
-        classAttend: data.data.classCount.classAttendCount,
+        offlineCount:data.data.classCount.classAttendCount,
+        onlineCount:data.data.classCount.onlineCount,
+        classAttend: data.data.classCount.totalAttendCount,
         classreCount: data.data.classCount.reCount,
         therapyCount: data.data.therapyCount.totalSession,
         thearpyAttend: data.data.therapyCount.attendSession,
@@ -1445,8 +1449,9 @@ const ClassInfo: React.FC = () => {
                               >
                                 <div className="flex flex-row gap-0 justify-around">
                                   <div>
-                                    <th className="text-900 font-bold p-2 text-start">
-                                      Yoga Class
+                                    <th className="text-900 font-bold p-2 text-start ">
+                                      <span className="text-[#f95005]">Yoga Class</span>
+                                      
                                     </th>
                                     <tr>
                                       <td className="text-900 font-bold p-2">
@@ -1458,12 +1463,27 @@ const ClassInfo: React.FC = () => {
                                     </tr>
                                     <tr>
                                       <td className="text-900 font-bold p-2">
+                                        Offline Count
+                                      </td>
+                                      <td className="text-[#000] p-2">
+                                        {classCount?.offlineCount || 0}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td className="text-900 font-bold p-2">
+                                        Online Count
+                                      </td>
+                                      <td className="text-[#000] p-2">
+                                        {classCount?.onlineCount || 0}
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td className="text-900 font-bold p-2">
                                         Attended Class
                                       </td>
                                       <td className="text-[#000] p-2">
                                         {classCount?.classAttend || 0}
                                       </td>
-                                      {/* <td className="text-[#000] p-2">{info[0].refCtMobile}</td> */}
                                     </tr>
                                     <tr>
                                       <td className="text-900 font-bold p-2">
@@ -1477,7 +1497,8 @@ const ClassInfo: React.FC = () => {
                                   <Divider layout="vertical" />
                                   <div>
                                     <th className="text-900 font-bold p-2 text-start">
-                                      Therapy Session
+                                      <span className="text-[#f95005]">Therapy Session</span>
+                                      
                                     </th>
                                     <tr>
                                       <td className="text-900 font-bold p-2">

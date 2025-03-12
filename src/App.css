@@ -164,7 +164,7 @@ main {
 
 /* Enable scrollbar for PrimeReact DataTable */
 .p-datatable-wrapper {
-  scrollbar-width: auto; /* For Firefox */
+   scrollbar-width: auto; /* For Firefox */
   -ms-overflow-style: auto; /* For IE and Edge */
 }
 

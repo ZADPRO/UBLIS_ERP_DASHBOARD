@@ -39,6 +39,9 @@ interface Customer {
   reCount?: String;
   userType?: String;
   refStSex?: String;
+  totalAttendCount?: string;
+  onlineCount?: string;
+
 }
 
 type DecryptResult = any;
@@ -250,7 +253,7 @@ const ReportPageClass: React.FC = () => {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      console.log("Data:", data);
+      console.log("Data: line ----- 253", data);
 
       if (data.token === false) {
         navigate("/expired");
@@ -449,17 +452,31 @@ const ReportPageClass: React.FC = () => {
             style={{ minWidth: "14rem" }}
           />
           <Column
-            field="attendedclass"
+            field="classAttendanceCount"
             sortable
-            header="Attended Class"
-            body={(rowData) => nullToDash(rowData.classAttendCount)}
+            header="Offline Count"
+            body={(rowData) => nullToDash(rowData.classAttendanceCount)}
             style={{ minWidth: "14rem" }}
           />
           <Column
-            field="notattendedclass"
+            field="onlineCount"
+            sortable
+            header="Online Count"
+            body={(rowData) => nullToDash(rowData.onlineCount)}
+            style={{ minWidth: "14rem" }}
+          />
+          <Column
+            field="totalAttendCount"
+            sortable
+            header="Total Class Attended"
+            body={(rowData) => nullToDash(rowData.totalAttendCount)}
+            style={{ minWidth: "14rem" }}
+          />
+          <Column
+            field="reCount"
             sortable
             header="Not Attended Class"
-            body={(rowData) => nullToDash(rowData.classAttendCount)}
+            body={(rowData) => nullToDash(rowData.reCount)}
             style={{ minWidth: "14rem" }}
           />
           <Column

@@ -49,11 +49,10 @@ interface ReportRangeParams {
 
 type DecryptResult = any;
 
-// interface FlattenedData {
-//   refPaId: string;
-//   displayName: string;
-//   packageName?: string;
-// }
+interface AttendanceData {
+  time?: string;
+  mode?: string;
+}
 
 interface User {
   refStId: number;
@@ -61,7 +60,7 @@ interface User {
   refStFName: string;
   refStLName: string;
   refCtMobile: string;
-  attendance?: string[];
+  attendance?: AttendanceData[];
 }
 
 interface PackageData {
@@ -198,7 +197,8 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
             FirstName: user.refStFName,
             LastName: user.refStLName,
             refCtMobile: user.refCtMobile,
-            Attendance: entry,
+            attendance: entry.time,
+            mode: entry.mode,
           }));
         } else {
           return {
@@ -209,6 +209,7 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
             LastName: user.refStLName,
             refCtMobile: user.refCtMobile,
             Attendance: "Not Attend",
+            mode:" - "
           };
         }
       })
@@ -261,14 +262,20 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
   }));
 
   const rowExpansionTemplate = (data: PackageData) => {
+    console.log(' -> Line Number ----------------------------------- 265', );
+    console.log('data', data)
+   
     const userEntries = data.users.map((user) => {
+     
+      
       if (user.attendance && user.attendance.length > 0) {
         return user.attendance.map((entry, index) => ({
           refSCustId: user.refSCustId,
           refStFName: user.refStFName,
           refStLName: user.refStLName,
           refCtMobile: user.refCtMobile,
-          attendance: entry,
+          attendance: entry.time,
+          mode: entry.mode,
           key: `${user.refStId}-${index}`,
         }));
       } else {
@@ -279,6 +286,7 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
             refStLName: user.refStLName,
             refCtMobile: user.refCtMobile,
             attendance: "Not Attend",
+            mode: " - "
           },
         ];
       }
@@ -300,6 +308,16 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
             body={(rowData) => (
               <span style={{ color: rowData.attendance === "Not Attend" ? "red" : "green" }}>
                 {rowData.attendance}
+              </span>
+            )}
+          />
+          <Column
+            field="attendance"
+            header="Mode"
+            sortable
+            body={(rowData) => (
+              <span>
+                {rowData.mode}
               </span>
             )}
           />
@@ -332,7 +350,7 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
 
   const reportAPI = async () => {
     try {
-      let refRepDurationFormatted:any;
+      let refRepDurationFormatted: any;
       if (date) {
         refRepDurationFormatted = date
           ? new Intl.DateTimeFormat("en-GB", {
@@ -398,7 +416,7 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      console.log("Decrypted Data: line -------- 330 vijay", data);
+      
 
       if (data.token == false) {
         navigate("/expired");
@@ -503,7 +521,7 @@ const AttendanceReportDownloadSidebar: React.FC = () => {
               <Dropdown
                 value={reportRange}
                 onChange={(e: DropdownChangeEvent) => {
-                  const selectedLabel = e.value?.name || "";                  
+                  const selectedLabel = e.value?.name || "";
                   setShowData((prevState) => ({
                     ...prevState,
                     durationType: selectedLabel,

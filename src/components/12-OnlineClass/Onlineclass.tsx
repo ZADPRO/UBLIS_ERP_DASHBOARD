@@ -716,7 +716,7 @@ const Onlineclass: React.FC = () => {
                     sortMode="single"
                     className="googleMeetDatatable"
                     scrollable
-                    scrollHeight="400px" // This can be removed if you are using max-height in CSS
+                    scrollHeight="80vh" // This can be removed if you are using max-height in CSS
                     value={googleWorkspaceLink}
                     sortOrder={1}
                   >
@@ -804,7 +804,7 @@ const Onlineclass: React.FC = () => {
                       header="Remove"
                       body={(rowData) => (
                         <button
-                          onClick={() => handleDelete(rowData.refMeetingLink)}
+                          onClick={() => handleDelete(rowData.refGoogleMeetId)}
                           className="border-transparent text-red-500 rounded bg-transparent hover:bg-red-500 hover:text-white"
                         >
                           <MdOutlineDelete size={"1.5rem"} />

@@ -1,5 +1,12 @@
 .paymentUIUser .p-toggleable-content .p-fieldset-content {
   block-size: auto;
+  
+}
+.user-payment-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .p-metergroup-label-list.p-metergroup-label-list-end.p-metergroup-label-list-horizontal {
@@ -13,6 +20,8 @@
   tr
   th {
   background-color: #f95005;
+  color: white;
+ 
 }
 
 .userPaymentDataTable
@@ -35,8 +44,59 @@
 
 .userPaymentSidebar .p-sidebar-content {
   padding: 0;
+ 
 }
 
 .stepperForPayment .p-stepper .p-stepper-panels {
   padding-top: 0;
+}
+
+/* styles.css */
+.dialog-header {
+  background-color: #f95005;
+  color: #fff;
+  padding: 15px;
+  font-weight: bold;
+  text-align: center;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.dialog-body {
+  padding: 20px;
+  color: #333;
+  font-family: Arial, sans-serif;
+  border-radius: 0 0 12px 12px;
+}
+
+.dialog-offer-name {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #030303;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.dialog-coupon {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap:2%;
+  width: 100%;
+  font-size: 1.2rem;
+  color: #f95005;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.dialog-info-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dialog-info-text {
+  font-size: 1rem;
+  margin: 0;
+  padding: 5px;
 }
