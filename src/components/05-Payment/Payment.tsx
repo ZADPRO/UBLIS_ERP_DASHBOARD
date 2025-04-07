@@ -68,11 +68,10 @@ const Payment: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false)
-      {
+      if (data.token == false) {
         navigate("/expired")
       }
-      else{
+      else {
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
         setuserdata({
@@ -81,46 +80,75 @@ const Payment: React.FC = () => {
           usernameid: data.data[0].refusertype,
           profileimg: data.profileFile,
         });
-  
+
         setPageLoading({
           ...pageLoading,
           verifytoken: false,
         });
-  
+
         console.log("Verify Token  Running --- ");
       }
 
-      
+
     });
   }, []);
 
+  const exportExcel = () => {
+    import("xlsx").then((xlsx) => {
+      const worksheet = xlsx.utils.json_to_sheet(userData);
+      const workbook = { Sheets: { data: worksheet }, SheetNames: ["data"] };
+      const excelBuffer = xlsx.write(workbook, {
+        bookType: "xlsx",
+        type: "array",
+      });
+
+      saveAsExcelFile(excelBuffer, "customers");
+    });
+  };
+
+  const saveAsExcelFile = (buffer: Uint8Array, fileName: string) => {
+    import("file-saver").then((module) => {
+      if (module && module.default) {
+        const EXCEL_TYPE =
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
+        const EXCEL_EXTENSION = ".xlsx";
+        const data = new Blob([buffer], { type: EXCEL_TYPE });
+
+        module.default.saveAs(
+          data,
+          `${fileName}_export_${new Date().getTime()}${EXCEL_EXTENSION}`
+        );
+      }
+    });
+  };
+
   interface Customer {
-    refStId:number;
-    refSCustId : string;
-    refStFName : string;
-    refStLName : string;
-    refCtMobile : string;
-    refCtEmail : string;
-    refCtWhatsapp : string;
-    refTimeMembers : string;
-    refWeekDaysTiming : string;
-    refWeekEndTiming : string;
-    refClMode : string;
-    refPayId : string;
-    refOrderId : string;
-    refTransId : string;
-    refPagId : string;
-    refPayFrom : string;
-    refPayTo : string;
-    refPagExp : string;
-    refOffId : string;
-    refFeesType : string;
-    refPagFees : string;
-    refFeesPaid : string;
-    refCollectedBy : string;
-    refPayDate : string;
-    refPayStatus : string;
-    refPackageName : string;
+    refStId: number;
+    refSCustId: string;
+    refStFName: string;
+    refStLName: string;
+    refCtMobile: string;
+    refCtEmail: string;
+    refCtWhatsapp: string;
+    refTimeMembers: string;
+    refWeekDaysTiming: string;
+    refWeekEndTiming: string;
+    refClMode: string;
+    refPayId: string;
+    refOrderId: string;
+    refTransId: string;
+    refPagId: string;
+    refPayFrom: string;
+    refPayTo: string;
+    refPagExp: string;
+    refOffId: string;
+    refFeesType: string;
+    refPagFees: string;
+    refFeesPaid: string;
+    refCollectedBy: string;
+    refPayDate: string;
+    refPayStatus: string;
+    refPackageName: string;
 
   }
 
@@ -165,51 +193,50 @@ const Payment: React.FC = () => {
         response.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
+      if (data.token == false) {
         navigate("/expired")
       }
-      else
-      {
+      else {
 
         console.log("Data line --------------- 227", data);
         console.log("data", data);
-  
+
         const capitalizeString = (str: any): string => {
           if (typeof str !== "string") return str; // Only capitalize if it's a string
           return str.charAt(0).toUpperCase() + str.slice(1); // Capitalize first letter, leave the rest unchanged
         };
-  
+
         const fetchedCustomers: Customer[] = data.feeData.map(
           (customer: any) => ({
             refStId: capitalizeString(customer.refStId),
-            refSCustId :  capitalizeString(customer.refSCustId),
-            refStFName : capitalizeString(customer.refStFName),
-            refStLName : capitalizeString(customer.refStLName),
-            refCtMobile :  capitalizeString(customer.refCtMobile),
-            refCtEmail : customer.refCtEmail,
-            refCtWhatsapp :  capitalizeString(customer.refCtWhatsapp),
-            refTimeMembers : capitalizeString(customer.refTimeMembers),
-            refWeekDaysTiming : capitalizeString(customer.refWeekDaysTiming),
-            refWeekEndTiming : capitalizeString(customer.refWeekEndTiming),
-            refClMode : capitalizeString(customer.refClMode),
-            refPayId : capitalizeString(customer.refPayId),
-            refOrderId : capitalizeString(customer.refOrderId),
-            refTransId : capitalizeString(customer.refTransId),
-            refPagId : capitalizeString(customer.refPagId),
-            refPayFrom : capitalizeString(customer.refPayFrom),
-            refPayTo : capitalizeString(customer.refPayTo),
-            refPagExp : capitalizeString(customer.refPagExp),
-            refOffId : capitalizeString(customer.refOffId),
-            refFeesType : capitalizeString(customer.refFeesType),
-            refPagFees : capitalizeString(customer.refPagFees),
-            refFeesPaid : capitalizeString(customer.refFeesPaid),
-            refCollectedBy : capitalizeString(customer.refCollectedBy),
-            refPayDate : capitalizeString(customer.refPayDate),
-            refPayStatus : capitalizeString(customer.refPayStatus),
-            refPackageName : capitalizeString(customer.refPackageName),
+            refSCustId: capitalizeString(customer.refSCustId),
+            refStFName: capitalizeString(customer.refStFName),
+            refStLName: capitalizeString(customer.refStLName),
+            refCtMobile: capitalizeString(customer.refCtMobile),
+            refCtEmail: customer.refCtEmail,
+            refCtWhatsapp: capitalizeString(customer.refCtWhatsapp),
+            refTimeMembers: capitalizeString(customer.refTimeMembers),
+            refWeekDaysTiming: capitalizeString(customer.refWeekDaysTiming),
+            refWeekEndTiming: capitalizeString(customer.refWeekEndTiming),
+            refClMode: capitalizeString(customer.refClMode),
+            refPayId: capitalizeString(customer.refPayId),
+            refOrderId: capitalizeString(customer.refOrderId),
+            refTransId: capitalizeString(customer.refTransId),
+            refPagId: capitalizeString(customer.refPagId),
+            refPayFrom: capitalizeString(customer.refPayFrom),
+            refPayTo: capitalizeString(customer.refPayTo),
+            refPagExp: capitalizeString(customer.refPagExp),
+            refOffId: capitalizeString(customer.refOffId),
+            refFeesType: capitalizeString(customer.refFeesType),
+            refPagFees: capitalizeString(customer.refPagFees),
+            refFeesPaid: capitalizeString(customer.refFeesPaid),
+            refCollectedBy: capitalizeString(customer.refCollectedBy),
+            refPayDate: capitalizeString(customer.refPayDate),
+            refPayStatus: capitalizeString(customer.refPayStatus),
+            refPackageName: capitalizeString(customer.refPackageName),
           })
         );
-  
+
         setUserData(fetchedCustomers);
       }
     } catch (error) {
@@ -269,7 +296,7 @@ const Payment: React.FC = () => {
           <Button
             type="button"
             severity="success"
-            // onClick={exportExcel}
+            onClick={exportExcel}
             data-pr-tooltip="XLS"
           >
             Export As Excel
@@ -315,32 +342,32 @@ const Payment: React.FC = () => {
       ) : (
         <>
           <div className="card m-1" style={{ overflow: "auto" }}>
-          <div className="headerPrimary">
-            <h3>PAYMENTS</h3>
-            <div className="quickAcces">
-              {userdata.profileimg ? (
-                <div className="p-link layout-topbar-button">
-                  <img
-                    id="userprofileimg"
-                    className="w-[45px] h-[45px] object-cover rounded-full"
-                    src={`data:${userdata.profileimg.contentType};base64,${userdata.profileimg.content}`}
-                    alt=""
-                  />
-                </div>
-              ) : (
-                <div className="p-link layout-topbar-button">
-                  <i className="pi pi-user"></i>
-                </div>
-              )}
-              <h3 className="text-[1rem] text-center ml-2 lg:ml-2 mr-0 lg:mr-5">
-                <span>{userdata.username}</span>
-                <br />
-                <span className="text-[0.8rem] text-[#f95005]">
-                  {userdata.usernameid}
-                </span>
-              </h3>
-            </div>{" "}
-          </div>
+            <div className="headerPrimary">
+              <h3>PAYMENTS</h3>
+              <div className="quickAcces">
+                {userdata.profileimg ? (
+                  <div className="p-link layout-topbar-button">
+                    <img
+                      id="userprofileimg"
+                      className="w-[45px] h-[45px] object-cover rounded-full"
+                      src={`data:${userdata.profileimg.contentType};base64,${userdata.profileimg.content}`}
+                      alt=""
+                    />
+                  </div>
+                ) : (
+                  <div className="p-link layout-topbar-button">
+                    <i className="pi pi-user"></i>
+                  </div>
+                )}
+                <h3 className="text-[1rem] text-center ml-2 lg:ml-2 mr-0 lg:mr-5">
+                  <span>{userdata.username}</span>
+                  <br />
+                  <span className="text-[0.8rem] text-[#f95005]">
+                    {userdata.usernameid}
+                  </span>
+                </h3>
+              </div>{" "}
+            </div>
             <DataTable
               value={userData}
               paginator
@@ -356,14 +383,9 @@ const Payment: React.FC = () => {
                 setSelectedCustomers(customers);
               }}
               emptyMessage="No customers found."
-              // filters={filters}
               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
             >
-              {/* <Column
-        selectionMode="multiple"
-        frozen
-        headerStyle={{ inlineSize: "3rem" }}
-      /> */}
+
               <Column
                 field="refSCustId"
                 header="User ID"
@@ -387,11 +409,11 @@ const Payment: React.FC = () => {
                 style={{ inlineSize: "14rem" }}
               />
               <Column
-  field="refPagExp"
-  header="Expire On"
-  style={{ inlineSize: "14rem" }}
-  body={(rowData) => (rowData.refPagExp ? rowData.refPagExp : "-")}
-/>
+                field="refPagExp"
+                header="Expire On"
+                style={{ inlineSize: "14rem" }}
+                body={(rowData) => (rowData.refPagExp ? rowData.refPagExp : "-")}
+              />
 
               {/* <Column
                 field="refDate"
@@ -399,19 +421,19 @@ const Payment: React.FC = () => {
                 style={{ inlineSize: "14rem" }}
               /> */}
               <Column
-  field="refDate"
-  header="Last Payment"
-  style={{ inlineSize: "14rem" }}
-  body={(rowData) => (rowData.refDate ? rowData.refDate : "-")}
-/>
+                field="refDate"
+                header="Last Payment"
+                style={{ inlineSize: "14rem" }}
+                body={(rowData) => (rowData.refPayDate ? rowData.refPayDate : "-")}
+              />
 
               <Column
                 field="refFeesType"
                 header="Last Payment Mode"
                 style={{ inlineSize: "14rem" }}
-                body={(rowData) => (rowData.refFeesType ? rowData.refFeesType : "-")}
-
+                body={(rowData) => rowData.refFeesType ? (rowData.refFeesType === 1 ? "Online" : "Offline") : "-"}
               />
+
             </DataTable>
           </div>
           <Sidebar
@@ -503,7 +525,7 @@ const Payment: React.FC = () => {
                           Class Mode
                         </td>
                         <td className="text-[#000] p-2">
-                        {info[0]?.refClMode ? (info[0].refClMode === "1" ? "Online" : "Offline") : "null"}
+                          {info[0]?.refClMode ? (info[0].refClMode === "1" ? "Online" : "Offline") : "null"}
                         </td>
                       </tr>
                     </div>

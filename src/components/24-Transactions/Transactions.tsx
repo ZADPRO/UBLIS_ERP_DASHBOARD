@@ -11,14 +11,22 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Sidebar } from "primereact/sidebar";
 import { Fieldset } from "primereact/fieldset";
+import { TabView, TabPanel } from "primereact/tabview";
 import "./Transactions.css";
-import Payment from "../../pages/Payment/Payment";
+// import Payment from "../../pages/Payment/Payment";
+// import userPayment from "../../components/41-UserPayment/UserPayment"
 
 import { useNavigate } from "react-router-dom";
+import PriceSidebar from "../../pages/PriceSidebar/PriceSidebar";
+import PrintPDF from "../../pages/PrintPDF/PrintPDF";
 
 type DecryptResult = any;
 
 const Transactions: React.FC = () => {
+
+  useEffect(() => {
+    validateToken()
+  }, []);
   const navigate = useNavigate();
   const [globalFilterValue, setGlobalFilterValue] = useState<string>("");
   const [pageLoading, setPageLoading] = useState({
@@ -57,8 +65,9 @@ const Transactions: React.FC = () => {
 
     return JSON.parse(decryptedString);
   };
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  useEffect(() => {
+  const validateToken = () => {
     Axios.get(import.meta.env.VITE_API_URL + "/validateTokenData", {
       headers: {
         Authorization: localStorage.getItem("JWTtoken"),
@@ -70,9 +79,9 @@ const Transactions: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
+      if (data.token == false) {
         navigate("/expired")
-      }else{
+      } else {
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
         setuserdata({
@@ -81,19 +90,18 @@ const Transactions: React.FC = () => {
           usernameid: data.data[0].refusertype,
           profileimg: data.profileFile,
         });
-  
+
         setPageLoading({
           ...pageLoading,
           verifytoken: false,
         });
-  
+
         console.log("Verify Token  Running --- ");
       }
-
-
-     
     });
-  }, []);
+  }
+
+
 
   const exportExcel = () => {
     import("xlsx").then((xlsx) => {
@@ -177,17 +185,17 @@ const Transactions: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
+      if (data.token == false) {
         navigate("/expired")
-      }else{
+      } else {
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
-      console.log("Fetch Data--------", data);
+        console.log("Fetch Data--------", data);
 
-      setTableData(data.data);
+        setTableData(data.data);
 
       }
-      
+
     });
   };
 
@@ -203,6 +211,7 @@ const Transactions: React.FC = () => {
         style={{ textAlign: "start" }}
         onClick={() => {
           fetchAuditPage(rowData.refStId);
+          setRefStId(rowData.refStId)
           setAudit(true);
         }}
       />
@@ -216,6 +225,8 @@ const Transactions: React.FC = () => {
       </p>
     );
   };
+
+  const [refStId, setRefStId] = useState<any>()
 
   const payBtnTemplate = (rowData: any) => {
     return (
@@ -238,32 +249,91 @@ const Transactions: React.FC = () => {
     setPayment(false);
   };
 
+  const [paymentAuditData, setPaymentAuditData] = useState<any[]>([])
+
+  const getPaymentAuditData = (refStId: any) => {
+    console.log('refStId line ----------252', refStId)
+    Axios.post(
+      import.meta.env.VITE_API_URL + "/userPayment/invoiceAudit",
+      {
+        refStId: refStId,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("JWTtoken"),
+          "Content-Type": "application/json",
+        },
+      }
+    ).then((res) => {
+      let data = decrypt(
+        res.data[1],
+        res.data[0],
+        import.meta.env.VITE_ENCRYPTION_KEY
+      );
+
+      if (data.token == false) {
+
+      }
+      else {
+        setPaymentAuditData(data.data)
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+      }
+    })
+  }
+
+  const invoiceDownload = (rowData: any) => {
+    return (
+      <div><PrintPDF
+        closePayment={rowData.refOrderId}
+        refOrderId={rowData.refOrderId}
+      />
+        {/* <PiDownloadSimpleBold
+          style={{ cursor: "pointer", color: "green", fontSize: "1.5rem" }}
+          onClick={() => {
+
+          }}
+        /> */}
+      </div>
+
+    );
+  };
+
   const [paymentID, setPaymentID] = useState<string>("");
 
-  const [auditData, setAuditData] = useState([
+  const [auditData, setAuditData] = useState(
     {
-      LastName: "",
-      FirstName: "",
-      refCtEmail: "",
-      refCtMobile: "",
+      refStId: "",
       refSCustId: "",
+      refStFName: "",
+      refStLName: "",
+      refCtMobile: "",
+      refCtEmail: "",
+      refCtWhatsapp: "",
       refTimeMembers: "",
-      refCustTimeData: "",
-      refTime: "",
-      refTimeDays: "",
-      refTimeMode: "",
-      refPaymentFrom: "",
-      refPaymentTo: "",
-      refExpiry: "",
-      refDate: "",
-      PaymentMode: "",
+      refWeekDaysTiming: "",
+      refWeekEndTiming: "",
+      refClMode: "",
+      refPayId: "",
+      refOrderId: "",
+      refTransId: "",
+      refPagId: "",
+      refPayFrom: "",
+      refPayTo: "",
+      refPagExp: "",
+      refOffId: "",
+      refFeesType: "",
+      refPagFees: "",
       refFeesPaid: "",
-      refGstPaid: "",
-      refToAmt: "",
-      OfferName: "",
+      refCollectedBy: "",
+      refPayDate: "",
+      refPayStatus: "",
       refOffer: "",
+      refOfferId: "",
+      refOfferName: "",
+      refPackageName: "",
     },
-  ]);
+  );
+
 
   const fetchAuditPage = (refStId: any) => {
     Axios.post(
@@ -283,17 +353,18 @@ const Transactions: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      if(data.token==false){
+      console.log('data line ------ 288', data)
+      if (data.token == false) {
         navigate("/expired")
-      }else{
+      } else {
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
-        setAuditData(data.data);
-  
+        setAuditData(data.data[0]);
+
         console.log("Fetch Data--------", data);
       }
 
-     
+
     });
   };
 
@@ -357,7 +428,7 @@ const Transactions: React.FC = () => {
             </div>{" "}
           </div>
           <div className=" px-5 bg-[#f6f5f5] h-[85vh]">
-            <div className="card" style={{ overflow: "auto",marginTop:"10px" }}>
+            <div className="card" style={{ overflow: "auto", marginTop: "10px" }}>
               <DataTable
                 paginator
                 rows={10}
@@ -372,7 +443,7 @@ const Transactions: React.FC = () => {
                 <Column
                   field="refSCustId"
                   body={userIdTemplate}
-                  header="Customer Id"
+                  header="Customer ID"
                 ></Column>
                 <Column
                   field="refSCustId"
@@ -393,196 +464,251 @@ const Transactions: React.FC = () => {
       )}
 
       <Sidebar
-        style={{ width: "70%" }}
+        style={{ width: "85%" }}
         visible={audit}
         position="right"
         onHide={() => setAudit(false)}
       >
-        <h2>Profile Data</h2>
-        <p className="m-0">
-          <Fieldset
-            className="border-2 border-[#f95005] fieldData"
-            legend={
-              auditData ? `${auditData[0].refSCustId}` : "No user selected"
-            }
-          >
+
+        <TabView activeIndex={activeIndex} onTabChange={(e) => {
+          setActiveIndex(e.index);
+          if (e.index === 1) {
+            getPaymentAuditData(refStId)
+          }
+
+        }}>
+          <TabPanel header="Profile Data">
+            <p className="m-0">
+              <Fieldset
+                className="border-2 border-[#f95005] fieldData"
+                legend={
+                  auditData ? `${auditData.refSCustId}` : "No user selected"
+                }
+              >
+                {auditData ? (
+                  <div>
+                    <tr>
+                      <td className="text-900 font-bold p-2">Name</td>
+                      <td className="text-[#000] p-2">
+                        {auditData.refStFName} {auditData.refStLName}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="text-900 font-bold p-2">Email</td>
+                      <td className="text-[#000] p-2">{auditData.refCtEmail}</td>
+                    </tr>
+                    <tr>
+                      <td className="text-900 font-bold p-2">Phone Number</td>
+                      <td className="text-[#000] p-2">
+                        {auditData.refCtMobile}
+                      </td>
+                    </tr>
+                  </div>
+                ) : (
+                  <p>No user details available.</p>
+                )}
+              </Fieldset>
+            </p>
             {auditData ? (
-              <div>
-                <tr>
-                  <td className="text-900 font-bold p-2">Name</td>
-                  <td className="text-[#000] p-2">
-                    {auditData[0].FirstName} {auditData[0].LastName}
-                  </td>
-                </tr>
-                <tr>
-                  <td className="text-900 font-bold p-2">Email</td>
-                  <td className="text-[#000] p-2">{auditData[0].refCtEmail}</td>
-                </tr>
-                <tr>
-                  <td className="text-900 font-bold p-2">Phone Number</td>
-                  <td className="text-[#000] p-2">
-                    {auditData[0].refCtMobile}
-                  </td>
-                </tr>
+              <div className="contents">
+                <Fieldset
+                  className="mt-10 border-2 border-[#f95005] fieldData"
+                  legend={"Class Type"}
+                >
+                  {auditData ? (
+                    <div>
+                      <tr>
+                        <td className="text-900 font-bold p-2">Members Session</td>
+                        <td className="text-[#000] p-2">
+                          {auditData.refTimeMembers
+                            ? auditData.refTimeMembers
+                            : "null"}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="text-900 font-bold p-2">Session Type</td>
+                        <td className="text-[#000] p-2">
+                          {auditData.refClMode === "1"
+                            ? "Online"
+                            : "Offline"}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="text-900 font-bold p-2">
+                          Preferable Weekdays Timing
+                        </td>
+                        <td className="text-[#000] p-2">
+                          {auditData.refWeekDaysTiming}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="text-900 font-bold p-2">
+                          Preferable Weekend Timing
+                        </td>
+                        <td className="text-[#000] p-2">
+                          {auditData.refWeekEndTiming}
+                        </td>
+                      </tr>
+                    </div>
+                  ) : (
+                    <p>No user details available.</p>
+                  )}
+                </Fieldset>
+
+                <Fieldset
+                  className="mt-10 h-[46vh] border-2 border-[#f95005] fieldData"
+                  legend={"Payment"}
+                >
+                  {auditData ? (
+                    <div>
+                      <tr>
+                        <td className="text-900 font-bold p-2">Payment From</td>
+                        <td className="text-[#000] p-2">
+                          {auditData.refPayFrom
+                            ? auditData.refPayFrom
+                            : "No Payment"}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="text-900 font-bold p-2">Payment To</td>
+                        <td className="text-[#000] p-2">
+                          {auditData.refPayTo
+                            ? auditData.refPayTo
+                            : "No Payment"}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="text-900 font-bold p-2">Payment Expire</td>
+                        <td className="text-[#000] p-2">
+                          {auditData.refPagExp
+                            ? auditData.refPagExp
+                            : "No Payment"}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="text-900 font-bold p-2">
+                          Last Payment Date
+                        </td>
+                        <td className="text-[#000] p-2">
+                          {auditData.refPayDate
+                            ? auditData.refPayDate
+                            : "No Payment"}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="text-900 font-bold p-2">Transaction ID</td>
+                        <td className="text-[#000] p-2">
+                          {auditData.refTransId
+                            ? auditData.refTransId
+                            : "No Payment"}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="text-900 font-bold p-2">Amount</td>
+                        <td className="text-[#000] p-2">
+                          ₹ {auditData.refFeesPaid} /-
+                        </td>
+                      </tr>
+                    </div>
+                  ) : (
+                    <p>No user details available.</p>
+                  )}
+                </Fieldset>
+
+                <Fieldset
+                  className="mt-10 h-[25vh] border-2 border-[#f95005] fieldData"
+                  legend={"Payment Offers"}
+                >
+                  {auditData ? (
+                    <div>
+                      <tr>
+                        <td className="text-900 font-bold p-2">Offer Type</td>
+                        <td className="text-[#000] p-2">
+                          {auditData.refOfferName
+                            ? auditData.refOfferName
+                            : "No Offer"}
+                        </td>
+                      </tr>
+
+                      <tr>
+                        <td className="text-900 font-bold p-2">Offer Value</td>
+                        <td className="text-[#000] p-2">
+                          {auditData.refOffer
+                            ? auditData.refOffer
+                            : "No Offer"}
+                        </td>
+                      </tr>
+                    </div>
+                  ) : (
+                    <p>No user details available.</p>
+                  )}
+                </Fieldset>
               </div>
             ) : (
               <p>No user details available.</p>
             )}
-          </Fieldset>
-        </p>
-        {auditData ? (
-          <div className="contents">
-            <Fieldset
-              className="mt-10 border-2 border-[#f95005] fieldData"
-              legend={"Class Type"}
+          </TabPanel>
+          <TabPanel header="Payment Audit">
+            <DataTable
+              value={paymentAuditData}
+              className="mt-10"
+              scrollable
+              scrollHeight="400px"
             >
-              {auditData ? (
-                <div>
-                  <tr>
-                    <td className="text-900 font-bold p-2">Members Session</td>
-                    <td className="text-[#000] p-2">
-                      {auditData[0].refTimeMembers
-                        ? auditData[0].refTimeMembers
-                        : "null"}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="text-900 font-bold p-2">Session Type</td>
-                    <td className="text-[#000] p-2">
-                      {auditData[0].refCustTimeData
-                        ? auditData[0].refCustTimeData
-                        : "null"}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="text-900 font-bold p-2">
-                      Preferable Timing
-                    </td>
-                    <td className="text-[#000] p-2">
-                      {auditData[0].refTime
-                        ? auditData[0].refTime +
-                          " | " +
-                          auditData[0].refTimeDays +
-                          " | " +
-                          auditData[0].refTimeMode
-                        : "null"}
-                    </td>
-                  </tr>
-                </div>
-              ) : (
-                <p>No user details available.</p>
-              )}
-            </Fieldset>
+              <Column
+                field="refOrderId"
+                header="Order Id"
+                style={{ minWidth: "200px", width: "auto" }}
+              ></Column>
 
-            <Fieldset
-              className="mt-10 h-[46vh] border-2 border-[#f95005] fieldData"
-              legend={"Payment"}
-            >
-              {auditData ? (
-                <div>
-                  <tr>
-                    <td className="text-900 font-bold p-2">Payment From</td>
-                    <td className="text-[#000] p-2">
-                      {auditData[0].refPaymentFrom
-                        ? auditData[0].refPaymentFrom
-                        : "No Payment"}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="text-900 font-bold p-2">Payment To</td>
-                    <td className="text-[#000] p-2">
-                      {auditData[0].refPaymentTo
-                        ? auditData[0].refPaymentTo
-                        : "No Payment"}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="text-900 font-bold p-2">Payment Expire</td>
-                    <td className="text-[#000] p-2">
-                      {auditData[0].refExpiry
-                        ? auditData[0].refExpiry
-                        : "No Payment"}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="text-900 font-bold p-2">
-                      Last Payment Date
-                    </td>
-                    <td className="text-[#000] p-2">
-                      {auditData[0].refDate
-                        ? auditData[0].refDate
-                        : "No Payment"}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="text-900 font-bold p-2">Payment Mode</td>
-                    <td className="text-[#000] p-2">
-                      {auditData[0].PaymentMode
-                        ? auditData[0].PaymentMode
-                        : "No Payment"}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="text-900 font-bold p-2">Amount</td>
-                    <td className="text-[#000] p-2">
-                      {auditData[0].refFeesPaid
-                        ? "Net: " +
-                          auditData[0].refFeesPaid +
-                          " + GST: " +
-                          auditData[0].refGstPaid +
-                          " : Total = " +
-                          auditData[0].refToAmt
-                        : "No Payment"}
-                    </td>
-                  </tr>
-                </div>
-              ) : (
-                <p>No user details available.</p>
-              )}
-            </Fieldset>
 
-            <Fieldset
-              className="mt-10 h-[25vh] border-2 border-[#f95005] fieldData"
-              legend={"Payment Offers"}
-            >
-              {auditData ? (
-                <div>
-                  <tr>
-                    <td className="text-900 font-bold p-2">Offer Type</td>
-                    <td className="text-[#000] p-2">
-                      {auditData[0].OfferName
-                        ? auditData[0].OfferName
-                        : "No Offer"}
-                    </td>
-                  </tr>
 
-                  <tr>
-                    <td className="text-900 font-bold p-2">Offer Value</td>
-                    <td className="text-[#000] p-2">
-                      {auditData[0].refOffer
-                        ? auditData[0].refOffer
-                        : "No Offer"}
-                    </td>
-                  </tr>
-                </div>
-              ) : (
-                <p>No user details available.</p>
-              )}
-            </Fieldset>
-          </div>
-        ) : (
-          <p>No user details available.</p>
-        )}
+              <Column
+                field="refTransId"
+                header="Transaction Id"
+                style={{ minWidth: "150px", width: "auto" }}
+              ></Column>
+
+
+
+              <Column
+                field="refPayDate"
+                header="Date"
+                style={{ minWidth: "150px", width: "auto" }}
+              ></Column>
+
+              <Column
+                field="refFeesType"
+                header="Payment Mode"
+                style={{ minWidth: "150px", width: "auto" }}
+              ></Column>
+
+
+
+              <Column
+                field="refFeesPaid"
+                header="Amount"
+                style={{ minWidth: "120px", width: "auto" }}
+              ></Column>
+
+              <Column header="Edit" body={invoiceDownload}></Column>
+
+            </DataTable>
+          </TabPanel>
+        </TabView>
+
+
       </Sidebar>
 
       <Sidebar
-        style={{ width: "70%" }}
+        style={{ width: "85%" }}
         visible={payment}
         position="right"
         onHide={() => setPayment(false)}
       >
         <h2>Payment</h2>
-        <Payment closePayment={closePayment} refStId={paymentID} />
+        <PriceSidebar refStId={paymentID} closePayment={closePayment} />;
+        {/* <Payment closePayment={closePayment} refStId={paymentID} /> */}
       </Sidebar>
     </>
   );

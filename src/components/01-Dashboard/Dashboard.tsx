@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 
-import coverImage from "../../assets/Dashboard/banner.jpg";
-import profileImage from "../../assets/Dashboard/logo3.png";
+import coverImage from "../../assets/Dashboard/banner.png";
+import profileImage from "../../assets/Dashboard/Profile.png";
 import { Mail, Phone } from "lucide-react";
 import CryptoJS from "crypto-js";
 
@@ -176,11 +176,12 @@ const Dashboard = () => {
                   <img src={coverImage} alt="coverImage" />
                 </div>
                 <div className="coverContents">
-                  <img src={profileImage}
-                    style={{
-                      borderTopLeftRadius: "50%",
-                      borderTopRightRadius: "50%",
-                    }} className="bg-[#ffffff] border rounded-xl-3xl rounded-se-2xl" alt="userProfile" />
+                  {userdata.profileimg ? <><img src={`data:${userdata.profileimg.contentType};base64,${userdata.profileimg.content}`}
+
+                    className="bg-[#ffffff] border rounded-[50%]" alt="userProfile" /></> : <><img src={profileImage}
+
+                      className="bg-[#ffffff] border rounded-[50%]" alt="userProfile" /></>}
+
                   <div className="userDetails">
                     <div className="">
                       <div className="userDetPrimary mt-2 flex items-center justify-between w-full m-0">
@@ -208,7 +209,7 @@ const Dashboard = () => {
         <div className="userTilesDashboard mt-4 mb-4 w-[100%]">
           <div className="flex flex-row justify-start w-[100%]">
             <Fieldset
-              className="w-[30%] h-[120px]"
+              className="lg:w-[30%] w-[100%] h-[120px]"
               legend="Intro Video"
               onClick={() => handleMobileNavigate("/introVideo")}
             >

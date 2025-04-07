@@ -54,7 +54,8 @@ const statusMapping: Record<number, string> = {
 
 import CryptoJS from "crypto-js";
 import UserProfileView from "../UserProfileView/UserProfileView";
-import Payment from "../Payment/Payment";
+// import Payment from "../Payment/Payment";
+import PriceSidebar from "../PriceSidebar/PriceSidebar";
 
 type DecryptResult = any;
 
@@ -633,7 +634,7 @@ export default function RegisteredDataTable() {
         /> */}
         <Column
           field="userId"
-          header="Customer Id"
+          header="Customer ID"
           body={userIdTemplate}
           frozen
           style={{ minWidth: "12rem" }}
@@ -677,15 +678,12 @@ export default function RegisteredDataTable() {
         style={{ minWidth: "75vw" }}
       >
         <h2>User Data</h2>
-        {/* <p>
-          {selectedUserId ? `User ID: ${selectedUserId}` : "No user selected"}
-        </p> */}
 
         <UserProfileView refid={selectedUserId} />
       </Sidebar>
 
       <Sidebar
-        style={{ width: "70%" }}
+        style={{ width: "85%" }}
         visible={payment}
         position="right"
         onHide={() => {
@@ -695,7 +693,7 @@ export default function RegisteredDataTable() {
         }}
       >
         <h2>Payment</h2>
-        <Payment closePayment={closePayment} refStId={paymentID} />
+        <PriceSidebar refStId={paymentID} closePayment={closePayment} />;
       </Sidebar>
     </div>
   );

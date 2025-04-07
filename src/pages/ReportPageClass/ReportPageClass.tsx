@@ -47,7 +47,7 @@ interface Customer {
 type DecryptResult = any;
 
 const ReportPageClass: React.FC = () => {
-  const [toDate, _setToDate] = useState<Nullable<Date>>(null);
+  const [toDate, setToDate] = useState<Nullable<Date>>(null);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [selectedCustomers, setSelectedCustomers] = useState<Customer[]>([]);
   const [globalFilterValue, setGlobalFilterValue] = useState<string>("");
@@ -228,6 +228,7 @@ const ReportPageClass: React.FC = () => {
   });
 
   const handleDateChange = async (date: any) => {
+    setToDate(date.value)
     try {
       const formattedDate = formatDate(date.value);
       const payload = {
@@ -309,6 +310,7 @@ const ReportPageClass: React.FC = () => {
             view="month"
             showButtonBar
             placeholder="Select Month"
+
           />
         </div>
 

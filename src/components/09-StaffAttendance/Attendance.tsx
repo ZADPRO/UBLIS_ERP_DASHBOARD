@@ -6,18 +6,12 @@ import React from "react";
 import { useState, useEffect } from "react";
 import CryptoJS from "crypto-js";
 import Axios from "axios";
-// import { Sidebar } from "primereact/sidebar";
 import "./Attendance.css";
-// import { Calendar } from "primereact/calendar";
-// import SelectInput from "../../pages/Inputs/SelectInput";
 import { TabPanel, TabView } from "primereact/tabview";
-// import { Divider } from "primereact/divider";
 import { InputText } from "primereact/inputtext";
 import { IconField } from "primereact/iconfield";
 import { InputIcon } from "primereact/inputicon";
 import Calenderss from "../10-Calender/Calenderss";
-// import { MultiSelect } from "primereact/multiselect";
-// import { IoSearch } from "react-icons/io5";
 import axios from "axios";
 import SessionTabs from "../../pages/SessionTabs/SessionTabs";
 import OverviewAttendance from "../../pages/02-OverviewAttendnace/OverviewAttendance";
@@ -76,29 +70,29 @@ interface attendanceCount {
   totalAttendCount: number;
 }
 
-interface RegularSession {
-  refTimeId: number;
-  reftime: string;
-  usercount: number;
-  attendancecount: number;
-  kidscount: number;
-  malecount: number;
-  femalecount: number;
-}
-interface NearestSession {
-  nearestRefTimeId: {
-    refTimeId: number;
-    reftime: string;
-    usercount: number;
-    attendancecount: number;
-    startTime: string;
-    kidscount: number;
-    malecount: number;
-    femalecount: number;
-  };
-}
+// interface RegularSession {
+//   refTimeId: number;
+//   reftime: string;
+//   usercount: number;
+//   attendancecount: number;
+//   kidscount: number;
+//   malecount: number;
+//   femalecount: number;
+// }
+// interface NearestSession {
+//   nearestRefTimeId: {
+//     refTimeId: number;
+//     reftime: string;
+//     usercount: number;
+//     attendancecount: number;
+//     startTime: string;
+//     kidscount: number;
+//     malecount: number;
+//     femalecount: number;
+//   };
+// }
 
-type AttendanceData = RegularSession | NearestSession;
+// type AttendanceData = RegularSession | NearestSession;
 
 interface AttendanceItem {
   formatted_punch_time: string;
@@ -317,8 +311,8 @@ const StaffAttendance: React.FC = () => {
     });
   }, []);
 
-  const [overviewSessionData, setOverviewSessionData] =
-    useState<AttendanceData | null>(null);
+  // const [overviewSessionData, setOverviewSessionData] =
+  //   useState<AttendanceData | null>(null);
 
   useEffect(() => {
     Axios.get(import.meta.env.VITE_API_URL + "/attendance/overView", {
@@ -337,7 +331,7 @@ const StaffAttendance: React.FC = () => {
         navigate("/expired");
       } else {
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
-        setOverviewSessionData(data.attendanceCount);
+        // setOverviewSessionData(data.attendanceCount);
       }
     });
   }, []);
@@ -671,8 +665,8 @@ const StaffAttendance: React.FC = () => {
                                     <p className="font-bold">Remaining Class : <span className="text-[#f95005]">{userAttendanceCount?.reCount}</span></p>
                                   </div>
                                   <div className="flex flex-row gap-x-3 justify-center">
-                                    <p className="font-bold">Attend in Offline : <span className="text-[#f95005]">{userAttendanceCount?.classAttendanceCount}</span> </p>
-                                    <p className="font-bold">Attend in Online : <span className="text-[#f95005]">{userAttendanceCount?.onlineCount}</span></p>
+                                    <p className="font-bold">Attended in Offline : <span className="text-[#f95005]">{userAttendanceCount?.classAttendanceCount}</span> </p>
+                                    <p className="font-bold">Attended in Online : <span className="text-[#f95005]">{userAttendanceCount?.onlineCount}</span></p>
                                   </div>
                                 </div>
 

@@ -106,6 +106,8 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
     );
   };
 
+
+
   const [inputs, setInputs] = useState({
     profilefile: { contentType: "", content: "" },
     fname: "",
@@ -225,10 +227,10 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
   const [refStId, setRefStId] = useState();
   const [sessionUpdate, setSessionUpdate] = useState<number>(1);
   const [sessionUpdateLoad, setSessionUpdateLoad] = useState(false);
-  const branchOptions = Object.entries(branchList).map(([value, label]) => ({
-    value, // Key (e.g., '1')
-    label, // Value (e.g., 'Chennai')
-  }));
+  // let branchOptions = Object.entries(branchList).map(([value, label]) => ({
+  //   value, // Key (e.g., '1')
+  //   label, // Value (e.g., 'Chennai')
+  // }));
   const [memberList, setMemberList] = useState([]);
 
   const memberlistOptions = Object.entries(memberList).map(
@@ -250,8 +252,8 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
 
   const weekDaysTimingOption = Object.entries(weekDaysTiming).map(
     ([value, label]) => ({
-      value, // Key (e.g., '1')
-      label, // Value (e.g., 'Chennai')
+      value,
+      label,
     })
   );
   const weekEndTimingOption = Object.entries(weekEndTiming).map(
@@ -260,9 +262,8 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
       label, // Value (e.g., 'Chennai')
     })
   );
-  // const [edits, setEdits] = useState({
-  //   session: false,
-  // });
+
+
 
   const handlePreviewDocument = (dataArray: any, index: number) => {
     console.log("dataArray", dataArray);
@@ -435,12 +436,29 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
 
       setSessionData(session);
 
+      const calculateAge = (dob: string) => {
+        const dobDate = new Date(dob);
+        const today = new Date();
+        let age = today.getFullYear() - dobDate.getFullYear();
+        const monthDifference = today.getMonth() - dobDate.getMonth();
+
+        // Adjust age if the birthday hasn't occurred this year yet
+        if (
+          monthDifference < 0 ||
+          (monthDifference === 0 && today.getDate() < dobDate.getDate())
+        ) {
+          age--;
+        }
+
+        return age.toString(); // Return age as a string
+      };
+
       setInputs({
         profilefile: data.data.profileFile,
         fname: personaldata.refStFName,
         lname: personaldata.refStLName,
         dob: personaldata.refStDOB,
-        age: personaldata.refStAge,
+        age: calculateAge(personaldata.refStDOB),
         gender: personaldata.refStSex,
         maritalstatus: personaldata.refMaritalStatus,
         anniversarydate: personaldata.refWeddingDate,
@@ -536,7 +554,6 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
   };
 
   useEffect(() => {
-    fetchSessionOptions();
     getProfileData();
   }, []);
 
@@ -852,13 +869,20 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
           res.data[0],
           import.meta.env.VITE_ENCRYPTION_KEY
         );
+        console.log('data line ------ 852', data)
         if (data.token == false) {
           navigate("/expired");
         }
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
         if (data.success) {
-          setBranchList(data.Branch);
+          const branchOptions = data.Branch.map((branch: any) => ({
+            label: branch.refBranchName,
+            value: branch.refbranchId,
+          }));
+
+          setBranchList(branchOptions);
+
         }
       })
       .catch((err) => {
@@ -2706,6 +2730,8 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                     ) : (
                       <div
                         onClick={() => {
+                          fetchSessionOptions();
+
                           setEdits({
                             ...edits,
                             session: true,
@@ -2813,7 +2839,7 @@ const UserProfileView: React.FC<UserProfileEditProps> = ({
                               id="branch"
                               name="branchId"
                               label="Branch *"
-                              options={branchOptions}
+                              options={branchList}
                               required
                               value={sessionData?.branchId || ""}
                               onChange={(e) => {

@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 import { SlOrganization } from "react-icons/sl";
 
-import { IoIosLogOut, IoMdMenu } from "react-icons/io";
+import { IoIosLogOut } from "react-icons/io";
 
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../assets/Images/Logo/logo.png";
@@ -14,12 +14,8 @@ import Expired from "../../pages/Expired/Expired";
 import { Sidebar } from "primereact/sidebar";
 import { Button } from "primereact/button";
 import { Divider } from "primereact/divider";
-import { MdOutlineClass } from "react-icons/md";
 import { SiGooglemeet } from "react-icons/si";
 import {
-  ArrowRightLeft,
-  CircleUser,
-  FileClock,
   FileStack,
   Headset,
   IndianRupee,
@@ -33,14 +29,21 @@ import {
   ChartNoAxesCombined,
   MessageCircle,
   UserRoundPen,
-  IdCard,
   NotebookPen,
   Split,
-  SquareUserRound,
   User,
   UserPlus,
-  UserRoundCheck,
-  UserRoundPlus,
+  ClipboardPlus,
+  Users,
+  LayoutDashboard,
+  ClipboardList,
+  ListTodo,
+  CalendarDays,
+  BriefcaseBusiness,
+  FolderSearch,
+  SmartphoneNfc,
+  HandCoins,
+  Menu,
 } from "lucide-react";
 import { Ripple } from "primereact/ripple";
 import { Toast } from "primereact/toast";
@@ -90,11 +93,11 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
 
   // Define the routes based on refUtId
   const userRoutes: Route[] = [
-    { path: "/users/dashboard", name: "Dashboard", icon: <LayoutGrid /> },
+    { path: "/users/dashboard", name: "Dashboard", icon: <LayoutDashboard /> },
     {
       path: "/users/attendance",
       name: "Attendance",
-      icon: <LibraryBig />,
+      icon: <ListTodo />,
     },
     { path: "/users/notes", name: "User Notes", icon: <ListChecks /> },
     { path: "/users/payment", name: "Payment", icon: <IndianRupee /> },
@@ -112,7 +115,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     {
       path: "/staff/Dashboard",
       name: "Dashboard",
-      icon: <LayoutGrid />,
+      icon: <LayoutDashboard />,
     },
     {
       path: "/staff/users",
@@ -122,7 +125,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     {
       path: "/staff/registeredUsers",
       name: "Future Client & Fee Due",
-      icon: <User />,
+      icon: <ClipboardList />,
     },
     {
       path: "/staff/payment",
@@ -132,17 +135,22 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     {
       path: "/staff/attendance",
       name: "Attendance",
-      icon: <LibraryBig />,
+      icon: <ListTodo />,
     },
     {
       path: "/staff/classinfo",
       name: "ClassInfo",
-      icon: <MdOutlineClass />,
+      icon: <CalendarDays />,
+    },
+    {
+      path: "/staff/transaction",
+      name: "Transactions",
+      icon: <SmartphoneNfc />,
     },
     {
       path: "/staff/signedupUsers",
       name: "Signed Up Users",
-      icon: <UserRoundCheck />,
+      icon: <ClipboardPlus />,
     },
     {
       path: "/staff/feedback",
@@ -162,22 +170,22 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     {
       path: "/staff/Dashboard",
       name: "Dashboard",
-      icon: <LayoutGrid />,
+      icon: <LayoutDashboard />,
     },
     {
       path: "/staff/users",
       name: "All Users",
-      icon: <CircleUser />,
+      icon: <Users />,
     },
     {
       path: "/therapist/approve",
       name: "Future Clients (Medical Issue)",
-      icon: <UserRoundCheck />,
+      icon: <ClipboardPlus />,
     },
     {
       path: "/staff/registeredUsers",
       name: "Future Client & Fee Due",
-      icon: <UserRoundPlus />,
+      icon: <ClipboardList />,
     },
     {
       path: "/staff/payment",
@@ -187,7 +195,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     {
       path: "/staff/attendance",
       name: "Attendance",
-      icon: <LibraryBig />,
+      icon: <ListTodo />,
     },
     {
       path: "/staff/onlineclass",
@@ -197,7 +205,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     {
       path: "/staff/classinfo",
       name: "ClassInfo",
-      icon: <MdOutlineClass />,
+      icon: <CalendarDays />,
     },
 
     {
@@ -209,56 +217,56 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     {
       path: "/dir/staff",
       name: "Staff / Employee",
-      icon: <SquareUserRound />,
+      icon: <BriefcaseBusiness />,
     },
     {
       path: "/dir/notify",
       name: "User Audit Page",
-      icon: <FileClock />,
+      icon: <FolderSearch />,
     },
-    {
-      path: "/yoganotes",
-      name: "Add Notes",
-      icon: <ListChecks />,
-    },
-    {
-      path: "/assignnotes",
-      name: "Assign Notes",
-      icon: <FileStack />,
-    },
+    // {
+    //   path: "/yoganotes",
+    //   name: "Add Notes",
+    //   icon: <ListChecks />,
+    // },
+    // {
+    //   path: "/assignnotes",
+    //   name: "Assign Notes",
+    //   icon: <FileStack />,
+    // },
     {
       path: "/staff/transaction",
       name: "Transactions",
-      icon: <ArrowRightLeft />,
+      icon: <SmartphoneNfc />,
     },
-    {
-      path: "/staff/feedback",
-      name: "Feedback",
-      icon: <MessageCircle />,
-    },
+    // {
+    //   path: "/staff/feedback",
+    //   name: "Feedback",
+    //   icon: <MessageCircle />,
+    // },
 
-    {
-      path: "/staff/payroll",
-      name: "Payroll",
-      icon: <IdCard />,
-    },
-    {
-      path: "/reports",
-      name: "Reports",
-      icon: <ChartNoAxesCombined />,
-    },
-    { path: "/blogs", name: "Blogs", icon: <NotebookPen /> },
-    { path: "/editNotes", name: "Directors - Notes", icon: <PencilLine /> },
-    {
-      path: "/restrictions",
-      name: "Directors - Restrictions",
-      icon: <TriangleAlert />,
-    },
-    {
-      path: "/dir/organization",
-      name: "Organization Chart",
-      icon: <SlOrganization />,
-    },
+    // {
+    //   path: "/staff/payroll",
+    //   name: "Payroll",
+    //   icon: <HandCoins />,
+    // },
+    // {
+    //   path: "/reports",
+    //   name: "Reports",
+    //   icon: <ChartNoAxesCombined />,
+    // },
+    // { path: "/blogs", name: "Blogs", icon: <NotebookPen /> },
+    // { path: "/editNotes", name: "Directors - Notes", icon: <PencilLine /> },
+    // {
+    //   path: "/restrictions",
+    //   name: "Directors - Restrictions",
+    //   icon: <TriangleAlert />,
+    // },
+    // {
+    //   path: "/dir/organization",
+    //   name: "Organization Chart",
+    //   icon: <SlOrganization />,
+    // },
     { path: "/users/profile", name: "Profile", icon: <UserRoundPen /> },
     { path: "/settings", name: "Settings", icon: <Settings /> },
     {
@@ -272,22 +280,22 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     {
       path: "/staff/Dashboard",
       name: "Dashboard",
-      icon: <LayoutGrid />,
+      icon: <LayoutDashboard />,
     },
     {
       path: "/staff/users",
       name: "All Users",
-      icon: <CircleUser />,
+      icon: <Users />,
     },
     {
       path: "/therapist/approve",
       name: "Future Clients (Medical Issue)",
-      icon: <UserRoundCheck />,
+      icon: <ClipboardPlus />,
     },
     {
       path: "/staff/registeredUsers",
       name: "Future Client & Fee Due",
-      icon: <UserRoundPlus />,
+      icon: <ClipboardList />,
     },
     {
       path: "/staff/payment",
@@ -297,7 +305,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     {
       path: "/staff/attendance",
       name: "Attendance",
-      icon: <LibraryBig />,
+      icon: <ListTodo />,
     },
     {
       path: "/staff/onlineclass",
@@ -307,7 +315,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     {
       path: "/staff/classinfo",
       name: "ClassInfo",
-      icon: <MdOutlineClass />,
+      icon: <CalendarDays />,
     },
 
     {
@@ -319,12 +327,12 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     {
       path: "/dir/staff",
       name: "Staff / Employee",
-      icon: <SquareUserRound />,
+      icon: <BriefcaseBusiness />,
     },
     {
       path: "/dir/notify",
       name: "User Audit Page",
-      icon: <FileClock />,
+      icon: <FolderSearch />,
     },
     {
       path: "/yoganotes",
@@ -339,7 +347,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     {
       path: "/staff/transaction",
       name: "Transactions",
-      icon: <ArrowRightLeft />,
+      icon: <SmartphoneNfc />,
     },
     {
       path: "/staff/feedback",
@@ -350,7 +358,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     {
       path: "/staff/payroll",
       name: "Payroll",
-      icon: <IdCard />,
+      icon: <HandCoins />,
     },
     {
       path: "/reports",
@@ -383,17 +391,17 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     {
       path: "/staff/Dashboard",
       name: "Dashboard",
-      icon: <LayoutGrid />,
+      icon: <LayoutDashboard />,
     },
     {
       path: "/staff/transaction",
       name: "Transactions",
-      icon: <ArrowRightLeft />,
+      icon: <SmartphoneNfc />,
     },
     {
       path: "/staff/payroll",
       name: "Payroll",
-      icon: <IdCard />,
+      icon: <HandCoins />,
     },
     {
       path: "/reports",
@@ -413,7 +421,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     {
       path: "/staff/Dashboard",
       name: "Dashboard",
-      icon: <LayoutGrid />,
+      icon: <LayoutDashboard />,
     },
     {
       path: "/staff/users",
@@ -423,7 +431,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     {
       path: "/therapist/approve",
       name: "Future Clients (Medical Issue)",
-      icon: <UserRoundCheck />,
+      icon: <ClipboardPlus />,
     },
     {
       path: "/staff/payment",
@@ -433,7 +441,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
     {
       path: "/staff/classinfo",
       name: "ClassInfo",
-      icon: <MdOutlineClass />,
+      icon: <CalendarDays />,
     },
     {
       path: "/staff/feedback",
@@ -530,7 +538,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
                     <motion.div className="sidebar lg:w-[60px]">
                       <div className="top_section">
                         <div className="bars pr-4">
-                          <IoMdMenu onClick={() => setVisible(true)} />
+                          <Menu onClick={() => setVisible(true)} />
                         </div>
                       </div>
 
@@ -606,7 +614,7 @@ const Header: React.FC<{ children: ReactNode }> = ({ children }) => {
                     <Ripple />
                   </a>
                 </li>
-               
+
                 <li onClick={() => showWarn()}>
                   <a className="p-ripple flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors w-full">
                     <LibraryBig size={20} />{" "}

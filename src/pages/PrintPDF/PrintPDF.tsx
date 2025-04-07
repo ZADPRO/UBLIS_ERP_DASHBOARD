@@ -30,7 +30,7 @@ interface PrintPDFProps {
   closePayment: () => void;
 }
 
-type DecryptResult = any;
+type DecryptResult = any; 
 
 const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
   const decrypt = (
@@ -63,7 +63,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
     console.log(refOrderId);
 
     await Axios.post(
-      import.meta.env.VITE_API_URL + "/finance/invoiceDownload",
+      import.meta.env.VITE_API_URL + "/userPayment/invoiceDownload",
       { refOrderId: refOrderId },
       {
         headers: {
@@ -80,37 +80,39 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
       if (data.token == false) {
         navigate("/expired");
       }
-
+      console.log(' -> Line Number ----------------------------------- 83',);
       console.log(data);
-
-      const userData = data.data[0];
-
-      setUserData({
-        refBranchName: userData.refBranchName,
-        refCtMobile: userData.refCtMobile,
-        refCustTimeData: userData.refCustTimeData,
-        refGstPaid: userData.refGstPaid,
-        refOfferType: userData.refOfferType,
-        refOfferValue: userData.refOfferValue,
-        refOrderId: userData.refOrderId,
-        refPaymentFrom: userData.refPaymentFrom,
-        refPaymentTo: userData.refPaymentTo,
-        refSCustId: userData.refSCustId,
-        refStFName: userData.refStFName,
-        refStLName: userData.refStLName,
-        refTimeMembers: userData.refTimeMembers,
-        refToAmt: userData.refToAmt,
-        refToAmtOf: userData.refToAmtOf,
-        refDate: userData.refDate,
-        refExpiry: userData.refExpiry,
-        refFeesPaid: userData.refFeesPaid,
-        refFeesAmtOf: userData.refFeesAmtOf,
-      });
+      console.log(' -> Line Number ----------------------------------- 85',);
+      const userData = data.data;
+      console.log(' -> Line Number ----------------------------------- 87',);
+      // setUserData({
+      //   refBranchName: userData.refBranchName,
+      //   refCtMobile: userData.refCtMobile,
+      //   refCustTimeData: userData.refCustTimeData,
+      //   refGstPaid: userData.refGstPaid,
+      //   refOfferType: userData.refOfferType,
+      //   refOfferValue: userData.refOfferValue,
+      //   refOrderId: userData.refOrderId,
+      //   refPaymentFrom: userData.refPaymentFrom,
+      //   refPaymentTo: userData.refPaymentTo,
+      //   refSCustId: userData.refSCustId,
+      //   refStFName: userData.refStFName,
+      //   refStLName: userData.refStLName,
+      //   refTimeMembers: userData.refTimeMembers,
+      //   refToAmt: userData.refToAmt,
+      //   refToAmtOf: userData.refToAmtOf,
+      //   refDate: userData.refDate,
+      //   refExpiry: userData.refExpiry,
+      //   refFeesPaid: userData.refFeesPaid,
+      //   refFeesAmtOf: userData.refFeesAmtOf,
+      // });
+      setUserDatas(userData)
+      console.log(' -> Line Number ----------------------------------- 128',);
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
     });
   };
 
-  const [userData, setUserData] = useState({
+  const [userData, _setUserData] = useState({
     refBranchName: "",
     refCtMobile: "",
     refCustTimeData: "",
@@ -132,12 +134,35 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
     refFeesAmtOf: 0,
   });
 
+  const [userDatas, setUserDatas] = useState([{
+    refBranchName: "",
+    refCtMobile: "",
+    refDuration: "",
+    refFeesPaid: 0,
+    refName: "",
+    refOffer: null,
+    refOfferName: null,
+    refOrderId: "",
+    refPackage: "",
+    refPagExp: "",
+    refPagFees: 0,
+    refPayDate: "",
+    refPaymentCharge: 0,
+    refSCustId: "",
+    refStId: null,
+    refTransId: "",
+    sub_amount: "",
+    refOfferId: 0
+  }]);
+
   const [isDataFetched, setIsDataFetched] = useState(false);
 
   const handleDownloadPDF = async () => {
-    setIsDataFetched(false);
+    await setIsDataFetched(false);
     await FetchData();
-    setIsDataFetched(true);
+    await setIsDataFetched(true);
+    { localStorage.getItem("refUtId") === "4" || localStorage.getItem("refUtId") === "7" || localStorage.getItem("refUtId") === "12" ? closePayment() : navigate("/users/payment") }
+
   };
 
   useEffect(() => {
@@ -147,17 +172,16 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
   }, [isDataFetched]);
 
   const generatePDF = async () => {
-    const gst = userData.refGstPaid / 2;
 
-    let content = "";
+    // let content = "";
 
-    if (userData.refOfferType === "Custom") {
-      content = "Month";
-    } else if (userData.refOfferType === "Discount") {
-      content = "Rs Discount";
-    } else if (userData.refOfferType === "Percentage") {
-      content = "% Discount";
-    }
+    // if (userData.refOfferType === "Custom") {
+    //   content = "Month";
+    // } else if (userData.refOfferType === "Discount") {
+    //   content = "Rs Discount";
+    // } else if (userData.refOfferType === "Percentage") {
+    //   content = "% Discount";
+    // }
 
     const doc = (
       <Document>
@@ -240,6 +264,17 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                 >
                   Email: helpdesk.rajakilpakkam@ublisyoga.com
                 </Text>
+                <Text
+                  style={{
+                    fontSize: "12px",
+                    marginTop: "3px",
+                    textAlign: "right",
+                    fontFamily: "Poppins",
+                    fontWeight: 600,
+                  }}
+                >
+                  Mobile: +91 9940082000
+                </Text>
               </View>
             </View>
 
@@ -289,7 +324,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                     Customer ID
                   </Text>
                   <Text style={{ width: "60%", fontSize: "13px" }}>
-                    : {userData.refSCustId}
+                    : {userDatas[0].refSCustId}
                   </Text>
                 </View>
                 <View
@@ -311,7 +346,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                     Name
                   </Text>
                   <Text style={{ width: "60%", fontSize: "13px" }}>
-                    : {userData.refStFName} {userData.refStLName}
+                    : {userDatas[0].refName}
                   </Text>
                 </View>
                 <View
@@ -333,7 +368,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                     Phone Number
                   </Text>
                   <Text style={{ width: "60%", fontSize: "13px" }}>
-                    : {userData.refCtMobile}
+                    : {userDatas[0].refCtMobile}
                   </Text>
                 </View>
               </View>
@@ -353,10 +388,10 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                     alignItems: "flex-start",
                   }}
                 >
-                  
-                  
-                  
-                  
+
+
+
+
                   <View
                     style={{
                       width: "100%",
@@ -384,7 +419,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                         paddingLeft: "10px",
                       }}
                     >
-                      {userData.refDate}
+                      {userDatas[0].refPayDate}
                     </Text>
                   </View>
                   <View
@@ -414,7 +449,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                         paddingLeft: "10px",
                       }}
                     >
-                      {userData.refBranchName}
+                      {userDatas[0].refBranchName}
                     </Text>
                   </View>
                   <View
@@ -444,7 +479,37 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                         paddingLeft: "10px",
                       }}
                     >
-                      {userData.refOrderId}
+                      {userDatas[0].refOrderId}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "flex-start",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        width: "40%",
+                        fontSize: "13px",
+                        fontFamily: "Poppins",
+                        fontWeight: "bold",
+                        color: "#f95005",
+                        textAlign: "left",
+                      }}
+                    >
+                      Transaction ID
+                    </Text>
+                    <Text
+                      style={{
+                        width: "60%",
+                        fontSize: "13px",
+                        paddingLeft: "10px",
+                      }}
+                    >
+                      {userDatas[0].refTransId}
                     </Text>
                   </View>
                 </View>
@@ -482,7 +547,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                     alignItems: "center",
                   }}
                 >
-                  <Text>Description</Text>
+                  <Text>Product</Text>
                 </View>
                 <View
                   style={{
@@ -515,6 +580,36 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                   <Text>Fee</Text>
                 </View>
                 <View
+                  style={{
+                    width: "20%",
+                    height: "40px",
+                    fontSize: "12px",
+                    fontFamily: "Poppins",
+                    color: "#f95005",
+                    borderRight: "1px solid #f95005",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text>Offers</Text>
+                </View>
+                <View
+                  style={{
+                    width: "20%",
+                    height: "40px",
+                    fontSize: "12px",
+                    fontFamily: "Poppins",
+                    color: "#f95005",
+                    borderRight: "1px solid #f95005",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text>Total</Text>
+                </View>
+                {/* <View
                   style={{
                     width: "20%",
                     height: "40px",
@@ -570,9 +665,9 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                       Amt
                     </Text>
                   </View>
-                </View>
+                </View> */}
 
-                <View
+                {/* <View
                   style={{
                     width: "20%",
                     height: "40px",
@@ -627,148 +722,115 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                       Amt
                     </Text>
                   </View>
-                </View>
+                </View> */}
               </View>
-              <View
-                style={{
-                  width: "100%",
-                  backgroundColor: "#fff",
-                  display: "flex",
-                  flexDirection: "row",
-                  borderBottom: "1px solid #f95005",
-                }}
-              >
-                <View
-                  style={{
-                    width: "25%",
-                    height: "60px",
-                    fontSize: "12px",
-                    color: "#000",
-                    textAlign: "center",
-                    borderRight: "1px solid #f95005",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text style={{ padding: "2px" }}>
-                    {userData.refTimeMembers}
-                    {"\n"}
-                    {userData.refCustTimeData} Session
-                  </Text>
-                </View>
 
+              {userDatas.map(data =>
                 <View
                   style={{
-                    width: "25%",
-                    height: "60px",
-                    fontSize: "12px",
-                    color: "#000",
-                    textAlign: "center",
-                    borderRight: "1px solid #f95005",
+                    width: "100%",
+                    backgroundColor: "#fff",
                     display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text>
-                    {userData.refPaymentFrom} to {userData.refPaymentTo}
-                  </Text>
-                </View>
-
-                <View
-                  style={{
-                    width: "20%",
-                    height: "60px",
-                    fontSize: "12px",
-                    color: "#000",
-                    textAlign: "center",
-                    borderRight: "1px solid #f95005",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text>{userData.refFeesPaid}</Text>
-                </View>
-
-                <View
-                  style={{
-                    width: "20%",
-                    height: "60px",
-                    fontSize: "12px",
-                    color: "#000",
-                    textAlign: "center",
-                    borderRight: "1px solid #f95005",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
                     flexDirection: "row",
+                    borderBottom: "1px solid #f95005",
                   }}
                 >
                   <View
                     style={{
-                      width: "50%",
-                      height: "60px",
-                      borderRight: "1px solid #f95005 ",
+                      width: "25%",
+                      height: "40px",
+                      fontSize: "12px",
+                      color: "#000",
+                      textAlign: "center",
+                      borderRight: "1px solid #f95005",
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
                     }}
                   >
-                    <Text>9%</Text>
+                    <Text style={{ padding: "2px" }}>
+                      {data.refPackage}
+                    </Text>
                   </View>
                   <View
                     style={{
-                      width: "50%",
-                      height: "60px",
+                      width: "25%",
+                      height: "40px",
+                      fontSize: "12px",
+                      color: "#000",
+                      textAlign: "center",
+                      borderRight: "1px solid #f95005",
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
                     }}
                   >
-                    <Text>{gst}</Text>
+                    <Text style={{ padding: "2px" }}>
+                      {data.refDuration}
+                    </Text>
                   </View>
-                </View>
+                  <View
+                    style={{
+                      width: "20%",
+                      height: "40px",
+                      fontSize: "12px",
+                      color: "#000",
+                      textAlign: "center",
+                      borderRight: "1px solid #f95005",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text style={{ padding: "2px" }}>
+                      {data.refPagFees}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      width: "20%",
+                      height: "40px",
+                      fontSize: "12px",
+                      color: "#000",
+                      textAlign: "center",
+                      borderRight: "1px solid #f95005",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text style={{ padding: "2px" }}>
+                      {data.refOfferId === 1
+                        ? `${data.refOffer}%`
+                        : data.refOfferId === 2
+                          ? `₹${data.refOffer}`
+                          : data.refOfferId === 3
+                            ? `${data.refOffer} Month`
+                            : data.refOffer || "-"}
+                    </Text>
 
-                <View
-                  style={{
-                    width: "20%",
-                    height: "60px",
-                    fontSize: "12px",
-                    color: "#000",
-                    textAlign: "center",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    flexDirection: "row",
-                  }}
-                >
+                  </View>
                   <View
                     style={{
-                      width: "50%",
-                      height: "60px",
-                      borderRight: "1px solid #f95005 ",
+                      width: "20%",
+                      height: "40px",
+                      fontSize: "12px",
+                      color: "#000",
+                      textAlign: "center",
+                      borderRight: "1px solid #f95005",
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
                     }}
                   >
-                    <Text>9%</Text>
+                    <Text style={{ padding: "2px" }}>
+                      {data.sub_amount}
+                    </Text>
                   </View>
-                  <View
-                    style={{
-                      width: "50%",
-                      height: "60px",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text>{gst}</Text>
-                  </View>
+
+
                 </View>
-              </View>
+              )}
 
               <View
                 style={{
@@ -787,9 +849,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                     padding: "10px",
                   }}
                 >
-                  <Text style={{ width: "40%", fontSize: "12px" }}>
-                    Package Expries On
-                  </Text>
+
                   <Text style={{ width: "40%", fontSize: "12px" }}>
                     {userData.refExpiry}
                   </Text>
@@ -807,58 +867,10 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                     }}
                   >
                     <Text style={{ width: "50%" }}>Sub Total</Text>
-                    <Text style={{ width: "50%" }}>{userData.refFeesPaid}</Text>
-                  </View>
-                  <View
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "flex-end",
-                      alignItems: "flex-end",
-                      textAlign: "right",
-                      fontSize: "11px",
-                      marginTop: "5px",
-                    }}
-                  >
-                    <Text style={{ width: "50%" }}>Offer</Text>
-                    <Text style={{ width: "50%" }}>
-                      {userData.refOfferType ? userData.refOfferType : "-"}
+                    <Text style={{ width: "50%" }}>{userDatas.reduce((total, count) => total + parseFloat(count.sub_amount || "0"), 0)}
                     </Text>
                   </View>
-                  <View
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "flex-end",
-                      alignItems: "flex-end",
-                      textAlign: "right",
-                      fontSize: "11px",
-                      marginTop: "4px",
-                    }}
-                  >
-                    <Text style={{ width: "50%" }}>Offer Discount</Text>
-                    <Text style={{ width: "50%" }}>
-                      {userData.refOfferValue
-                        ? userData.refOfferValue + " " + content
-                        : "-"}
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "flex-end",
-                      alignItems: "flex-end",
-                      textAlign: "right",
-                      fontSize: "11px",
-                      marginTop: "4px",
-                    }}
-                  >
-                    <Text style={{ width: "50%" }}>Offer Fees</Text>
-                    <Text style={{ width: "50%" }}>
-                      {userData.refFeesAmtOf}
-                    </Text>
-                  </View>
+
                   <View
                     style={{
                       display: "flex",
@@ -872,8 +884,9 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                   >
                     <Text style={{ width: "50%" }}>CGST(9%)</Text>
                     <Text style={{ width: "50%" }}>
-                      {userData.refFeesAmtOf * 0.09}
+                      {((userDatas.reduce((total, count) => total + parseFloat(count.sub_amount || "0"), 0)) * 0.09).toFixed(2)}
                     </Text>
+
                   </View>
                   <View
                     style={{
@@ -888,8 +901,26 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                   >
                     <Text style={{ width: "50%" }}>SGST(9%)</Text>
                     <Text style={{ width: "50%" }}>
-                      {userData.refFeesAmtOf * 0.09}
+                      {((userDatas.reduce((total, count) => total + parseFloat(count.sub_amount || "0"), 0)) * 0.09).toFixed(2)}
                     </Text>
+
+                  </View>
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "flex-end",
+                      alignItems: "flex-end",
+                      textAlign: "right",
+                      fontSize: "11px",
+                      marginTop: "4px",
+                    }}
+                  >
+                    <Text style={{ width: "50%" }}>Payment Charges</Text>
+                    <Text style={{ width: "50%" }}>
+                      {userDatas[0].refPaymentCharge || "-"}
+                    </Text>
+
                   </View>
                   <View
                     style={{
@@ -904,7 +935,12 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                     }}
                   >
                     <Text style={{ width: "50%" }}>Total</Text>
-                    <Text style={{ width: "50%" }}>Rs.{userData.refToAmt}</Text>
+                    <Text style={{ width: "50%" }}>&#8377; {(
+                      userDatas.reduce((total, count) => total + parseFloat(count.sub_amount || "0"), 0) + userDatas[0].refPaymentCharge +
+                      2 * (userDatas.reduce((total, count) => total + parseFloat(count.sub_amount || "0"), 0) * 0.09)
+                    ).toFixed(2)}
+                    </Text>
+
                   </View>
                 </View>
               </View>
@@ -916,34 +952,38 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
               </Text>
               <Text
                 style={{
-                  fontSize: "13px",
+                  fontSize: "12.5px",
                   marginTop: "10px",
                   textAlign: "justify",
                 }}
               >
-                User has to be complete their sessions on the subscribed month
-                itself, the sessions cannot be compensate or carry forward to
-                the next month.
-              </Text>
-
-              <Text style={{ fontSize: "12px", fontFamily: "Poppins" }}>
-              Compensation Classes:
+                Users must complete their sessions within the subscribed month. Sessions cannot be compensated,
               </Text>
               <Text
                 style={{
-                  fontSize: "13px",
+                  fontSize: "12.5px",
+                  // marginTop: "10px",
+                  textAlign: "justify",
+                }}
+              >
+                carried forward, or rescheduled to the next month.
+              </Text>
+
+              {/* <Text style={{ fontSize: "12px", fontFamily: "Poppins" }}>
+                Compensation Classes:
+              </Text> */}
+              <Text
+                style={{
+                  fontSize: "12.5px",
                   marginTop: "10px",
                   textAlign: "justify",
                 }}
               >
-                All subscription sessions purchased by User are non-refundable,
-                non exchangeable, non- saleable and non- transferrable. User
-                wishes to disconitinue with its subscription, User will not
-                receive the refund.
+                All subscribed sessions purchased by the user are non-refundable, non-exchangeable, non-saleable, and non-transferable. If a user wishes to discontinue their subscription, they will not receive a refund.
               </Text>
 
-              <Text style={{ fontSize: "12px", fontFamily: "Poppins" }}>
-              Refund:
+              <Text style={{ fontSize: "12px", fontFamily: "Poppins", marginTop: "5px", }}>
+                Refund:
               </Text>
               <Text
                 style={{
@@ -952,20 +992,20 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
                   textAlign: "justify",
                 }}
               >
-                All subscription sessions are non-refundable, non-exchangeable and non-transferable. If a user decides to discontinue the subscription, no refund will be issued.
+                All subscribed sessions are non-refundable, non-exchangeable and non-transferable. If a user decides to discontinue the subscription, no refund will be issued.
 
               </Text>
 
-              
+
             </View>
 
             <View>
               <Text
                 style={{
-                  fontSize: "10px",
+                  fontSize: "12px",
                   fontFamily: "Poppins",
                   textAlign: "center",
-                  // marginTop: "10px",
+                  marginTop: "10px",
                 }}
               >
                 This is computer generated invoice no signature required
@@ -1010,7 +1050,7 @@ const PrintPDF: React.FC<PrintPDFProps> = ({ refOrderId, closePayment }) => {
     // Clean up the link element
     URL.revokeObjectURL(link.href);
 
-    closePayment();
+    // closePayment();
   };
 
   return (

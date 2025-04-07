@@ -15,6 +15,8 @@ import { GrEdit } from "react-icons/gr";
 import { MdDelete } from "react-icons/md";
 import { MdOutlineAddchart } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { MultiSelect } from "primereact/multiselect";
+
 
 type DecryptResult = any;
 
@@ -26,6 +28,8 @@ interface WorkSpaceData {
   offers: any;
   startingDate: any;
   endingDate: any;
+  packageId: [];
+  batchId: []
 }
 
 const Offers: React.FC = () => {
@@ -60,6 +64,8 @@ const Offers: React.FC = () => {
 
   const [branch1, setBranch1] = useState();
   const [branchOptions1, setBranchOptions1] = useState([]);
+  const [packageOption, setPackageOption] = useState([]);
+  const [batchOption, setBatchOption] = useState([]);
 
   const [tableData, setTableData] = useState();
 
@@ -109,6 +115,48 @@ const Offers: React.FC = () => {
       setBranch1(branchOptions[0].value);
 
       setTableData(data.offersStructure);
+
+      localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+    });
+  };
+
+  const GetOptions = () => {
+    Axios.post(
+      import.meta.env.VITE_API_URL + "/director/offerOptions",
+      {
+        branchId: branch1,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem("JWTtoken"),
+          "Content-Type": "application/json",
+        },
+      }
+    ).then((res) => {
+      const data = decrypt(
+        res.data[1],
+        res.data[0],
+        import.meta.env.VITE_ENCRYPTION_KEY
+      );
+      if (data.token == false) {
+        navigate("/expired");
+      }
+
+      console.log("Offers Data ----------- 141", data);
+
+      const options = data.batchOption.map((data: any) => ({
+        label: data.refTimeMembers,
+        value: data.refTimeMembersID,
+      }));
+
+      setBatchOption(options);
+
+      const packageOptions = data.packageOption.map((data: any) => ({
+        value: data.refPaId,
+        label: data.refPackageName,
+      }));
+
+      setPackageOption(packageOptions);
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
     });
@@ -178,25 +226,33 @@ const Offers: React.FC = () => {
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
     });
   };
-
+  const convertToDate = (dateStr: string) => {
+    const [day, month, year] = dateStr.split("-").map(Number);
+    return new Date(year, month - 1, day); // Month is 0-indexed in JavaScript
+  };
   const EditBtn = (rowData: any) => {
+
     return (
       <GrEdit
         style={{ cursor: "pointer", color: "green", fontSize: "1.5rem" }}
         onClick={() => {
+          GetOptions()
           setWorkSpace(true);
-
           setUpdateStructure(true);
-
+          console.log('rowData', rowData)
           setWorkSpaceData({
             refOfferId: rowData.refOfId,
             description: rowData.refContent,
             coupon: rowData.refCoupon,
             minimumval: rowData.refMin,
             offers: rowData.refOffer,
-            startingDate: rowData.refStartAt,
-            endingDate: rowData.refEndAt,
+            startingDate: rowData.refStartAt ? convertToDate(rowData.refStartAt) : null,
+            endingDate: rowData.refEndAt ? convertToDate(rowData.refEndAt) : null,
+            packageId: rowData.refPackage,
+            batchId: rowData.refBatch
           });
+
+          console.log(' -> Line Number ----------------------------------- 251',);
         }}
       />
     );
@@ -262,6 +318,8 @@ const Offers: React.FC = () => {
     offers: null,
     startingDate: "",
     endingDate: "",
+    packageId: [],
+    batchId: [],
   });
 
   function formatDateToYYYYMMDD(date: any) {
@@ -287,6 +345,8 @@ const Offers: React.FC = () => {
           refContent: workSpaceData.description,
           refStartAt: formatDateToYYYYMMDD(workSpaceData.startingDate),
           refEndAt: formatDateToYYYYMMDD(workSpaceData.endingDate),
+          refPackage: workSpaceData.packageId,
+          refBatch: workSpaceData.batchId
         },
         {
           headers: {
@@ -326,6 +386,8 @@ const Offers: React.FC = () => {
             offers: null,
             startingDate: "",
             endingDate: "",
+            packageId: [],
+            batchId: []
           });
 
           setUpdateStructure(false);
@@ -351,6 +413,9 @@ const Offers: React.FC = () => {
           refEndAt: formatDateToYYYYMMDD(workSpaceData.endingDate),
           refCouponCode: workSpaceData.coupon,
           refBranchId: branch1,
+          refPackage: workSpaceData.packageId,
+          refBatch: workSpaceData.batchId
+
         },
         {
           headers: {
@@ -379,6 +444,8 @@ const Offers: React.FC = () => {
             offers: null,
             startingDate: "",
             endingDate: "",
+            packageId: [],
+            batchId: []
           });
           toast.success("New Fees Added Successfully", {
             position: "top-right",
@@ -478,6 +545,7 @@ const Offers: React.FC = () => {
           }}
           options={branchOptions1}
           optionLabel="label"
+          disabled={workSpace}
           optionValue="value"
           placeholder="Select a Offer Type"
           className="w-[200px] mt-2 h-[35px]"
@@ -490,6 +558,7 @@ const Offers: React.FC = () => {
             className="bg-green-500 border-none rounded-lg p-2  "
             onClick={() => {
               setWorkSpace(true);
+              GetOptions()
             }}
           >
             <MdOutlineAddchart className="text-3xl text-white" />
@@ -571,6 +640,45 @@ const Offers: React.FC = () => {
                 </div>
               </div>
               <div className="flex justify-between mt-3">
+                <div className="flex flex-column gap-2 w-[48%]">
+                  <label htmlFor="username">Select Class Package</label>
+
+                  <MultiSelect
+                    value={workSpaceData.packageId}
+                    onChange={(e) => {
+                      console.log('e line ----- 689', e.value[0])
+
+
+                      setWorkSpaceData((prevState) => ({
+                        ...prevState,
+                        packageId: e.value,
+                      }));
+                    }}
+                    options={packageOption}
+                    optionLabel="label"
+                    placeholder="Select Class Package"
+
+                  />
+                </div>
+                <div className="flex flex-column gap-2 w-[48%]">
+                  <label htmlFor="username">Select Batch</label>
+                  <MultiSelect
+                    value={workSpaceData.batchId}
+                    onChange={(e) => {
+
+
+                      setWorkSpaceData((prevState) => ({
+                        ...prevState,
+                        batchId: e.value,
+                      }));
+                    }}
+                    options={batchOption}
+                    optionLabel="label"
+                    placeholder="Select Batch"
+                  />
+                </div>
+              </div>
+              <div className="flex justify-between mt-3">
                 <div className="flex flex-column gap-2 w-[100%]">
                   <label htmlFor="username">Description</label>
                   <InputText
@@ -598,8 +706,7 @@ const Offers: React.FC = () => {
                       });
 
                       Axios.post(
-                        `${
-                          import.meta.env.VITE_API_URL
+                        `${import.meta.env.VITE_API_URL
                         }/director/validateCouponCode`,
                         {
                           CouponCode: couponValue,
@@ -677,7 +784,7 @@ const Offers: React.FC = () => {
 
                       Axios.post(
                         import.meta.env.VITE_API_URL +
-                          "/director/validateCouponCode",
+                        "/director/validateCouponCode",
                         {
                           CouponCode: couponCode,
                         },
@@ -756,6 +863,8 @@ const Offers: React.FC = () => {
                       offers: null,
                       startingDate: "",
                       endingDate: "",
+                      packageId: [],
+                      batchId: []
                     });
                   }}
                   label="Close"

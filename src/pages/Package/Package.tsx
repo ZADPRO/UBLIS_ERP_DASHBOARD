@@ -71,7 +71,7 @@ const Package: React.FC = () => {
   const [TimeUpdate, setTimeUpdate] = useState(false);
   const [timingData, setTimingData] = useState([]);
   const [classEditId, setClassEditId] = useState([]);
-  const [packageAdd, setPackageAdd] = useState(false);
+  // const [packageAdd, setPackageAdd] = useState(false);
   const [packageUpdate, setPackageUpdate] = useState(false);
   const [sessionDaysOptions, setSessionDaysOption] = useState<
     SessionDayOption[]
@@ -79,7 +79,11 @@ const Package: React.FC = () => {
   const [sessionMemberTypeOptions, setSessionMemberTypeOptions] = useState([]);
   const [sessionBranchOptions, setSessionBranchOptions] = useState<
     { label: string; value: number }[]
-  >([]); const [timingOptions, setTimingOptions] = useState([]);
+  >([]);
+  const [timingOptions, setTimingOptions] = useState([]);
+  const [MeetingLinkOption, SetMeetingLinkOption] = useState([]);
+
+
   // const [updatedOptions, setUpdatedOptions] =
   //   useState<SessionDayOption[]>(sessionDaysOptions);
 
@@ -98,7 +102,7 @@ const Package: React.FC = () => {
     sessionmode?: number[];
     sessiondays?: number[];
     membertype?: number[];
-    branch?: any;
+    branch?: [];
     feesType?: any;
     amount?: number;
     meetingLink?: {
@@ -108,6 +112,9 @@ const Package: React.FC = () => {
         refMeetingTitle: string;
       };
     };
+    packageDuration?: number;
+    packageClassCount?: number;
+    refMeetingId?: number;
   }>({
     packageName: "",
     WTiming: [],
@@ -115,7 +122,7 @@ const Package: React.FC = () => {
     sessionmode: [],
     sessiondays: [],
     membertype: [],
-    branch: undefined,
+    branch: [],
     feesType: undefined,
     amount: undefined,
     meetingLink: {}, // Initialize as an empty object
@@ -315,6 +322,14 @@ const Package: React.FC = () => {
         ...meetingOptionsByBranch,
       }));
 
+      const options4 = data.MeetingLink.map((Data: any) => ({
+        label: Data.refMeetingTitle,
+        value: Data.refMeetingId,
+      }));
+      SetMeetingLinkOption(options4);
+
+
+
     });
   };
 
@@ -395,6 +410,7 @@ const Package: React.FC = () => {
   };
 
   const getFormOptions = () => {
+    console.log(' -> Line Number ----------------------------------- 398',);
     Axios.get(import.meta.env.VITE_API_URL + "/settings/package/addOptions", {
       headers: {
         Authorization: localStorage.getItem("JWTtoken"),
@@ -406,7 +422,7 @@ const Package: React.FC = () => {
         res.data[0],
         import.meta.env.VITE_ENCRYPTION_KEY
       );
-      console.log("data", data);
+      console.log("data line 410", data);
 
       const options1 = data.memberList.map((Data: any) => ({
         label: Data.refTimeMembers,
@@ -424,6 +440,7 @@ const Package: React.FC = () => {
         label: Data.refBranchName,
         value: Data.refbranchId,
       }));
+      console.log('options3', options3)
       setSessionBranchOptions(options3);
 
 
@@ -434,6 +451,51 @@ const Package: React.FC = () => {
       setTimingOptions(options4);
 
       localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+    });
+  };
+
+  interface CustomPackage {
+    refCustomPaId: number;
+    refBranchId: number;
+    refBranchName: string;
+    refFeesAmt: number;
+    refMeetingId: number;
+    refMeetingLink: string;
+    refMeetingTitle: string
+  }
+
+  const [CustomPackageData, setCustomPackageData] = useState<CustomPackage[]>([])
+  const [CustomPackageDataEdit, setCustomPackageDataEdit] = useState<{
+    refCustomPaId: number;
+    refBranchId: number;
+    refBranchName: string;
+    refFeesAmt: number;
+    refMeetingId: number;
+    refMeetingLink: string;
+    refMeetingTitle: string
+  }>();
+
+  const getCustomClassPackage = () => {
+    Axios.get(import.meta.env.VITE_API_URL + "/settings/package/CustomClass", {
+      headers: {
+        Authorization: localStorage.getItem("JWTtoken"),
+        "Content-Type": "application/json",
+      },
+    }).then((res) => {
+      const data = decrypt(
+        res.data[1],
+        res.data[0],
+        import.meta.env.VITE_ENCRYPTION_KEY
+      );
+      console.log("data 469", data);
+      if (data.success == false) {
+        navigate("/expired");
+      }
+      else {
+        localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
+        setCustomPackageData(data.data)
+      }
+
     });
   };
 
@@ -482,6 +544,51 @@ const Package: React.FC = () => {
     setSessionDaysOption(updatedOptions);
   };
 
+  const [branchName, setBranchName] = useState()
+
+  const CustomPackageEdit = (rowData: any) => {
+    return (
+      <GrEdit
+        style={{ cursor: "pointer", color: "green", fontSize: "1.5rem" }}
+        onClick={() => {
+          Axios.post(
+            import.meta.env.VITE_API_URL + "/settings/package/getMeetingLink",
+            { branchId: [parseInt(rowData.refBranchId)] },
+            {
+              headers: {
+                Authorization: localStorage.getItem("JWTtoken"),
+                "Content-Type": "application/json",
+              },
+            }
+          ).then((res) => {
+            const data = decrypt(
+              res.data[1],
+              res.data[0],
+              import.meta.env.VITE_ENCRYPTION_KEY
+            );
+
+            console.log('data meeting Link Option', data)
+
+            const options = data.MeetingLink.map((Data: any) => ({
+              label: Data.refMeetingTitle,
+              value: Data.refMeetingId,
+            }));
+            SetMeetingLinkOption(options);
+          })
+          setCustomPackageDataEdit({
+            refCustomPaId: rowData.refCustomPaId,
+            refBranchId: rowData.refBranchId,
+            refBranchName: rowData.refBranchName,
+            refFeesAmt: rowData.refFeesAmt,
+            refMeetingId: rowData.refMeetingId,
+            refMeetingLink: rowData.refMeetingLink,
+            refMeetingTitle: rowData.refMeetingTitle
+          })
+          setCustomPackageClose(true)
+        }}
+      />
+    );
+  };
   const PackageEdit = (rowData: any) => {
     return (
       <GrEdit
@@ -489,11 +596,11 @@ const Package: React.FC = () => {
         onClick={() => {
           setActiveIndex(1)
           getFormOptions();
-          setPackageAdd(true);
+          // setPackageAdd(true);
           setPackageUpdate(true);
+          getBranchMeetingLink({ branch: [rowData.refBranchId] })
 
-
-          console.log('rowData line ------ 405', rowData)
+          setBranchName(rowData.refBranchName)
           setNewPackageData({
             packageName: rowData.refPackageName,
             WTiming: rowData.refWTimingId,
@@ -504,6 +611,9 @@ const Package: React.FC = () => {
             branch: rowData.refBranchName,
             feesType: parseInt(rowData.refFeesType),
             amount: rowData.refFees,
+            packageDuration: parseInt(rowData.refClsDuration),
+            packageClassCount: parseInt(rowData.refClsCount),
+            refMeetingId: parseInt(rowData.refMeetingId)
           });
           setClassEditId(rowData.refPaId);
         }}
@@ -571,6 +681,8 @@ const Package: React.FC = () => {
     );
   };
 
+  const [customPackageClose, setCustomPackageClose] = useState(false)
+
   const [activeIndex, setActiveIndex] = useState(0); // State to control tab switching
 
   useEffect(() => {
@@ -584,6 +696,8 @@ const Package: React.FC = () => {
     fetchTimingData();
     getPackageData();
   }, [branch]);
+
+
 
   return (
     <>
@@ -610,7 +724,24 @@ const Package: React.FC = () => {
         <TabView activeIndex={activeIndex} onTabChange={(e) => {
           setActiveIndex(e.index);
           if (e.index === 1) {
+            setNewPackageData({
+              packageName: "",
+              WTiming: [],
+              WeTiming: [],
+              sessionmode: [],
+              sessiondays: [],
+              membertype: [],
+              branch: undefined,
+              feesType: undefined,
+              amount: undefined,
+              packageDuration: undefined,
+              packageClassCount: undefined
+            })
+            setPackageUpdate(false)
             getFormOptions();
+          }
+          else if (e.index === 2) {
+            getCustomClassPackage()
           }
         }}>
           <TabPanel header="Package Data">
@@ -618,8 +749,7 @@ const Package: React.FC = () => {
               value={packData}
               className="mt-10"
               scrollable
-              // showGridlines
-              scrollHeight="400px" // Adjust the scroll height as needed
+              scrollHeight="400px"
             >
               <Column
                 field="refPackageName"
@@ -725,9 +855,10 @@ const Package: React.FC = () => {
               <Column
                 header="Fee Type"
                 body={(rowData) =>
-                  parseInt(rowData.refFeesType) === 0 ? "Monthly" : "Perday"
+                  `${parseInt(rowData.refFeesType) === 0 ? "Monthly" : parseInt(rowData.refFeesType) === 1 ? "Per Day" : "Multiple Months"}`
+
                 }
-                style={{ minWidth: "130px", width: "auto" }}
+                style={{ minWidth: "230px", width: "auto" }}
               ></Column>
 
               <Column
@@ -743,8 +874,6 @@ const Package: React.FC = () => {
           </TabPanel>
 
           <TabPanel header="Create Package">
-
-
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -781,8 +910,19 @@ const Package: React.FC = () => {
                   );
 
                   if (data.success == true) {
-                    setNewPackageData({});
-                    setPackageAdd(false);
+                    setNewPackageData({
+                      packageName: "",
+                      WTiming: [],
+                      WeTiming: [],
+                      sessionmode: [],
+                      sessiondays: [],
+                      membertype: [],
+                      branch: undefined,
+                      feesType: undefined,
+                      amount: undefined,
+                      packageDuration: undefined,
+                      packageClassCount: undefined
+                    })
                     setPackageUpdate(false);
                     getPackageData();
                     toast.success(
@@ -798,9 +938,9 @@ const Package: React.FC = () => {
                         draggable: true,
                         progress: undefined,
                         theme: "light",
-                        // transition: Bounce,
                       }
                     );
+                    setActiveIndex(0)
                   } else {
                     toast.error("Some Error, Try After Some Time", {
                       position: "top-right",
@@ -811,7 +951,6 @@ const Package: React.FC = () => {
                       draggable: true,
                       progress: undefined,
                       theme: "light",
-                      // transition: Bounce,
                     });
                   }
                 });
@@ -948,134 +1087,13 @@ const Package: React.FC = () => {
 
 
 
+
+
               </div>
               <div className="flex flex-row gap-6  w-[100%] mt-4">
-                <div className="flex flex-col gap-2  w-[30%] ">
-                  <label htmlFor="username">Branch</label>
-
-                  {packageUpdate ? (
-                    <InputText
-                      placeholder="Branch Name"
-                      value={newPackageData.branch}
-                      required
-                      readOnly
-                    />
-                  ) : (
-                    <MultiSelect
-                      value={newPackageData.branch}
-                      onChange={(e) => {
-                        const data = {
-                          ...newPackageData,
-                          branch: e.value,
-                        }
-                        setNewPackageData(data);
-                        getBranchMeetingLink(data)
-                      }}
-                      options={sessionBranchOptions}
-                      optionLabel="label"
-                      display="chip"
-                      placeholder="Select a Branch"
-                      maxSelectedLabels={3}
-                      className="w-full md:w-20rem"
-                      required
-                    />
-                  )}
-                </div>
-                {/* <div className="flex flex-column gap-2  w-[30%]  ">
-                  <label htmlFor="username">Google Meeting Link</label>
-
-                  <Dropdown
-                    value={newPackageData.feesType}
-                    onChange={(e) => {
-                      setNewPackageData({
-                        ...newPackageData,
-                        feesType: e.value,
-                      });
-                    }}
-                    options={feesTypeOptions}
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Select a Session Mode"
-                    className="w-[100%] h-[35px]"
-                    checkmark={true}
-                    highlightOnSelect={false}
-                    required
-                  />
-                </div> */}
 
 
-                {/* {newPackageData.branch?.map((selectedBranch: any) => {
-                  const branchLabel = sessionBranchOptions.find(
-                    (option: any) => option.value === selectedBranch
-                  )?.label;
-
-                  return (
-                    <div key={selectedBranch} className="flex flex-column gap-2 w-[30%]">
-                      <label htmlFor={`meeting-link-${selectedBranch}`}>
-                        {branchLabel} Meeting Link
-                      </label>
-
-                      <Dropdown
-                        value={newPackageData.feesType?.[selectedBranch] || ""}
-                        onChange={(e) => {
-                          setNewPackageData((prevData) => ({
-                            ...prevData,
-                            feesType: {
-                              ...prevData.feesType,
-                              [selectedBranch]: e.value, // Store the selected dropdown value per branch
-                            },
-                          }));
-                        }}
-                        options={feesTypeOptions}
-                        optionLabel="label"
-                        optionValue="value"
-                        placeholder={`Select a Session Mode for ${branchLabel}`}
-                        className="w-[100%] h-[35px]"
-                        checkmark={true}
-                        highlightOnSelect={false}
-                        required
-                      />
-                    </div>
-                  );
-                })} */}
-
-                {newPackageData.branch?.map((branchId: number) => (
-                  <div key={branchId} className="flex flex-column gap-2 w-[30%]">
-                    <label htmlFor={`meeting-link-${branchId}`}>
-                      Google Meeting Link ({sessionBranchOptions.find(option => option.value === branchId)?.label})
-                    </label>
-
-                    <Dropdown
-                      id={`meeting-link-${branchId}`}
-                      value={newPackageData.meetingLink?.[branchId]?.refMeetingId || ""}
-                      onChange={(e) => {
-                        const selectedMeeting = branchMeetingLink[branchId]?.find(option => option.value === e.value);
-                        setNewPackageData({
-                          ...newPackageData,
-                          meetingLink: {
-                            ...newPackageData.meetingLink,
-                            [branchId]: {
-                              refBranchId: branchId,
-                              refMeetingId: selectedMeeting?.value ? Number(selectedMeeting.value) : 0, // Ensure number
-                              refMeetingTitle: selectedMeeting?.label || "",
-                            },
-                          },
-                        });
-                      }}
-                      options={branchMeetingLink[branchId] || []}
-                      optionLabel="label"
-                      optionValue="value"
-                      placeholder="Select a Session Mode"
-                      className="w-[100%] h-[35px]"
-                      checkmark={true}
-                      highlightOnSelect={false}
-                      required
-                    />
-                  </div>
-                ))}
-
-
-                <div className="flex flex-column gap-2  w-[30%]  ">
+                <div className="flex flex-column gap-1  w-[30%]  ">
                   <label htmlFor="username">Fees Type</label>
 
                   <Dropdown
@@ -1097,10 +1115,7 @@ const Package: React.FC = () => {
                   />
                 </div>
 
-
-              </div>
-              <div className="flex flex-row gap-6  w-[100%] mt-4">
-                <div className="flex flex-column gap-2 w-[30%]">
+                <div className="flex flex-column gap-1 w-[30%]">
                   <label htmlFor="username">Amount</label>
                   <InputNumber
                     placeholder="Enter The Fees"
@@ -1115,8 +1130,144 @@ const Package: React.FC = () => {
                   />
                 </div>
 
+                <div className="flex flex-column gap-1 w-[15%]">
+                  <label htmlFor="username">Duration</label>
+                  <InputNumber
+                    placeholder="Duration"
+                    disabled={newPackageData.feesType != 2}
+                    value={newPackageData.packageDuration}
+                    onChange={(e: any) => {
+                      setNewPackageData({
+                        ...newPackageData,
+                        packageDuration: e.value,
+                      });
+                    }}
+                    required
+                  />
+                </div>
+
+                <div className="flex flex-column gap-1 w-[15%]">
+                  <label htmlFor="username">Class Count</label>
+                  <InputNumber
+                    placeholder="Class Count"
+                    value={newPackageData.packageClassCount}
+                    disabled={newPackageData.feesType != 2}
+
+                    onChange={(e: any) => {
+                      setNewPackageData({
+                        ...newPackageData,
+                        packageClassCount: e.value,
+                      });
+                    }}
+                    required
+                  />
+                </div>
+
 
               </div>
+              <div className="flex flex-row gap-6  w-[100%] mt-4">
+                <div className="flex flex-col gap-2  w-[30%] ">
+                  <label htmlFor="username">Branch</label>
+
+                  {packageUpdate ? (
+                    <InputText
+                      placeholder="Branch Name"
+                      value={branchName}
+                      required
+                      readOnly
+                    />
+                  ) : (
+                    <MultiSelect
+                      value={newPackageData.branch ?? []}
+                      onChange={(e) => {
+                        setNewPackageData({ ...newPackageData, branch: e.value });
+                        getBranchMeetingLink({ ...newPackageData, branch: e.value });
+                      }}
+                      options={sessionBranchOptions}
+                      optionLabel="label"
+                      display="chip"
+                      placeholder="Select a Branch"
+                      maxSelectedLabels={3}
+                      className="w-full md:w-20rem"
+                      required
+                    />
+
+                    // <div></div>
+                  )}
+                </div>
+
+                {packageUpdate ? (
+                  <div className="w-[30%]">
+                    <div className="flex flex-column gap-1  w-[100%]  ">
+                      <label htmlFor="username">Google Meeting Link</label>
+
+                      <Dropdown
+                        value={newPackageData.refMeetingId}
+                        onChange={(e) => {
+                          setNewPackageData({
+                            ...newPackageData,
+                            refMeetingId: e.value,
+                          });
+                        }}
+                        options={MeetingLinkOption}
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Select a Session Mode"
+                        className="w-[100%] h-[35px]"
+                        checkmark={true}
+                        highlightOnSelect={false}
+                        required
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="w-full">
+
+                    {newPackageData.branch?.map((branchId: number) => (
+                      <div key={branchId} className="flex flex-column gap-2 w-[100%]">
+                        <label htmlFor={`meeting-link-${branchId}`}>
+                          Google Meeting Link ({sessionBranchOptions.find(option => option.value === branchId)?.label})
+                        </label>
+
+                        <Dropdown
+                          id={`meeting-link-${branchId}`}
+                          value={newPackageData.meetingLink?.[branchId]?.refMeetingId || ""}
+                          onChange={(e) => {
+                            const selectedMeeting = branchMeetingLink[branchId]?.find(option => option.value === e.value);
+                            setNewPackageData({
+                              ...newPackageData,
+                              meetingLink: {
+                                ...newPackageData.meetingLink,
+                                [branchId]: {
+                                  refBranchId: branchId,
+                                  refMeetingId: selectedMeeting?.value ? Number(selectedMeeting.value) : 0, // Ensure number
+                                  refMeetingTitle: selectedMeeting?.label || "",
+                                },
+                              },
+                            });
+                          }}
+                          options={branchMeetingLink[branchId] || []}
+                          optionLabel="label"
+                          optionValue="value"
+                          placeholder="Select a Session Mode"
+                          className="w-[100%] h-[35px]"
+                          checkmark={true}
+                          highlightOnSelect={false}
+                          required
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+
+
+              </div>
+              <div className="flex flex-row gap-6  w-[100%] mt-4">
+
+
+              </div>
+
               <div className="flex justify-end gap-3 mt-4">
                 <Button
                   severity="info"
@@ -1133,7 +1284,11 @@ const Package: React.FC = () => {
                       branch: undefined,
                       feesType: undefined,
                       amount: undefined,
+                      packageDuration: undefined,
+                      packageClassCount: undefined
                     })
+                    setPackageUpdate(false)
+
                   }}
                 />
                 {packageUpdate ? (
@@ -1144,6 +1299,184 @@ const Package: React.FC = () => {
               </div>
             </form>
 
+
+
+          </TabPanel>
+          <TabPanel header="Customized Class Package">
+
+            <div>
+              {customPackageClose ?
+                <> <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+
+                    const url = "/settings/package/CustomClassUpdate";
+
+                    Axios.post(
+                      import.meta.env.VITE_API_URL + url,
+                      {
+                        refCustomPaId: CustomPackageDataEdit?.refCustomPaId,
+                        refFeesAmt: CustomPackageDataEdit?.refFeesAmt,
+                        refMeetingLinkId: CustomPackageDataEdit?.refMeetingId
+                      },
+                      {
+                        headers: {
+                          Authorization: localStorage.getItem("JWTtoken"),
+                          "Content-Type": "application/json",
+                        },
+                      }
+                    ).then((res) => {
+                      console.log("res", res);
+                      const data = decrypt(
+                        res.data[1],
+                        res.data[0],
+                        import.meta.env.VITE_ENCRYPTION_KEY
+                      );
+
+                      localStorage.setItem(
+                        "JWTtoken",
+                        "Bearer " + data.token + ""
+                      );
+
+                      if (data.success == true) {
+
+                        toast.success(
+                          "Custom Package Data Updated Successfully",
+                          {
+                            position: "top-right",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                          }
+                        );
+                        getCustomClassPackage()
+                        setCustomPackageClose(false)
+                      } else {
+                        toast.error("Some Updating the Custom Package Data", {
+                          position: "top-right",
+                          autoClose: 5000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          theme: "light",
+                        });
+                      }
+                    });
+                  }}
+                >
+                  <div>
+                    <div className="flex justify-between mt-4">
+                      <div className="flex flex-row gap-2 w-[50%]"></div>
+                    </div>
+                  </div>
+                  <div className="flex flex-row gap-6  w-[100%] mt-4">
+                    <div className="flex flex-column gap-2 w-[30%]">
+                      <label htmlFor="username">Branch Name</label>
+                      <InputText
+                        placeholder="Branch Name"
+                        value={CustomPackageDataEdit?.refBranchName}
+                        disabled
+                        required
+                      />
+                    </div>
+
+                    <div className="flex flex-column gap-1 w-[20%]">
+                      <label htmlFor="username">Single Class Amount</label>
+                      <InputNumber
+                        placeholder="Class Amount"
+                        value={CustomPackageDataEdit?.refFeesAmt}
+                        onChange={(e: any) => {
+                          if (CustomPackageDataEdit) {
+                            setCustomPackageDataEdit({
+                              ...CustomPackageDataEdit,
+                              refFeesAmt: e.value,
+                            });
+                          }
+                        }}
+                        required
+                      />
+                    </div>
+
+                    <div className="flex flex-column gap-2  w-[30%] ">
+                      <label htmlFor="username">Meeting Link</label>
+
+                      <Dropdown
+                        value={CustomPackageDataEdit?.refMeetingId}
+                        onChange={(e) => {
+                          if (CustomPackageDataEdit) {
+                            setCustomPackageDataEdit({
+                              ...CustomPackageDataEdit,
+                              refMeetingId: e.value,
+                            });
+                          }
+                        }}
+                        options={MeetingLinkOption}
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Select a Meeting Link"
+                        className="w-[100%] h-[35px]"
+                        checkmark={true}
+                        highlightOnSelect={false}
+                        required
+                      />
+
+                    </div>
+                    <div className="flex justify-end gap-3 mt-4">
+                      <Button
+                        severity="info"
+                        label="Close"
+                        type="button"
+                        onClick={() => {
+                          setCustomPackageClose(false)
+                        }}
+                      />
+
+                      <Button severity="warning" label="Update" type="submit" />
+
+                    </div>
+                  </div>
+
+                </form></>
+                :
+                <></>}
+
+            </div>
+            <DataTable
+              value={CustomPackageData}
+              className="mt-10"
+              scrollable
+              scrollHeight="400px"
+            >
+              <Column
+                field="refBranchName"
+                header="Branch"
+                style={{ minWidth: "200px", width: "auto" }}
+              ></Column>
+
+              <Column
+                header="Package Fees"
+                body={(rowData) => (
+                  <p>{rowData.refFeesAmt}</p>
+                )}
+                style={{ minWidth: "200px", width: "auto" }}
+              ></Column>
+
+              <Column
+                header="Package Meeting Link"
+                body={(rowData) => (
+                  <p>{rowData.refMeetingTitle}</p>
+                )}
+                style={{ minWidth: "200px", width: "auto" }}
+              ></Column>
+
+              <Column header="Edit" body={CustomPackageEdit}></Column>
+            </DataTable>
 
 
           </TabPanel>

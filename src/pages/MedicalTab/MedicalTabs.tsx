@@ -227,7 +227,6 @@ const MedicalTabs: React.FC<UserProfileEditProps> = ({ refid }) => {
         })
       );
 
-      // Step 2: Update the mapped conditions to set `checked` to 1 if value matches
       const updatedConditions = healthConditions.map((condition) => {
         const refPresentHealth = data?.data?.presentHealth?.refPresentHealth;
         if (Array.isArray(refPresentHealth)) {
@@ -259,8 +258,8 @@ const MedicalTabs: React.FC<UserProfileEditProps> = ({ refid }) => {
         accident: generalhealth ? generalhealth.refRecentFractures : false,
         breaks: generalhealth.refRecentFractures,
         care: presenthealth.refUnderPhysicalCare,
-        backpain: presenthealth.refBackPain === "no" ? false : true,
-        ifbp: generalhealth.refIfBP === "no" ? false : true,
+        backpain: presenthealth.refBackPain.length > 0 ? true : false,
+        ifbp: generalhealth.refIfBP === false ? false : true,
         refHealthIssue: personaldata.refHealthIssue,
       });
 
@@ -529,6 +528,14 @@ const MedicalTabs: React.FC<UserProfileEditProps> = ({ refid }) => {
           refProblem: inputs.therapydurationproblem,
           refPastHistory: inputs.therapypasthistory,
         },
+        generalhealth:
+        {
+          refBP: inputs.bp,
+          refBpType: inputs.bpValue,
+          refIfBP: options.ifbp
+
+
+        }
       },
       {
         headers: {
@@ -691,15 +698,15 @@ const MedicalTabs: React.FC<UserProfileEditProps> = ({ refid }) => {
                       </button>
                     ) : (
                       <>{window.location.pathname !== "/staff/classinfo" && (
-                      <div
-                        onClick={() => {
-                          editform("present");
-                        }}
-                        className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
-                      >
-                        Edit&nbsp;&nbsp;
-                        <i className="text-[15px] pi pi-pen-to-square"></i>
-                      </div>)}</>
+                        <div
+                          onClick={() => {
+                            editform("present");
+                          }}
+                          className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
+                        >
+                          Edit&nbsp;&nbsp;
+                          <i className="text-[15px] pi pi-pen-to-square"></i>
+                        </div>)}</>
                     )}
                   </div>
                   <div className="w-[100%] flex justify-center items-center">
@@ -846,6 +853,13 @@ const MedicalTabs: React.FC<UserProfileEditProps> = ({ refid }) => {
                                 label="No"
                                 selectedOption={!options.backpain ? "no" : ""}
                                 onChange={() => {
+
+                                  setInputs({
+                                    ...inputs,
+                                    backpainscale: "",
+                                    BackPainValue: ""
+                                  })
+
                                   setOptions({
                                     ...options,
                                     backpain: false,
@@ -882,12 +896,11 @@ const MedicalTabs: React.FC<UserProfileEditProps> = ({ refid }) => {
                                 label="Additional Content (Back Pain)"
                                 disabled={!options.backpain}
                                 readonly={!edits.present}
-                                required
                                 value={inputs.BackPainValue}
                                 onChange={(e) => handleInputVal(e)}
                                 type="text"
                                 placeholder="pain value"
-                                // value={inputs.email}
+                              // value={inputs.email}
                               />
                             </div>
                           </div>
@@ -924,6 +937,13 @@ const MedicalTabs: React.FC<UserProfileEditProps> = ({ refid }) => {
                                 label="No"
                                 selectedOption={!options.ifbp ? "no" : ""}
                                 onChange={() => {
+
+                                  setInputs({
+                                    ...inputs,
+                                    bp: "",
+                                    bpValue: ""
+                                  })
+
                                   setOptions({
                                     ...options,
                                     ifbp: false,
@@ -939,7 +959,7 @@ const MedicalTabs: React.FC<UserProfileEditProps> = ({ refid }) => {
                             <div className="w-[48%]">
                               <SelectInput
                                 id="bp"
-                                name="bp"
+                                name="bpValue"
                                 label="BP"
                                 options={[
                                   { value: "low", label: "Low" },
@@ -994,17 +1014,17 @@ const MedicalTabs: React.FC<UserProfileEditProps> = ({ refid }) => {
                         <i className="text-[15px] pi pi-check"></i>
                       </button>
                     ) : (
-                     <>
-                                         {window.location.pathname !== "/staff/classinfo" && (
-                      <div
-                        onClick={() => {
-                          editform("therapy");
-                        }}
-                        className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
-                      >
-                        Edit&nbsp;&nbsp;
-                        <i className="text-[15px] pi pi-pen-to-square"></i>
-                      </div>)}</>
+                      <>
+                        {window.location.pathname !== "/staff/classinfo" && (
+                          <div
+                            onClick={() => {
+                              editform("therapy");
+                            }}
+                            className="text-[15px] py-2 px-3 bg-[#f95005] font-bold cursor-pointer text-[#fff] rounded"
+                          >
+                            Edit&nbsp;&nbsp;
+                            <i className="text-[15px] pi pi-pen-to-square"></i>
+                          </div>)}</>
                     )}
                   </div>
                   <div className="w-[100%] flex justify-center items-center">
@@ -1136,9 +1156,9 @@ const MedicalTabs: React.FC<UserProfileEditProps> = ({ refid }) => {
                             onChange={handleInputVal}
                             value={inputs.breaksotheractivities}
                             disabled={!options.accident || !edits.therapy}
-                            // disabled={!options.breaks}
-                            // readonly={!edits.gendrel}
-                            required
+                          // disabled={!options.breaks}
+                          // readonly={!edits.gendrel}
+
                           />
                         </div>
                       </div>
@@ -1152,9 +1172,9 @@ const MedicalTabs: React.FC<UserProfileEditProps> = ({ refid }) => {
                             onChange={handleInputVal}
                             value={inputs.genderalanything}
                             disabled={!options.accident || !edits.therapy}
-                            //  disabled={!options.breaks}
-                            //  readonly={!edits.gendrel}
-                            required
+                          //  disabled={!options.breaks}
+                          //  readonly={!edits.gendrel}
+
                           />
                         </div>
                       </div>

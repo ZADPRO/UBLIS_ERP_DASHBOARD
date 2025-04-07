@@ -100,10 +100,10 @@ const ClassInfo: React.FC = () => {
   const [refStId, setRefStId] = useState();
   const [sessionUpdate, setSessionUpdate] = useState<number>(1);
   const [sessionUpdateLoad, setSessionUpdateLoad] = useState(false);
-  const branchOptions = Object.entries(branchList).map(([value, label]) => ({
-    value, // Key (e.g., '1')
-    label, // Value (e.g., 'Chennai')
-  }));
+  // const branchOptions = Object.entries(branchList).map(([value, label]) => ({
+  //   value, // Key (e.g., '1')
+  //   label, // Value (e.g., 'Chennai')
+  // }));
   const [memberList, setMemberList] = useState([]);
 
   const memberlistOptions = Object.entries(memberList).map(
@@ -360,7 +360,7 @@ const ClassInfo: React.FC = () => {
         userType: customer.userType || "Null",
         gender: customer.refStSex
           ? customer.refStSex.charAt(0).toUpperCase() +
-            customer.refStSex.slice(1).toLowerCase()
+          customer.refStSex.slice(1).toLowerCase()
           : "Null",
         comments: "",
         commentEnabled: false,
@@ -372,11 +372,11 @@ const ClassInfo: React.FC = () => {
     }
   };
 
-  
+
   type ClassCountData = {
     classCount: number;
-    offlineCount:number;
-    onlineCount:number;
+    offlineCount: number;
+    onlineCount: number;
     classAttend: number;
     classreCount: number;
     therapyCount: number;
@@ -418,8 +418,8 @@ const ClassInfo: React.FC = () => {
       console.log("Data line --------------- 227", data);
       const countData = {
         classCount: data.data.classCount.totalClassCount,
-        offlineCount:data.data.classCount.classAttendCount,
-        onlineCount:data.data.classCount.onlineCount,
+        offlineCount: data.data.classCount.classAttendCount,
+        onlineCount: data.data.classCount.onlineCount,
         classAttend: data.data.classCount.totalAttendCount,
         classreCount: data.data.classCount.reCount,
         therapyCount: data.data.therapyCount.totalSession,
@@ -506,7 +506,11 @@ const ClassInfo: React.FC = () => {
         localStorage.setItem("JWTtoken", "Bearer " + data.token + "");
 
         if (data.success) {
-          setBranchList(data.Branch);
+          const branchOptions = data.Branch.map((branch: any) => ({
+            label: branch.refBranchName,
+            value: branch.refbranchId,
+          }));
+          setBranchList(branchOptions);
         }
       })
       .catch((err) => {
@@ -847,7 +851,7 @@ const ClassInfo: React.FC = () => {
           <ToastContainer />
           <div className="card" style={{ overflow: "auto" }}>
             <DataTable
-              ref={dtRef} // Attach ref to get filtered data
+              ref={dtRef}
               value={customers}
               paginator
               header={header}
@@ -1030,11 +1034,10 @@ const ClassInfo: React.FC = () => {
                           </div>
                           {edits.session ? (
                             <button
-                              className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${
-                                sessionUpdateLoad
-                                  ? "bg-gray-500 cursor-not-allowed"
-                                  : "bg-[#f95005]"
-                              }`}
+                              className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${sessionUpdateLoad
+                                ? "bg-gray-500 cursor-not-allowed"
+                                : "bg-[#f95005]"
+                                }`}
                               type="submit"
                               disabled={sessionUpdateLoad}
                             >
@@ -1115,7 +1118,7 @@ const ClassInfo: React.FC = () => {
                               </div>
                               <div className="w-[100%] flex flex-col lg:flex-row gap-y-[20px] mt-[20px] justify-between">
                                 {sessionData?.weekDaysTiming?.length ||
-                                0 > 0 ? (
+                                  0 > 0 ? (
                                   <>
                                     <div className="w-[100%] lg:w-[48%]">
                                       <TextInput
@@ -1158,7 +1161,7 @@ const ClassInfo: React.FC = () => {
                                     id="branch"
                                     name="branchId"
                                     label="Branch *"
-                                    options={branchOptions}
+                                    options={branchList}
                                     required
                                     value={sessionData?.branchId || ""}
                                     onChange={(e) => {
@@ -1327,8 +1330,8 @@ const ClassInfo: React.FC = () => {
                             Therapy Session
                           </div>
                           {refUtId === "7" ||
-                          refUtId === "11" ||
-                          refUtId === "12" ? (
+                            refUtId === "11" ||
+                            refUtId === "12" ? (
                             <>
                               {threapyCount === 0 || threapyCount === null ? (
                                 <></>
@@ -1336,11 +1339,10 @@ const ClassInfo: React.FC = () => {
                                 <>
                                   {edits.threapy ? (
                                     <button
-                                      className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${
-                                        sessionUpdateLoad
-                                          ? "bg-gray-500 cursor-not-allowed"
-                                          : "bg-[#f95005]"
-                                      }`}
+                                      className={`text-[15px] outline-none py-2 border-none px-3 font-bold cursor-pointer text-white rounded ${sessionUpdateLoad
+                                        ? "bg-gray-500 cursor-not-allowed"
+                                        : "bg-[#f95005]"
+                                        }`}
                                       type="submit"
                                       disabled={sessionUpdateLoad}
                                     >
@@ -1378,11 +1380,11 @@ const ClassInfo: React.FC = () => {
                           <div className="w-[100%] justify-center items-center flex flex-col">
                             <div className="w-[100%] flex flex-row lg:flex-row gap-y-[20px] justify-between mb-[20px]">
                               {(threapyCount === 0 || threapyCount === null) &&
-                              !edits.threapy ? (
+                                !edits.threapy ? (
                                 <>
                                   <div className="flex justify-center w-[100%]">
                                     <h3 className="text-red-500">
-                                      No Therapy Class Assigned
+                                      No Therapy Class is Assigned
                                     </h3>
                                   </div>
                                 </>
@@ -1433,8 +1435,8 @@ const ClassInfo: React.FC = () => {
                             Class Count
                           </div>
                           {refUtId === "7" ||
-                          refUtId === "11" ||
-                          refUtId === "12" ? (
+                            refUtId === "11" ||
+                            refUtId === "12" ? (
                             <></>
                           ) : (
                             <></>
@@ -1451,7 +1453,7 @@ const ClassInfo: React.FC = () => {
                                   <div>
                                     <th className="text-900 font-bold p-2 text-start ">
                                       <span className="text-[#f95005]">Yoga Class</span>
-                                      
+
                                     </th>
                                     <tr>
                                       <td className="text-900 font-bold p-2">
@@ -1498,7 +1500,7 @@ const ClassInfo: React.FC = () => {
                                   <div>
                                     <th className="text-900 font-bold p-2 text-start">
                                       <span className="text-[#f95005]">Therapy Session</span>
-                                      
+
                                     </th>
                                     <tr>
                                       <td className="text-900 font-bold p-2">

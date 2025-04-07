@@ -285,7 +285,12 @@ const StaffDatas: React.FC<StaffDatasProps> = ({ changes }) => {
         sortField="trial"
         sortOrder={-1}
         filters={filters}
+        scrollable
+        scrollHeight="400px"
+        className="custom-scrollbar scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
       >
+
+
         <Column
           selectionMode="multiple"
           frozen

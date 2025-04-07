@@ -37,6 +37,9 @@ import IntroVideo from "./pages/03-IntroVideo/IntroVideo";
 
 import ClassInfoDetails from "./components/11-ClassInfodetails/ClassInfoDetails";
 import Onlineclass from "./components/12-OnlineClass/Onlineclass";
+import PriceSidebar from "./pages/PriceSidebar/PriceSidebar";
+
+
 
 const App = () => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -46,8 +49,6 @@ const App = () => {
   if (token && refUtId) {
     localStorage.setItem("JWTtoken", token);
     localStorage.setItem("refUtId", refUtId);
-    // const storedToken = localStorage.getItem("JWTtoken");
-    // const storedRefUtId = localStorage.getItem("refUtId");
     window.history.replaceState({}, document.title, window.location.pathname);
   } else {
     console.log("No token found in URL");
@@ -66,6 +67,7 @@ const App = () => {
           <Route path="/users/profile" element={<Profile />} />
           <Route path="users/support" element={<Support />} />
           <Route path="/logout" element={<Logout />} />
+          <Route path="/user/payment/details" element={<PriceSidebar />} />
           <Route path="/yoganotes" element={<AddNotes />} />
           <Route path="/introVideo" element={<IntroVideo />} />
           <Route path="/settings" element={<Settings />} />
@@ -76,8 +78,8 @@ const App = () => {
           <Route path="/dir/staff" element={<StaffData />} />
           <Route path="/dir/notify" element={<Notifications />} />
           <Route path="/assignnotes" element={<AssignNotes />} />
-          <Route path="//staff/onlineclass" element={<Onlineclass/>} />
-          
+          <Route path="//staff/onlineclass" element={<Onlineclass />} />
+
           <Route path="/staff/signedupUsers" element={<Users />} />
           <Route path="/dir/organization" element={<Organization />} />
           <Route path="/therapist/approve" element={<Therapist />} />

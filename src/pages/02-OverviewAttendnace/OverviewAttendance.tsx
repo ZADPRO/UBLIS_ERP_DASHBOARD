@@ -2,8 +2,8 @@ import { Calendar } from "primereact/calendar";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import Axios from "axios";
-import { Divider } from "primereact/divider";
-import { Fieldset } from "primereact/fieldset";
+// import { Divider } from "primereact/divider";
+// import { Fieldset } from "primereact/fieldset";
 import { Nullable } from "primereact/ts-helpers";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -21,26 +21,26 @@ interface RegularSession {
   femalecount: number;
 }
 
-interface NearestSession {
-  nearestRefTimeId: {
-    refTimeId: number;
-    reftime: string;
-    usercount: number;
-    attendancecount: number;
-    startTime: string;
-    kidscount: number;
-    malecount: number;
-    femalecount: number;
-  };
-}
+// interface NearestSession {
+//   nearestRefTimeId: {
+//     refTimeId: number;
+//     reftime: string;
+//     usercount: number;
+//     attendancecount: number;
+//     startTime: string;
+//     kidscount: number;
+//     malecount: number;
+//     femalecount: number;
+//   };
+// }
 
 type DecryptResult = any;
 
 
-type AttendanceData = RegularSession | NearestSession;
-interface OverviewAttendanceProps {
-  overviewSessionData: AttendanceData | null;
-}
+// type AttendanceData = RegularSession | NearestSession;
+// interface OverviewAttendanceProps {
+//   overviewSessionData: AttendanceData | null;
+// }
 
 const OverviewAttendance: React.FC = () => {
   // const OverviewAttendance: React.FC<OverviewAttendanceProps> = ({
@@ -48,15 +48,15 @@ const OverviewAttendance: React.FC = () => {
   // }) => {
   const [date, setDate] = useState<Nullable<Date>>(new Date());
 
-  const [userData, setUserData] = useState<AttendanceData[]>([]);
-  const [nearestSessionRefTime, setNearestSessionRefTime] =
-    useState<string>("");
+  // const [userData, setUserData] = useState<AttendanceData[]>([]);
+  // const [nearestSessionRefTime, setNearestSessionRefTime] =
+  //   useState<string>("");
 
-  const [attendedTimeCount, setAttendedTimeCount] = useState<number>(0);
-  const [kidsCount, setKidsCount] = useState<number>(0);
-  const [maleCount, setMaleCount] = useState<number>(0);
-  const [femaleCount, setFemaleCount] = useState<number>(0);
-  const [notAttendedTimeCount, setNotAttendedTimeCount] = useState<number>(0);
+  // const [attendedTimeCount, setAttendedTimeCount] = useState<number>(0);
+  // const [kidsCount, setKidsCount] = useState<number>(0);
+  // const [maleCount, setMaleCount] = useState<number>(0);
+  // const [femaleCount, setFemaleCount] = useState<number>(0);
+  // const [notAttendedTimeCount, setNotAttendedTimeCount] = useState<number>(0);
   const [offlineCount, setOfflineCount] = useState<RegularSession[]>([])
   const [onlineCount, setOnlineCount] = useState<RegularSession[]>([])
 
@@ -217,7 +217,7 @@ const OverviewAttendance: React.FC = () => {
           style={{ justifyContent: "start" }}
         >
           <div className="bg-[#f95005] w-[100%]">
-            <p className="text-white text-center font-bold">OFFLINE CLASS TIMING</p>
+            <p className="text-white text-center font-bold">OFFLINE CLASS TIMINGS</p>
           </div>
           <div className="w-[100%]">
             <DataTable
@@ -269,7 +269,7 @@ const OverviewAttendance: React.FC = () => {
           style={{ justifyContent: "start" }}
         >
           <div className="bg-[#f95005] w-[100%]">
-            <p className="text-white text-center font-bold">ONLINE CLASS TIMING</p>
+            <p className="text-white text-center font-bold">ONLINE CLASS TIMINGS</p>
           </div>
           <div className="w-[100%]">
             <DataTable

@@ -60,12 +60,11 @@
   align-items: center;
 }
 
-.link:hover {
-  /* border-inline-end: 4px solid #f95005; */
+/* .link:hover {
   transition: 0.2s cubic-bezier(0.6, -0.28, 0.735, 0.045);
   background-color: #ffffff;
   color: black;
-}
+} */
 
 .active {
   border-inline-end: 4px solid white;

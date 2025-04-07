@@ -462,6 +462,7 @@ const GMeetMembersSidebar: React.FC<GMeetMembersSidebarProps> = ({
                           );
                         })
                         .catch((err) => {
+                          console.log('err', err)
                           toast.error(
                             `Failed To Copy the Meeting of "${selectedMeeting.refMeetingTitle}"`,
                             {

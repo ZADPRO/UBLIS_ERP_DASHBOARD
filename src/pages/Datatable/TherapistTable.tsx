@@ -423,10 +423,9 @@ export default function TherapistTable() {
         type="checkbox"
         checked={therapyStatus[rowData.id] || false}
         onChange={(e: any) => {
-          let val=0;
-          if(e.target.checked)
-          {
-            val=1
+          let val = 0;
+          if (e.target.checked) {
+            val = 1
           }
           setTherapyCount({
             ...therapyCount,
@@ -480,6 +479,8 @@ export default function TherapistTable() {
         filters={filters}
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
         className="flex flex-col justify-center align-baseline"
+        scrollHeight="400px"
+
       >
         <Column
           selectionMode="multiple"
@@ -488,7 +489,7 @@ export default function TherapistTable() {
         />
         <Column
           field="userId"
-          header="Customer Id"
+          header="Customer ID"
           body={userIdTemplate}
           frozen
           style={{ minWidth: "12rem" }}
@@ -518,7 +519,7 @@ export default function TherapistTable() {
         />
         <Column
           field="therapy"
-          header="No.of Session"
+          header="No.of Sessions"
           body={therapyCountTemplate}
           style={{
             minWidth: "9rem",

@@ -764,7 +764,7 @@ const UserDirData: React.FC = () => {
         position="right"
         onHide={() => setVisibleLeft(false)}
       >
-        <h2>User Detail</h2>
+        <h2>User Details</h2>
         <p>
           {selectedUserId ? `User ID: ${selectedUserId}` : "No user selected"}
         </p>
@@ -1157,7 +1157,7 @@ const UserDirData: React.FC = () => {
                           <>
                             <div className="flex justify-center w-[100%]">
                               <h3 className="text-red-500">
-                                No Therapy Class Assigned
+                              No Therapy Class is Assigned
                               </h3>
                             </div>
                           </>

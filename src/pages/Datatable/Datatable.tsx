@@ -583,6 +583,9 @@ export default function Datatables() {
         emptyMessage="No customers found."
         filters={filters}
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        scrollable
+        scrollHeight="400px"
+        className="custom-scrollbar scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200"
       >
         <Column
           field="userId"

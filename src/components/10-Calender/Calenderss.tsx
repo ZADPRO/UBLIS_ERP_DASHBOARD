@@ -28,11 +28,13 @@ type CalenderssProps = {
   onMonthChange: (month: number, year: number) => void;
 };
 
+
 const Calenderss: React.FC<CalenderssProps> = ({
   selectedUser,
   userFilteredAttendanceData,
   onMonthChange,
 }) => {
+  console.log('selectedUser', selectedUser)
   const calendarRef = useRef<FullCalendar | null>(null);
   const [events, setEvents] = useState<EventInput[]>([]);
 

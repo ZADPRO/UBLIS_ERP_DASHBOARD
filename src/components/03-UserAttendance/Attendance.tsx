@@ -8,20 +8,7 @@ import CryptoJS from "crypto-js";
 import Axios from "axios";
 import "./Attendance.css";
 import Calenderss from "../10-Calender/Calenderss";
-import { Panel } from "primereact/panel";
 
-// interface Customer {
-//   Username: string;
-//   Sessionname: string;
-//   Punchtime: string;
-//   Attend_not: string;
-//   Online_Offline: string;
-//   NotAttend: string;
-//   Attend: string;
-//   Signup: string;
-//   status2: string;
-//   comments: string;
-// }
 
 type Attendance = {
   sno: number;
@@ -517,8 +504,8 @@ const StaffAttendance: React.FC = () => {
                                   <p className="font-bold">Remaining Class : <span className="text-[#f95005]">{userAttendanceCount?.reCount}</span></p>
                                 </div>
                                 <div className="flex flex-row gap-x-3 justify-center">
-                                  <p className="font-bold">Attend in Offline : <span className="text-[#f95005]">{userAttendanceCount?.classAttendanceCount}</span> </p>
-                                  <p className="font-bold">Attend in Online : <span className="text-[#f95005]">{userAttendanceCount?.onlineCount}</span></p>
+                                  <p className="font-bold">Attended in Offline : <span className="text-[#f95005]">{userAttendanceCount?.classAttendanceCount}</span> </p>
+                                  <p className="font-bold">Attended in Online : <span className="text-[#f95005]">{userAttendanceCount?.onlineCount}</span></p>
                                 </div>
                               </div>
 

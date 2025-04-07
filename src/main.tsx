@@ -8,12 +8,7 @@ import { PrimeReactProvider } from "primereact/api";
 import "primeflex/primeflex.css";
 import "primereact/resources/primereact.css";
 
-// NOTED
 import "primereact/resources/themes/bootstrap4-light-blue/theme.css";
-
-// import "primereact/resources/themes/tailwind-light/theme.css";
-
-// import "primereact/resources/themes/saga-blue/theme.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

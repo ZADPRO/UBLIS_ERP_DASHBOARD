@@ -1,27 +1,27 @@
 import { useState, useEffect } from "react";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import { InputText } from "primereact/inputtext";
-import { IconField } from "primereact/iconfield";
-import { InputIcon } from "primereact/inputicon";
-import { Button } from "primereact/button";
+// import { DataTable } from "primereact/datatable";
+// import { Column } from "primereact/column";
+// import { InputText } from "primereact/inputtext";
+// import { IconField } from "primereact/iconfield";
+// import { InputIcon } from "primereact/inputicon";
+// import { Button } from "primereact/button";
 import { useNavigate } from "react-router-dom";
 import { Calendar } from "primereact/calendar";
 import CryptoJS from "crypto-js";
 import "./ClassinfoOverview.css";
-import { MultiSelect } from "primereact/multiselect";
+// import { MultiSelect } from "primereact/multiselect";
 import Axios from "axios";
 
 import "react-toastify/dist/ReactToastify.css";
 
 import { Nullable } from "primereact/ts-helpers";
 import { Accordion, AccordionTab } from "primereact/accordion";
-import { Row } from "primereact/row";
-import LineDemo from "../LineDemo/LineDemo";
+// import { Row } from "primereact/row";
+// import LineDemo from "../LineDemo/LineDemo";
 
 type DecryptResult = any;
 const ClassinfoOverview: React.FC = () => {
-  const [toDate, _setToDate] = useState<Nullable<Date>>(new Date());
+  const [toDate, setToDate] = useState<Nullable<Date>>(new Date());
 
   const [packageCount, setPackageCount]: any = useState<any>([]);
   const [PreTimingCount, setPreTimingCount]: any = useState<any>([]);
@@ -60,8 +60,10 @@ const ClassinfoOverview: React.FC = () => {
     return JSON.parse(decryptedString);
   };
   const handleDateChange = async (date: any) => {
+    console.log('date line ----- 63', date)
     try {
       const formattedDate = formatDate(date.value ? date.value : new Date());
+      console.log('formattedDate line ----- 66', formattedDate)
 
       const response = await Axios.post(
         import.meta.env.VITE_API_URL + "/classInfo/overView",
@@ -406,7 +408,11 @@ const ClassinfoOverview: React.FC = () => {
             <Calendar
               className="h-[80%]"
               value={toDate}
-              onChange={handleDateChange}
+              onChange={(e) => {
+                console.log('e line ----- 410', e.target.value)
+                setToDate(e.target.value)
+                handleDateChange(e.target)
+              }}
               dateFormat="MM yy"
               view="month"
               showButtonBar
@@ -477,28 +483,28 @@ const ClassinfoOverview: React.FC = () => {
                             <tr className="bg-gray-100 font-semibold text-center">
                               <td className="border border-gray-300 ">
                                 {element.studentType[0].userType[0].name ==
-                                "Kids"
+                                  "Kids"
                                   ? "K"
                                   : "A"}{" "}
                                 - {element.studentType[0].userType[0].count}
                               </td>
                               <td className="border border-gray-300 p-1">
                                 {element.studentType[0].userType[1].name ==
-                                "Adult"
+                                  "Adult"
                                   ? "A"
                                   : "K"}{" "}
                                 - {element.studentType[0].userType[1].count}
                               </td>
                               <td className="border border-gray-300 p-1">
                                 {element.studentType[1].userType[0].name ==
-                                "Kids"
+                                  "Kids"
                                   ? "K"
                                   : "A"}{" "}
                                 - {element.studentType[1].userType[0].count}
                               </td>
                               <td className="border border-gray-300 p-1">
                                 {element.studentType[1].userType[1].name ==
-                                "Adult"
+                                  "Adult"
                                   ? "A"
                                   : "K"}{" "}
                                 - {element.studentType[1].userType[1].count}
@@ -656,28 +662,28 @@ const ClassinfoOverview: React.FC = () => {
                             <tr className="bg-gray-100 font-semibold text-center">
                               <td className="border border-gray-300 ">
                                 {element.studentType[0].userType[0].name ==
-                                "Kids"
+                                  "Kids"
                                   ? "K"
                                   : "A"}{" "}
                                 - {element.studentType[0].userType[0].count}
                               </td>
                               <td className="border border-gray-300 p-1">
                                 {element.studentType[0].userType[1].name ==
-                                "Adult"
+                                  "Adult"
                                   ? "A"
                                   : "K"}{" "}
                                 - {element.studentType[0].userType[1].count}
                               </td>
                               <td className="border border-gray-300 p-1">
                                 {element.studentType[1].userType[0].name ==
-                                "Kids"
+                                  "Kids"
                                   ? "K"
                                   : "A"}{" "}
                                 - {element.studentType[1].userType[0].count}
                               </td>
                               <td className="border border-gray-300 p-1">
                                 {element.studentType[1].userType[1].name ==
-                                "Adult"
+                                  "Adult"
                                   ? "A"
                                   : "K"}{" "}
                                 - {element.studentType[1].userType[1].count}

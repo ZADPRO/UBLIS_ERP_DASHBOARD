@@ -787,7 +787,7 @@ const Browsher: React.FC = () => {
                                     body={(_data, options) => options.rowIndex + 1}
                                     header="S No"
                                 ></Column>
-                                <Column field="refBrowsherTypeName" header="Browsher Type"></Column>
+                                <Column field="refBrowsherTypeName" header="Brochure Type"></Column>
 
                                 <Column header="Edit" body={sessionEdit}></Column>
                                 <Column header="Delete" body={sessionDelete}></Column>

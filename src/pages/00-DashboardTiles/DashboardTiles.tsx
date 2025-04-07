@@ -2,8 +2,8 @@ import { Divider } from "primereact/divider";
 import { SelectButton } from "primereact/selectbutton";
 import React, { useEffect, useState } from "react";
 
-import coverImage from "../../assets/Dashboard/banner.jpg";
-import profileImage from "../../assets/Dashboard/profile.svg";
+import coverImage from "../../assets/Dashboard/banner.png";
+import profileImage from "../../assets/Dashboard/profile.png";
 
 import "./DashboardTiles.css";
 import CryptoJS from "crypto-js";
@@ -636,7 +636,7 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
                 {localStorage.getItem("refUtId") !== "4" &&
                   localStorage.getItem("refUtId") !== "8" ?
                   <> <div className="card statsDataTable">
-                    <p>Registered With Medical Issues</p>
+                    <p>Registered Users With Medical Issues</p>
                     <DataTable value={mdIsRegisteredData} showGridlines>
                       <Column
                         field="sno"
@@ -662,7 +662,7 @@ const DashboardTiles: React.FC<DashboardTilesProps> = ({ userData }) => {
                 {localStorage.getItem("refUtId") !== "11" &&
                   localStorage.getItem("refUtId") !== "8" ?
                   <> <div className="card statsDataTable">
-                    <p>Registered Without Medical Issues</p>
+                    <p>Registered Users Without Medical Issues</p>
                     <DataTable value={noMdIsRegisteredData} showGridlines>
                       <Column
                         field="sno"

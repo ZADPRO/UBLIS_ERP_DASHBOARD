@@ -390,7 +390,6 @@ export default function Notify(selectedType: any) {
       const payload = {
         refStId: id,
       };
-      // console.log("payload", payload);
 
       const response = await Axios.post(
         import.meta.env.VITE_API_URL + `/director/userUpdateAuditList`,

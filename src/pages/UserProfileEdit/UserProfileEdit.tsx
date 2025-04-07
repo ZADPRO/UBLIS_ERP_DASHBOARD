@@ -405,13 +405,27 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
     target: { name: string; value: string | Date | null };
   }) => {
     const { name, value } = event.target;
+    let Bmi: any;
+    if (name === "height" || name === "weight") {
+      function calculateBMI(weight: any, height: any) {
+        let heightInMeters = height / 100;
+        let bmi = weight / heightInMeters ** 2;
+        return bmi.toFixed(2);
+      }
+      const height = name === "height" ? value : inputs.height
+      const weight = name === "weight" ? value : inputs.weight
+      Bmi = calculateBMI(weight, height)
+
+    }
 
     setInputs((prevInputs) => {
       const updatedInputs = {
         ...prevInputs,
         [name]:
-          value instanceof Date ? value.toISOString().split("T")[0] : value, // Convert Date to string
+          value instanceof Date ? value.toISOString().split("T")[0] : value,
+        bmi: Bmi
       };
+
 
       if (name === "dob") {
         const calculatedAge = calculateAge(updatedInputs.dob);
@@ -816,20 +830,18 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                           &nbsp;Date of Birth *
                         </label>
                         <Calendar
-                          // label="Date of Birth *"
                           name="dob"
                           id="dob"
-                          // type="date"
-                          className={`relative w-full mt-1 h-10  placeholder-transparent transition-all border-2 rounded outline-none peer 
-                              ${
-                                edits.personal ? "text-[#4c4c4e]" : "text-black"
-                              } border-[#b3b4b6] autofill:bg-white dateInput`}
+                          className={`relative w-full mt-1 h-10 placeholder-transparent transition-all border-2 rounded outline-none peer 
+      ${edits.personal ? "text-[#4c4c4e]" : "text-black"} border-[#b3b4b6] autofill:bg-white dateInput`}
                           onChange={(e) =>
                             handleInputVal({
                               target: {
                                 name: "dob",
                                 value: e.value
-                                  ? e.value.toISOString().split("T")[0]
+                                  ? new Date(e.value.getTime() - e.value.getTimezoneOffset() * 60000)
+                                    .toISOString()
+                                    .split("T")[0]
                                   : "",
                               },
                             })
@@ -839,6 +851,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                           disabled={!edits.personal}
                           required
                         />
+
                       </div>
 
                       <div className="w-[48%]">
@@ -1433,7 +1446,7 @@ const UserProfileEdit: React.FC<UserProfileEditProps> = ({ refid }) => {
                       type="number"
                       onChange={handleInputVal}
                       value={inputs.bmi}
-                      readonly={!edits.gendrel}
+                      readonly
                     />
                   </div>
                 </div>

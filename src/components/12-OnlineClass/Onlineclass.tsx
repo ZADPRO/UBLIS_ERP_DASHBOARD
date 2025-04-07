@@ -51,7 +51,7 @@ const Onlineclass: React.FC = () => {
   const [showEmail, setShowEmail] = useState(false);
 
   const [googleWorkspaceLink, setGoogleWorkspaceLink] = useState([]);
-  const [visibleLeft, setVisibleLeft] = useState(false);
+  // const [visibleLeft, setVisibleLeft] = useState(false);
   const [googleMeetDesc, setGoogleMeetDesc] = useState(false);
 
   const [meetingDetailsSidebar, setMeetingSidebar] = useState(false);
@@ -175,23 +175,23 @@ const Onlineclass: React.FC = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-  const onUserIdClick = (id: string, rowData: string) => {
-    setVisibleLeft(true);
-  };
+  // const onUserIdClick = (id: string, rowData: string) => {
+  //   setVisibleLeft(true);
+  // };
 
   const [selectedMeeting, setSelectedMeeting] = useState<SelectedMeeting>();
 
-  const onMeetingClick = (rowData: any) => {
-    setSelectedMeeting(rowData);
-    setMeetingSidebar(true);
-  };
-  const meetingIdTemplate = (rowData: any) => (
-    <Button
-      label={rowData.meetingId}
-      className="p-button-link"
-      onClick={() => onMeetingClick(rowData)}
-    />
-  );
+  // const onMeetingClick = (rowData: any) => {
+  //   setSelectedMeeting(rowData);
+  //   setMeetingSidebar(true);
+  // };
+  // const meetingIdTemplate = (rowData: any) => (
+  //   <Button
+  //     label={rowData.meetingId}
+  //     className="p-button-link"
+  //     onClick={() => onMeetingClick(rowData)}
+  //   />
+  // );
 
   const [emails, setEmails]: any = useState([]);
 
@@ -618,14 +618,14 @@ const Onlineclass: React.FC = () => {
                             <div className="field col-8">
                               <span className="p-float-label">
                                 <InputText
-                                  id="description"
+                                  id="Description"
                                   value={description}
                                   onChange={(e) =>
                                     setDescription(e.target.value)
                                   }
                                   required
                                 />
-                                <label htmlFor="firstName">Discription</label>
+                                <label htmlFor="firstName">Description</label>
                               </span>
                             </div>
                           </div>
