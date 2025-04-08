@@ -3,7 +3,7 @@ import { SelectButton } from "primereact/selectbutton";
 import React, { useEffect, useState } from "react";
 
 import coverImage from "../../assets/Dashboard/banner.png";
-import profileImage from "../../assets/Dashboard/profile.png";
+import profileImage from "../../assets/Dashboard/Profile.png";
 
 import "./DashboardTiles.css";
 import CryptoJS from "crypto-js";
