@@ -162,7 +162,7 @@ const PriceSidebar: React.FC<PriceSidebarProps> = ({ refStId, closePayment }) =>
         pageData: false,
     });
 
-    const stepperRef = useRef<Stepper | null>(null);
+    const stepperRef = useRef<any>(null);
     const [packageUserDetails, setPackageUserDetails] =
         useState<PackageUserData | null>();
     const [_date, setDate] = useState<Nullable<Date>>(null);
@@ -1069,9 +1069,9 @@ const PriceSidebar: React.FC<PriceSidebarProps> = ({ refStId, closePayment }) =>
                         </div>
                     </div>
 
-                    <div className="lg:mt-[70px]">
+                    <div className="lg:mt-[70px]" style={{ flexBasis: "50rem" }}>
 
-                        <Stepper ref={stepperRef} style={{ flexBasis: "50rem" }}>
+                        <Stepper ref={stepperRef} {...({} as any)}>
                             <StepperPanel header="Basic Details">
                                 <div className="flex flex-column">
                                     <div className="border-2  surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium lg:pb-0 pb-3">
