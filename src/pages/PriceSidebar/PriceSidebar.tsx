@@ -1070,6 +1070,7 @@ const PriceSidebar: React.FC<PriceSidebarProps> = ({ refStId, closePayment }) =>
                     </div>
 
                     <div className="lg:mt-[70px]">
+
                         <Stepper ref={stepperRef} style={{ flexBasis: "50rem" }}>
                             <StepperPanel header="Basic Details">
                                 <div className="flex flex-column">
